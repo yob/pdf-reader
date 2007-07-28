@@ -74,8 +74,8 @@ class PDF::Reader
         objid += 1
       end
 
-      raise "PDF malformed, missing trailer after cross reference" unless @buffer.token == "trailer"
-      raise "PDF malformed, trailer should be a dictionary" unless @buffer.token == "<<"
+      raise MalformedPDFError, "PDF malformed, missing trailer after cross reference" unless @buffer.token == "trailer"
+      raise MalformedPDFError, "PDF malformed, trailer should be a dictionary" unless @buffer.token == "<<"
 
       trailer = Parser.new(@buffer, self).dictionary
       load(trailer['Prev']) if trailer.has_key?('Prev')

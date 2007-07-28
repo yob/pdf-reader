@@ -133,8 +133,8 @@ class PDF::Reader
         end
       end
 
-      raise "PDF does not contain EOF marker" if eof_index.nil?
-      raise "PDF EOF marker does not follow offset" if eof_index >= lines.size-1
+      raise MalformedPDFError, "PDF does not contain EOF marker" if eof_index.nil?
+      raise MalformedPDFError, "PDF EOF marker does not follow offset" if eof_index >= lines.size-1
       lines[eof_index+1].to_i
     end
     ################################################################################

@@ -72,7 +72,7 @@ class PDF::Reader
       loop do
         key = parse_token
         break if key.kind_of?(Token) and key == ">>"
-        raise "PDF malformed, dictionary key is not a name" unless key.kind_of?(Name)
+        raise MalformedPDFError, "PDF malformed, dictionary key is not a name" unless key.kind_of?(Name)
 
         value = parse_token
         value.kind_of?(Token) and Error.str_assert_not(value, ">>")
@@ -170,13 +170,13 @@ class PDF::Reader
       case post_obj
       when "endobj"   : return obj
       when "stream"   : return stream(obj)
-      else              raise "PDF malformed, unexpected token #{post_obj}"
+      else              raise MalformedPDFError, "PDF malformed, unexpected token #{post_obj}"
       end
     end
     ################################################################################
     # Decodes the contents of a PDF Stream and returns it as a Ruby String.
     def stream (dict)
-      raise "PDF malformed, missing stream length" unless dict.has_key?('Length')
+      raise MalformedPDFError, "PDF malformed, missing stream length" unless dict.has_key?('Length')
       dict['Length'] = @xref.object(dict['Length']) if dict['Length'].kind_of?(Reference)
       data = @buffer.read(dict['Length'])
       Error.str_assert(parse_token, "endstream")
