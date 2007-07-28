@@ -22,10 +22,35 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 ################################################################################
+
 require 'stringio'
-################################################################################
+
 module PDF
   ################################################################################
+  # The Reader class serves as an entry point for parsing a PDF file. There are three
+  # ways to kick off processing - which one you pick will be based on personal preference
+  # and the situation.
+  #
+  # For all examples, assume the receiver variable contains an object that will respond
+  # to various callbacks. Refer to the README and PDF::Reader::Content for more information
+  # on receivers.
+  #
+  # = Parsing a file
+  #   
+  #   PDF::Reader.file("somefile.pdf", receiver)
+  #
+  # = Parsing a String
+  # 
+  # This is useful for processing a PDF that is already in memory
+  #
+  #   PDF::Reader.string("somefile.pdf", receiver)
+  #
+  # = Parsing an IO object
+  # 
+  # This can be a useful alternative to the first 2 options in some situations
+  #
+  #   pdf = PDF::Reader.new
+  #   pdf.parse(File.new("somefile.pdf"), receiver)
   class Reader
     ################################################################################
     # Parse the file with the given name, sending events to the given receiver.
@@ -57,7 +82,8 @@ require 'pdf/reader/reference'
 require 'pdf/reader/text_receiver'
 require 'pdf/reader/token'
 require 'pdf/reader/xref'
-################################################################################
+
+
 class PDF::Reader
   ################################################################################
   # Initialize a new PDF::Reader

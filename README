@@ -1,0 +1,107 @@
+The PDF::Reader library implements a PDF parser conforming as much as possible
+to the PDF specification from Adobe.
+
+It provides programmatic access to the contents of a PDF file with a high
+degree of flexibility.
+
+The PDF 1.7 specification is a weighty document and not all aspects are
+currently supported. We welcome submission of PDF files that exhibit
+unsupported aspects of the spec to assist with improving out support.
+
+= Installation
+
+The recommended installation method is via Rubygems.
+
+  gem install pdfreader
+
+= Usage
+
+PDF::Reader is designed with a callback-style architecture. The basic concept
+is to build a receiver class and pass that into PDF::Reader along with the PDF
+to process. 
+
+As PDF::Reader walks the file and encounters various objects (pages, text,
+images, shapes, etc) it will call methods on the receiver class.  What those
+methods do is entirely up to you - save the text, extract images, count pages,
+read metadata, whatever.
+
+For a full list of the supported callback methods and a description of when they
+will be called, refer to PDF::Reader::Content.
+
+= Examples
+
+The easiest way to explain how this works in practice is to show some examples.
+
+== Page Counter
+
+A simple app to count the number of pages in a PDF File.
+
+  require 'rubygems'
+  require 'pdf/reader'
+
+  class PageReceiver
+    attr_accessor :page_count
+
+    def initialize
+      @page_count = 0 
+    end
+    
+    # Called when page parsing ends
+    def end_page
+      @page_count += 1
+    end
+  end
+
+  receiver = PageReceiver.new
+  pdf = PDF::Reader.file("somefile.pdf", receiver)
+  puts "#{pdf.page_count} pages"
+
+== Extract ISBNs
+
+Parse all text in the requested PDF file and print out any valid book ISBNs.
+Requires the rbook-isbn gem.
+
+  require 'rubygems'
+  require 'pdf/reader'
+  require 'rbook/isbn'
+
+  class ISBNReceiver
+
+    # there's a few text callbacks, so make sure we process them all
+    def show_text(string, *params)
+      process_words(string.split(/\W+/))
+    end
+
+    def super_show_text(string, *params)
+      process_words(string.split(/\W+/))
+    end
+
+    def move_to_next_line_and_show_text (string)
+      process_words(string.split(/\W+/))
+    end
+
+    def set_spacing_next_line_show_text (aw, ac, string)
+      process_words(string.split(/\W+/))
+    end
+
+    private
+
+    # check if any items in the supplied array are a valid ISBN, and print any 
+    # that are to console
+    def process_words(words)
+      words.each do |word|
+        word.strip!
+        puts "#{RBook::ISBN.convert_to_isbn13(word)}" if RBook::ISBN.valid_isbn?(word)
+      end
+    end
+  end
+
+  receiver = ISBNReceiver.new
+  PDF::Reader.file("somefile.pdf", receiver)
+
+
+= Resources
+
+- PDF::Reader Homepage: http://software.pmade.com/pdfreader
+- PDF::Reader Rubyforge Page: http://rubyforge.org/projects/pdf-reader/
+- PDF Specification: http://www.adobe.com/devnet/pdf/pdf_reference.html

@@ -22,8 +22,15 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 ################################################################################
+
 class PDF::Reader
   ################################################################################
+  # An example receiver class that processes all text found in a PDF file. All text that
+  # is found will be printed to the IO object specified in the constructor.
+  #
+  # Usage:
+  #  receiver = PDF::Reader::TextReceiver.new($stdout)
+  #  PDF::Reader.file("somefile.pdf", receiver)
   class TextReceiver
     ################################################################################
     # Initialize with the library user's receiver

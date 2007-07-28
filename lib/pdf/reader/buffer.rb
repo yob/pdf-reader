@@ -22,21 +22,28 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 ################################################################################
+
 class PDF::Reader
   ################################################################################
+  # An internal PDF::Reader class that mediates access to the underlying PDF File or IO Stream
   class Buffer
     ################################################################################
+    # Creates a new buffer around the specified IO object
     def initialize (io)
       @io = io
       @buffer = nil
     end
     ################################################################################
+    # Seek to the requested byte in the IO stream.
     def seek (offset)
       @io.seek(offset, IO::SEEK_SET)
       @buffer = nil
       self
     end
     ################################################################################
+    # reads the requested number of bytes from the underlying IO stream. 
+    #
+    # length should be a positive integer.
     def read (length)
       out = ""
 
@@ -49,6 +56,8 @@ class PDF::Reader
       out
     end
     ################################################################################
+    # returns true if the underlying IO object is at end and the internal buffer 
+    # is empty
     def eof?
       if @buffer
         @buffer.empty? && @io.eof?
@@ -61,6 +70,8 @@ class PDF::Reader
       @io.pos
     end
     ################################################################################
+    # PDF files are processed by tokenising the content into a series of objects and commands.
+    # This prepares the buffer for use by rerading the next line of tokens into memory.
     def ready_token (with_strip=true, skip_blanks=true)
       while @buffer.nil? or @buffer.empty?
         @buffer = @io.readline
@@ -71,6 +82,7 @@ class PDF::Reader
       end
     end
     ################################################################################
+    # return the next token from the underlying IO stream
     def token
       ready_token
 
@@ -94,10 +106,14 @@ class PDF::Reader
       val
     end
     ################################################################################
+    # return the internal buffer used by this class when reading from the IO stream.
     def raw
       @buffer
     end
     ################################################################################
+    # The Xref table in a PDF file acts as an aid for finding the location of various
+    # objects in the file. This method attempts to locate the byte offset of the xref
+    # table in the underlying IO stream.
     def find_first_xref_offset
       @io.seek(-1024, IO::SEEK_END) rescue seek(0)
       data = @io.read(1024)

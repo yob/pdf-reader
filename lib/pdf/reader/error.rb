@@ -21,9 +21,12 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-################################################################################
+
+
 class PDF::Reader
   ################################################################################
+  # An internal PDF::Reader class that helps to verify various parts of the PDF file
+  # are valid
   class Error
     ################################################################################
     def self.str_assert (lvalue, rvalue, chars=nil)

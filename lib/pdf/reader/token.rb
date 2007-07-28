@@ -22,10 +22,15 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 ################################################################################
+
 class PDF::Reader
   ################################################################################
+  # An internal PDF::Reader class that represents a single token from a PDF file.
+  #
+  # Behaves exactly like a Ruby String - it basically exists for convenience.
   class Token < String
     ################################################################################
+    # Creates a new token with the specified value
     def initialize (val)
       super
     end

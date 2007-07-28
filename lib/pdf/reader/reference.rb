@@ -22,10 +22,14 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 ################################################################################
+
 class PDF::Reader
   ################################################################################
+  # An internal PDF::Reader class that represents an indirect reference to a PDF Object 
   class Reference
     ################################################################################
+    # check if the next token in the buffer is a reference, and return a PDF::Reader::Reference
+    # instance. Returns nil if the next token isn't an indirect reference.
     def self.from_buffer (buffer)
       buffer.ready_token
       return nil unless m = buffer.raw.match(/^(\d+)\s+(\d+)\s+R\b/)
@@ -35,10 +39,12 @@ class PDF::Reader
     ################################################################################
     attr_reader :id, :gen
     ################################################################################
+    # Create a new Reference to an object with the specified id and revision number
     def initialize (id, gen)
       @id, @gen = id, gen
     end
     ################################################################################
+    # returns the current Reference object in an array with a single element
     def to_a
       [self]
     end

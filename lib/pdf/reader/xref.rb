@@ -22,15 +22,25 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 ################################################################################
+
 class PDF::Reader
   ################################################################################
+  # An internal PDF::Reader class that represents the Xref table in a PDF file
+  # An Xref table is a map of object identifiers and byte offsets. Any time a particular
+  # object needs to be found, the Xref table is used to find where it is stored in the
+  # file.
   class XRef
     ################################################################################
+    # create a new Xref table based on the contents of the supplied PDF::Reader::Buffer object
     def initialize (buffer)
       @buffer = buffer
       @xref = {}
     end
     ################################################################################
+    # Read the xref table from the underlying buffer. If offset is specified the table
+    # will be loaded from there, otherwise the default offset will be located and used.
+    #
+    # Will fail silently if there is no xref table at the requested offset.
     def load (offset = nil)
       @buffer.seek(offset || @buffer.find_first_xref_offset)
       token = @buffer.token
@@ -40,6 +50,9 @@ class PDF::Reader
       end
     end
     ################################################################################
+    # Return a string containing the contents of an entire PDF object. The object is requested
+    # by specifying a PDF::Reader::Reference object that contains the objects ID and revision
+    # number
     def object (ref, save_pos = true)
       pos = @buffer.pos if save_pos
       parser = Parser.new(@buffer.seek(offset_for(ref)), self).object(ref.id, ref.gen)
@@ -47,6 +60,8 @@ class PDF::Reader
       parser
     end
     ################################################################################
+    # Assumes the underlying buffer is positioned at the start of an Xref table and
+    # processes it into memory.
     def load_xref_table
       objid, count = @buffer.token.to_i, @buffer.token.to_i
 
@@ -68,10 +83,14 @@ class PDF::Reader
       trailer
     end
     ################################################################################
+    # returns the byte offset for the specified PDF object.
+    #
+    # ref - a PDF::Reader::Reference object containing an object ID and revision number
     def offset_for (ref)
       @xref[ref.id][ref.gen]
     end
     ################################################################################
+    # Stores an offset value for a particular PDF object ID and revision number
     def store (id, gen, offset)
       (@xref[id] ||= {})[gen] ||= offset
     end

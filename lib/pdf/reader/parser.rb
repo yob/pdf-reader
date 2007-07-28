@@ -22,15 +22,26 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 ################################################################################
+
 class PDF::Reader
   ################################################################################
+  # An internal PDF::Reader class that reads objects from the PDF file and converts
+  # them into useable ruby objects (hash's, arrays, true, false, etc)
   class Parser
     ################################################################################
+    # Create a new parser around a PDF::Reader::Buffer object
+    #
+    # buffer - a PDF::Reader::Buffer object that contains PDF data
+    # xref   - an integer that specifies the byte offset of the xref table in the buffer
     def initialize (buffer, xref)
       @buffer = buffer
       @xref   = xref
     end
     ################################################################################
+    # Reads the next token from the underlying buffer and convets it to an appropriate
+    # object
+    #
+    # operators - a hash of supported operators to read from the underlying buffer.
     def parse_token (operators={})
       ref = Reference.from_buffer(@buffer) and return ref
       token = @buffer.token
@@ -54,6 +65,7 @@ class PDF::Reader
       end
     end
     ################################################################################
+    # reads a PDF dict from the buffer and converts it to a Ruby Hash.
     def dictionary
       dict = {}
 
@@ -70,6 +82,7 @@ class PDF::Reader
       dict
     end
     ################################################################################
+    # reads a PDF array from the buffer and converts it to a Ruby Array.
     def array
       a = []
 
@@ -82,6 +95,7 @@ class PDF::Reader
       a
     end
     ################################################################################
+    # Reads a PDF hex string from the buffer and converts it to a Ruby String
     def hex_string
       str = @buffer.token
       Error.str_assert(@buffer.token, ">")
@@ -90,6 +104,7 @@ class PDF::Reader
       str.scan(/../).map {|i| i.hex.chr}.join
     end
     ################################################################################
+    # Reads a PDF String from the buffer and converts it to a Ruby String
     def string
       str = ""
       count = 1
@@ -140,6 +155,10 @@ class PDF::Reader
       str
     end
     ################################################################################
+    # Reads an entire PDF object from the buffer and returns it as a Ruby String.
+    #
+    # id  - the object ID to return
+    # gen - the object revision number to return
     def object (id, gen)
       Error.assert_equal(parse_token, id)
       Error.assert_equal(parse_token, gen)
@@ -155,6 +174,7 @@ class PDF::Reader
       end
     end
     ################################################################################
+    # Decodes the contents of a PDF Stream and returns it as a Ruby String.
     def stream (dict)
       raise "PDF malformed, missing stream length" unless dict.has_key?('Length')
       dict['Length'] = @xref.object(dict['Length']) if dict['Length'].kind_of?(Reference)
