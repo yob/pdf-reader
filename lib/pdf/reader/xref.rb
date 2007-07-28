@@ -40,8 +40,11 @@ class PDF::Reader
       end
     end
     ################################################################################
-    def object (ref)
-      Parser.new(@buffer.seek(offset_for(ref)), self).object(ref.id, ref.gen)
+    def object (ref, save_pos = true)
+      pos = @buffer.pos if save_pos
+      parser = Parser.new(@buffer.seek(offset_for(ref)), self).object(ref.id, ref.gen)
+      @buffer.seek(pos) if save_pos
+      parser
     end
     ################################################################################
     def load_xref_table
