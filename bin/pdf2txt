@@ -23,6 +23,8 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 ################################################################################
+$LOAD_PATH.unshift(File.dirname(__FILE__) + "/../lib")
+
 require 'pdf/reader'
 
 receiver = PDF::Reader::TextReceiver.new($stdout)
