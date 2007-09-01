@@ -255,6 +255,7 @@ class PDF::Reader
     def content_stream (instructions)
       @buffer = Buffer.new(StringIO.new(instructions))
       @parser = Parser.new(@buffer, @xref)
+      @params = [] if @params.nil?
 
       until @buffer.eof?
         loop do
