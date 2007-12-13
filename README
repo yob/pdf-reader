@@ -84,10 +84,9 @@ A simple app to count the number of pages in a PDF File.
     end
 
     # Called when page parsing starts
-    def start_page(arg = nil)
+    def begin_page(arg = nil)
       @content << ""
     end
-    alias :begin_page :start_page
 
     def show_text(string, *params)
       @content.last << string.strip
