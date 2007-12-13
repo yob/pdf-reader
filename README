@@ -28,6 +28,19 @@ read metadata, whatever.
 For a full list of the supported callback methods and a description of when they
 will be called, refer to PDF::Reader::Content.
 
+== Exceptions
+
+There are two key exceptions that you will need to watch out for when processing a 
+PDF file:
+
+MalformedPDFError - The PDF appears to be corrupt in some way. If you believe the 
+file should be valid, or that a corrupt file didn't raise an exception, please 
+forward a copy of the file to the maintainers and we can attempt improve the code.
+
+UnsupportedFeatureError - The PDF uses a feature that PDF::Reader doesn't currently 
+support. Again, we welcome submissions of PDF files that exhibit these features to help 
+us with future code improvements.
+
 = Examples
 
 The easiest way to explain how this works in practice is to show some examples.
@@ -55,6 +68,58 @@ A simple app to count the number of pages in a PDF File.
   receiver = PageReceiver.new
   pdf = PDF::Reader.file("somefile.pdf", receiver)
   puts "#{pdf.page_count} pages"
+
+== Basic RSpec of a generated PDF 
+
+  require 'rubygems'
+  require 'pdf/reader'
+  require 'pdf/writer'
+  require 'spec'
+
+  class PageTextReceiver
+    attr_accessor :content
+
+    def initialize
+      @content = []
+    end
+
+    # Called when page parsing starts
+    def start_page(arg = nil)
+      @content << ""
+    end
+    alias :begin_page :start_page
+
+    def show_text(string, *params)
+      @content.last << string.strip
+    end
+
+    # there's a few text callbacks, so make sure we process them all
+    alias :super_show_text :show_text
+    alias :move_to_next_line_and_show_text :show_text
+    alias :set_spacing_next_line_show_text :show_text
+
+  end
+
+  context "My generated PDF" do
+    specify "should have the correct text on 2 pages" do
+
+      # generate our PDF
+      pdf = PDF::Writer.new
+      pdf.text "Chunky", :font_size => 32, :justification => :center
+      pdf.start_new_page
+      pdf.text "Bacon", :font_size => 32, :justification => :center
+      pdf.save_as("chunkybacon.pdf")
+
+      # process the PDF
+      receiver = PageTextReceiver.new
+      PDF::Reader.file("chunkybacon.pdf", receiver)
+
+      # confirm the text appears on the correct pages
+      receiver.content.size.should eql(2)
+      receiver.content[0].should eql("Chunky")
+      receiver.content[1].should eql("Bacon")
+    end
+  end
 
 == Extract ISBNs
 
@@ -105,3 +170,4 @@ Requires the rbook-isbn gem.
 - PDF::Reader Homepage: http://software.pmade.com/pdfreader
 - PDF::Reader Rubyforge Page: http://rubyforge.org/projects/pdf-reader/
 - PDF Specification: http://www.adobe.com/devnet/pdf/pdf_reference.html
+- PDF Tutorial Slide Presentations: http://home.comcast.net/~jk05/presentations/PDFTutorials.html
