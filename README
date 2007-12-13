@@ -12,7 +12,7 @@ unsupported aspects of the spec to assist with improving out support.
 
 The recommended installation method is via Rubygems.
 
-  gem install pdfreader
+  gem install pdf-reader
 
 = Usage
 
