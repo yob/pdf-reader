@@ -1,0 +1,9 @@
+Some ideas for future work
+- Allows the user to only process certain aspects of the PDF file. For example, if they're only
+  interested in meta data, there's no point in walking the pages tree.
+
+- Ship some extra receivers in the standard package, particuarly ones that are useful for running
+  rspec over generated PDF files
+
+- Improve metadata support
+

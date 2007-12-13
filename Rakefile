@@ -6,7 +6,7 @@ require 'rake/testtask'
 require "rake/gempackagetask"
 require 'spec/rake/spectask'
 
-PKG_VERSION = "0.0.1"
+PKG_VERSION = "0.5"
 PKG_NAME = "pdf-reader"
 PKG_FILE_NAME = "#{PKG_NAME}-#{PKG_VERSION}"
 
@@ -64,7 +64,7 @@ spec = Gem::Specification.new do |spec|
   
   spec.require_path = "lib"
 	spec.has_rdoc = true
-	spec.extra_rdoc_files = %w{README}
+	spec.extra_rdoc_files = %w{README TODO CHANGELOG}
 	spec.rdoc_options << '--title' << 'PDF::Reader Documentation' <<
 	                     '--main'  << 'README' << '-q'
   spec.author = "Peter Jones"
