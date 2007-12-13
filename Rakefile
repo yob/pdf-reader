@@ -45,6 +45,8 @@ Rake::RDocTask.new("doc") do |rdoc|
   rdoc.title = "pdf-reader"
   rdoc.rdoc_dir = (ENV['CC_BUILD_ARTIFACTS'] || 'doc') + '/rdoc'
   rdoc.rdoc_files.include('README')
+  rdoc.rdoc_files.include('TODO')
+  rdoc.rdoc_files.include('CHANGELOG')
   #rdoc.rdoc_files.include('COPYING')
   #rdoc.rdoc_files.include('LICENSE')
   rdoc.rdoc_files.include('lib/**/*.rb')
