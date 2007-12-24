@@ -55,7 +55,7 @@ module PDF
     ################################################################################
     # Parse the file with the given name, sending events to the given receiver.
     def self.file (name, receiver)
-      File.open(name) do |f|
+      File.open(name,"rb") do |f|
         new.parse(f, receiver)
       end
     end
