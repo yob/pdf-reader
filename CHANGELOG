@@ -1,6 +1,6 @@
 v0.5.1 (1st January 2008)
 - Several documentation tweaks
-- Improve support for parsing PDFs under windows
+- Improve support for parsing PDFs under windows (thanks to Jari Williamsson)
 
 v0.5 (14th December 2007)
 - Initial Release
