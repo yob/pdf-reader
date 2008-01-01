@@ -117,6 +117,10 @@ it through less or to a text file.
     alias :move_to_next_line_and_show_text :show_text
     alias :set_spacing_next_line_show_text :show_text
 
+    def show_text_with_positioning(*params)
+      params = params.first
+      params.each { |str| show_text(str) }
+    end
   end
 
   context "My generated PDF" do
@@ -183,6 +187,12 @@ Requires the rbook-isbn gem.
   receiver = ISBNReceiver.new
   PDF::Reader.file("somefile.pdf", receiver)
 
+= Known Limitations
+
+The order of the callbacks is unpredicable, and is dependent on the internal
+layout of the file, not the order objects are displayed to the user. As a
+consequence of this it is highly unlikely that text will be completely in
+order.
 
 = Resources
 

@@ -13,5 +13,5 @@ else
 end
 
 receiver.callbacks.each do |callback|
-  puts callback
+  puts "#{callback[:name]} - #{callback[:args].inspect}"
 end
