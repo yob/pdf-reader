@@ -7,3 +7,4 @@ Some ideas for future work
 
 - Improve metadata support
 
+- Add support for additional filters: ASCIIHexDecode, ASCII85Decode, LZWDecode, RunLengthDecode, CCITTFaxDecode, JBIG2Decode, DCTDecode, JPXDecode, Crypt?
