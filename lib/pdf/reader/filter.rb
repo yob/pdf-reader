@@ -39,7 +39,7 @@ class PDF::Reader
       @options = options
 
       case name
-      when "FlateDecode"    : @filter = :flate
+      when "FlateDecode"    then @filter = :flate
       else                    raise UnsupportedFeatureError, "Unknown filter: #{name}"
       end
     end

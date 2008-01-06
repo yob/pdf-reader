@@ -89,9 +89,9 @@ class PDF::Reader
       i = @buffer.index(/[\[\]()<>{}\s\/]/) || @buffer.size
 
       token_chars = 
-        if i == 0 and @buffer[i,2] == "<<"    : 2
-        elsif i == 0 and @buffer[i,2] == ">>" : 2
-        elsif i == 0                          : 1
+        if i == 0 and @buffer[i,2] == "<<"    then 2
+        elsif i == 0 and @buffer[i,2] == ">>" then 2
+        elsif i == 0                          then 1
         else                                    i
         end
 

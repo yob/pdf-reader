@@ -1,3 +1,8 @@
+v0.5.2 (xxx)
+- fixed some 1.9 incompatible syntax
+- expanded RegisterReceiver class to record extra info
+- tweaked a README example
+
 v0.5.1 (1st January 2008)
 - Several documentation tweaks
 - Improve support for parsing PDFs under windows (thanks to Jari Williamsson)

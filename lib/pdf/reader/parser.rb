@@ -47,19 +47,19 @@ class PDF::Reader
       token = @buffer.token
 
       case token
-      when "/"                        : return Name.new(@buffer.token)
-      when "<<"                       : return dictionary()
-      when "["                        : return array()
-      when "("                        : return string()
-      when "<"                        : return hex_string()
-      when "true"                     : return true
-      when "false"                    : return false
-      when "null"                     : return nil
-      when "obj", "endobj"            : return Token.new(token)
-      when "stream", "endstream"      : return Token.new(token)
-      when ">>", "]", ">"             : return Token.new(token)
+      when "/"                        then return Name.new(@buffer.token)
+      when "<<"                       then return dictionary()
+      when "["                        then return array()
+      when "("                        then return string()
+      when "<"                        then return hex_string()
+      when "true"                     then return true
+      when "false"                    then return false
+      when "null"                     then return nil
+      when "obj", "endobj"            then return Token.new(token)
+      when "stream", "endstream"      then return Token.new(token)
+      when ">>", "]", ">"             then return Token.new(token)
       else                          
-        if operators.has_key?(token)  : return Token.new(token)
+        if operators.has_key?(token)  then return Token.new(token)
         else                            return token.to_f
         end
       end
@@ -132,15 +132,15 @@ class PDF::Reader
         when "\\"
           to_remove = 2
           case @buffer.raw[1, 1]
-          when ""   : to_remove = 1
-          when "n"  : str << "\n"
-          when "r"  : str << "\r"
-          when "t"  : str << "\t"
-          when "b"  : str << "\b"
-          when "f"  : str << "\f"
-          when "("  : str << "("
-          when ")"  : str << ")"
-          when "\\" : str << "\\"
+          when ""   then to_remove = 1
+          when "n"  then str << "\n"
+          when "r"  then str << "\r"
+          when "t"  then str << "\t"
+          when "b"  then str << "\b"
+          when "f"  then str << "\f"
+          when "("  then str << "("
+          when ")"  then str << ")"
+          when "\\" then str << "\\"
           else
             if m = @buffer.raw.match(/^\\(\d{1,3})/)
               to_remove = m[0].size
@@ -168,8 +168,8 @@ class PDF::Reader
       post_obj = parse_token
 
       case post_obj
-      when "endobj"   : return obj
-      when "stream"   : return stream(obj)
+      when "endobj"   then return obj
+      when "stream"   then return stream(obj)
       else              raise MalformedPDFError, "PDF malformed, unexpected token #{post_obj}"
       end
     end

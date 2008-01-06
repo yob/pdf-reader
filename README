@@ -119,7 +119,7 @@ it through less or to a text file.
 
     def show_text_with_positioning(*params)
       params = params.first
-      params.each { |str| show_text(str) }
+      params.each { |str| show_text(str) if str.kind_of?(String)}
     end
   end
 
