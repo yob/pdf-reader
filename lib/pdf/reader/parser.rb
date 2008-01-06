@@ -186,10 +186,10 @@ class PDF::Reader
         options = []
 
         if dict.has_key?('DecodeParms')
-          options = dict['DecodeParms'].to_a
+          options = Array(dict['DecodeParms'])
         end
 
-        dict['Filter'].to_a.each_with_index do |filter, index|
+        Array(dict['Filter']).each_with_index do |filter, index|
           data = Filter.new(filter, options[index]).filter(data)
         end
       end
