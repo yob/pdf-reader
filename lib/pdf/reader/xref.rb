@@ -54,6 +54,7 @@ class PDF::Reader
     # by specifying a PDF::Reader::Reference object that contains the objects ID and revision
     # number
     def object (ref, save_pos = true)
+      return ref unless ref.kind_of?(Reference)
       pos = @buffer.pos if save_pos
       parser = Parser.new(@buffer.seek(offset_for(ref)), self).object(ref.id, ref.gen)
       @buffer.seek(pos) if save_pos

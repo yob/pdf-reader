@@ -73,9 +73,12 @@ end
 ################################################################################
 require 'pdf/reader/explore'
 require 'pdf/reader/buffer'
+require 'pdf/reader/cmap'
 require 'pdf/reader/content'
+require 'pdf/reader/encoding'
 require 'pdf/reader/error'
 require 'pdf/reader/filter'
+require 'pdf/reader/font'
 require 'pdf/reader/name'
 require 'pdf/reader/parser'
 require 'pdf/reader/reference'

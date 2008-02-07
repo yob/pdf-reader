@@ -194,6 +194,9 @@ class PDF::Reader
         end
       end
 
+      # this stream is a cmap
+      data = PDF::Reader::CMap.new(data) if data.include?("begincmap") && data.include?("endcmap")
+
       data
     end
     ################################################################################

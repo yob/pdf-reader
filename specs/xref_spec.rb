@@ -35,6 +35,12 @@ context "The PDF::Reader::XRef class when operating on the cairo-basic PDF" do
     @xref.object(ref,false)
     @buffer.pos.should_not eql(cursor)
   end
+
+  specify "should not attempt to translate a non reference into an object" do
+    ref = "James"
+    @xref.load
+    @xref.object(ref,false).should eql(ref)
+  end
 end
 
 context "The PDF::Reader::XRef class when operating on the cairo-unicode PDF" do
