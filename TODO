@@ -1,5 +1,5 @@
 Some ideas for future work
-- Allows the user to only process certain aspects of the PDF file. For example, if they're only
+- Allow the user to only process certain aspects of the PDF file. For example, if they're only
   interested in meta data, there's no point in walking the pages tree.
 
 - Ship some extra receivers in the standard package, particuarly ones that are useful for running
@@ -9,4 +9,6 @@ Some ideas for future work
 
 - Add support for additional filters: ASCIIHexDecode, ASCII85Decode, LZWDecode, RunLengthDecode, CCITTFaxDecode, JBIG2Decode, DCTDecode, JPXDecode, Crypt?
 
-- Text that is specified with a ToUnicode mapping isn't extracted properly. The untranslated values are passed to the callback.
+- Add support for additional encodings: MacExpertEncoding, PDFDocEncoding, Identity-V(?), Symbols, Dingbats
+
+- Add a way to extract raster images
