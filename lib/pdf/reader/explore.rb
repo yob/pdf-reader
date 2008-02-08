@@ -103,7 +103,7 @@ class PDF::Reader
           obj = obj[p.to_i]
         end
 
-        obj = @xref.object(obj) if obj.kind_of?(Reference)
+        obj = @xref.object(obj)
       end
 
       output_parent(obj)

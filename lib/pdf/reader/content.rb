@@ -55,6 +55,9 @@ class PDF::Reader
   #   puts params.inspect
   #
   # == Text Callbacks
+  #
+  # All text passed into these callbacks will be encoded as UTF-8.
+  #
   # - end_text_object
   # - move_to_start_of_next_line
   # - set_character_spacing
