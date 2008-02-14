@@ -65,6 +65,27 @@ context "The PDF::Reader::Encoding::MacRomanEncoding class" do
   end
 end
 
+context "The PDF::Reader::Encoding::Symbol class" do
+
+  specify "should correctly convert various symbol strings to utf-8" do
+    e = PDF::Reader::Encoding::SymbolEncoding.new
+    [
+      {:symbol => "\x41", :utf8 => [0x0391].pack("U*")}, # alpha
+      {:symbol => "\x42", :utf8 => [0x0392].pack("U*")}, # beta
+      {:symbol => "\x47", :utf8 => [0x0393].pack("U*")}, # gamma
+      {:symbol => "123",  :utf8 => "123"},
+      {:symbol => "\xA0", :utf8 => [0x20AC].pack("U*")}, # € sign
+    ].each do |vals| 
+      result = e.to_utf8(vals[:symbol])
+      result.should eql(vals[:utf8]) 
+      
+      if RUBY_VERSION >= "1.9"
+        result.encoding.to_s.should eql("UTF-8")
+      end
+    end
+  end
+end
+
 context "The PDF::Reader::Encoding::WinAnsiEncoding class" do
 
   specify "should correctly convert various win-1252 strings to utf-8" do

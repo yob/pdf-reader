@@ -25,7 +25,19 @@
 
 class PDF::Reader
   class Font
-    attr_accessor :label, :subtype, :basefont, :encoding, :descendantfonts, :tounicode
+    attr_accessor :label, :subtype, :encoding, :descendantfonts, :tounicode
+    attr_reader :basefont
+
+    def basefont=(font)
+      # setup a default encoding for the selected font. It can always be overridden
+      # with encoding= if required
+      case font
+      when "Symbol" then 
+        self.encoding = PDF::Reader::Encoding.factory("SymbolEncoding")
+      when "ZapfDingbats" then 
+        self.encoding = PDF::Reader::Encoding.factory("ZapfDingbatsEncoding")
+      end
+    end
 
     def to_utf8(params)
       raise UnsupportedFeatureError, "font encoding '#{encoding}' currently unsupported" if encoding.kind_of?(String)

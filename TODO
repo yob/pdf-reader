@@ -9,9 +9,12 @@ Some ideas for future work
 
 - Add support for additional filters: ASCIIHexDecode, ASCII85Decode, LZWDecode, RunLengthDecode, CCITTFaxDecode, JBIG2Decode, DCTDecode, JPXDecode, Crypt?
 
-- Add support for additional encodings: MacExpertEncoding, PDFDocEncoding, Identity-V(?), Symbols, Dingbats
-
-- Support Encoding specified as seperate objects
+- Add support for additional encodings: 
+  - MacExpertEncoding
+  - PDFDocEncoding
+  - Identity-V(?)
+  - StandardEncoding --> http://unicode.org/Public/MAPPINGS/VENDORS/ADOBE/stdenc.txt
+  - ZaphDingbats  --> http://unicode.org/Public/MAPPINGS/VENDORS/ADOBE/zdingbat.txt
 
 - Support difference tables for encodings
 

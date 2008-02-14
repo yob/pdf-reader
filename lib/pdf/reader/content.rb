@@ -298,7 +298,7 @@ class PDF::Reader
           @fonts[label].label = label
           @fonts[label].subtype = desc['Subtype'] if desc['Subtype']
           @fonts[label].basefont = desc['BaseFont'] if desc['BaseFont']
-          @fonts[label].encoding = PDF::Reader::Encoding.factory(desc['Encoding'])
+          @fonts[label].encoding = PDF::Reader::Encoding.factory(@xref.object(desc['Encoding']))
           @fonts[label].descendantfonts = desc['DescendantFonts'] if desc['DescendantFonts']
           if desc['ToUnicode']
             @fonts[label].tounicode = desc['ToUnicode'] 
