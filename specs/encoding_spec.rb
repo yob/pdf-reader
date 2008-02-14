@@ -77,11 +77,14 @@ context "The PDF::Reader::Encoding::Symbol class" do
       {:symbol => "\xA0", :utf8 => [0x20AC].pack("U*")}, # € sign
     ].each do |vals| 
       result = e.to_utf8(vals[:symbol])
-      result.should eql(vals[:utf8]) 
-      
+
       if RUBY_VERSION >= "1.9"
         result.encoding.to_s.should eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
       end
+
+      result.should eql(vals[:utf8]) 
+      
     end
   end
 end
