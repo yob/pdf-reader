@@ -34,6 +34,7 @@ class PDF::Reader
         when "MacRomanEncoding" then PDF::Reader::Encoding::MacRomanEncoding.new
         when "SymbolEncoding" then PDF::Reader::Encoding::SymbolEncoding.new
         when "WinAnsiEncoding" then PDF::Reader::Encoding::WinAnsiEncoding.new
+        when "ZapfDingbatsEncoding" then PDF::Reader::Encoding::ZapfDingbatsEncoding.new
         else raise UnsupportedFeatureError, "#{enc} is not currently a supported encoding"
       end
     end
@@ -434,6 +435,35 @@ class PDF::Reader
           when 0x9C; array_enc << 0x0152 # 0xc5 0x93
           when 0x9E; array_enc << 0x017E # 0xc5 0xbe
           when 0x9F; array_enc << 0x0178
+          else
+            array_enc << num
+          end
+        end
+
+        # pack all our Unicode codepoints into a UTF-8 string
+        ret = array_enc.pack("U*")
+
+        # set the strings encoding correctly under ruby 1.9+
+        ret.force_encoding("UTF-8") if ret.respond_to?(:force_encoding)
+
+        return ret
+      end
+    end
+
+    class ZapfDingbatsEncoding < Encoding
+      # convert a ZapfDingbatsEncoding string into UTF-8
+      def to_utf8(str, tounicode = nil)
+        # mapping to unicode taken from:
+        #   http://unicode.org/Public/MAPPINGS/VENDORS/ADOBE/zdingbat.txt
+        array_symbol = str.unpack('C*')
+        array_enc = []
+        array_symbol.each do |num|
+          case num
+          when 0x21; array_enc << 0x2701
+          when 0x22; array_enc << 0x2702
+          when 0x23; array_enc << 0x2703
+          when 0x24; array_enc << 0x2704
+          when 0x25; array_enc << 0x260E
           else
             array_enc << num
           end

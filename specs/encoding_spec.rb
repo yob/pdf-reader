@@ -65,7 +65,7 @@ context "The PDF::Reader::Encoding::MacRomanEncoding class" do
   end
 end
 
-context "The PDF::Reader::Encoding::Symbol class" do
+context "The PDF::Reader::Encoding::SymbolEncoding class" do
 
   specify "should correctly convert various symbol strings to utf-8" do
     e = PDF::Reader::Encoding::SymbolEncoding.new
@@ -109,6 +109,30 @@ context "The PDF::Reader::Encoding::WinAnsiEncoding class" do
       if RUBY_VERSION >= "1.9"
         result.encoding.to_s.should eql("UTF-8")
       end
+    end
+  end
+end
+
+context "The PDF::Reader::Encoding::ZapfDingbatsEncoding class" do
+
+  specify "should correctly convert various dingbats strings to utf-8" do
+    e = PDF::Reader::Encoding::ZapfDingbatsEncoding.new
+    [
+      {:dingbats => "\x22", :utf8 => [0x2702].pack("U*")}, # scissors
+      {:dingbats => "\x25", :utf8 => [0x260E].pack("U*")}, # telephone
+      {:dingbats => "\xAB", :utf8 => [0x2660].pack("U*")}, # spades
+      {:dingbats => "123",  :utf8 => "123"},
+      {:dingbats => "\xDE", :utf8 => [0x279E].pack("U*")}, # ->
+    ].each do |vals| 
+      result = e.to_utf8(vals[:dingbats])
+
+      if RUBY_VERSION >= "1.9"
+        result.encoding.to_s.should eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
+      end
+
+      result.should eql(vals[:utf8]) 
+      
     end
   end
 end
