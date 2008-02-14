@@ -11,4 +11,8 @@ Some ideas for future work
 
 - Add support for additional encodings: MacExpertEncoding, PDFDocEncoding, Identity-V(?), Symbols, Dingbats
 
+- Support Encoding specified as seperate objects
+
+- Support difference tables for encodings
+
 - Add a way to extract raster images
