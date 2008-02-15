@@ -522,6 +522,51 @@ class PDF::Reader
           when 0x5D; array_enc << 0x273D
           when 0x5E; array_enc << 0x273E
           when 0x5F; array_enc << 0x273F
+          when 0x60; array_enc << 0x2740
+          when 0x61; array_enc << 0x2741
+          when 0x62; array_enc << 0x2742
+          when 0x63; array_enc << 0x2743
+          when 0x64; array_enc << 0x2744
+          when 0x65; array_enc << 0x2745
+          when 0x66; array_enc << 0x2746
+          when 0x67; array_enc << 0x2747
+          when 0x68; array_enc << 0x2748
+          when 0x69; array_enc << 0x2749
+          when 0x6A; array_enc << 0x274A
+          when 0x6B; array_enc << 0x274B
+          when 0x6C; array_enc << 0x25CF
+          when 0x6D; array_enc << 0x274D
+          when 0x6E; array_enc << 0x25A0
+          when 0x6F; array_enc << 0x274F
+          when 0x70; array_enc << 0x2750
+          when 0x71; array_enc << 0x2751
+          when 0x72; array_enc << 0x2752
+          when 0x73; array_enc << 0x2753
+          when 0x74; array_enc << 0x2754
+          when 0x75; array_enc << 0x2755
+          when 0x76; array_enc << 0x2756
+          when 0x77; array_enc << 0x2757
+          when 0x78; array_enc << 0x2758
+          when 0x79; array_enc << 0x2759
+          when 0x7A; array_enc << 0x275A
+          when 0x7B; array_enc << 0x275B
+          when 0x7C; array_enc << 0x275C
+          when 0x7D; array_enc << 0x275D
+          when 0x7E; array_enc << 0x275E
+          when 0x80; array_enc << 0xF8D7
+          when 0x81; array_enc << 0xF8D8
+          when 0x82; array_enc << 0xF8D9
+          when 0x83; array_enc << 0xF8DA
+          when 0x84; array_enc << 0xF8DB
+          when 0x85; array_enc << 0xF8DC
+          when 0x86; array_enc << 0xF8DD
+          when 0x87; array_enc << 0xF8DE
+          when 0x88; array_enc << 0xF8DF
+          when 0x89; array_enc << 0xF8E0
+          when 0x8A; array_enc << 0xF8E1
+          when 0x8B; array_enc << 0xF8E2
+          when 0x8C; array_enc << 0xF8E3
+          when 0x8D; array_enc << 0xF8E4
           else
             array_enc << num
           end
