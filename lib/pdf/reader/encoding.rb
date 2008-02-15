@@ -464,6 +464,64 @@ class PDF::Reader
           when 0x23; array_enc << 0x2703
           when 0x24; array_enc << 0x2704
           when 0x25; array_enc << 0x260E
+          when 0x26; array_enc << 0x2706
+          when 0x27; array_enc << 0x2707
+          when 0x28; array_enc << 0x2708
+          when 0x29; array_enc << 0x2709
+          when 0x2A; array_enc << 0x261B
+          when 0x2B; array_enc << 0x261E
+          when 0x2C; array_enc << 0x270C
+          when 0x2D; array_enc << 0x270D
+          when 0x2E; array_enc << 0x270E
+          when 0x2F; array_enc << 0x270F
+          when 0x30; array_enc << 0x2710
+          when 0x31; array_enc << 0x2711
+          when 0x32; array_enc << 0x2712
+          when 0x33; array_enc << 0x2713
+          when 0x34; array_enc << 0x2714
+          when 0x35; array_enc << 0x2715
+          when 0x36; array_enc << 0x2716
+          when 0x37; array_enc << 0x2717
+          when 0x38; array_enc << 0x2718
+          when 0x39; array_enc << 0x2719
+          when 0x3A; array_enc << 0x271A
+          when 0x3B; array_enc << 0x271B
+          when 0x3C; array_enc << 0x271C
+          when 0x3D; array_enc << 0x271D
+          when 0x3E; array_enc << 0x271E
+          when 0x3F; array_enc << 0x271E
+          when 0x40; array_enc << 0x2720
+          when 0x41; array_enc << 0x2721
+          when 0x42; array_enc << 0x2722
+          when 0x43; array_enc << 0x2723
+          when 0x44; array_enc << 0x2724
+          when 0x45; array_enc << 0x2725
+          when 0x46; array_enc << 0x2726
+          when 0x47; array_enc << 0x2727
+          when 0x48; array_enc << 0x2605
+          when 0x49; array_enc << 0x2729
+          when 0x4A; array_enc << 0x272A
+          when 0x4B; array_enc << 0x272B
+          when 0x4C; array_enc << 0x272C
+          when 0x4D; array_enc << 0x272D
+          when 0x4E; array_enc << 0x272E
+          when 0x4F; array_enc << 0x272F
+          when 0x50; array_enc << 0x2730
+          when 0x51; array_enc << 0x2731
+          when 0x52; array_enc << 0x2732
+          when 0x53; array_enc << 0x2733
+          when 0x54; array_enc << 0x2734
+          when 0x55; array_enc << 0x2735
+          when 0x56; array_enc << 0x2736
+          when 0x57; array_enc << 0x2737
+          when 0x58; array_enc << 0x2738
+          when 0x59; array_enc << 0x2739
+          when 0x5A; array_enc << 0x273A
+          when 0x5B; array_enc << 0x273B
+          when 0x5C; array_enc << 0x273C
+          when 0x5D; array_enc << 0x273D
+          when 0x5E; array_enc << 0x273E
+          when 0x5F; array_enc << 0x273F
           else
             array_enc << num
           end
