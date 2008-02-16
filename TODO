@@ -13,7 +13,6 @@ Some ideas for future work
   - MacExpertEncoding
   - PDFDocEncoding
   - Identity-V(?)
-  - StandardEncoding --> http://unicode.org/Public/MAPPINGS/VENDORS/ADOBE/stdenc.txt
 
 - Support difference tables for encodings
 

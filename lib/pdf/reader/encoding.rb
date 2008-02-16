@@ -32,6 +32,7 @@ class PDF::Reader
         when nil then nil
         when "Identity-H" then PDF::Reader::Encoding::IdentityH.new
         when "MacRomanEncoding" then PDF::Reader::Encoding::MacRomanEncoding.new
+        when "StandardEncoding" then PDF::Reader::Encoding::StandardEncoding.new
         when "SymbolEncoding" then PDF::Reader::Encoding::SymbolEncoding.new
         when "WinAnsiEncoding" then PDF::Reader::Encoding::WinAnsiEncoding.new
         when "ZapfDingbatsEncoding" then PDF::Reader::Encoding::ZapfDingbatsEncoding.new
@@ -206,6 +207,77 @@ class PDF::Reader
           when 0xFD; array_enc << 0x02DD
           when 0xFE; array_enc << 0x02DB
           when 0xFF; array_enc << 0x02C7
+          else
+            array_enc << num
+          end
+        end
+
+        # pack all our Unicode codepoints into a UTF-8 string
+        ret = array_enc.pack("U*")
+
+        # set the strings encoding correctly under ruby 1.9+
+        ret.force_encoding("UTF-8") if ret.respond_to?(:force_encoding)
+
+        return ret
+      end
+    end
+
+    class StandardEncoding < Encoding
+      # convert an Adobe Standard Encoding string into UTF-8
+      def to_utf8(str, tounicode = nil)
+        # based on mapping described at:
+        #   http://unicode.org/Public/MAPPINGS/VENDORS/ADOBE/stdenc.txt
+        array_std = str.unpack('C*')
+        array_enc = []
+        array_std.each do |num|
+          case num
+          when 0x27; array_enc << 0x2019
+          when 0x60; array_enc << 0x2018
+          when 0xA4; array_enc << 0x2044
+          when 0xA6; array_enc << 0x0192
+          when 0xA8; array_enc << 0x00A4
+          when 0xA9; array_enc << 0x0027
+          when 0xAA; array_enc << 0x201C
+          when 0xAC; array_enc << 0x2039
+          when 0xAD; array_enc << 0x203A
+          when 0xAE; array_enc << 0xFB01
+          when 0xAF; array_enc << 0xFB02
+          when 0xB1; array_enc << 0x2013
+          when 0xB2; array_enc << 0x2020
+          when 0xB3; array_enc << 0x2021
+          when 0xB4; array_enc << 0x00B7
+          when 0xB7; array_enc << 0x2022
+          when 0xB8; array_enc << 0x201A
+          when 0xB9; array_enc << 0x201E
+          when 0xBA; array_enc << 0x201D
+          when 0xBC; array_enc << 0x2026
+          when 0xBD; array_enc << 0x2030
+          when 0xC1; array_enc << 0x0060
+          when 0xC2; array_enc << 0x00B4
+          when 0xC3; array_enc << 0x02C6
+          when 0xC4; array_enc << 0x02DC
+          when 0xC5; array_enc << 0x00AF
+          when 0xC6; array_enc << 0x02D8
+          when 0xC7; array_enc << 0x02D9
+          when 0xC8; array_enc << 0x00A8
+          when 0xCA; array_enc << 0x02DA
+          when 0xCB; array_enc << 0x00B8
+          when 0xCD; array_enc << 0x02DD
+          when 0xCE; array_enc << 0x02DB
+          when 0xCF; array_enc << 0x02C7
+          when 0xD0; array_enc << 0x2014
+          when 0xE1; array_enc << 0x00C6
+          when 0xE3; array_enc << 0x00AA
+          when 0xE8; array_enc << 0x0141
+          when 0xE9; array_enc << 0x00D8
+          when 0xEA; array_enc << 0x0152
+          when 0xEB; array_enc << 0x00BA
+          when 0xF1; array_enc << 0x00E6
+          when 0xF5; array_enc << 0x0131
+          when 0xF8; array_enc << 0x0142
+          when 0xF9; array_enc << 0x00F8
+          when 0xFA; array_enc << 0x0153
+          when 0xFB; array_enc << 0x00DF
           else
             array_enc << num
           end

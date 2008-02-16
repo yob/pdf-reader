@@ -42,16 +42,15 @@ class PDF::Reader
     def to_utf8(params)
       raise UnsupportedFeatureError, "font encoding '#{encoding}' currently unsupported" if encoding.kind_of?(String)
 
-      return params if encoding.nil?
-
-      params.collect do |param|
-        if param.class == Array
-          self.to_utf8(param)
-        elsif param.class == String
-          encoding.to_utf8(param, tounicode)
-        else
-          param
-        end
+      if params.class == String
+        # translate the bytestram into a UTF-8 string.
+        # If an encoding hasn't been specified, assume the text using this 
+        # font is in Adobe Standard Encoding.
+        (encoding || PDF::Reader::Encoding::StandardEncoding.new).to_utf8(params, tounicode)
+      elsif params.class == Array
+        params.collect { |param| self.to_utf8(param) }
+      else
+        params
       end
     end
   end
