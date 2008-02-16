@@ -121,7 +121,6 @@ context "The PDF::Reader::Encoding::ZapfDingbatsEncoding class" do
       {:dingbats => "\x22", :utf8 => [0x2702].pack("U*")}, # scissors
       {:dingbats => "\x25", :utf8 => [0x260E].pack("U*")}, # telephone
       {:dingbats => "\xAB", :utf8 => [0x2660].pack("U*")}, # spades
-      {:dingbats => "123",  :utf8 => "123"},
       {:dingbats => "\xDE", :utf8 => [0x279E].pack("U*")}, # ->
     ].each do |vals| 
       result = e.to_utf8(vals[:dingbats])
