@@ -32,6 +32,7 @@ class PDF::Reader
         when nil then nil
         when "Identity-H" then PDF::Reader::Encoding::IdentityH.new
         when "MacRomanEncoding" then PDF::Reader::Encoding::MacRomanEncoding.new
+        when "MacExpertEncoding" then PDF::Reader::Encoding::MacExpertEncoding.new
         when "StandardEncoding" then PDF::Reader::Encoding::StandardEncoding.new
         when "SymbolEncoding" then PDF::Reader::Encoding::SymbolEncoding.new
         when "WinAnsiEncoding" then PDF::Reader::Encoding::WinAnsiEncoding.new
@@ -56,6 +57,35 @@ class PDF::Reader
         str.unpack("n*").each do |c|
           # convert the int to a unicode codepoint
           array_enc << map.decode(c)
+        end
+
+        # pack all our Unicode codepoints into a UTF-8 string
+        ret = array_enc.pack("U*")
+
+        # set the strings encoding correctly under ruby 1.9+
+        ret.force_encoding("UTF-8") if ret.respond_to?(:force_encoding)
+
+        return ret
+      end
+    end
+
+    class MacExpertEncoding < Encoding
+      # convert a MacExpertEncoding string into UTF-8
+      def to_utf8(str, tounicode = nil)
+        array_expert = str.unpack('C*')
+        array_enc = []
+        array_expert.each do |num|
+          case num
+            # change necesary characters to equivilant Unicode codepoints
+          when 0x22; array_enc << 0xF6F8 # Hungarumlautsmall
+          when 0x27; array_enc << 0xF7B4 # Acutesmall
+          when 0x87; array_enc << 0xF7E1 # Acircumflexsmall
+          when 0x89; array_enc << 0xF7E2 # Acutesmall
+          when 0x8A; array_enc << 0xF7E4 # Adieresissmall
+          when 0xBE; array_enc << 0xF7E6 # AEsmall
+          else
+            array_enc << num
+          end
         end
 
         # pack all our Unicode codepoints into a UTF-8 string

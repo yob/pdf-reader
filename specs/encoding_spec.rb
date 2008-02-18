@@ -8,7 +8,12 @@ context "The PDF::Reader::Encoding class" do
 
   specify "should return a new encoding object on request, or raise an error if unrecognised" do
     PDF::Reader::Encoding.factory("Identity-H").should be_a_kind_of(PDF::Reader::Encoding::IdentityH)
+    PDF::Reader::Encoding.factory("MacRomanEncoding").should be_a_kind_of(PDF::Reader::Encoding::MacRomanEncoding)
+    PDF::Reader::Encoding.factory("MacExpertEncoding").should be_a_kind_of(PDF::Reader::Encoding::MacExpertEncoding)
+    PDF::Reader::Encoding.factory("StandardEncoding").should be_a_kind_of(PDF::Reader::Encoding::StandardEncoding)
+    PDF::Reader::Encoding.factory("SymbolEncoding").should be_a_kind_of(PDF::Reader::Encoding::SymbolEncoding)
     PDF::Reader::Encoding.factory("WinAnsiEncoding").should be_a_kind_of(PDF::Reader::Encoding::WinAnsiEncoding)
+    PDF::Reader::Encoding.factory("ZapfDingbatsEncoding").should be_a_kind_of(PDF::Reader::Encoding::ZapfDingbatsEncoding)
     lambda { PDF::Reader::Encoding.factory("FakeEncoding")}.should raise_error(PDF::Reader::UnsupportedFeatureError)
     PDF::Reader::Encoding.factory(nil).should be_nil
   end
@@ -39,6 +44,28 @@ context "The PDF::Reader::Encoding::IdentityH class" do
     end
   end
 
+end
+
+context "The PDF::Reader::Encoding::MacExpertEncoding class" do
+
+  specify "should correctly convert various expert strings to utf-8" do
+    e = PDF::Reader::Encoding::MacExpertEncoding.new
+    [
+      {:expert => "\x22", :utf8 => [0xF6F8].pack("U*")},
+      {:expert => "\x62", :utf8 => [0xF762].pack("U*")},
+      {:expert => "\xBE", :utf8 => [0xF7E6].pack("U*")},
+      {:expert => "\xF7", :utf8 => [0xF6EF].pack("U*")}
+    ].each do |vals| 
+      result = e.to_utf8(vals[:expert])
+
+      if RUBY_VERSION >= "1.9"
+        result.encoding.to_s.should eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
+      end
+
+      result.should eql(vals[:utf8]) 
+    end
+  end
 end
 
 context "The PDF::Reader::Encoding::MacRomanEncoding class" do
