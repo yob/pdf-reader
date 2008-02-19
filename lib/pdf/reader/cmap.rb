@@ -32,8 +32,8 @@ class PDF::Reader
       data.each_line do |l|
         inmap = true if l.include?("beginbfchar")
         if inmap
-          m, find, replace = *l.match(/<([0-9a-f]+)> <([0-9a-f]+)>/)
-          @map[hex_str_to_int(find)] = hex_str_to_int(replace) if find && replace
+          m, find, replace = *l.match(/<([0-9a-fA-F]+)> <([0-9a-fA-F]+)>/)
+          @map["0x#{find}".hex] = "0x#{replace}".hex if find && replace
         end
       end
     end
@@ -44,27 +44,5 @@ class PDF::Reader
       @map[c]
     end
 
-    private
-
-    def hex_str_to_int(str)
-      str.downcase!
-      num = 0
-      counter = 1
-      str.reverse.each_byte do |c|
-        if c <= 57 
-          c = c - 48
-        elsif c <= 102
-          c = c - 87
-        end
-
-        num += (c * counter)
-        if counter == 1
-          counter = 16
-        else
-          counter *= 16
-        end
-      end
-      num
-    end
   end
 end
