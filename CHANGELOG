@@ -1,4 +1,7 @@
-v0.5.2 (xxx)
+v0.6.0 (xxx)
+- all text is now transparently converted to UTF-8 before being passed to the callbacks.
+  before this version, text was just passed as a byte level copy of what was in the PDF file, which
+  was mildly annoying with some encodings, and resulted in garbled text for Unicode encoded text.
 - fixed some 1.9 incompatible syntax
 - expanded RegisterReceiver class to record extra info
 - tweaked a README example

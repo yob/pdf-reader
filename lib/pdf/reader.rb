@@ -43,7 +43,7 @@ module PDF
   # 
   # This is useful for processing a PDF that is already in memory
   #
-  #   PDF::Reader.string("somefile.pdf", receiver)
+  #   PDF::Reader.string(pdf_string, receiver)
   #
   # = Parsing an IO object
   # 

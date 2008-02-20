@@ -1,6 +1,8 @@
 Some ideas for future work
 - Allow the user to only process certain aspects of the PDF file. For example, if they're only
   interested in meta data, there's no point in walking the pages tree.
+  - maybe a third option to Reader.parse?
+    parse(io, receiver, {:pages => true, :fonts => false, :metadata => true, :bookmarks => false})
 
 - Ship some extra receivers in the standard package, particuarly ones that are useful for running
   rspec over generated PDF files
@@ -14,6 +16,8 @@ Some ideas for future work
   - Identity-V(?)
 
 - Support difference tables for encodings
+
+- Support for CJK text (convert to UTF-8 like all other encodings)
 
 - Tweak encoding mappings to differentiate between bytes that are invalid for an encoding, and bytes that are unchanged
 
