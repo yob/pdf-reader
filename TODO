@@ -10,10 +10,11 @@ Some ideas for future work
 - Add support for additional filters: ASCIIHexDecode, ASCII85Decode, LZWDecode, RunLengthDecode, CCITTFaxDecode, JBIG2Decode, DCTDecode, JPXDecode, Crypt?
 
 - Add support for additional encodings: 
-  - MacExpertEncoding
   - PDFDocEncoding
   - Identity-V(?)
 
 - Support difference tables for encodings
+
+- Tweak encoding mappings to differentiate between bytes that are invalid for an encoding, and bytes that are unchanged
 
 - Add a way to extract raster images
