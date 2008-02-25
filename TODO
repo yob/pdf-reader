@@ -1,9 +1,24 @@
-Some ideas for future work
+v0.6
+- Support difference tables for encodings. Possible approach: when iterating over each byte in a single byte
+  encoded string, add a glyph name to the unpacked array if there is a difference table entry. Then, before packing
+  the array into a UTF-8 string, replace any glyph names with a Unicode codepoint.
+
+v0.7
 - Allow the user to only process certain aspects of the PDF file. For example, if they're only
-  interested in meta data, there's no point in walking the pages tree.
+  interested in meta data or bookmarks, there's no point in walking the pages tree.
   - maybe a third option to Reader.parse?
     parse(io, receiver, {:pages => true, :fonts => false, :metadata => true, :bookmarks => false})
 
+- Tweak encoding mappings to differentiate between bytes that are invalid for an encoding, and bytes that are unchanged.
+  poppler seems to do this in a quite reasonable way. Original Encoding -> Glyph Names -> Unicode. As of 0.6 we go straight
+  from the Original encoding to Unicode.
+
+v0.9
+- Support for CJK text (convert to UTF-8 like all other encodings)
+- Add a way to extract raster images
+
+
+Sometime
 - Ship some extra receivers in the standard package, particuarly ones that are useful for running
   rspec over generated PDF files
 
@@ -13,12 +28,6 @@ Some ideas for future work
 
 - Add support for additional encodings: 
   - PDFDocEncoding
-  - Identity-V(?)
+  - Identity-V(I *think* this relates to vertical text. Not sure how we'd support it sensibly)
 
-- Support difference tables for encodings
-
-- Support for CJK text (convert to UTF-8 like all other encodings)
-
-- Tweak encoding mappings to differentiate between bytes that are invalid for an encoding, and bytes that are unchanged
-
-- Add a way to extract raster images
+- Investigate how R->L text is handled
