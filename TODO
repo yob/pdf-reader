@@ -1,8 +1,3 @@
-v0.6
-- Support difference tables for encodings. Possible approach: when iterating over each byte in a single byte
-  encoded string, add a glyph name to the unpacked array if there is a difference table entry. Then, before packing
-  the array into a UTF-8 string, replace any glyph names with a Unicode codepoint.
-
 v0.7
 - Allow the user to only process certain aspects of the PDF file. For example, if they're only
   interested in meta data or bookmarks, there's no point in walking the pages tree.
