@@ -37,7 +37,7 @@ class PDF::Reader
       if @@glyphs.empty?
         File.open(File.dirname(__FILE__) + "/glyphlist.txt","r") do |f|
           f.each do |l|
-            m, name, code = *l.match(/([A-Za-z]+);([0-9A-F]{4})/)
+            m, name, code = *l.match(/([0-9A-Za-z]+);([0-9A-F]{4})/)
             @@glyphs[name] = "0x#{code}".hex if name
           end
         end

@@ -20,6 +20,8 @@ context "PDF::Reader::Font" do
   specify "should correctly create a mapping of glyph names to unicode code points" do
     map = PDF::Reader::Font.glyphnames
     map.should be_a_kind_of(Hash)
+    map["a"].should eql(0x0061)
+    map["e"].should eql(0x0065)
     map["A"].should eql(0x0041)
     map["holam"].should eql(0x05B9)
     map["zukatakana"].should eql(0x30BA)
