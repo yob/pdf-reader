@@ -4,6 +4,11 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
 
 require 'pdf/reader'
 
+class PDF::Reader::Encoding
+  public :process_differences
+  public :process_glyphnames
+end
+
 context "The PDF::Reader::Encoding class" do
 
   specify "should return a new encoding object on request, or raise an error if unrecognised" do
@@ -15,7 +20,56 @@ context "The PDF::Reader::Encoding class" do
     PDF::Reader::Encoding.factory("WinAnsiEncoding").should be_a_kind_of(PDF::Reader::Encoding::WinAnsiEncoding)
     PDF::Reader::Encoding.factory("ZapfDingbatsEncoding").should be_a_kind_of(PDF::Reader::Encoding::ZapfDingbatsEncoding)
     lambda { PDF::Reader::Encoding.factory("FakeEncoding")}.should raise_error(PDF::Reader::UnsupportedFeatureError)
-    PDF::Reader::Encoding.factory(nil).should be_nil
+    PDF::Reader::Encoding.factory(nil).should be_a_kind_of(PDF::Reader::Encoding::StandardEncoding)
+  end
+
+  specify "should return a new encoding object on request, or raise an error if unrecognised" do
+    win =  {"Encoding" => "WinAnsiEncoding"}
+    fake = {"Encoding" => "FakeEncoding"}
+    PDF::Reader::Encoding.factory(win).should be_a_kind_of(PDF::Reader::Encoding::WinAnsiEncoding)
+    lambda { PDF::Reader::Encoding.factory(fake)}.should raise_error(PDF::Reader::UnsupportedFeatureError)
+  end
+
+  specify "should return a new encoding object with a differences table on request" do
+    win =  {
+             "Encoding"    => "WinAnsiEncoding",
+             "Differences" => [25, "A", 26, "B"]
+           }
+    enc = PDF::Reader::Encoding.factory(win)
+    enc.should be_a_kind_of(PDF::Reader::Encoding::WinAnsiEncoding)
+    enc.differences.should be_a_kind_of(Hash)
+    enc.differences[25].should eql("A")
+    enc.differences[26].should eql("B")
+  end
+
+  specify "should return a new encoding object with a differences table on request" do
+    win =  {
+             "Encoding"    => "WinAnsiEncoding",
+             "Differences" => [25, "A", "B"]
+           }
+    enc = PDF::Reader::Encoding.factory(win)
+    enc.should be_a_kind_of(PDF::Reader::Encoding::WinAnsiEncoding)
+    enc.differences.should be_a_kind_of(Hash)
+    enc.differences[25].should eql("A")
+    enc.differences[26].should eql("B")
+  end
+
+  specify "should correctly replaces all bytes in an array with glyph names" do
+    win =  {
+             "Encoding"    => "WinAnsiEncoding",
+             "Differences" => [25, "A", "B"]
+           }
+    enc = PDF::Reader::Encoding.factory(win)
+    enc.process_differences([32, 25, 26, 32]).should eql([32, "A", "B", 32])
+  end
+
+  specify "should correctly replaces all glyph names in an array with unicode codepoints" do
+    win =  {
+             "Encoding"    => "WinAnsiEncoding",
+             "Differences" => [25, "A", "B"]
+           }
+    enc = PDF::Reader::Encoding.factory(win)
+    enc.process_glyphnames([32, "A", "B", 32]).should eql([32, 0x41, 0x42, 32])
   end
 
   specify "should raise an exception if to_utf8 is called" do
@@ -66,6 +120,25 @@ context "The PDF::Reader::Encoding::MacExpertEncoding class" do
       result.should eql(vals[:utf8]) 
     end
   end
+
+  specify "should correctly convert various mac expert strings when a differences table is specified" do
+    e = PDF::Reader::Encoding::MacExpertEncoding.new
+    e.differences = [0xEE, "A"]
+    [
+      {:mac => "\x22\xEE", :utf8 => [0xF6F8, 0x41].pack("U*")}
+    ].each do |vals| 
+      
+      result = e.to_utf8(vals[:mac])
+
+      if RUBY_VERSION >= "1.9"
+        result.encoding.to_s.should eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
+      end
+
+      result.should eql(vals[:utf8]) 
+      
+    end
+  end
 end
 
 context "The PDF::Reader::Encoding::MacRomanEncoding class" do
@@ -88,6 +161,25 @@ context "The PDF::Reader::Encoding::MacRomanEncoding class" do
       if RUBY_VERSION >= "1.9"
         result.encoding.to_s.should eql("UTF-8")
       end
+    end
+  end
+
+  specify "should correctly convert various mac roman strings when a differences table is specified" do
+    e = PDF::Reader::Encoding::MacRomanEncoding.new
+    e.differences = [0xEE, "A"]
+    [
+      {:mac => "\x24\xEE", :utf8 => [0x24, 0x41].pack("U*")}, # dollar sign, A
+    ].each do |vals| 
+      
+      result = e.to_utf8(vals[:mac])
+
+      if RUBY_VERSION >= "1.9"
+        result.encoding.to_s.should eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
+      end
+
+      result.should eql(vals[:utf8]) 
+      
     end
   end
 end
@@ -116,6 +208,25 @@ context "The PDF::Reader::Encoding::StandardEncoding class" do
       
     end
   end
+
+  specify "should correctly convert various standard strings when a differences table is specified" do
+    e = PDF::Reader::Encoding::StandardEncoding.new
+    e.differences = [0xEE, "A"]
+    [
+      {:std => "\x60\xEE", :utf8 => [0x2018, 0x41].pack("U*")}, # ", A
+    ].each do |vals| 
+      
+      result = e.to_utf8(vals[:std])
+
+      if RUBY_VERSION >= "1.9"
+        result.encoding.to_s.should eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
+      end
+
+      result.should eql(vals[:utf8]) 
+      
+    end
+  end
 end
 
 context "The PDF::Reader::Encoding::SymbolEncoding class" do
@@ -129,6 +240,25 @@ context "The PDF::Reader::Encoding::SymbolEncoding class" do
       {:symbol => "123",  :utf8 => "123"},
       {:symbol => "\xA0", :utf8 => [0x20AC].pack("U*")}, # € sign
     ].each do |vals| 
+      result = e.to_utf8(vals[:symbol])
+
+      if RUBY_VERSION >= "1.9"
+        result.encoding.to_s.should eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
+      end
+
+      result.should eql(vals[:utf8]) 
+      
+    end
+  end
+
+  specify "should correctly convert various symbol strings when a differences table is specified" do
+    e = PDF::Reader::Encoding::SymbolEncoding.new
+    e.differences = [0xEE, "A"]
+    [
+      {:symbol => "\x41\xEE", :utf8 => [0x0391, 0x41].pack("U*")}, # alpha, A
+    ].each do |vals| 
+      
       result = e.to_utf8(vals[:symbol])
 
       if RUBY_VERSION >= "1.9"
@@ -164,6 +294,24 @@ context "The PDF::Reader::Encoding::WinAnsiEncoding class" do
       end
     end
   end
+  
+  specify "should correctly convert various win-1252 strings when a differences table is specified" do
+    e = PDF::Reader::Encoding::WinAnsiEncoding.new
+    e.differences = [0xEE, "A"]
+    [
+      {:win => "abc", :utf8 => "abc"},
+      {:win => "ABC", :utf8 => "ABC"},
+      {:win => "123", :utf8 => "123"},
+      {:win => "ABC\xEE", :utf8 => "ABCA"}
+    ].each do |vals| 
+      result = e.to_utf8(vals[:win])
+      result.should eql(vals[:utf8]) 
+      
+      if RUBY_VERSION >= "1.9"
+        result.encoding.to_s.should eql("UTF-8")
+      end
+    end
+  end
 end
 
 context "The PDF::Reader::Encoding::ZapfDingbatsEncoding class" do
@@ -176,6 +324,25 @@ context "The PDF::Reader::Encoding::ZapfDingbatsEncoding class" do
       {:dingbats => "\xAB", :utf8 => [0x2660].pack("U*")}, # spades
       {:dingbats => "\xDE", :utf8 => [0x279E].pack("U*")}, # ->
     ].each do |vals| 
+      result = e.to_utf8(vals[:dingbats])
+
+      if RUBY_VERSION >= "1.9"
+        result.encoding.to_s.should eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
+      end
+
+      result.should eql(vals[:utf8]) 
+      
+    end
+  end
+
+  specify "should correctly convert various dingbats strings when a differences table is specified" do
+    e = PDF::Reader::Encoding::ZapfDingbatsEncoding.new
+    e.differences = [0xEE, "A"]
+    [
+      {:dingbats => "\x22\xEE", :utf8 => [0x2702, 0x41].pack("U*")}, # scissors
+    ].each do |vals| 
+      
       result = e.to_utf8(vals[:dingbats])
 
       if RUBY_VERSION >= "1.9"

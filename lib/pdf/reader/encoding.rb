@@ -23,28 +23,83 @@
 #
 ################################################################################
 
+require 'enumerator'
+
 class PDF::Reader
   class Encoding
 
+    attr_reader :differences
+
+    # set the differences table for this encoding. should be an array in the following format:
+    #
+    #   [25, "A", 26, "B"]
+    #
+    # The array alternates bewteen a decimal byte number and a glyph name to map to that byte
+    #
+    # To save space the following array is also valid and equivilant to the previous one
+    #
+    #   [25, "A", "B"]
+    def differences=(diff)
+      raise ArgumentError, "diff must be an array" unless diff.kind_of?(Array)
+
+      @differences = {}
+      byte = 0
+      diff.each do |val|
+        if val.kind_of?(Numeric)
+          byte = val.to_i
+        else
+          @differences[byte] = val
+          byte += 1
+        end
+      end
+      @differences
+    end
+
+    # Takes the "Encoding" value of a Font dictionary and builds a PDF::Reader::Encoding object
     def self.factory(enc)
-      enc = enc['Encoding'] if enc.kind_of?(Hash)
+      if enc.kind_of?(Hash)
+        diff = enc['Differences']
+        enc = enc['Encoding'] || enc['BaseEncoding'] 
+      elsif enc != nil
+        enc = enc.to_s
+      end
+
       case enc
-        when nil then nil
-        when "Identity-H" then PDF::Reader::Encoding::IdentityH.new
-        when "MacRomanEncoding" then PDF::Reader::Encoding::MacRomanEncoding.new
-        when "MacExpertEncoding" then PDF::Reader::Encoding::MacExpertEncoding.new
-        when "StandardEncoding" then PDF::Reader::Encoding::StandardEncoding.new
-        when "SymbolEncoding" then PDF::Reader::Encoding::SymbolEncoding.new
-        when "WinAnsiEncoding" then PDF::Reader::Encoding::WinAnsiEncoding.new
-        when "ZapfDingbatsEncoding" then PDF::Reader::Encoding::ZapfDingbatsEncoding.new
+        when nil                    then enc = PDF::Reader::Encoding::StandardEncoding.new
+        when "Identity-H"           then enc = PDF::Reader::Encoding::IdentityH.new
+        when "MacRomanEncoding"     then enc = PDF::Reader::Encoding::MacRomanEncoding.new
+        when "MacExpertEncoding"    then enc = PDF::Reader::Encoding::MacExpertEncoding.new
+        when "StandardEncoding"     then enc = PDF::Reader::Encoding::StandardEncoding.new
+        when "SymbolEncoding"       then enc = PDF::Reader::Encoding::SymbolEncoding.new
+        when "WinAnsiEncoding"      then enc = PDF::Reader::Encoding::WinAnsiEncoding.new
+        when "ZapfDingbatsEncoding" then enc = PDF::Reader::Encoding::ZapfDingbatsEncoding.new
         else raise UnsupportedFeatureError, "#{enc} is not currently a supported encoding"
       end
+
+      enc.differences = diff if enc && diff
+
+      return enc
     end
 
     def to_utf8(str, tounicode = nil)
       # abstract method, of sorts
       raise RuntimeError, "Called abstract method"
     end
+
+    # accepts an array of byte numbers, and replaces any that have entries in the differences table
+    # with a glyph name
+    def process_differences(arr)
+      @differences ||= {}
+      arr.collect! { |n| @differences[n].nil? ? n : @differences[n]}
+    end
+    protected :process_differences
+
+    # accepts an array of unicode code points and glyphnames, and converts any glyph names to codepoints
+    def process_glyphnames(arr)
+      @differences ||= {}
+      arr.collect! { |n| n.kind_of?(Numeric) ? n : PDF::Reader::Font.glyphnames[n]}
+    end
+    protected :process_glyphnames
 
     class IdentityH < Encoding
       def to_utf8(str, map = nil)
@@ -73,6 +128,7 @@ class PDF::Reader
       # convert a MacExpertEncoding string into UTF-8
       def to_utf8(str, tounicode = nil)
         array_expert = str.unpack('C*')
+        array_expert = self.process_differences(array_expert)
         array_enc = []
         array_expert.each do |num|
           case num
@@ -241,6 +297,9 @@ class PDF::Reader
           end
         end
 
+        # convert any glyph names to unicode codepoints
+        array_enc = self.process_glyphnames(array_enc)
+
         # pack all our Unicode codepoints into a UTF-8 string
         ret = array_enc.pack("U*")
 
@@ -257,9 +316,10 @@ class PDF::Reader
       # convert a MacRomanEncoding string into UTF-8
       def to_utf8(str, tounicode = nil)
         # content of this method borrowed from REXML::Encoding.decode_cp1252
-        array_latin9 = str.unpack('C*')
+        array_mac = str.unpack('C*')
+        array_mac = self.process_differences(array_mac)
         array_enc = []
-        array_latin9.each do |num|
+        array_mac.each do |num|
           case num
             # change necesary characters to equivilant Unicode codepoints
           when 0x80; array_enc << 0x00C4
@@ -395,6 +455,9 @@ class PDF::Reader
           end
         end
 
+        # convert any glyph names to unicode codepoints
+        array_enc = self.process_glyphnames(array_enc)
+
         # pack all our Unicode codepoints into a UTF-8 string
         ret = array_enc.pack("U*")
 
@@ -411,6 +474,7 @@ class PDF::Reader
         # based on mapping described at:
         #   http://unicode.org/Public/MAPPINGS/VENDORS/ADOBE/stdenc.txt
         array_std = str.unpack('C*')
+        array_std = self.process_differences(array_std)
         array_enc = []
         array_std.each do |num|
           case num
@@ -465,6 +529,9 @@ class PDF::Reader
             array_enc << num
           end
         end
+        
+        # convert any glyph names to unicode codepoints
+        array_enc = self.process_glyphnames(array_enc)
 
         # pack all our Unicode codepoints into a UTF-8 string
         ret = array_enc.pack("U*")
@@ -480,6 +547,7 @@ class PDF::Reader
       # convert a SymbolEncoding string into UTF-8
       def to_utf8(str, tounicode = nil)
         array_symbol = str.unpack('C*')
+        array_symbol = self.process_differences(array_symbol)
         array_enc = []
         array_symbol.each do |num|
           case num
@@ -642,6 +710,9 @@ class PDF::Reader
           end
         end
 
+        # convert any glyph names to unicode codepoints
+        array_enc = self.process_glyphnames(array_enc)
+
         # pack all our Unicode codepoints into a UTF-8 string
         ret = array_enc.pack("U*")
 
@@ -659,6 +730,7 @@ class PDF::Reader
         # for further reading:
         # http://www.intertwingly.net/stories/2004/04/14/i18n.html
         array_latin9 = str.unpack('C*')
+        array_latin9 = self.process_differences(array_latin9)
         array_enc = []
         array_latin9.each do |num|
           case num
@@ -695,6 +767,9 @@ class PDF::Reader
           end
         end
 
+        # convert any glyph names to unicode codepoints
+        array_enc = self.process_glyphnames(array_enc)
+
         # pack all our Unicode codepoints into a UTF-8 string
         ret = array_enc.pack("U*")
 
@@ -711,6 +786,7 @@ class PDF::Reader
         # mapping to unicode taken from:
         #   http://unicode.org/Public/MAPPINGS/VENDORS/ADOBE/zdingbat.txt
         array_symbol = str.unpack('C*')
+        array_symbol = self.process_differences(array_symbol)
         array_enc = []
         array_symbol.each do |num|
           case num
@@ -919,6 +995,9 @@ class PDF::Reader
             array_enc << num
           end
         end
+
+        # convert any glyph names to unicode codepoints
+        array_enc = self.process_glyphnames(array_enc)
 
         # pack all our Unicode codepoints into a UTF-8 string
         ret = array_enc.pack("U*")
