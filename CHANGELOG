@@ -5,6 +5,7 @@ v0.6.0 (xxx)
 - Fonts that use a difference table are now handled correctly
 - fixed some 1.9 incompatible syntax
 - expanded RegisterReceiver class to record extra info
+- expanded rspec coverage
 - tweaked a README example
 
 v0.5.1 (1st January 2008)
