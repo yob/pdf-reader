@@ -28,6 +28,8 @@ require 'enumerator'
 class PDF::Reader
   class Encoding
 
+    UNKNOWN_CHAR = 0x25AF
+
     attr_reader :differences
 
     # set the differences table for this encoding. should be an array in the following format:
@@ -116,9 +118,12 @@ class PDF::Reader
           if map
             array_enc << map.decode(c)
           else
-            array_enc << 0x25AF
+            array_enc << PDF::Reader::Encoding::UNKNOWN_CHAR
           end
         end
+        
+        # replace charcters that didn't convert to unicode nicely with something valid
+        array_enc.collect! { |c| c ? c : PDF::Reader::Encoding::UNKNOWN_CHAR }
         
         # pack all our Unicode codepoints into a UTF-8 string
         ret = array_enc.pack("U*")
@@ -306,6 +311,9 @@ class PDF::Reader
         # convert any glyph names to unicode codepoints
         array_enc = self.process_glyphnames(array_enc)
 
+        # replace charcters that didn't convert to unicode nicely with something valid
+        array_enc.collect! { |c| c ? c : PDF::Reader::Encoding::UNKNOWN_CHAR }
+        
         # pack all our Unicode codepoints into a UTF-8 string
         ret = array_enc.pack("U*")
 
@@ -464,6 +472,9 @@ class PDF::Reader
         # convert any glyph names to unicode codepoints
         array_enc = self.process_glyphnames(array_enc)
 
+        # replace charcters that didn't convert to unicode nicely with something valid
+        array_enc.collect! { |c| c ? c : PDF::Reader::Encoding::UNKNOWN_CHAR }
+        
         # pack all our Unicode codepoints into a UTF-8 string
         ret = array_enc.pack("U*")
 
@@ -538,6 +549,9 @@ class PDF::Reader
         
         # convert any glyph names to unicode codepoints
         array_enc = self.process_glyphnames(array_enc)
+        
+        # replace charcters that didn't convert to unicode nicely with something valid
+        array_enc.collect! { |c| c ? c : PDF::Reader::Encoding::UNKNOWN_CHAR }
 
         # pack all our Unicode codepoints into a UTF-8 string
         ret = array_enc.pack("U*")
@@ -716,6 +730,9 @@ class PDF::Reader
           end
         end
 
+        # replace charcters that didn't convert to unicode nicely with something valid
+        array_enc.collect! { |c| c ? c : PDF::Reader::Encoding::UNKNOWN_CHAR }
+
         # convert any glyph names to unicode codepoints
         array_enc = self.process_glyphnames(array_enc)
 
@@ -775,6 +792,9 @@ class PDF::Reader
 
         # convert any glyph names to unicode codepoints
         array_enc = self.process_glyphnames(array_enc)
+
+        # replace charcters that didn't convert to unicode nicely with something valid
+        array_enc.collect! { |c| c ? c : PDF::Reader::Encoding::UNKNOWN_CHAR }
 
         # pack all our Unicode codepoints into a UTF-8 string
         ret = array_enc.pack("U*")
@@ -1004,6 +1024,9 @@ class PDF::Reader
 
         # convert any glyph names to unicode codepoints
         array_enc = self.process_glyphnames(array_enc)
+
+        # replace charcters that didn't convert to unicode nicely with something valid
+        array_enc.collect! { |c| c ? c : PDF::Reader::Encoding::UNKNOWN_CHAR }
 
         # pack all our Unicode codepoints into a UTF-8 string
         ret = array_enc.pack("U*")
