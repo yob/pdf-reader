@@ -206,6 +206,10 @@ layout of the file, not the order objects are displayed to the user. As a
 consequence of this it is highly unlikely that text will be completely in
 order.
 
+Occasionally some text cannot be extracted properly due to the way it has been stored, or the use
+of invalid bytes. In these cases PDF::Reader will output a little UTF-8 friendly box to indicate
+an unrecognisable character.
+
 = Resources
 
 - PDF::Reader Homepage: http://software.pmade.com/pdfreader
