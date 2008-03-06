@@ -80,9 +80,9 @@ end
 
 context "The PDF::Reader::Encoding::IdentityH class" do
 
-  specify "should raise an exception if to_utf8 is called without a cmap" do
+  specify "should return the bytestream untouched if to_utf8 is called without a cmap" do
     e = PDF::Reader::Encoding::IdentityH.new
-    lambda { e.to_utf8("test")}.should raise_error(ArgumentError)
+    e.to_utf8("\x44\xFF").should eql("\x44\xFF")
   end
 
   specify "should convert an IdentityH encoded string into UTF-8" do

@@ -1,4 +1,7 @@
-v0.6.0 (xxx)
+v0.6.1 (xxx)
+- Tweaked behaviour when we encounter Identity-H encoded text that doesn't have a ToUnicode mapping.
+
+v0.6.0 (27th February 2008)
 - all text is now transparently converted to UTF-8 before being passed to the callbacks.
   before this version, text was just passed as a byte level copy of what was in the PDF file, which
   was mildly annoying with some encodings, and resulted in garbled text for Unicode encoded text.

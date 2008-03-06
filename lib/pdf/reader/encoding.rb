@@ -103,7 +103,14 @@ class PDF::Reader
 
     class IdentityH < Encoding
       def to_utf8(str, map = nil)
-        raise ArgumentError, "a ToUnicode cmap is required to decode an IdentityH string" if map.nil?
+        
+        # without a ToUnicode CMap, it's impossible to reliably convert this text
+        # to unicode, so just return the raw bytestream
+        if map.nil?
+          # set the string encoding correctly under ruby 1.9+
+          str.force_encoding("BINARY") if str.respond_to?(:force_encoding)
+          return str
+        end
 
         array_enc = []
 

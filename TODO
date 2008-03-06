@@ -1,9 +1,17 @@
+v0.6.1?
+- When we encounter an Identity-H encoded text with no ToUnicode table, return a raw bytestream. As far as I can tell, it's impossible
+  to convert these to unicode codepoints, so there's not much we can do about it.
+  See http://www.adobeforums.com/webx/.3bc40438
+  Patented? http://www.freshpatents.com/Method-of-determining-unicode-values-corresponding-to-the-text-in-digital-documents-dt20061221ptan20060288281.php
+
 v0.7
 - Allow the user to only process certain aspects of the PDF file. For example, if they're only
   interested in meta data or bookmarks, there's no point in walking the pages tree.
   - maybe a third option to Reader.parse?
     parse(io, receiver, {:pages => true, :fonts => false, :metadata => true, :bookmarks => false})
 - detect when a font's encoding is a CMap (generally used for pre-Unicode, multibyte asian encodings), and display a user friendly error
+- When parsing a CMap into a ruby object, recognise ranged mappings defined by begincodespacerange (see spec, section 5.9.2)
+- Provide a way to get raw access to a particular object. Good for testing purposes
 
 v0.8
 - Tweak encoding mappings to differentiate between bytes that are invalid for an encoding, and bytes that are unchanged.
@@ -11,13 +19,16 @@ v0.8
   from the Original encoding to Unicode.
 
 v0.9
-- Support for CJK text (convert to UTF-8 like all other encodings)
+- Support for CJK text (convert to UTF-8 like all other encodings. See Section 5.9 of the PDF spec)
 - Add a way to extract raster images
 
 
 Sometime
 - Ship some extra receivers in the standard package, particuarly ones that are useful for running
   rspec over generated PDF files
+
+- When we encounter Identity-H encoded text with no ToUnicode CMap, render the glyphs and treat them as images, as there's no 
+  sensible way to convert them to unicode
 
 - Improve metadata support
 
