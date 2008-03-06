@@ -84,8 +84,8 @@ context "The PDF::Reader::Encoding::IdentityH class" do
     e = PDF::Reader::Encoding::IdentityH.new
     [
       {:expert => "\x22",             :utf8 => ""},
-      {:expert => "\x22\xF7",         :utf8 => [0x25FB].pack("U*")},
-      {:expert => "\x22\xF7\x22\xF7", :utf8 => [0x25FB,0x25FB].pack("U*")}
+      {:expert => "\x22\xF7",         :utf8 => [0x25AF].pack("U*")},
+      {:expert => "\x22\xF7\x22\xF7", :utf8 => [0x25AF,0x25AF].pack("U*")}
     ].each do |vals| 
       result = e.to_utf8(vals[:expert])
 

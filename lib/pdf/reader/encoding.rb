@@ -116,7 +116,7 @@ class PDF::Reader
           if map
             array_enc << map.decode(c)
           else
-            array_enc << 0x25FB
+            array_enc << 0x25AF
           end
         end
         
