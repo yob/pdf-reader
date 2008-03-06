@@ -104,23 +104,22 @@ class PDF::Reader
     class IdentityH < Encoding
       def to_utf8(str, map = nil)
         
-        # without a ToUnicode CMap, it's impossible to reliably convert this text
-        # to unicode, so just return the raw bytestream
-        if map.nil?
-          # set the string encoding correctly under ruby 1.9+
-          str.force_encoding("BINARY") if str.respond_to?(:force_encoding)
-          return str
-        end
-
         array_enc = []
 
         # iterate over string, reading it in 2 byte chunks and interpreting those
         # chunks as ints
         str.unpack("n*").each do |c|
-          # convert the int to a unicode codepoint
-          array_enc << map.decode(c)
+          # convert the int to a unicode codepoint if possible.
+          # without a ToUnicode CMap, it's impossible to reliably convert this text
+          # to unicode, so just replace each character with a little box. Big smacks
+          # the the PDF producing app.
+          if map
+            array_enc << map.decode(c)
+          else
+            array_enc << 0x25FB
+          end
         end
-
+        
         # pack all our Unicode codepoints into a UTF-8 string
         ret = array_enc.pack("U*")
 

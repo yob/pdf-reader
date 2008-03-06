@@ -80,9 +80,22 @@ end
 
 context "The PDF::Reader::Encoding::IdentityH class" do
 
-  specify "should return the bytestream untouched if to_utf8 is called without a cmap" do
+  specify "should return utf-8  squares if to_utf8 is called without a cmap" do
     e = PDF::Reader::Encoding::IdentityH.new
-    e.to_utf8("\x44\xFF").should eql("\x44\xFF")
+    [
+      {:expert => "\x22",             :utf8 => ""},
+      {:expert => "\x22\xF7",         :utf8 => [0x25FB].pack("U*")},
+      {:expert => "\x22\xF7\x22\xF7", :utf8 => [0x25FB,0x25FB].pack("U*")}
+    ].each do |vals| 
+      result = e.to_utf8(vals[:expert])
+
+      if RUBY_VERSION >= "1.9"
+        result.encoding.to_s.should eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
+      end
+      
+      result.should eql(vals[:utf8]) 
+    end
   end
 
   specify "should convert an IdentityH encoded string into UTF-8" do

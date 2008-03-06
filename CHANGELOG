@@ -1,5 +1,6 @@
 v0.6.1 (xxx)
-- Tweaked behaviour when we encounter Identity-H encoded text that doesn't have a ToUnicode mapping.
+- Tweaked behaviour when we encounter Identity-H encoded text that doesn't have a ToUnicode mapping. We
+  just replace each character with a little box.
 
 v0.6.0 (27th February 2008)
 - all text is now transparently converted to UTF-8 before being passed to the callbacks.
