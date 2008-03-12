@@ -1,8 +1,9 @@
-v0.6.1 (xxx)
+v0.6.1 (12th March 2008)
 - Tweaked behaviour when we encounter Identity-H encoded text that doesn't have a ToUnicode mapping. We
   just replace each character with a little box.
 - Use the same little box when invalid characters are found in other encodings instead of throwing an ugly 
   NoMethodError.
+- Added a method to RegisterReceiver that returns all occurances of a callback
 
 v0.6.0 (27th February 2008)
 - all text is now transparently converted to UTF-8 before being passed to the callbacks.

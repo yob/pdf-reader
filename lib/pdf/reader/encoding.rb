@@ -28,7 +28,7 @@ require 'enumerator'
 class PDF::Reader
   class Encoding
 
-    UNKNOWN_CHAR = 0x25AF
+    UNKNOWN_CHAR = 0x25AF # ▯
 
     attr_reader :differences
 

@@ -22,6 +22,15 @@ class PDF::Reader
       return counter
     end
 
+    # return the details for every time the specified callback was fired
+    def all(methodname)
+      ret = []
+      callbacks.each do |cb|
+        ret << cb if cb[:name] == methodname
+      end
+      return ret
+    end
+
     # return the details for the first time the specified callback was fired
     def first_occurance_of(methodname)
       callbacks.each do |cb|
