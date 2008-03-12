@@ -14,8 +14,9 @@ v0.8
 
 v0.9
 - Support for CJK text (convert to UTF-8 like all other encodings. See Section 5.9 of the PDF spec)
+  - Will require significantly improved handling of CMaps, including creating a bunch of predefined ones
 - Add a way to extract raster images
-
+- Add a way to extract font data?
 
 Sometime
 - Ship some extra receivers in the standard package, particuarly ones that are useful for running
