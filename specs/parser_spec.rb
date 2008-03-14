@@ -20,8 +20,9 @@ context "The PDF::Reader::Parser class" do
     xref = PDF::Reader::XRef.new(buffer)
     buffer.seek(1445)
     parser = PDF::Reader::Parser.new(buffer, xref)
-    obj = parser.object(7, 0)
-    obj.should eql(decoded_stream)
+    obj, stream = parser.object(7, 0)
+    obj.should be_a_kind_of(Hash)
+    stream.should eql(decoded_stream)
   end
 
   specify "should parse a string correctly" do

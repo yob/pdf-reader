@@ -156,6 +156,8 @@ class PDF::Reader
     end
     ################################################################################
     # Reads an entire PDF object from the buffer and returns it as a Ruby String.
+    # If the object is a content stream, returns both the stream and the dictionary
+    # that describes it
     #
     # id  - the object ID to return
     # gen - the object revision number to return
@@ -169,7 +171,7 @@ class PDF::Reader
 
       case post_obj
       when "endobj"   then return obj
-      when "stream"   then return stream(obj)
+      when "stream"   then return obj, stream(obj)
       else              raise MalformedPDFError, "PDF malformed, unexpected token #{post_obj}"
       end
     end
@@ -192,10 +194,7 @@ class PDF::Reader
           data = Filter.new(filter, options[index]).filter(data)
         end
       end
-
-      # this stream is a cmap
-      data = PDF::Reader::CMap.new(data) if data.include?("begincmap") && data.include?("endcmap")
-
+      
       data
     end
     ################################################################################

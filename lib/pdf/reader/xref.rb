@@ -53,12 +53,18 @@ class PDF::Reader
     # Return a string containing the contents of an entire PDF object. The object is requested
     # by specifying a PDF::Reader::Reference object that contains the objects ID and revision
     # number
+    #
+    # If the object is a stream, that is returned as well
     def object (ref, save_pos = true)
       return ref unless ref.kind_of?(Reference)
       pos = @buffer.pos if save_pos
-      parser = Parser.new(@buffer.seek(offset_for(ref)), self).object(ref.id, ref.gen)
+      obj, stream = Parser.new(@buffer.seek(offset_for(ref)), self).object(ref.id, ref.gen)
       @buffer.seek(pos) if save_pos
-      parser
+      if stream
+        return obj, stream
+      else
+        return obj
+      end
     end
     ################################################################################
     # Assumes the underlying buffer is positioned at the start of an Xref table and

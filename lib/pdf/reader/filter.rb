@@ -40,12 +40,16 @@ class PDF::Reader
 
       case name
       when "FlateDecode"    then @filter = :flate
-      else                    raise UnsupportedFeatureError, "Unknown filter: #{name}"
+      #else                    raise UnsupportedFeatureError, "Unknown filter: #{name}"
       end
     end
     ################################################################################
     # attempts to decode the specified data with the current filter
     def filter (data)
+      # leave the data untouched if we don't support the required filter
+      return data if @filter.nil?
+
+      # decode the data
       self.send(@filter, data)
     end
     ################################################################################

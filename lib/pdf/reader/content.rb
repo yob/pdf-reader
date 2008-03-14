@@ -240,20 +240,27 @@ class PDF::Reader
     # Walk over all pages in the PDF file, calling the appropriate callbacks for each page and all 
     # its content
     def walk_pages (page)
-      resolve_resources(@xref.object(page['Resources'])) if page['Resources']
+      
+      if page['Resources']
+        res = page['Resources']
+        page.delete('Resources')
+      end
 
       # extract page content
       if page['Type'] == "Pages"
         callback(:begin_page_container, [page])
+        walk_resources(@xref.object(res)) if res
         page['Kids'].each {|child| walk_pages(@xref.object(child))}
         callback(:end_page_container)
       elsif page['Type'] == "Page"
         callback(:begin_page, [page])
+        walk_resources(@xref.object(res)) if res
         @page = page
         @params = []
 
         page['Contents'].to_a.each do |cstream|
-          content_stream(@xref.object(cstream))
+          obj, stream = @xref.object(cstream)
+          content_stream(stream)
         end if page.has_key?('Contents') and page['Contents']
 
         callback(:end_page)
@@ -289,7 +296,43 @@ class PDF::Reader
     rescue EOFError => e
     end
     ################################################################################
-    def resolve_resources(resources)
+    def walk_resources(resources)
+      resources = @xref.object(resources)
+
+      # extract any procset information
+      if resources['ProcSet']
+        callback(:resource_procset, resources['ProcSet'])
+      end
+
+      # extract any xobject information
+      if resources['XObject']
+        @xref.object(resources['XObject']).each do |name, val|
+          obj, stream = @xref.object(val)
+          callback(:resource_xobject, [name, obj, stream])
+        end
+      end
+
+      # extract any extgstate information
+      if resources['ExtGState']
+        @xref.object(resources['ExtGState']).each do |name, val|
+          callback(:resource_extgstate, [name, @xref.object(val)])
+        end
+      end
+
+      # extract any colorspace information
+      if resources['ColorSpace']
+        @xref.object(resources['ColorSpace']).each do |name, val|
+          callback(:resource_colorspace, [name, @xref.object(val)])
+        end
+      end
+
+      # extract any pattern information
+      if resources['Pattern']
+        @xref.object(resources['Pattern']).each do |name, val|
+          callback(:resource_pattern, [name, @xref.object(val)])
+        end
+      end
+
       # extract any font information
       if resources['Font']
         @xref.object(resources['Font']).each do |label, desc|
@@ -301,15 +344,18 @@ class PDF::Reader
           @fonts[label].encoding = PDF::Reader::Encoding.factory(@xref.object(desc['Encoding']))
           @fonts[label].descendantfonts = desc['DescendantFonts'] if desc['DescendantFonts']
           if desc['ToUnicode']
-            @fonts[label].tounicode = desc['ToUnicode'] 
-            @fonts[label].tounicode = @xref.object(@fonts[label].tounicode)
+            obj, cmap = @xref.object(desc['ToUnicode'])
+            
+            # this stream is a cmap
+            begin
+              @fonts[label].tounicode = PDF::Reader::CMap.new(cmap)
+            rescue
+              # if the CMap fails to parse, don't worry too much. Means we can't translate the text properly
+            end
           end
+          callback(:resource_font, [label, @fonts[label]])
         end
       end
-      #@fonts.each do |key,val|
-      #  puts "#{key}: #{val.inspect}"
-      #  puts
-      #end
     end
     ################################################################################
     # calls the name callback method on the receiver class with params as the arguments
