@@ -144,6 +144,25 @@ class PDF::Reader
   # - end_page_container
   # - begin_page
   # - end_page
+  #
+  # == Resource Callbacks
+  #
+  # Each page and page_container can contain a range of resources required for the page,
+  # including things like fonts and images. The following callbacks may appear
+  # after begin_page_container and begin_page if the relevant resources exist
+  # on a page:
+  #
+  # In most cases, these callbacks associate a name with each resource, allowing it
+  # to be referred to by name in the page content. For example, an XObject can hold an image. 
+  # If it gets mapped to the name "IM1", then it can be placed on the page using 
+  # invoke_xobject "IM1".
+  #
+  # - resource_procset
+  # - resource_xobject
+  # - resource_extgstate
+  # - resource_colorspace
+  # - resource_pattern
+  # - resource_font
   class Content
     OPERATORS = {
       'b'   => :close_fill_stroke,
