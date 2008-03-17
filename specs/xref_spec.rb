@@ -253,6 +253,21 @@ context "The PDF::Reader::XRef class when operating on the pdfwriter manual" do
   end
 end
 
+context "The PDF::Reader::XRef class when operating on a PDF that has been updated in Adobe Acrobat (and therefore has multiple xref sections with subsections)" do
+
+  setup do
+    @file = File.new(File.dirname(__FILE__) + "/data/xref_subsections.pdf")
+    @buffer = PDF::Reader::Buffer.new(@file)
+    @xref = PDF::Reader::XRef.new(@buffer)
+  end
+  
+  specify "should load all xrefs corectly" do
+    @xref.load
+    @xref.xref.keys.size.should eql(66)
+  end
+
+end
+
 context "The PDF::Reader::XRef class when operating on a pdf with no trailer" do
 
   setup do

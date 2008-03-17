@@ -35,3 +35,5 @@ Sometime
   - Identity-V(I *think* this relates to vertical text. Not sure how we'd support it sensibly)
 
 - Investigate how R->L text is handled
+
+- Add support for object streams (spec section 3.4.6)
