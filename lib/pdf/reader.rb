@@ -86,6 +86,7 @@ require 'pdf/reader/register_receiver'
 require 'pdf/reader/text_receiver'
 require 'pdf/reader/token'
 require 'pdf/reader/xref'
+require File.dirname(__FILE__) + '/../../vendor/zliby'
 
 
 class PDF::Reader

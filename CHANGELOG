@@ -1,3 +1,9 @@
+v0.6.2 (xxx)
+- Switched from using the zlib library bundled with stdlib, to a vendored copy of zliby, a pure ruby implementation
+- Added support for processing inline images
+- Support for parsing XRef tables that have multiple subsections
+- Added a few callbacks to improve the way we supply information on page resources 
+
 v0.6.1 (12th March 2008)
 - Tweaked behaviour when we encounter Identity-H encoded text that doesn't have a ToUnicode mapping. We
   just replace each character with a little box.

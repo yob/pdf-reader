@@ -22,7 +22,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 ################################################################################
-require 'zlib'
+#require 'zlib'
 
 class PDF::Reader
   ################################################################################
@@ -56,8 +56,7 @@ class PDF::Reader
     # Decode the specified data with the Zlib compression algorithm
     def flate (data)
       z = Zlib::Inflate.new
-      z << data
-      z.inflate(nil)
+      z.inflate(data)
     end
     ################################################################################
   end

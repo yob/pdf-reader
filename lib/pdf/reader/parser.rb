@@ -9,10 +9,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -58,7 +58,7 @@ class PDF::Reader
       when "obj", "endobj"            then return Token.new(token)
       when "stream", "endstream"      then return Token.new(token)
       when ">>", "]", ">"             then return Token.new(token)
-      else                          
+      else
         if operators.has_key?(token)  then return Token.new(token)
         else                            return token.to_f
         end
@@ -168,11 +168,10 @@ class PDF::Reader
 
       obj = parse_token
       post_obj = parse_token
-
       case post_obj
       when "endobj"   then return obj
       when "stream"   then return obj, stream(obj)
-      else              raise MalformedPDFError, "PDF malformed, unexpected token #{post_obj}"
+      else            raise MalformedPDFError, "PDF malformed, unexpected token #{post_obj}"
       end
     end
     ################################################################################
@@ -194,7 +193,7 @@ class PDF::Reader
           data = Filter.new(filter, options[index]).filter(data)
         end
       end
-      
+
       data
     end
     ################################################################################

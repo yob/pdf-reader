@@ -4,6 +4,10 @@ require 'stringio'
 require 'test/unit'
 require 'pdf/reader'
 
+class PDF::Reader::XRef
+  attr_accessor :xref
+end
+
 module ParserHelper
   def parse_string (r)
     PDF::Reader::Parser.new(PDF::Reader::Buffer.new(sio = StringIO.new(r)), nil).string
@@ -23,6 +27,86 @@ context "The PDF::Reader::Parser class" do
     obj, stream = parser.object(7, 0)
     obj.should be_a_kind_of(Hash)
     stream.should eql(decoded_stream)
+  end
+
+  specify "should be able to decode streams that use FlateDecode with something funny about them" do
+  decoded_stream = <<EOF
+/CIDInit /ProcSet findresource begin
+12 dict begin
+begincmap
+/CIDSystemInfo <</Registry (F1+0) /Supplement 0 >> def
+/CMapName /F1+0 def
+/CMapType 2 def
+1 begincodespacerange <41><7A> endcodespacerange
+52 beginbfchar
+<41><0056>
+<42><0065>
+<43><0072>
+<44><00F6>
+<45><0066>
+<46><006E>
+<47><0074>
+<48><006C>
+<49><0069>
+<4A><0063>
+<4B><0068>
+<4C><0075>
+<4D><0067>
+<4E><0020>
+<4F><0044>
+<50><006F>
+<51><0027>
+<52><0073>
+<53><0061>
+<54><0032>
+<55><0030>
+<56><0038>
+<57><0053>
+<58><0064>
+<59><003A>
+<5A><0031>
+<61><002E>
+<62><0033>
+<63><004E>
+<64><006D>
+<65><0070>
+<66><0050>
+<67><0047>
+<68><00FC>
+<69><004D>
+<6A><006A>
+<6B><002C>
+<6C><00E4>
+<6D><0045>
+<6E><004B>
+<6F><006B>
+<70><0046>
+<71><007A>
+<72><0049>
+<73><0041>
+<74><0062>
+<75><002F>
+<76><0042>
+<77><0077>
+<78><0054>
+<79><0037>
+<7A><0036>
+endbfchar
+endcmap
+CMapName currentdict /CMap defineresource pop
+end
+end
+EOF
+
+    buffer = PDF::Reader::Buffer.new(File.new(File.dirname(__FILE__) + "/data/zlib_stream_issue.pdf"))
+    xref = PDF::Reader::XRef.new(buffer)
+    xref =     PDF::Reader::XRef.new(buffer)
+    xref.xref[30] = Hash.new
+    xref.xref[30][0] = 64379 
+    ref =      PDF::Reader::Reference.new(30,0)
+    obj, stream = xref.object(ref)
+    obj.should be_a_kind_of(Hash)
+    stream.should eql(decoded_stream.strip)
   end
 
   specify "should parse a string correctly" do
