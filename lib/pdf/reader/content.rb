@@ -327,7 +327,7 @@ class PDF::Reader
     end
     ################################################################################
     def walk_resources(resources)
-      resources = @xref.object(resources)
+      resources = resolve_references(resources)
 
       # extract any procset information
       if resources['ProcSet']
@@ -385,6 +385,17 @@ class PDF::Reader
           end
           callback(:resource_font, [label, @fonts[label]])
         end
+      end
+    end
+    ################################################################################
+    # Convert any PDF::Reader::Resource objects into a real object 
+    def resolve_references(obj)
+      case obj
+      when PDF::Reader::Reference then resolve_references(@xref.object(obj))
+      when Hash                   then obj.each { |key,val| obj[key] = resolve_references(val) }
+      when Array                  then obj.collect { |item| resolve_references(item) }
+      else
+        obj
       end
     end
     ################################################################################
