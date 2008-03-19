@@ -23,6 +23,7 @@
 #
 ################################################################################
 require 'stringio'
+#require 'enumerable'
 
 class PDF::Reader
   ################################################################################
@@ -300,9 +301,19 @@ class PDF::Reader
           if token.kind_of?(Token) and OPERATORS.has_key?(token) 
             @current_font = @params.first if OPERATORS[token] == :set_text_font_and_size
 
-            # convert any text to utf-8
+            # handle special cases in response to certain operators
             if OPERATORS[token].to_s.include?("show_text") && @fonts[@current_font]
+              # convert any text to utf-8
               @params = @fonts[@current_font].to_utf8(@params)
+            elsif token == "ID"
+              # inline image data, first convert the current params into a more familiar hash
+              map = {}
+              @params.each_slice(2) do |a|
+                map[a.first] = a.last
+              end
+              @params = [map]
+              # read the raw image data from the buffer without tokenising
+              @params << @buffer.read_until("EI")
             end
             callback(OPERATORS[token], @params)
             @params.clear

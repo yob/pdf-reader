@@ -56,6 +56,24 @@ class PDF::Reader
       out
     end
     ################################################################################
+    # Reads from the buffer until the specified token is found, or the end of the buffer 
+    #
+    # bytes - the bytes to search for.
+    def read_until(bytes)
+      out = ""
+      size = bytes.size
+       
+      loop do
+        out << @io.read(1)
+        if out[-1 * size,size].eql?(bytes)
+          out = out[0, out.size - size]
+          seek(pos - size)
+          break
+        end
+      end
+      out
+    end
+    ################################################################################
     # returns true if the underlying IO object is at end and the internal buffer 
     # is empty
     def eof?

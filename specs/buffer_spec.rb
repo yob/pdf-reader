@@ -135,6 +135,12 @@ context "The PDF::Reader::Buffer class when operating on the openoffice-2.2 PDF"
   specify "should be able to read the PDF header correctly" do
     @buffer.seek(0).read(8).should eql("%PDF-1.4")
   end
+
+  specify "should be able to read all bytes up to 1.4 and leave the cursor in the right location" do
+    @buffer.seek(0).read_until("1.4").should eql("%PDF-")
+    @buffer.pos.should eql(5)
+  end
+
 end
 
 context "The PDF::Reader::Buffer class when operating on a PDF with no EOF marker" do
