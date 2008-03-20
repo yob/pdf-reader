@@ -179,6 +179,7 @@ class PDF::Reader
     def stream (dict)
       raise MalformedPDFError, "PDF malformed, missing stream length" unless dict.has_key?('Length')
       data = @buffer.read(@xref.object(dict['Length']))
+      
       Error.str_assert(parse_token, "endstream")
       Error.str_assert(parse_token, "endobj")
 

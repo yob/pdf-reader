@@ -22,8 +22,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 ################################################################################
-#require 'zlib'
-require File.dirname(__FILE__) + '/../../../vendor/zliby'
+require 'zlib'
 
 class PDF::Reader
   ################################################################################
@@ -56,8 +55,12 @@ class PDF::Reader
     ################################################################################
     # Decode the specified data with the Zlib compression algorithm
     def flate (data)
-      z = Zlib::Inflate.new
-      z.inflate(data)
+      begin
+        z = Zlib::Inflate.new
+        z.inflate(data)
+      rescue Exception => e
+        raise MalformedPDFError, "Error occured while inflating a compressed stream (#{e.class.to_s}: #{e.to_s})"
+      end
     end
     ################################################################################
   end
