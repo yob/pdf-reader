@@ -41,20 +41,11 @@ class PDF::Reader
         elsif l.include?("endbfrange")
           in_range_mode = false 
         end
+
         if in_char_mode
-          m, find, replace = *l.match(/<([0-9a-fA-F]+)> <([0-9a-fA-F]+)>/)
-          @map["0x#{find}".hex] = "0x#{replace}".hex if find && replace
+          process_bfchar_line(l)
         elsif in_range_mode
-          m, start_code, end_code, dst = *l.match(/<([0-9a-fA-F]+)> <([0-9a-fA-F]+)> <([0-9a-fA-F]+)>/)
-          if start_code && end_code && dst
-            start_code = "0x#{start_code}".hex
-            end_code   = "0x#{end_code}".hex
-            dst        = "0x#{dst}".hex
-            (start_code..end_code).each do |val|
-              @map[val] = dst 
-              dst += 1
-            end
-          end
+          process_bfrange_line(l)
         end
       end
     end
@@ -65,5 +56,29 @@ class PDF::Reader
       @map[c]
     end
 
+    private
+
+    def process_bfchar_line(l)
+      m, find, replace = *l.match(/<([0-9a-fA-F]+)> <([0-9a-fA-F]+)>/)
+      @map["0x#{find}".hex] = "0x#{replace}".hex if find && replace
+    end
+
+    def process_bfrange_line(l)
+      m, start_code, end_code, dst = *l.match(/<([0-9a-fA-F]+)> <([0-9a-fA-F]+)> <([0-9a-fA-F]+)>/)
+      if start_code && end_code && dst
+        start_code = "0x#{start_code}".hex
+        end_code   = "0x#{end_code}".hex
+        dst        = "0x#{dst}".hex
+        incr       = 0
+
+        # add all values in the range to our mapping
+        (start_code..end_code).each do |val|
+          @map[val] = dst + incr
+          incr += 1
+          # ensure a single range does not exceed 255 chars
+          raise PDF::Reader::MalformedPDFError, "a CMap bfrange cann't exceed 255 chars" if incr > 255
+        end
+      end
+    end
   end
 end
