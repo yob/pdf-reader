@@ -4,6 +4,7 @@ v0.6.2 (xxx)
 - Support for parsing XRef tables that have multiple subsections
 - Added a few callbacks to improve the way we supply information on page resources 
 - Ignore whitespace in hex strings, as required by the spec (section 3.2.3)
+- Use our "unknown character box" when a single character in an Identity-H string fails to decode
 
 v0.6.1 (12th March 2008)
 - Tweaked behaviour when we encounter Identity-H encoded text that doesn't have a ToUnicode mapping. We

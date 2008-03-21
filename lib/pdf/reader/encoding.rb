@@ -111,12 +111,13 @@ class PDF::Reader
         # iterate over string, reading it in 2 byte chunks and interpreting those
         # chunks as ints
         str.unpack("n*").each do |c|
+          
           # convert the int to a unicode codepoint if possible.
           # without a ToUnicode CMap, it's impossible to reliably convert this text
           # to unicode, so just replace each character with a little box. Big smacks
           # the the PDF producing app.
-          if map
-            array_enc << map.decode(c)
+          if map && (code = map.decode(c)) 
+            array_enc << code
           else
             array_enc << PDF::Reader::Encoding::UNKNOWN_CHAR
           end
