@@ -28,12 +28,33 @@ class PDF::Reader
 
     def initialize(data)
       @map = {}
-      inmap = false
+      in_char_mode = false
+      in_range_mode = false
+
       data.each_line do |l|
-        inmap = true if l.include?("beginbfchar")
-        if inmap
+        if l.include?("beginbfchar")
+          in_char_mode = true 
+        elsif l.include?("endbfchar")
+          in_char_mode = false 
+        elsif l.include?("beginbfrange")
+          in_range_mode = true 
+        elsif l.include?("endbfrange")
+          in_range_mode = false 
+        end
+        if in_char_mode
           m, find, replace = *l.match(/<([0-9a-fA-F]+)> <([0-9a-fA-F]+)>/)
           @map["0x#{find}".hex] = "0x#{replace}".hex if find && replace
+        elsif in_range_mode
+          m, start_code, end_code, dst = *l.match(/<([0-9a-fA-F]+)> <([0-9a-fA-F]+)> <([0-9a-fA-F]+)>/)
+          if start_code && end_code && dst
+            start_code = "0x#{start_code}".hex
+            end_code   = "0x#{end_code}".hex
+            dst        = "0x#{dst}".hex
+            (start_code..end_code).each do |val|
+              @map[val] = dst 
+              dst += 1
+            end
+          end
         end
       end
     end

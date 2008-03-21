@@ -4,7 +4,6 @@ v0.7
   - maybe a third option to Reader.parse?
     parse(io, receiver, {:pages => true, :fonts => false, :metadata => true, :bookmarks => false})
 - detect when a font's encoding is a CMap (generally used for pre-Unicode, multibyte asian encodings), and display a user friendly error
-- When parsing a CMap into a ruby object, recognise ranged mappings defined by begincodespacerange (see spec, section 5.9.2)
 - Provide a way to get raw access to a particular object. Good for testing purposes
 
 v0.8
