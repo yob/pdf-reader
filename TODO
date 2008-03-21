@@ -20,6 +20,8 @@ v0.9
 - Add a way to extract font data?
 
 Sometime
+- Work out why specs/data/zlib*.pdf isn't parsed correctly when all the major PDF viewers can display it correctly
+
 - Ship some extra receivers in the standard package, particuarly ones that are useful for running
   rspec over generated PDF files
 

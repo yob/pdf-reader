@@ -97,9 +97,15 @@ class PDF::Reader
     ################################################################################
     # Reads a PDF hex string from the buffer and converts it to a Ruby String
     def hex_string
-      str = @buffer.token
-      Error.str_assert(@buffer.token, ">")
+      str = ""
+      
+      loop do
+        token = @buffer.token
+        break if token == ">"
+        str << token
+      end
 
+      # add a missing digit if required, as required by the spec
       str << "0" unless str.size % 2 == 0
       str.scan(/../).map {|i| i.hex.chr}.join
     end

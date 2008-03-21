@@ -328,7 +328,7 @@ class PDF::Reader
     ################################################################################
     def walk_resources(resources)
       resources = resolve_references(resources)
-
+      
       # extract any procset information
       if resources['ProcSet']
         callback(:resource_procset, resources['ProcSet'])
