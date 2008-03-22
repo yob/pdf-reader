@@ -1,4 +1,4 @@
-v0.6.2 (xxx)
+v0.6.2 (22nd March 2008)
 - Catch low level errors when applying filters to a content stream and raise a MalformedPDFError instead. 
 - Added support for processing inline images
 - Support for parsing XRef tables that have multiple subsections
