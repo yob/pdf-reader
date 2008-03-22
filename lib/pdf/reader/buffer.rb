@@ -89,7 +89,7 @@ class PDF::Reader
     end
     ################################################################################
     # PDF files are processed by tokenising the content into a series of objects and commands.
-    # This prepares the buffer for use by rerading the next line of tokens into memory.
+    # This prepares the buffer for use by reading the next line of tokens into memory.
     def ready_token (with_strip=true, skip_blanks=true)
       while @buffer.nil? or @buffer.empty?
         @buffer = @io.readline
@@ -103,7 +103,7 @@ class PDF::Reader
     # return the next token from the underlying IO stream
     def token
       ready_token
-
+      
       i = @buffer.index(/[\[\]()<>{}\s\/]/) || @buffer.size
 
       token_chars = 

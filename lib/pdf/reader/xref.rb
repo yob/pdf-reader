@@ -42,11 +42,14 @@ class PDF::Reader
     #
     # Will fail silently if there is no xref table at the requested offset.
     def load (offset = nil)
-      @buffer.seek(offset || @buffer.find_first_xref_offset)
+      offset ||= @buffer.find_first_xref_offset
+      @buffer.seek(offset)
       token = @buffer.token
-
-      if token == "xref"
+      
+      if token == "xref" || token == "ref"
         load_xref_table
+      else
+        raise PDF::Reader::MalformedPDFError, "xref table not found at offset #{offset} (#{token} != xref)"
       end
     end
     ################################################################################
@@ -101,7 +104,7 @@ class PDF::Reader
       raise MalformedPDFError, "PDF malformed, trailer should be a dictionary" unless tok_two == "<<"
 
       trailer = Parser.new(@buffer, self).dictionary
-      load(trailer['Prev']) if trailer.has_key?('Prev')
+      load(trailer['Prev'].to_i) if trailer.has_key?('Prev')
 
       trailer
     end
