@@ -95,9 +95,9 @@ class PDF::Reader
         @buffer = @io.readline
         @buffer.sub!(/%.*$/, '')
         @buffer.chomp!
-        @buffer.lstrip! if with_strip
         break unless skip_blanks
       end
+      @buffer.lstrip! if with_strip
     end
     ################################################################################
     # return the next token from the underlying IO stream

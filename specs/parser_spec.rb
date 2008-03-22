@@ -124,6 +124,7 @@ EOF
     parse_string("x \\101 x)").string.should eql("x A x")
     parse_string("x \\( x)").string.should eql("x ( x")
     parse_string("(x)))").string.should eql("(x)")
+    parse_string("Adobe)").string.should eql("Adobe")
     str = <<EOT
 x
 x \
@@ -138,5 +139,15 @@ EOT
 
   specify "should ignore whitespace when parsing a hex string" do
     parse_string("48656C6C6F20\n4A616D6573>").hex_string.should eql("Hello James") 
+  end
+
+  specify "should parse various dictionaries correctly" do
+    str = "/Registry (Adobe) /Ordering (Japan1) /Supplement 5 >>"
+    dict = parse_string(str).dictionary
+
+    dict.size.should eql(3)
+    dict["Registry"].should    eql("Adobe") 
+    dict["Ordering"].should    eql("Japan1")
+    dict["Supplement"].should  eql(5.0)
   end
 end

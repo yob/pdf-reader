@@ -60,7 +60,7 @@ class PDF::Reader
       when ">>", "]", ">"             then return Token.new(token)
       else
         if operators.has_key?(token)  then return Token.new(token)
-        else                            return token.to_f
+        else                          return token.to_f
         end
       end
     end
@@ -72,7 +72,7 @@ class PDF::Reader
       loop do
         key = parse_token
         break if key.kind_of?(Token) and key == ">>"
-        raise MalformedPDFError, "PDF malformed, dictionary key is not a name" unless key.kind_of?(Name)
+        raise MalformedPDFError, "Dictionary key (#{key.inspect}) is not a name" unless key.kind_of?(Name)
 
         value = parse_token
         value.kind_of?(Token) and Error.str_assert_not(value, ">>")
@@ -157,7 +157,6 @@ class PDF::Reader
 
         @buffer.head(to_remove, false)
       end
-
       str
     end
     ################################################################################

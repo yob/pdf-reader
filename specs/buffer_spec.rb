@@ -2,6 +2,12 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
 
 require 'pdf/reader'
 
+module BufferHelper
+  def parse_string (r)
+    PDF::Reader::Buffer.new(sio = StringIO.new(r))
+  end
+end
+
 context "The PDF::Reader::Buffer class when operating on the cairo-basic PDF" do
 
   setup do
@@ -156,3 +162,23 @@ context "The PDF::Reader::Buffer class when operating on a PDF with no EOF marke
 
 end
 
+context "The PDF::Reader::Buffer class" do
+  include BufferHelper
+
+  specify "should tokenise strings correctly" do
+    buf = parse_string("/Registry (Adobe) /Ordering (Japan1) /Supplement")
+    buf.token.should eql("/")
+    buf.token.should eql("Registry")
+    buf.token.should eql("(")
+    buf.token.should eql("Adobe")
+    buf.token.should eql(")")
+    buf.token.should eql("/")
+    buf.token.should eql("Ordering")
+    buf.token.should eql("(")
+    buf.token.should eql("Japan1")
+    buf.token.should eql(")")
+    buf.token.should eql("/")
+    buf.token.should eql("Supplement")
+  end
+
+end
