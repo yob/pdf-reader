@@ -278,7 +278,7 @@ class PDF::Reader
         @page = page
         @params = []
 
-        page['Contents'].to_a.each do |cstream|
+        @xref.object(page['Contents']).to_a.each do |cstream|
           obj, stream = @xref.object(cstream)
           content_stream(stream)
         end if page.has_key?('Contents') and page['Contents']
