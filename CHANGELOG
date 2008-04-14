@@ -1,4 +1,5 @@
 v0.6.3 (xxx)
+- Improved support for converting text in some PDF files to unicode
 - Behave as expected if the Contents key in a Page Dict is a reference
 
 v0.6.2 (22nd March 2008)

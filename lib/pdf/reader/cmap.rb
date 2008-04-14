@@ -59,12 +59,12 @@ class PDF::Reader
     private
 
     def process_bfchar_line(l)
-      m, find, replace = *l.match(/<([0-9a-fA-F]+)> <([0-9a-fA-F]+)>/)
+      m, find, replace = *l.match(/<([0-9a-fA-F]+)>\s*<([0-9a-fA-F]+)>/)
       @map["0x#{find}".hex] = "0x#{replace}".hex if find && replace
     end
 
     def process_bfrange_line(l)
-      m, start_code, end_code, dst = *l.match(/<([0-9a-fA-F]+)> <([0-9a-fA-F]+)> <([0-9a-fA-F]+)>/)
+      m, start_code, end_code, dst = *l.match(/<([0-9a-fA-F]+)>\s*<([0-9a-fA-F]+)>\s*<([0-9a-fA-F]+)>/)
       if start_code && end_code && dst
         start_code = "0x#{start_code}".hex
         end_code   = "0x#{end_code}".hex
