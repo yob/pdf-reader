@@ -59,14 +59,14 @@ class PDF::Reader
     #
     # If the object is a stream, that is returned as well
     def object (ref, save_pos = true)
-      return ref unless ref.kind_of?(Reference)
+      return ref, nil unless ref.kind_of?(Reference)
       pos = @buffer.pos if save_pos
       obj, stream = Parser.new(@buffer.seek(offset_for(ref)), self).object(ref.id, ref.gen)
       @buffer.seek(pos) if save_pos
       if stream
-        return obj, stream
+        return [obj, stream]
       else
-        return obj
+        return [obj, nil]
       end
     end
     ################################################################################
@@ -107,6 +107,16 @@ class PDF::Reader
       load(trailer['Prev'].to_i) if trailer.has_key?('Prev')
 
       trailer
+    end
+    # returns the type of object a ref points to
+    def obj_type(ref)
+      obj, stream = object(ref)
+      obj.class.to_s.to_sym
+    end
+    # returns true if the supplied references points to an object with a stream
+    def stream?(ref)
+      obj, stream = @xref.object(ref)
+      stream ? true : false
     end
     ################################################################################
     # returns the byte offset for the specified PDF object.

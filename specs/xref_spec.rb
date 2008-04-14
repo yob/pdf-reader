@@ -39,7 +39,15 @@ context "The PDF::Reader::XRef class when operating on the cairo-basic PDF" do
   specify "should not attempt to translate a non reference into an object" do
     ref = "James"
     @xref.load
-    @xref.object(ref,false).should eql(ref)
+    obj, stream = @xref.object(ref,false)
+    obj.should eql(ref)
+  end
+
+  specify "should return a stream-less object correctly" do
+    ref = PDF::Reader::Reference.new(6,0) 
+    @xref.load
+    cursor = @buffer.pos
+    @xref.object(ref,false).should eql([267.0, nil])
   end
 end
 

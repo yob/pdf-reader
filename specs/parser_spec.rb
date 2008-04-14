@@ -150,4 +150,8 @@ EOT
     dict["Ordering"].should    eql("Japan1")
     dict["Supplement"].should  eql(5.0)
   end
+
+  specify "should parse an array correctly" do
+    parse_string("10 0 R 12 0 R ]").array.size.should eql(2) 
+  end
 end

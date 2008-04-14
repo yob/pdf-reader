@@ -174,8 +174,8 @@ class PDF::Reader
       obj = parse_token
       post_obj = parse_token
       case post_obj
-      when "endobj"   then return obj
-      when "stream"   then return obj, stream(obj)
+      when "endobj"   then return [obj,nil]
+      when "stream"   then return [obj, stream(obj)]
       else            raise MalformedPDFError, "PDF malformed, unexpected token #{post_obj}"
       end
     end
@@ -183,7 +183,7 @@ class PDF::Reader
     # Decodes the contents of a PDF Stream and returns it as a Ruby String.
     def stream (dict)
       raise MalformedPDFError, "PDF malformed, missing stream length" unless dict.has_key?('Length')
-      data = @buffer.read(@xref.object(dict['Length']))
+      data = @buffer.read(@xref.object(dict['Length']).first)
       
       Error.str_assert(parse_token, "endstream")
       Error.str_assert(parse_token, "endobj")

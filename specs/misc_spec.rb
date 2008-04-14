@@ -50,4 +50,14 @@ context "PDF::Reader" do
     receiver.content.size.should eql(1)
     receiver.content[0].should eql("This is a sample PDF file.If you can read this,you already have Adobe AcrobatReader installed on your computer.")
   end
+
+  specify "should process text from a german PDF correctly" do
+    receiver = PageTextReceiver.new
+    PDF::Reader.file(File.dirname(__FILE__) + "/data/german.pdf", receiver)
+
+    # confirm the text appears on the correct pages
+    puts receiver.content.inspect
+    receiver.content.size.should eql(3)
+    receiver.content[0].should eql("boo")
+  end
 end
