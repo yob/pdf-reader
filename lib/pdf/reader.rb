@@ -101,7 +101,9 @@ class PDF::Reader
     @content  = (receiver == Explore ? Explore : Content).new(receiver, @xref)
 
     trailer = @xref.load
-    @content.document(@xref.object(trailer['Root']).first) || self
+    @content.metadata(@xref.object(trailer['Info']).first)
+    @content.document(@xref.object(trailer['Root']).first)
+    self
   end
   ################################################################################
 end

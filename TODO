@@ -5,6 +5,7 @@ v0.7
     parse(io, receiver, {:pages => true, :fonts => false, :metadata => true, :bookmarks => false})
 - detect when a font's encoding is a CMap (generally used for pre-Unicode, multibyte asian encodings), and display a user friendly error
 - Provide a way to get raw access to a particular object. Good for testing purposes
+- Improve interpretation of non content stream data (ie metadata). Use PDFDofEncoding, recognise UTF16 strings, recognise dates, etc
 
 v0.8
 - Tweak encoding mappings to differentiate between bytes that are invalid for an encoding, and bytes that are unchanged.

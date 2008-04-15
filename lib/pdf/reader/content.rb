@@ -145,6 +145,8 @@ class PDF::Reader
   # - end_page_container
   # - begin_page
   # - end_page
+  # - metadata
+  # - xml_metadata
   #
   # == Resource Callbacks
   #
@@ -250,8 +252,18 @@ class PDF::Reader
       @fonts ||= {}
     end
     ################################################################################
+    # Begin processing the document metadata
+    def metadata (info)
+      info = utf16_to_utf8(info)
+      callback(:metadata, [info])
+    end
+    ################################################################################
     # Begin processing the document
     def document (root)
+      if root['Metadata']
+        obj, stream = @xref.object(root['Metadata'])
+        callback(:xml_metadata,stream) 
+      end
       callback(:begin_document, [root])
       walk_pages(@xref.object(root['Pages']).first)
       callback(:end_document)
@@ -416,6 +428,21 @@ class PDF::Reader
       @receiver.send(name, *params) if @receiver.respond_to?(name)
     end
     ################################################################################
+    private
+    def utf16_to_utf8(obj)
+      case obj
+      when String then 
+        if obj[0,2] == "\376\377"
+          obj[2, obj.size-2].unpack("n*").pack("U*")
+        else
+          obj
+        end
+      when Hash   then obj.each { |key,val| obj[key] = utf16_to_utf8(val) }
+      when Array  then obj.collect { |item| utf16_to_utf8(item) }
+      else
+        obj
+      end
+    end
   end
   ################################################################################
 end
