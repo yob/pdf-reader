@@ -1,6 +1,7 @@
 v0.6.3 (xxx)
 - Improved support for converting text in some PDF files to unicode
 - Behave as expected if the Contents key in a Page Dict is a reference
+- Include some basic metadata callbacks
 
 v0.6.2 (22nd March 2008)
 - Catch low level errors when applying filters to a content stream and raise a MalformedPDFError instead. 
