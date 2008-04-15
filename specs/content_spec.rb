@@ -102,4 +102,18 @@ context "The PDF::Reader::Content class" do
     meta["Producer"].should eql("OpenOffice.org 2.2")
     meta["CreationDate"].should eql("D:20070623021705+10'00'")
   end
+
+  specify "should send the correct xml_metadata callbacks when processing a distiller PDF" do
+
+    receiver = PDF::Reader::RegisterReceiver.new
+
+    # process the instructions
+    filename = File.dirname(__FILE__) + "/data/distiller_unicode.pdf"
+    PDF::Reader.file(filename, receiver)
+    cb = receiver.first_occurance_of(:xml_metadata)
+    meta = cb[:args].first
+
+    # check the metadata was extracted correctly
+    meta.include?("<pdf:Title>file://C:\\Data\\website\\i18nguy\\unicode-example.html</pdf:Title>").should be_true
+  end
 end
