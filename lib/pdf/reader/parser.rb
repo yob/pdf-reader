@@ -32,7 +32,7 @@ class PDF::Reader
     # Create a new parser around a PDF::Reader::Buffer object
     #
     # buffer - a PDF::Reader::Buffer object that contains PDF data
-    # xref   - an integer that specifies the byte offset of the xref table in the buffer
+    # xref   - a PDF::Reader::XRef object that represents the document's object offsets
     def initialize (buffer, xref)
       @buffer = buffer
       @xref   = xref

@@ -165,7 +165,7 @@ end
 context "The PDF::Reader::Buffer class" do
   include BufferHelper
 
-  specify "should tokenise strings correctly" do
+  specify "should tokenise a dict correctly" do
     buf = parse_string("/Registry (Adobe) /Ordering (Japan1) /Supplement")
     buf.token.should eql("/")
     buf.token.should eql("Registry")
@@ -181,4 +181,25 @@ context "The PDF::Reader::Buffer class" do
     buf.token.should eql("Supplement")
   end
 
+  specify "should tokenise a string without a % correctly" do
+    buf = parse_string("(James)")
+    buf.token.should eql("(")
+    buf.token.should eql("James")
+    buf.token.should eql(")")
+  end
+
+  specify "should tokenise a string with a % correctly" do
+    buf = parse_string("(James%Healy)")
+    buf.token.should eql("(")
+    buf.token.should eql("James%Healy")
+    buf.token.should eql(")")
+  end
+
+  specify "should tokenise a string with comments correctly" do
+    buf = parse_string("(James%Healy) % this is a comment\n(")
+    buf.token.should eql("(")
+    buf.token.should eql("James%Healy")
+    buf.token.should eql(")")
+    buf.token.should eql("(")
+  end
 end

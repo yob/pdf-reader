@@ -1,4 +1,5 @@
 v0.7
+- Don't remove comment when tokenising in the middle of a string
 - Allow the user to only process certain aspects of the PDF file. For example, if they're only
   interested in meta data or bookmarks, there's no point in walking the pages tree.
   - maybe a third option to Reader.parse?

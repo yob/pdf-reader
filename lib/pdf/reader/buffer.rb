@@ -93,7 +93,7 @@ class PDF::Reader
     def ready_token (with_strip=true, skip_blanks=true)
       while @buffer.nil? or @buffer.empty?
         @buffer = @io.readline
-        @buffer.sub!(/%.*$/, '')
+        #@buffer.sub!(/%.*$/, '') if strip_comments
         @buffer.chomp!
         break unless skip_blanks
       end
@@ -114,7 +114,14 @@ class PDF::Reader
         end
 
       strip_space = !(i == 0 and @buffer[0,1] == '(')
-      head(token_chars, strip_space)
+      tok = head(token_chars, strip_space)
+
+      if tok[0,1] == "%"
+        @buffer = ""
+        token
+      else
+        tok
+      end
     end
     ################################################################################
     def head (chars, with_strip=true)

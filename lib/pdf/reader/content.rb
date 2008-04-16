@@ -344,6 +344,7 @@ class PDF::Reader
         end
       end
     rescue EOFError => e
+      raise MalformedPDFError, "End Of File while processing a content stream"
     end
     ################################################################################
     def walk_resources(resources)
