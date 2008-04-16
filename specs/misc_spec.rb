@@ -51,10 +51,10 @@ context "PDF::Reader" do
     receiver.content[0].should eql("This is a sample PDF file.If you can read this,you already have Adobe AcrobatReader installed on your computer.")
   end
 
-  specify "should process text from a german PDF correctly" do
+  specify "should process text from a dutch PDF correctly" do
     receiver = PageTextReceiver.new
     str = "Dit\302\240is\302\240een\302\240pdf\302\240test\302\240van\302\240drie\302\240pagina’s.\302\240\302\240Pagina\302\2401"
-    PDF::Reader.file(File.dirname(__FILE__) + "/data/german.pdf", receiver)
+    PDF::Reader.file(File.dirname(__FILE__) + "/data/dutch.pdf", receiver)
 
     # confirm the text appears on the correct pages
     receiver.content.size.should eql(3)
