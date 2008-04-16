@@ -19,7 +19,7 @@ class PageTextReceiver
   end
 
   def show_text(string, *params)
-    @content << string.strip
+    @content << string
   end
 
   # there's a few text callbacks, so make sure we process them all
