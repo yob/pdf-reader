@@ -52,7 +52,7 @@ class PDF::Reader
 
     def decode(c)
       # TODO: implement the conversion
-      Error.assert_equal(c.class, Fixnum)
+      return c unless c.class == Fixnum
       @map[c]
     end
 

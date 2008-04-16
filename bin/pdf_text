@@ -8,16 +8,18 @@ class PageTextReceiver
   attr_accessor :content
 
   def initialize
-    @content = []
+    @content = ""
   end
 
   # Called when page parsing starts
   def begin_page(arg = nil)
-    @content << ""
+    puts @content
+    puts
+    @content = ""
   end
 
   def show_text(string, *params)
-    @content.last << string.strip
+    @content << string.strip
   end
 
   # there's a few text callbacks, so make sure we process them all
@@ -31,7 +33,7 @@ class PageTextReceiver
   end
 end
 
-receiver = PDF::Reader::PageTextReceiver.new
+receiver = PageTextReceiver.new
 
 if ARGV.empty?
   PDF::Reader.new.parse($stdin, receiver)
