@@ -63,7 +63,9 @@ class PDF::Reader
         # If that fails, then use an undocumented 'feature' to attempt to inflate
         # the data as a raw RFC1951 stream.
         #
-        # See http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/243545
+        # See 
+        # - http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/243545
+        # - http://www.gzip.org/zlib/zlib_faq.html#faq38
         Zlib::Inflate.new(-Zlib::MAX_WBITS).inflate(data)
       end
     rescue Exception => e
