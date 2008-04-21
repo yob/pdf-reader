@@ -93,6 +93,7 @@ class PDF::Reader
     def ready_token (with_strip=true, skip_blanks=true)
       while @buffer.nil? or @buffer.empty?
         @buffer = @io.readline
+        @buffer.force_encoding("BINARY") if @buffer.respond_to?(:force_encoding)
         #@buffer.sub!(/%.*$/, '') if strip_comments
         @buffer.chomp!
         break unless skip_blanks
