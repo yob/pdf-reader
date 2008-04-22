@@ -255,7 +255,7 @@ class PDF::Reader
     # Begin processing the document metadata
     def metadata (info)
       info = utf16_to_utf8(info)
-      callback(:metadata, [info])
+      callback(:metadata, [info]) if info
     end
     ################################################################################
     # Begin processing the document
