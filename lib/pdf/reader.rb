@@ -79,7 +79,6 @@ require 'pdf/reader/encoding'
 require 'pdf/reader/error'
 require 'pdf/reader/filter'
 require 'pdf/reader/font'
-require 'pdf/reader/name'
 require 'pdf/reader/parser'
 require 'pdf/reader/reference'
 require 'pdf/reader/register_receiver'
@@ -101,8 +100,8 @@ class PDF::Reader
     @content  = (receiver == Explore ? Explore : Content).new(receiver, @xref)
 
     trailer = @xref.load
-    @content.metadata(@xref.object(trailer['Info']).first)
-    @content.document(@xref.object(trailer['Root']).first)
+    @content.metadata(@xref.object(trailer[:Info]).first)
+    @content.document(@xref.object(trailer[:Root]).first)
     self
   end
   ################################################################################

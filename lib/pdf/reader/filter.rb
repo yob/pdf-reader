@@ -38,9 +38,9 @@ class PDF::Reader
     def initialize (name, options)
       @options = options
 
-      case name
-      when "FlateDecode"    then @filter = :flate
-      #else                    raise UnsupportedFeatureError, "Unknown filter: #{name}"
+      case name.to_sym
+      when :FlateDecode    then @filter = :flate
+      #else                raise UnsupportedFeatureError, "Unknown filter: #{name}"
       end
     end
     ################################################################################

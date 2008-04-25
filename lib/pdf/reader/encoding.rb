@@ -60,21 +60,21 @@ class PDF::Reader
     # Takes the "Encoding" value of a Font dictionary and builds a PDF::Reader::Encoding object
     def self.factory(enc)
       if enc.kind_of?(Hash)
-        diff = enc['Differences']
-        enc = enc['Encoding'] || enc['BaseEncoding'] 
+        diff = enc[:Differences]
+        enc = enc[:Encoding] || enc[:BaseEncoding]
       elsif enc != nil
-        enc = enc.to_s
+        enc = enc.to_sym
       end
 
       case enc
-        when nil                    then enc = PDF::Reader::Encoding::StandardEncoding.new
-        when "Identity-H"           then enc = PDF::Reader::Encoding::IdentityH.new
-        when "MacRomanEncoding"     then enc = PDF::Reader::Encoding::MacRomanEncoding.new
-        when "MacExpertEncoding"    then enc = PDF::Reader::Encoding::MacExpertEncoding.new
-        when "StandardEncoding"     then enc = PDF::Reader::Encoding::StandardEncoding.new
-        when "SymbolEncoding"       then enc = PDF::Reader::Encoding::SymbolEncoding.new
-        when "WinAnsiEncoding"      then enc = PDF::Reader::Encoding::WinAnsiEncoding.new
-        when "ZapfDingbatsEncoding" then enc = PDF::Reader::Encoding::ZapfDingbatsEncoding.new
+        when nil                   then enc = PDF::Reader::Encoding::StandardEncoding.new
+        when "Identity-H".to_sym   then enc = PDF::Reader::Encoding::IdentityH.new
+        when :MacRomanEncoding     then enc = PDF::Reader::Encoding::MacRomanEncoding.new
+        when :MacExpertEncoding    then enc = PDF::Reader::Encoding::MacExpertEncoding.new
+        when :StandardEncoding     then enc = PDF::Reader::Encoding::StandardEncoding.new
+        when :SymbolEncoding       then enc = PDF::Reader::Encoding::SymbolEncoding.new
+        when :WinAnsiEncoding      then enc = PDF::Reader::Encoding::WinAnsiEncoding.new
+        when :ZapfDingbatsEncoding then enc = PDF::Reader::Encoding::ZapfDingbatsEncoding.new
         else raise UnsupportedFeatureError, "#{enc} is not currently a supported encoding"
       end
 
@@ -105,27 +105,27 @@ class PDF::Reader
 
     class IdentityH < Encoding
       def to_utf8(str, tounicode = nil)
-        
+
         array_enc = []
 
         # iterate over string, reading it in 2 byte chunks and interpreting those
         # chunks as ints
         str.unpack("n*").each do |num|
-          
+
           # convert the int to a unicode codepoint if possible.
           # without a ToUnicode CMap, it's impossible to reliably convert this text
           # to unicode, so just replace each character with a little box. Big smacks
           # the the PDF producing app.
-          if tounicode && (code = tounicode.decode(num)) 
+          if tounicode && (code = tounicode.decode(num))
             array_enc << code
           else
             array_enc << PDF::Reader::Encoding::UNKNOWN_CHAR
           end
         end
-        
+
         # replace charcters that didn't convert to unicode nicely with something valid
         array_enc.collect! { |c| c ? c : PDF::Reader::Encoding::UNKNOWN_CHAR }
-        
+
         # pack all our Unicode codepoints into a UTF-8 string
         ret = array_enc.pack("U*")
 
@@ -143,7 +143,7 @@ class PDF::Reader
         array_expert = self.process_differences(array_expert)
         array_enc = []
         array_expert.each do |num|
-          if tounicode && (code = tounicode.decode(num)) 
+          if tounicode && (code = tounicode.decode(num))
             array_enc << code
           elsif tounicode
             array_enc << PDF::Reader::Encoding::UNKNOWN_CHAR
@@ -320,7 +320,7 @@ class PDF::Reader
 
         # replace charcters that didn't convert to unicode nicely with something valid
         array_enc.collect! { |c| c ? c : PDF::Reader::Encoding::UNKNOWN_CHAR }
-        
+
         # pack all our Unicode codepoints into a UTF-8 string
         ret = array_enc.pack("U*")
 
@@ -341,7 +341,7 @@ class PDF::Reader
         array_mac = self.process_differences(array_mac)
         array_enc = []
         array_mac.each do |num|
-          if tounicode && (code = tounicode.decode(num)) 
+          if tounicode && (code = tounicode.decode(num))
             array_enc << code
           elsif tounicode
             array_enc << PDF::Reader::Encoding::UNKNOWN_CHAR
@@ -487,7 +487,7 @@ class PDF::Reader
 
         # replace charcters that didn't convert to unicode nicely with something valid
         array_enc.collect! { |c| c ? c : PDF::Reader::Encoding::UNKNOWN_CHAR }
-        
+
         # pack all our Unicode codepoints into a UTF-8 string
         ret = array_enc.pack("U*")
 
@@ -507,7 +507,7 @@ class PDF::Reader
         array_std = self.process_differences(array_std)
         array_enc = []
         array_std.each do |num|
-          if tounicode && (code = tounicode.decode(num)) 
+          if tounicode && (code = tounicode.decode(num))
             array_enc << code
           elsif tounicode
             array_enc << PDF::Reader::Encoding::UNKNOWN_CHAR
@@ -565,10 +565,10 @@ class PDF::Reader
             end
           end
         end
-        
+
         # convert any glyph names to unicode codepoints
         array_enc = self.process_glyphnames(array_enc)
-        
+
         # replace charcters that didn't convert to unicode nicely with something valid
         array_enc.collect! { |c| c ? c : PDF::Reader::Encoding::UNKNOWN_CHAR }
 
@@ -589,7 +589,7 @@ class PDF::Reader
         array_symbol = self.process_differences(array_symbol)
         array_enc = []
         array_symbol.each do |num|
-          if tounicode && (code = tounicode.decode(num)) 
+          if tounicode && (code = tounicode.decode(num))
             array_enc << code
           elsif tounicode
             array_enc << PDF::Reader::Encoding::UNKNOWN_CHAR
@@ -781,7 +781,7 @@ class PDF::Reader
         array_latin9 = self.process_differences(array_latin9)
         array_enc = []
         array_latin9.each do |num|
-          if tounicode && (code = tounicode.decode(num)) 
+          if tounicode && (code = tounicode.decode(num))
             array_enc << code
           elsif tounicode
             array_enc << PDF::Reader::Encoding::UNKNOWN_CHAR
@@ -846,7 +846,7 @@ class PDF::Reader
         array_symbol = self.process_differences(array_symbol)
         array_enc = []
         array_symbol.each do |num|
-          if tounicode && (code = tounicode.decode(num)) 
+          if tounicode && (code = tounicode.decode(num))
             array_enc << code
           elsif tounicode
             array_enc << PDF::Reader::Encoding::UNKNOWN_CHAR

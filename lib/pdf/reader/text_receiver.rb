@@ -217,8 +217,8 @@ class PDF::Reader
     def media_box_check (dict)
       corners = (@upper_corners.last || {:urx => 0, :ury => 0}).dup
 
-      if dict.has_key?('MediaBox')
-        media_box = dict['MediaBox']
+      if dict.has_key?(:MediaBox)
+        media_box = dict[:MediaBox]
         corners[:urx] = media_box[2] - media_box[0]
         corners[:ury] = media_box[3] - media_box[1]
       end

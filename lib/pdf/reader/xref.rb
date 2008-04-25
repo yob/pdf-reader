@@ -104,7 +104,7 @@ class PDF::Reader
       raise MalformedPDFError, "PDF malformed, trailer should be a dictionary" unless tok_two == "<<"
 
       trailer = Parser.new(@buffer, self).dictionary
-      load(trailer['Prev'].to_i) if trailer.has_key?('Prev')
+      load(trailer[:Prev].to_i) if trailer.has_key?(:Prev)
 
       trailer
     end

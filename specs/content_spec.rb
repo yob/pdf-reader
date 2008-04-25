@@ -84,7 +84,7 @@ context "The PDF::Reader::Content class" do
     meta = cb[:args].first
 
     # check the metadata was extracted correctly
-    meta["Producer"].should eql("YesLogic Prince 5.1")
+    meta[:Producer].should eql("YesLogic Prince 5.1")
   end
 
   specify "should send the correct metadata callbacks when processing an openoffice PDF" do
@@ -98,9 +98,9 @@ context "The PDF::Reader::Content class" do
     meta = cb[:args].first
 
     # check the metadata was extracted correctly
-    meta["Creator"].should eql("Writer")
-    meta["Producer"].should eql("OpenOffice.org 2.2")
-    meta["CreationDate"].should eql("D:20070623021705+10'00'")
+    meta[:Creator].should eql("Writer")
+    meta[:Producer].should eql("OpenOffice.org 2.2")
+    meta[:CreationDate].should eql("D:20070623021705+10'00'")
   end
 
   specify "should send the correct xml_metadata callbacks when processing a distiller PDF" do

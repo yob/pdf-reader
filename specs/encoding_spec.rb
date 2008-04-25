@@ -24,16 +24,16 @@ context "The PDF::Reader::Encoding class" do
   end
 
   specify "should return a new encoding object on request, or raise an error if unrecognised" do
-    win =  {"Encoding" => "WinAnsiEncoding"}
-    fake = {"Encoding" => "FakeEncoding"}
+    win =  {:Encoding => :WinAnsiEncoding}
+    fake = {:Encoding => :FakeEncoding}
     PDF::Reader::Encoding.factory(win).should be_a_kind_of(PDF::Reader::Encoding::WinAnsiEncoding)
     lambda { PDF::Reader::Encoding.factory(fake)}.should raise_error(PDF::Reader::UnsupportedFeatureError)
   end
 
   specify "should return a new encoding object with a differences table on request" do
     win =  {
-             "Encoding"    => "WinAnsiEncoding",
-             "Differences" => [25, "A", 26, "B"]
+             :Encoding    => :WinAnsiEncoding,
+             :Differences => [25, "A", 26, "B"]
            }
     enc = PDF::Reader::Encoding.factory(win)
     enc.should be_a_kind_of(PDF::Reader::Encoding::WinAnsiEncoding)
@@ -44,8 +44,8 @@ context "The PDF::Reader::Encoding class" do
 
   specify "should return a new encoding object with a differences table on request" do
     win =  {
-             "Encoding"    => "WinAnsiEncoding",
-             "Differences" => [25, "A", "B"]
+             :Encoding    => :WinAnsiEncoding,
+             :Differences => [25, "A", "B"]
            }
     enc = PDF::Reader::Encoding.factory(win)
     enc.should be_a_kind_of(PDF::Reader::Encoding::WinAnsiEncoding)
@@ -56,8 +56,8 @@ context "The PDF::Reader::Encoding class" do
 
   specify "should correctly replaces all bytes in an array with glyph names" do
     win =  {
-             "Encoding"    => "WinAnsiEncoding",
-             "Differences" => [25, "A", "B"]
+             :Encoding    => :WinAnsiEncoding,
+             :Differences => [25, "A", "B"]
            }
     enc = PDF::Reader::Encoding.factory(win)
     enc.process_differences([32, 25, 26, 32]).should eql([32, "A", "B", 32])
@@ -65,8 +65,8 @@ context "The PDF::Reader::Encoding class" do
 
   specify "should correctly replaces all glyph names in an array with unicode codepoints" do
     win =  {
-             "Encoding"    => "WinAnsiEncoding",
-             "Differences" => [25, "A", "B"]
+             :Encoding    => :WinAnsiEncoding,
+             :Differences => [25, "A", "B"]
            }
     enc = PDF::Reader::Encoding.factory(win)
     enc.process_glyphnames([32, "A", "B", 32]).should eql([32, 0x41, 0x42, 32])

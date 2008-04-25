@@ -47,7 +47,7 @@ class PDF::Reader
       token = @buffer.token
 
       case token
-      when "/"                        then return Name.new(@buffer.token)
+      when "/"                        then return @buffer.token.to_sym
       when "<<"                       then return dictionary()
       when "["                        then return array()
       when "("                        then return string()
@@ -72,7 +72,7 @@ class PDF::Reader
       loop do
         key = parse_token
         break if key.kind_of?(Token) and key == ">>"
-        raise MalformedPDFError, "Dictionary key (#{key.inspect}) is not a name" unless key.kind_of?(Name)
+        raise MalformedPDFError, "Dictionary key (#{key.inspect}) is not a name" unless key.kind_of?(Symbol)
 
         value = parse_token
         value.kind_of?(Token) and Error.str_assert_not(value, ">>")
@@ -182,20 +182,20 @@ class PDF::Reader
     ################################################################################
     # Decodes the contents of a PDF Stream and returns it as a Ruby String.
     def stream (dict)
-      raise MalformedPDFError, "PDF malformed, missing stream length" unless dict.has_key?('Length')
-      data = @buffer.read(@xref.object(dict['Length']).first)
+      raise MalformedPDFError, "PDF malformed, missing stream length" unless dict.has_key?(:Length)
+      data = @buffer.read(@xref.object(dict[:Length]).first)
       
       Error.str_assert(parse_token, "endstream")
       Error.str_assert(parse_token, "endobj")
 
-      if dict.has_key?('Filter')
+      if dict.has_key?(:Filter)
         options = []
 
-        if dict.has_key?('DecodeParms')
-          options = Array(dict['DecodeParms'])
+        if dict.has_key?(:DecodeParms)
+          options = Array(dict[:DecodeParms])
         end
 
-        Array(dict['Filter']).each_with_index do |filter, index|
+        Array(dict[:Filter]).each_with_index do |filter, index|
           data = Filter.new(filter, options[index]).filter(data)
         end
       end

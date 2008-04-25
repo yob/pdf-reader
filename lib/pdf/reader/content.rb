@@ -260,12 +260,12 @@ class PDF::Reader
     ################################################################################
     # Begin processing the document
     def document (root)
-      if root['Metadata']
-        obj, stream = @xref.object(root['Metadata'])
+      if root[:Metadata]
+        obj, stream = @xref.object(root[:Metadata])
         callback(:xml_metadata,stream) 
       end
       callback(:begin_document, [root])
-      walk_pages(@xref.object(root['Pages']).first)
+      walk_pages(@xref.object(root[:Pages]).first)
       callback(:end_document)
     end
     ################################################################################
@@ -273,35 +273,35 @@ class PDF::Reader
     # its content
     def walk_pages (page)
       
-      if page['Resources']
-        res = page['Resources']
-        page.delete('Resources')
+      if page[:Resources]
+        res = page[:Resources]
+        page.delete(:Resources)
       end
 
       # extract page content
-      if page['Type'] == "Pages"
+      if page[:Type] == :Pages
         callback(:begin_page_container, [page])
         walk_resources(@xref.object(res).first) if res
-        page['Kids'].each {|child| walk_pages(@xref.object(child).first)}
+        page[:Kids].each {|child| walk_pages(@xref.object(child).first)}
         callback(:end_page_container)
-      elsif page['Type'] == "Page"
+      elsif page[:Type] == :Page
         callback(:begin_page, [page])
         walk_resources(@xref.object(res).first) if res
         @page = page
         @params = []
 
-        if page['Contents'].kind_of?(Array)
-          contents = page['Contents']
-        elsif @xref.obj_type(page['Contents']) == :Array
-          contents, stream = @xref.object(page['Contents'])
+        if page[:Contents].kind_of?(Array)
+          contents = page[:Contents]
+        elsif @xref.obj_type(page[:Contents]) == :Array
+          contents, stream = @xref.object(page[:Contents])
         else
-          contents = [page['Contents']]
+          contents = [page[:Contents]]
         end
         
         contents.each do |content|
           obj, stream = @xref.object(content)
           content_stream(stream)
-        end if page.has_key?('Contents') and page['Contents']
+        end if page.has_key?(:Contents) and page[:Contents]
 
         callback(:end_page)
       end
@@ -351,53 +351,53 @@ class PDF::Reader
       resources = resolve_references(resources)
       
       # extract any procset information
-      if resources['ProcSet']
-        callback(:resource_procset, resources['ProcSet'])
+      if resources[:ProcSet]
+        callback(:resource_procset, resources[:ProcSet])
       end
 
       # extract any xobject information
-      if resources['XObject']
-        @xref.object(resources['XObject']).first.each do |name, val|
+      if resources[:XObject]
+        @xref.object(resources[:XObject]).first.each do |name, val|
           obj, stream = @xref.object(val)
           callback(:resource_xobject, [name, obj, stream])
         end
       end
 
       # extract any extgstate information
-      if resources['ExtGState']
-        @xref.object(resources['ExtGState']).first.each do |name, val|
+      if resources[:ExtGState]
+        @xref.object(resources[:ExtGState]).first.each do |name, val|
           callback(:resource_extgstate, [name, @xref.object(val).first])
         end
       end
 
       # extract any colorspace information
-      if resources['ColorSpace']
-        @xref.object(resources['ColorSpace']).first.each do |name, val|
+      if resources[:ColorSpace]
+        @xref.object(resources[:ColorSpace]).first.each do |name, val|
           callback(:resource_colorspace, [name, @xref.object(val).first])
         end
       end
 
       # extract any pattern information
-      if resources['Pattern']
-        @xref.object(resources['Pattern']).first.each do |name, val|
+      if resources[:Pattern]
+        @xref.object(resources[:Pattern]).first.each do |name, val|
           callback(:resource_pattern, [name, @xref.object(val).first])
         end
       end
 
       # extract any font information
-      if resources['Font']
-        @xref.object(resources['Font']).first.each do |label, desc|
+      if resources[:Font]
+        @xref.object(resources[:Font]).first.each do |label, desc|
           desc = @xref.object(desc).first
           @fonts[label] = PDF::Reader::Font.new
           @fonts[label].label = label
-          @fonts[label].subtype = desc['Subtype'] if desc['Subtype']
-          @fonts[label].basefont = desc['BaseFont'] if desc['BaseFont']
-          @fonts[label].encoding = PDF::Reader::Encoding.factory(@xref.object(desc['Encoding']).first)
-          @fonts[label].descendantfonts = desc['DescendantFonts'] if desc['DescendantFonts']
-          if desc['ToUnicode']
+          @fonts[label].subtype = desc[:Subtype] if desc[:Subtype]
+          @fonts[label].basefont = desc[:BaseFont] if desc[:BaseFont]
+          @fonts[label].encoding = PDF::Reader::Encoding.factory(@xref.object(desc[:Encoding]).first)
+          @fonts[label].descendantfonts = desc[:DescendantFonts] if desc[:DescendantFonts]
+          if desc[:ToUnicode]
             # this stream is a cmap
             begin
-              @fonts[label].tounicode = PDF::Reader::CMap.new(desc['ToUnicode'])
+              @fonts[label].tounicode = PDF::Reader::CMap.new(desc[:ToUnicode])
             rescue
               # if the CMap fails to parse, don't worry too much. Means we can't translate the text properly
             end
