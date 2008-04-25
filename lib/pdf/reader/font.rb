@@ -35,7 +35,8 @@ class PDF::Reader
       @@glyphs ||= {}
       
       if @@glyphs.empty?
-        File.open(File.dirname(__FILE__) + "/glyphlist.txt","r:BINARY") do |f|
+        RUBY_VERSION >= "1.9" ? mode = "r:BINARY" : mode = "r"
+        File.open(File.dirname(__FILE__) + "/glyphlist.txt",mode) do |f|
           f.each do |l|
             m, name, code = *l.match(/([0-9A-Za-z]+);([0-9A-F]{4})/)
             @@glyphs[name] = "0x#{code}".hex if name
