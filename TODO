@@ -1,28 +1,27 @@
 v0.7
-- Don't remove comment when tokenising in the middle of a string
 - Allow the user to only process certain aspects of the PDF file. For example, if they're only
   interested in meta data or bookmarks, there's no point in walking the pages tree.
   - maybe a third option to Reader.parse?
     parse(io, receiver, {:pages => true, :fonts => false, :metadata => true, :bookmarks => false})
+
+v0.8
+- Don't remove comment when tokenising in the middle of a string
+- Tweak encoding mappings to differentiate between bytes that are invalid for an encoding, and bytes that are unchanged.
+  poppler seems to do this in a quite reasonable way. Original Encoding -> Glyph Names -> Unicode. As of 0.6 we go straight
+  from the Original encoding to Unicode.
 - detect when a font's encoding is a CMap (generally used for pre-Unicode, multibyte asian encodings), and display a user friendly error
 - Provide a way to get raw access to a particular object. Good for testing purposes
 - Improve interpretation of non content stream data (ie metadata). Use PDFDofEncoding, recognise UTF16 strings, recognise dates, etc
 - Support Cross Reference Streams (spec 3.4.7)
 
-v0.8
-- Tweak encoding mappings to differentiate between bytes that are invalid for an encoding, and bytes that are unchanged.
-  poppler seems to do this in a quite reasonable way. Original Encoding -> Glyph Names -> Unicode. As of 0.6 we go straight
-  from the Original encoding to Unicode.
-
 v0.9
-- Support for CJK text (convert to UTF-8 like all other encodings. See Section 5.9 of the PDF spec)
-  - Will require significantly improved handling of CMaps, including creating a bunch of predefined ones
 - Add a way to extract raster images
   - see XObjects section of spec (section 4.7)
 - Add a way to extract font data?
 
 Sometime
-- Support for xref objects
+- Support for CJK text (convert to UTF-8 like all other encodings. See Section 5.9 of the PDF spec)
+  - Will require significantly improved handling of CMaps, including creating a bunch of predefined ones
 
 - Work out why specs/data/zlib*.pdf isn't parsed correctly when all the major PDF viewers can display it correctly
 
@@ -31,8 +30,6 @@ Sometime
 
 - When we encounter Identity-H encoded text with no ToUnicode CMap, render the glyphs and treat them as images, as there's no 
   sensible way to convert them to unicode
-
-- Improve metadata support
 
 - Add support for additional filters: ASCIIHexDecode, ASCII85Decode, LZWDecode, RunLengthDecode, CCITTFaxDecode, JBIG2Decode, DCTDecode, JPXDecode, Crypt?
 

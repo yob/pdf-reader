@@ -1,7 +1,14 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
 
-require 'pdf/reader'
+# These specs are a kind of "meta spec". They're not unit testing small pieces
+# of code, it's just parsing a range of PDF files and ensuring the result is
+# consistant. An extra check to make sure parsing these files will continue
+# to work for our users. 
+#
+# Where possible, specs that unit test correctly should be written in prefernce to
+# these
 
+require 'pdf/reader'
 
 class PageTextReceiver
   attr_accessor :content
