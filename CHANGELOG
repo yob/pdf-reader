@@ -7,6 +7,7 @@ v0.7 (xxx)
 - Small fixes to improve 1.9 compatability
 - Improved our Zlib deflating to make it more slightly more robust
 - Throw an UnsupportedFeatureError if a pdf that uses XRef streams is opened
+- Added an option to PDF::Reader#file and PDF::Reader#string to enable parsing of only parts of a PDF file(ie. only metadata, etc)
 
 v0.6.2 (22nd March 2008)
 - Catch low level errors when applying filters to a content stream and raise a MalformedPDFError instead. 

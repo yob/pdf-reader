@@ -51,19 +51,35 @@ module PDF
   #
   #   pdf = PDF::Reader.new
   #   pdf.parse(File.new("somefile.pdf"), receiver)
+  #
+  # = Parsing parts of a file
+  # 
+  # Both PDF::Reader#file and PDF::Reader#string accept a 3 argument that specifies which
+  # parts of the file to process. By default, all options are enabled, so this can be useful 
+  # to cut down processing time if you're only interested in say, metadata.
+  #
+  # As an example, the following call will disable parsing the contents of pages in the file,
+  # but explicitly enables processing metadata.
+  #
+  #   PDF::Reader.new("somefile.pdf", receiver, {:metadata => true, :pages => false})
+  #
+  # Available options are currently:
+  #   
+  #   :metadata
+  #   :pages
   class Reader
     ################################################################################
     # Parse the file with the given name, sending events to the given receiver.
-    def self.file (name, receiver)
+    def self.file (name, receiver, opts = {})
       File.open(name,"rb") do |f|
-        new.parse(f, receiver)
+        new.parse(f, receiver, opts)
       end
     end
     ################################################################################
     # Parse the given string, sending events to the given receiver.
-    def self.string (str, receiver)
+    def self.string (str, receiver, opts = {})
       StringIO.open(str) do |s|
-        new.parse(s, receiver)
+        new.parse(s, receiver, opts)
       end
     end
     ################################################################################
@@ -93,15 +109,18 @@ class PDF::Reader
   end
   ################################################################################
   # Given an IO object that contains PDF data, parse it.
-  def parse (io, receiver)
+  def parse (io, receiver, opts = {})
     @buffer   = Buffer.new(io)
     @xref     = XRef.new(@buffer)
     @parser   = Parser.new(@buffer, @xref)
     @content  = (receiver == Explore ? Explore : Content).new(receiver, @xref)
 
+    options = {:pages => true, :metadata => true}
+    options.merge!(opts)
+
     trailer = @xref.load
-    @content.metadata(@xref.object(trailer[:Info]).first)
-    @content.document(@xref.object(trailer[:Root]).first)
+    @content.metadata(@xref.object(trailer[:Info]).first) if options[:metadata]
+    @content.document(@xref.object(trailer[:Root]).first) if options[:pages]
     self
   end
   ################################################################################
