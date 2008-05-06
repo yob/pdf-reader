@@ -1,3 +1,6 @@
+v0.7.1 (XXX)
+- Non-page strings (ie. metadata, etc) are now converted to UTF-8 more accurately
+
 v0.7 (6th May 2008)
 - API INCOMPATIBLE CHANGE: any hashes that are passed to callbacks use symbols as keys instead of PDF::Reader::Name instances.
 - Improved support for converting text in some PDF files to unicode

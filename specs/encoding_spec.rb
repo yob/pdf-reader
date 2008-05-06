@@ -225,6 +225,61 @@ context "The PDF::Reader::Encoding::MacRomanEncoding class" do
   end
 end
 
+context "The PDF::Reader::Encoding::PDFDocEncoding class" do
+
+  specify "should correctly convert various PDFDoc strings to utf-8" do
+    e = PDF::Reader::Encoding::PDFDocEncoding.new
+    [
+      {:pdf => "\x22", :utf8 => [0x22].pack("U*")},
+      {:pdf => "\x62", :utf8 => [0x62].pack("U*")},
+      {:pdf => "\xA0", :utf8 => [0x20AC].pack("U*")},
+      {:pdf => "\x94", :utf8 => [0xFB02].pack("U*")}
+    ].each do |vals| 
+      result = e.to_utf8(vals[:pdf])
+
+      if RUBY_VERSION >= "1.9"
+        result.encoding.to_s.should eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
+      end
+
+      result.should eql(vals[:utf8]) 
+    end
+  end
+
+  specify "should correctly convert various pdf doc strings when a differences table is specified" do
+    e = PDF::Reader::Encoding::PDFDocEncoding.new
+    e.differences = [0xEE, "A"]
+    [
+      {:pdf => "\x22\xEE", :utf8 => [0x22, 0x41].pack("U*")}
+    ].each do |vals| 
+      
+      result = e.to_utf8(vals[:pdf])
+
+      if RUBY_VERSION >= "1.9"
+        result.encoding.to_s.should eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
+      end
+
+      result.should eql(vals[:utf8]) 
+      
+    end
+  end
+
+  specify "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
+    e = PDF::Reader::Encoding::PDFDocEncoding.new
+    cmap = PDF::Reader::CMap.new("")
+    cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
+    result = e.to_utf8("\x01\x02", cmap)
+    
+    result.should eql("€1")
+
+    if RUBY_VERSION >= "1.9"
+      result.encoding.to_s.should eql("UTF-8")
+    end
+      
+  end
+end
+
 context "The PDF::Reader::Encoding::StandardEncoding class" do
 
   specify "should correctly convert various standard strings to utf-8" do
@@ -450,5 +505,27 @@ context "The PDF::Reader::Encoding::ZapfDingbatsEncoding class" do
       result.encoding.to_s.should eql("UTF-8")
     end
       
+  end
+end
+
+context "The PDF::Reader::Encoding::UTF16Encoding class" do
+
+  specify "should correctly convert various PDFDoc strings to utf-8" do
+    e = PDF::Reader::Encoding::UTF16Encoding.new
+    [
+      {:utf16 => "\xFE\xFF\x00\x41", :utf8 => [0x41].pack("U*")},
+      {:utf16 => "\xFE\xFF\x20\x22", :utf8 => [0x2022].pack("U*")},
+      {:utf16 => "\x00\x41", :utf8 => [0x41].pack("U*")},
+      {:utf16 => "\x20\x22", :utf8 => [0x2022].pack("U*")}
+    ].each do |vals| 
+      result = e.to_utf8(vals[:utf16])
+
+      if RUBY_VERSION >= "1.9"
+        result.encoding.to_s.should eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
+      end
+
+      result.should eql(vals[:utf8]) 
+    end
   end
 end

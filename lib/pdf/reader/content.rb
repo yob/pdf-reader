@@ -23,7 +23,6 @@
 #
 ################################################################################
 require 'stringio'
-#require 'enumerable'
 
 class PDF::Reader
   ################################################################################
@@ -254,7 +253,7 @@ class PDF::Reader
     ################################################################################
     # Begin processing the document metadata
     def metadata (info)
-      info = utf16_to_utf8(info)
+      info = decode_strings(info)
       callback(:metadata, [info]) if info
     end
     ################################################################################
@@ -430,16 +429,17 @@ class PDF::Reader
     end
     ################################################################################
     private
-    def utf16_to_utf8(obj)
+    # strings outside of page content should be in either PDFDocEncoding or UTF-16.
+    def decode_strings(obj)
       case obj
       when String then 
         if obj[0,2] == "\376\377"
-          obj[2, obj.size-2].unpack("n*").pack("U*")
+          PDF::Reader::Encoding::UTF16Encoding.new.to_utf8(obj)
         else
-          obj
+          PDF::Reader::Encoding::PDFDocEncoding.new.to_utf8(obj)
         end
-      when Hash   then obj.each { |key,val| obj[key] = utf16_to_utf8(val) }
-      when Array  then obj.collect { |item| utf16_to_utf8(item) }
+      when Hash   then obj.each { |key,val| obj[key] = decode_strings(val) }
+      when Array  then obj.collect { |item| decode_strings(item) }
       else
         obj
       end

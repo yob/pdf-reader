@@ -498,6 +498,85 @@ class PDF::Reader
       end
     end
 
+    class PDFDocEncoding < Encoding
+      # convert a PDFDocEncoding string into UTF-8
+      def to_utf8(str, tounicode = nil)
+        array_pdf = str.unpack('C*')
+        array_pdf = self.process_differences(array_pdf)
+        array_pdf = self.process_differences(array_pdf)
+        array_enc = []
+        array_pdf.each do |num|
+          if tounicode && (code = tounicode.decode(num))
+            array_enc << code
+          elsif tounicode
+            array_enc << PDF::Reader::Encoding::UNKNOWN_CHAR
+          else
+            case num
+              # change necesary characters to equivilant Unicode codepoints
+            when 0x18; array_enc << 0x02D8
+            when 0x19; array_enc << 0x02C7
+            when 0x1A; array_enc << 0x02C6
+            when 0x1B; array_enc << 0x02D9
+            when 0x1C; array_enc << 0x02DD
+            when 0x1D; array_enc << 0x02DB
+            when 0x1E; array_enc << 0x02DA
+            when 0x1F; array_enc << 0x02DC
+            when 0x7F; array_enc << PDF::Reader::Encoding::UNKNOWN_CHAR # Undefined
+            when 0x80; array_enc << 0x2022
+            when 0x81; array_enc << 0x2020
+            when 0x82; array_enc << 0x2021
+            when 0x83; array_enc << 0x2026
+            when 0x84; array_enc << 0x2014
+            when 0x85; array_enc << 0x2013
+            when 0x86; array_enc << 0x0192
+            when 0x87; array_enc << 0x2044
+            when 0x88; array_enc << 0x2039
+            when 0x89; array_enc << 0x203A
+            when 0x8A; array_enc << 0x2212
+            when 0x8B; array_enc << 0x2030
+            when 0x8C; array_enc << 0x201E
+            when 0x8D; array_enc << 0x201C
+            when 0x8E; array_enc << 0x201D
+            when 0x8F; array_enc << 0x2018
+            when 0x90; array_enc << 0x2019
+            when 0x91; array_enc << 0x201A
+            when 0x92; array_enc << 0x2122
+            when 0x93; array_enc << 0xFB01
+            when 0x94; array_enc << 0xFB02
+            when 0x95; array_enc << 0x0141
+            when 0x96; array_enc << 0x0152
+            when 0x97; array_enc << 0x0160
+            when 0x98; array_enc << 0x0178
+            when 0x99; array_enc << 0x017D
+            when 0x9A; array_enc << 0x0131
+            when 0x9B; array_enc << 0x0142
+            when 0x9C; array_enc << 0x0153
+            when 0x9D; array_enc << 0x0161
+            when 0x9E; array_enc << 0x017E
+            when 0x9F; array_enc << PDF::Reader::Encoding::UNKNOWN_CHAR # Undefined
+            when 0xA0; array_enc << 0x20AC
+            else
+              array_enc << num
+            end
+          end
+        end
+
+        # convert any glyph names to unicode codepoints
+        array_enc = self.process_glyphnames(array_enc)
+
+        # replace charcters that didn't convert to unicode nicely with something valid
+        array_enc.collect! { |c| c ? c : PDF::Reader::Encoding::UNKNOWN_CHAR }
+
+        # pack all our Unicode codepoints into a UTF-8 string
+        ret = array_enc.pack("U*")
+
+        # set the strings encoding correctly under ruby 1.9+
+        ret.force_encoding("UTF-8") if ret.respond_to?(:force_encoding)
+
+        return ret
+      end
+    end
+
     class StandardEncoding < Encoding
       # convert an Adobe Standard Encoding string into UTF-8
       def to_utf8(str, tounicode = nil)
@@ -768,6 +847,23 @@ class PDF::Reader
         ret.force_encoding("UTF-8") if ret.respond_to?(:force_encoding)
 
         return ret
+      end
+    end
+
+    class UTF16Encoding < Encoding
+      # convert a UTF-16 string into UTF-8
+      def to_utf8(str, tounicode = nil)
+
+        # remove the UTF-16 Byte Order Mark if it exists
+        str = str[2, str.size-2] if str[0,2] == "\376\377"
+
+        # convert away
+        str = str.unpack("n*").pack("U*")
+
+        # set the strings encoding correctly under ruby 1.9+
+        str.force_encoding("UTF-8") if str.respond_to?(:force_encoding)
+
+        return str
       end
     end
 
