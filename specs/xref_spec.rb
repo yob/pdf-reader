@@ -303,3 +303,17 @@ context "The PDF::Reader::XRef class when operating on a pdf with a trailer that
   end
 
 end
+
+context "The PDF::Reader::XRef class when operating on a pdf that uses an XRef Stream" do
+
+  setup do
+    @file = File.new(File.dirname(__FILE__) + "/data/cross_ref_stream.pdf")
+    @buffer = PDF::Reader::Buffer.new(@file)
+    @xref = PDF::Reader::XRef.new(@buffer)
+  end
+  
+  specify "should raise an error when attempting to locate the xref table" do
+    lambda { @xref.load}.should raise_error(PDF::Reader::UnsupportedFeatureError)
+  end
+
+end

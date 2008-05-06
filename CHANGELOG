@@ -6,6 +6,7 @@ v0.7 (xxx)
 - Don't interpret a comment token (%) inside a string as a comment
 - Small fixes to improve 1.9 compatability
 - Improved our Zlib deflating to make it more slightly more robust
+- Throw an UnsupportedFeatureError if a pdf that uses XRef streams is opened
 
 v0.6.2 (22nd March 2008)
 - Catch low level errors when applying filters to a content stream and raise a MalformedPDFError instead. 

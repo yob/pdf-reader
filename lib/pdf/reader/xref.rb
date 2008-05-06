@@ -9,10 +9,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -45,9 +45,11 @@ class PDF::Reader
       offset ||= @buffer.find_first_xref_offset
       @buffer.seek(offset)
       token = @buffer.token
-      
+
       if token == "xref" || token == "ref"
         load_xref_table
+      elsif token.to_i >= 0 && @buffer.token.to_i >= 0 && @buffer.token == "obj"
+        raise PDF::Reader::UnsupportedFeatureError, "XRef streams are not supported in PDF::Reader yet"
       else
         raise PDF::Reader::MalformedPDFError, "xref table not found at offset #{offset} (#{token} != xref)"
       end
@@ -78,7 +80,7 @@ class PDF::Reader
       begin
         # loop over all subsections of the xref table
         # In a well formed PDF, the 'trailer' token will indicate
-        # the end of the table. However we need to be careful in case 
+        # the end of the table. However we need to be careful in case
         # we're processing a malformed pdf that is missing the trailer.
         loop do
           tok_one, tok_two = @buffer.token, @buffer.token
