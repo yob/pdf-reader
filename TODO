@@ -1,10 +1,9 @@
-v0.7
-- Allow the user to only process certain aspects of the PDF file. For example, if they're only
-  interested in meta data or bookmarks, there's no point in walking the pages tree.
-  - maybe a third option to Reader.parse?
-    parse(io, receiver, {:pages => true, :fonts => false, :metadata => true, :bookmarks => false})
-
 v0.8
+- Allow more than just page content and metadata to be parsed (see spec section 3.6.1)
+  - bookmarks?
+  - outline?
+  - articles?
+  - viewer prefs?
 - Don't remove comment when tokenising in the middle of a string
 - Tweak encoding mappings to differentiate between bytes that are invalid for an encoding, and bytes that are unchanged.
   poppler seems to do this in a quite reasonable way. Original Encoding -> Glyph Names -> Unicode. As of 0.6 we go straight

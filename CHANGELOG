@@ -1,11 +1,11 @@
-v0.7 (xxx)
+v0.7 (6th May 2008)
 - API INCOMPATIBLE CHANGE: any hashes that are passed to callbacks use symbols as keys instead of PDF::Reader::Name instances.
 - Improved support for converting text in some PDF files to unicode
 - Behave as expected if the Contents key in a Page Dict is a reference
 - Include some basic metadata callbacks
 - Don't interpret a comment token (%) inside a string as a comment
 - Small fixes to improve 1.9 compatability
-- Improved our Zlib deflating to make it more slightly more robust
+- Improved our Zlib deflating to make it more slightly more robust - still some more issues to work out though
 - Throw an UnsupportedFeatureError if a pdf that uses XRef streams is opened
 - Added an option to PDF::Reader#file and PDF::Reader#string to enable parsing of only parts of a PDF file(ie. only metadata, etc)
 
