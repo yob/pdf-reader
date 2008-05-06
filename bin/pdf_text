@@ -7,18 +7,16 @@ require 'pdf/reader'
 class PageTextReceiver
   attr_accessor :content
 
-  def initialize
-    @content = ""
-  end
-
   # Called when page parsing starts
-  def begin_page(arg = nil)
-    puts @content
-    puts
-    @content = ""
+  def end_page(arg = nil)
+    if @content
+      puts @content
+      puts
+    end
   end
 
   def show_text(string, *params)
+    @content = "" if @content.nil?
     @content << string
   end
 
@@ -40,6 +38,3 @@ if ARGV.empty?
 else
   PDF::Reader.file(ARGV[0], receiver)
 end
-
-puts receiver.content.inspect
-
