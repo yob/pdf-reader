@@ -67,4 +67,14 @@ context "PDF::Reader" do
     receiver.content.size.should eql(3)
     receiver.content[0][0,str.size].should eql(str)
   end
+
+  specify "should process text from a PDF with a difference table correctly" do
+    receiver = PageTextReceiver.new
+    str = "Goiás"
+    PDF::Reader.file(File.dirname(__FILE__) + "/data/difference_table.pdf", receiver)
+
+    # confirm the text appears on the correct pages
+    receiver.content.size.should eql(1)
+    receiver.content[0].should eql(str)
+  end
 end
