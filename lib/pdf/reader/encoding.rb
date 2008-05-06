@@ -34,13 +34,13 @@ class PDF::Reader
 
     # set the differences table for this encoding. should be an array in the following format:
     #
-    #   [25, "A", 26, "B"]
+    #   [25, :A, 26, :B]
     #
     # The array alternates bewteen a decimal byte number and a glyph name to map to that byte
     #
     # To save space the following array is also valid and equivilant to the previous one
     #
-    #   [25, "A", "B"]
+    #   [25, :A, :B]
     def differences=(diff)
       raise ArgumentError, "diff must be an array" unless diff.kind_of?(Array)
 
@@ -502,7 +502,6 @@ class PDF::Reader
       # convert a PDFDocEncoding string into UTF-8
       def to_utf8(str, tounicode = nil)
         array_pdf = str.unpack('C*')
-        array_pdf = self.process_differences(array_pdf)
         array_pdf = self.process_differences(array_pdf)
         array_enc = []
         array_pdf.each do |num|

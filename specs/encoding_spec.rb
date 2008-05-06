@@ -33,43 +33,43 @@ context "The PDF::Reader::Encoding class" do
   specify "should return a new encoding object with a differences table on request" do
     win =  {
              :Encoding    => :WinAnsiEncoding,
-             :Differences => [25, "A", 26, "B"]
+             :Differences => [25, :A, 26, :B]
            }
     enc = PDF::Reader::Encoding.factory(win)
     enc.should be_a_kind_of(PDF::Reader::Encoding::WinAnsiEncoding)
     enc.differences.should be_a_kind_of(Hash)
-    enc.differences[25].should eql("A")
-    enc.differences[26].should eql("B")
+    enc.differences[25].should eql(:A)
+    enc.differences[26].should eql(:B)
   end
 
   specify "should return a new encoding object with a differences table on request" do
     win =  {
              :Encoding    => :WinAnsiEncoding,
-             :Differences => [25, "A", "B"]
+             :Differences => [25, :A, :B]
            }
     enc = PDF::Reader::Encoding.factory(win)
     enc.should be_a_kind_of(PDF::Reader::Encoding::WinAnsiEncoding)
     enc.differences.should be_a_kind_of(Hash)
-    enc.differences[25].should eql("A")
-    enc.differences[26].should eql("B")
+    enc.differences[25].should eql(:A)
+    enc.differences[26].should eql(:B)
   end
 
   specify "should correctly replaces all bytes in an array with glyph names" do
     win =  {
              :Encoding    => :WinAnsiEncoding,
-             :Differences => [25, "A", "B"]
+             :Differences => [25, :A, :B]
            }
     enc = PDF::Reader::Encoding.factory(win)
-    enc.process_differences([32, 25, 26, 32]).should eql([32, "A", "B", 32])
+    enc.process_differences([32, 25, 26, 32]).should eql([32, :A, :B, 32])
   end
 
   specify "should correctly replaces all glyph names in an array with unicode codepoints" do
     win =  {
              :Encoding    => :WinAnsiEncoding,
-             :Differences => [25, "A", "B"]
+             :Differences => [25, :A, :B]
            }
     enc = PDF::Reader::Encoding.factory(win)
-    enc.process_glyphnames([32, "A", "B", 32]).should eql([32, 0x41, 0x42, 32])
+    enc.process_glyphnames([32, :A, :B, 32]).should eql([32, 0x41, 0x42, 32])
   end
 
   specify "should raise an exception if to_utf8 is called" do
@@ -136,7 +136,7 @@ context "The PDF::Reader::Encoding::MacExpertEncoding class" do
 
   specify "should correctly convert various mac expert strings when a differences table is specified" do
     e = PDF::Reader::Encoding::MacExpertEncoding.new
-    e.differences = [0xEE, "A"]
+    e.differences = [0xEE, :A]
     [
       {:mac => "\x22\xEE", :utf8 => [0xF6F8, 0x41].pack("U*")}
     ].each do |vals| 
@@ -193,7 +193,7 @@ context "The PDF::Reader::Encoding::MacRomanEncoding class" do
 
   specify "should correctly convert various mac roman strings when a differences table is specified" do
     e = PDF::Reader::Encoding::MacRomanEncoding.new
-    e.differences = [0xEE, "A"]
+    e.differences = [0xEE, :A]
     [
       {:mac => "\x24\xEE", :utf8 => [0x24, 0x41].pack("U*")}, # dollar sign, A
     ].each do |vals| 
@@ -248,7 +248,7 @@ context "The PDF::Reader::Encoding::PDFDocEncoding class" do
 
   specify "should correctly convert various pdf doc strings when a differences table is specified" do
     e = PDF::Reader::Encoding::PDFDocEncoding.new
-    e.differences = [0xEE, "A"]
+    e.differences = [0xEE, :A]
     [
       {:pdf => "\x22\xEE", :utf8 => [0x22, 0x41].pack("U*")}
     ].each do |vals| 
@@ -307,7 +307,7 @@ context "The PDF::Reader::Encoding::StandardEncoding class" do
 
   specify "should correctly convert various standard strings when a differences table is specified" do
     e = PDF::Reader::Encoding::StandardEncoding.new
-    e.differences = [0xEE, "A"]
+    e.differences = [0xEE, :A]
     [
       {:std => "\x60\xEE", :utf8 => [0x2018, 0x41].pack("U*")}, # ", A
     ].each do |vals| 
@@ -364,7 +364,7 @@ context "The PDF::Reader::Encoding::SymbolEncoding class" do
 
   specify "should correctly convert various symbol strings when a differences table is specified" do
     e = PDF::Reader::Encoding::SymbolEncoding.new
-    e.differences = [0xEE, "A"]
+    e.differences = [0xEE, :A]
     [
       {:symbol => "\x41\xEE", :utf8 => [0x0391, 0x41].pack("U*")}, # alpha, A
     ].each do |vals| 
@@ -421,7 +421,7 @@ context "The PDF::Reader::Encoding::WinAnsiEncoding class" do
   
   specify "should correctly convert various win-1252 strings when a differences table is specified" do
     e = PDF::Reader::Encoding::WinAnsiEncoding.new
-    e.differences = [0xEE, "A"]
+    e.differences = [0xEE, :A]
     [
       {:win => "abc", :utf8 => "abc"},
       {:win => "ABC", :utf8 => "ABC"},
@@ -476,7 +476,7 @@ context "The PDF::Reader::Encoding::ZapfDingbatsEncoding class" do
 
   specify "should correctly convert various dingbats strings when a differences table is specified" do
     e = PDF::Reader::Encoding::ZapfDingbatsEncoding.new
-    e.differences = [0xEE, "A"]
+    e.differences = [0xEE, :A]
     [
       {:dingbats => "\x22\xEE", :utf8 => [0x2702, 0x41].pack("U*")}, # scissors
     ].each do |vals| 

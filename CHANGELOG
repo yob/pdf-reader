@@ -1,5 +1,7 @@
 v0.7.1 (XXX)
 - Non-page strings (ie. metadata, etc) are now converted to UTF-8 more accurately
+- Fixed a regression between 0.6.2 and 0.7 that prevented difference tables from being applied
+  correctly when translating text into UTF-8
 
 v0.7 (6th May 2008)
 - API INCOMPATIBLE CHANGE: any hashes that are passed to callbacks use symbols as keys instead of PDF::Reader::Name instances.
