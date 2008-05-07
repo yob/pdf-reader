@@ -119,6 +119,7 @@ class PDF::Reader
     options.merge!(opts)
 
     trailer = @xref.load
+    raise PDF::Reader::UnsupportedFeatureError, 'PDF::Reader cannot read encrypted PDF files' if trailer[:Encrypt]
     @content.metadata(@xref.object(trailer[:Info]).first) if options[:metadata]
     @content.document(@xref.object(trailer[:Root]).first) if options[:pages]
     self

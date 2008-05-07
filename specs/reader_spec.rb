@@ -30,4 +30,9 @@ context "The PDF::Reader class" do
     receiver.count(:begin_document).should eql(0)
     receiver.count(:metadata).should eql(1)
   end
+
+  specify "should raise an exception if an encrypted file is opened" do
+    receiver = PDF::Reader::RegisterReceiver.new
+    lambda {PDF::Reader.file(File.dirname(__FILE__) + "/data/difference_table_encrypted.pdf", receiver)}.should raise_error(PDF::Reader::UnsupportedFeatureError)
+  end
 end

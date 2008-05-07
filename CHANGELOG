@@ -1,3 +1,6 @@
+v0.7.2 (XXX)
+- Throw an UnsupportedFeatureError if we try to open an encrypted PDF
+
 v0.7.1 (6th May 2008)
 - Non-page strings (ie. metadata, etc) are now converted to UTF-8 more accurately
 - Fixed a regression between 0.6.2 and 0.7 that prevented difference tables from being applied
