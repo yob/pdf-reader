@@ -65,6 +65,9 @@ spec = Gem::Specification.new do |spec|
                       ["Rakefile"]
   
   spec.require_path = "lib"
+  spec.bindir = "bin"
+  spec.executables << "pdf_text"
+  spec.executables << "pdf_list_callbacks"
 	spec.has_rdoc = true
 	spec.extra_rdoc_files = %w{README TODO CHANGELOG}
 	spec.rdoc_options << '--title' << 'PDF::Reader Documentation' <<
