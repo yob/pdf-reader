@@ -77,6 +77,7 @@ class PDF::Reader
     # returns true if the underlying IO object is at end and the internal buffer 
     # is empty
     def eof?
+      ready_token
       if @buffer
         @buffer.empty? && @io.eof?
       else
@@ -91,7 +92,7 @@ class PDF::Reader
     # PDF files are processed by tokenising the content into a series of objects and commands.
     # This prepares the buffer for use by reading the next line of tokens into memory.
     def ready_token (with_strip=true, skip_blanks=true)
-      while @buffer.nil? or @buffer.empty?
+      while (@buffer.nil? or @buffer.empty?) && !@io.eof?
         @buffer = @io.readline
         @buffer.force_encoding("BINARY") if @buffer.respond_to?(:force_encoding)
         #@buffer.sub!(/%.*$/, '') if strip_comments
