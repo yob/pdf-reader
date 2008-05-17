@@ -77,4 +77,14 @@ context "PDF::Reader" do
     receiver.content.size.should eql(1)
     receiver.content[0].should eql(str)
   end
+
+  specify "should process text from a PDF with a content stream that has trailing whitespace" do
+    receiver = PageTextReceiver.new
+    str = "TaxInvoice"
+    PDF::Reader.file(File.dirname(__FILE__) + "/data/content_stream_trailing_whitespace.pdf", receiver)
+
+    # confirm the text appears on the correct pages
+    receiver.content.size.should eql(1)
+    receiver.content[0].slice(0,10).should eql(str)
+  end
 end
