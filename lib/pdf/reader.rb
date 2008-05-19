@@ -98,6 +98,7 @@ require 'pdf/reader/font'
 require 'pdf/reader/parser'
 require 'pdf/reader/reference'
 require 'pdf/reader/register_receiver'
+require 'pdf/reader/stream'
 require 'pdf/reader/text_receiver'
 require 'pdf/reader/token'
 require 'pdf/reader/xref'
@@ -120,8 +121,8 @@ class PDF::Reader
 
     trailer = @xref.load
     raise PDF::Reader::UnsupportedFeatureError, 'PDF::Reader cannot read encrypted PDF files' if trailer[:Encrypt]
-    @content.metadata(@xref.object(trailer[:Info]).first) if options[:metadata]
-    @content.document(@xref.object(trailer[:Root]).first) if options[:pages]
+    @content.metadata(@xref.object(trailer[:Info])) if options[:metadata]
+    @content.document(@xref.object(trailer[:Root])) if options[:pages]
     self
   end
   ################################################################################

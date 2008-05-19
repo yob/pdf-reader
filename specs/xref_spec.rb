@@ -47,7 +47,7 @@ context "The PDF::Reader::XRef class when operating on the cairo-basic PDF" do
     ref = PDF::Reader::Reference.new(6,0) 
     @xref.load
     cursor = @buffer.pos
-    @xref.object(ref,false).should eql([267.0, nil])
+    @xref.object(ref,false).should eql(267.0)
   end
 end
 

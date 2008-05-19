@@ -1,6 +1,9 @@
 v0.7.2 (XXX)
 - Throw an UnsupportedFeatureError if we try to open an encrypted PDF
 - Correctly handle page content instruction sets with trailing whitespace
+- Represent PDF Streams with a new object, PDF::Reader::Stream
+  - their really wasn't any point in separating the stream content from it's associated dict. You need both
+    parts to correctly interpret the content
 
 v0.7.1 (6th May 2008)
 - Non-page strings (ie. metadata, etc) are now converted to UTF-8 more accurately

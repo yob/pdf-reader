@@ -66,11 +66,11 @@ context "The PDF::Reader::Content class" do
     xref.xref[3] = Hash.new
     xref.xref[3][0] = 248
     ref =      PDF::Reader::Reference.new(3,0)
-    obj, stream = xref.object(ref)
+    obj = xref.object(ref)
 
     # process the instructions
     content = PDF::Reader::Content.new(receiver, nil)
-    content.content_stream(stream) 
+    content.content_stream(obj)
   end
 
   specify "should send the correct metadata callbacks when processing an PrinceXML PDF" do
