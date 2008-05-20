@@ -48,6 +48,9 @@ UnsupportedFeatureError - The PDF uses a feature that PDF::Reader doesn't curren
 support. Again, we welcome submissions of PDF files that exhibit these features to help 
 us with future code improvements.
 
+Any other exceptions should be considered bugs and should be reported (unless they originate
+inside your receiver, in which case you're on your own)
+
 = Maintainers
 
 - Peter Jones <mailto:pjones@pmade.com>
@@ -229,9 +232,9 @@ layout of the file, not the order objects are displayed to the user. As a
 consequence of this it is highly unlikely that text will be completely in
 order.
 
-Occasionally some text cannot be extracted properly due to the way it has been stored, or the use
-of invalid bytes. In these cases PDF::Reader will output a little UTF-8 friendly box to indicate
-an unrecognisable character.
+Occasionally some text cannot be extracted properly due to the way it has been
+stored, or the use of invalid bytes. In these cases PDF::Reader will output a
+little UTF-8 friendly box to indicate an unrecognisable character.
 
 = Resources
 
