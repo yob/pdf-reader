@@ -1,3 +1,5 @@
+# coding: utf-8
+
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
 
 # These specs are a kind of "meta spec". They're not unit testing small pieces
@@ -60,12 +62,14 @@ context "PDF::Reader" do
 
   specify "should process text from a dutch PDF correctly" do
     receiver = PageTextReceiver.new
-    str = "Dit\302\240is\302\240een\302\240pdf\302\240test\302\240van\302\240drie\302\240pagina’s.\302\240\302\240Pagina\302\2401"
+    str1 = "Dit\302\240is\302\240een\302\240pdf\302\240test\302\240van\302\240drie\302\240pagina’s."
+    str2 = "Pagina\302\2401"
     PDF::Reader.file(File.dirname(__FILE__) + "/data/dutch.pdf", receiver)
 
     # confirm the text appears on the correct pages
     receiver.content.size.should eql(3)
-    receiver.content[0][0,str.size].should eql(str)
+    receiver.content[0].include?(str1).should be_true
+    receiver.content[0].include?(str2).should be_true
   end
 
   specify "should process text from a PDF with a difference table correctly" do
