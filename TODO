@@ -9,7 +9,6 @@ v0.8
   poppler seems to do this in a quite reasonable way. Original Encoding -> Glyph Names -> Unicode. As of 0.6 we go straight
   from the Original encoding to Unicode.
 - detect when a font's encoding is a CMap (generally used for pre-Unicode, multibyte asian encodings), and display a user friendly error
-- Provide a way to get raw access to a particular object. Good for testing purposes
 - Improve interpretation of non content stream data (ie metadata). recognise dates, etc
 - Support Cross Reference Streams (spec 3.4.7)
 

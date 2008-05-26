@@ -70,16 +70,28 @@ module PDF
   class Reader
     ################################################################################
     # Parse the file with the given name, sending events to the given receiver.
-    def self.file (name, receiver, opts = {})
+    def self.file(name, receiver, opts = {})
       File.open(name,"rb") do |f|
         new.parse(f, receiver, opts)
       end
     end
     ################################################################################
     # Parse the given string, sending events to the given receiver.
-    def self.string (str, receiver, opts = {})
+    def self.string(str, receiver, opts = {})
       StringIO.open(str) do |s|
         new.parse(s, receiver, opts)
+      end
+    end
+    ################################################################################
+    def self.object_file(name, id, gen)
+      File.open(name,"rb") do |f|
+        new.object(f, id, gen)
+      end
+    end
+    ################################################################################
+    def self.object_string(name, id, gen)
+      StringIO.open(str) do |s|
+        new.object(s, id, gen)
       end
     end
     ################################################################################
@@ -105,10 +117,6 @@ require 'pdf/reader/xref'
 
 class PDF::Reader
   ################################################################################
-  # Initialize a new PDF::Reader
-  def initialize
-  end
-  ################################################################################
   # Given an IO object that contains PDF data, parse it.
   def parse (io, receiver, opts = {})
     @buffer   = Buffer.new(io)
@@ -124,6 +132,15 @@ class PDF::Reader
     @content.metadata(@xref.object(trailer[:Info])) if options[:metadata]
     @content.document(@xref.object(trailer[:Root])) if options[:pages]
     self
+  end
+  ################################################################################
+  # Given an IO object that contains PDF data, return the contents of a single object
+  def object (io, id, gen)
+    @buffer   = Buffer.new(io)
+    @xref     = XRef.new(@buffer)
+    @xref.load
+
+    @xref.object(Reference.new(id, gen))
   end
   ################################################################################
 end

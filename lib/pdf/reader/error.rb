@@ -48,6 +48,7 @@ class PDF::Reader
   end
   ################################################################################
   class MalformedPDFError < RuntimeError; end
+  class InvalidObjectError < MalformedPDFError; end
   class UnsupportedFeatureError < RuntimeError; end
 end
 ################################################################################
