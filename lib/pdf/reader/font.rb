@@ -52,9 +52,9 @@ class PDF::Reader
       # with encoding= if required
       case font
       when "Symbol" then 
-        self.encoding = PDF::Reader::Encoding.factory("SymbolEncoding")
+        self.encoding = PDF::Reader::Encoding.new("SymbolEncoding")
       when "ZapfDingbats" then 
-        self.encoding = PDF::Reader::Encoding.factory("ZapfDingbatsEncoding")
+        self.encoding = PDF::Reader::Encoding.new("ZapfDingbatsEncoding")
       end
     end
 
@@ -65,7 +65,7 @@ class PDF::Reader
         # translate the bytestram into a UTF-8 string.
         # If an encoding hasn't been specified, assume the text using this 
         # font is in Adobe Standard Encoding.
-        (encoding || PDF::Reader::Encoding::StandardEncoding.new).to_utf8(params, tounicode)
+        (encoding || PDF::Reader::Encoding.new(:StandardEncoding)).to_utf8(params, tounicode)
       elsif params.class == Array
         params.collect { |param| self.to_utf8(param) }
       else

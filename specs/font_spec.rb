@@ -13,10 +13,10 @@ context "PDF::Reader::Font" do
     f.encoding.should be_nil
 
     f.basefont = "Symbol"
-    f.encoding.should be_a_kind_of(PDF::Reader::Encoding::SymbolEncoding)
+    f.encoding.should be_a_kind_of(PDF::Reader::Encoding)
 
     f.basefont = "ZapfDingbats"
-    f.encoding.should be_a_kind_of(PDF::Reader::Encoding::ZapfDingbatsEncoding)
+    f.encoding.should be_a_kind_of(PDF::Reader::Encoding)
   end
 
   specify "should correctly create a mapping of glyph names to unicode code points" do

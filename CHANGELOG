@@ -1,5 +1,6 @@
 v0.7.3 (UNRELESED)
 - Add a high level way to get direct access to a PDF object, including a new executable: pdf_object
+- Significantly simplified the internal code for encoding conversions
 
 v0.7.2 (20th May 2008)
 - Throw an UnsupportedFeatureError if we try to open an encrypted/secure PDF

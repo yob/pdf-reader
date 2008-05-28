@@ -12,22 +12,15 @@ end
 context "The PDF::Reader::Encoding class" do
 
   specify "should return a new encoding object on request, or raise an error if unrecognised" do
-    PDF::Reader::Encoding.factory("Identity-H").should be_a_kind_of(PDF::Reader::Encoding::IdentityH)
-    PDF::Reader::Encoding.factory("MacRomanEncoding").should be_a_kind_of(PDF::Reader::Encoding::MacRomanEncoding)
-    PDF::Reader::Encoding.factory("MacExpertEncoding").should be_a_kind_of(PDF::Reader::Encoding::MacExpertEncoding)
-    PDF::Reader::Encoding.factory("StandardEncoding").should be_a_kind_of(PDF::Reader::Encoding::StandardEncoding)
-    PDF::Reader::Encoding.factory("SymbolEncoding").should be_a_kind_of(PDF::Reader::Encoding::SymbolEncoding)
-    PDF::Reader::Encoding.factory("WinAnsiEncoding").should be_a_kind_of(PDF::Reader::Encoding::WinAnsiEncoding)
-    PDF::Reader::Encoding.factory("ZapfDingbatsEncoding").should be_a_kind_of(PDF::Reader::Encoding::ZapfDingbatsEncoding)
-    lambda { PDF::Reader::Encoding.factory("FakeEncoding")}.should raise_error(PDF::Reader::UnsupportedFeatureError)
-    PDF::Reader::Encoding.factory(nil).should be_a_kind_of(PDF::Reader::Encoding::StandardEncoding)
+    lambda { PDF::Reader::Encoding.new("FakeEncoding")}.should raise_error(PDF::Reader::UnsupportedFeatureError)
+    PDF::Reader::Encoding.new(nil).should be_a_kind_of(PDF::Reader::Encoding)
   end
 
   specify "should return a new encoding object on request, or raise an error if unrecognised" do
     win =  {:Encoding => :WinAnsiEncoding}
     fake = {:Encoding => :FakeEncoding}
-    PDF::Reader::Encoding.factory(win).should be_a_kind_of(PDF::Reader::Encoding::WinAnsiEncoding)
-    lambda { PDF::Reader::Encoding.factory(fake)}.should raise_error(PDF::Reader::UnsupportedFeatureError)
+    PDF::Reader::Encoding.new(win).should be_a_kind_of(PDF::Reader::Encoding)
+    lambda { PDF::Reader::Encoding.new(fake)}.should raise_error(PDF::Reader::UnsupportedFeatureError)
   end
 
   specify "should return a new encoding object with a differences table on request" do
@@ -35,8 +28,8 @@ context "The PDF::Reader::Encoding class" do
              :Encoding    => :WinAnsiEncoding,
              :Differences => [25, :A, 26, :B]
            }
-    enc = PDF::Reader::Encoding.factory(win)
-    enc.should be_a_kind_of(PDF::Reader::Encoding::WinAnsiEncoding)
+    enc = PDF::Reader::Encoding.new(win)
+    enc.should be_a_kind_of(PDF::Reader::Encoding)
     enc.differences.should be_a_kind_of(Hash)
     enc.differences[25].should eql(:A)
     enc.differences[26].should eql(:B)
@@ -47,8 +40,8 @@ context "The PDF::Reader::Encoding class" do
              :Encoding    => :WinAnsiEncoding,
              :Differences => [25, :A, :B]
            }
-    enc = PDF::Reader::Encoding.factory(win)
-    enc.should be_a_kind_of(PDF::Reader::Encoding::WinAnsiEncoding)
+    enc = PDF::Reader::Encoding.new(win)
+    enc.should be_a_kind_of(PDF::Reader::Encoding)
     enc.differences.should be_a_kind_of(Hash)
     enc.differences[25].should eql(:A)
     enc.differences[26].should eql(:B)
@@ -59,7 +52,7 @@ context "The PDF::Reader::Encoding class" do
              :Encoding    => :WinAnsiEncoding,
              :Differences => [25, :A, :B]
            }
-    enc = PDF::Reader::Encoding.factory(win)
+    enc = PDF::Reader::Encoding.new(win)
     enc.process_differences([32, 25, 26, 32]).should eql([32, :A, :B, 32])
   end
 
@@ -68,20 +61,15 @@ context "The PDF::Reader::Encoding class" do
              :Encoding    => :WinAnsiEncoding,
              :Differences => [25, :A, :B]
            }
-    enc = PDF::Reader::Encoding.factory(win)
+    enc = PDF::Reader::Encoding.new(win)
     enc.process_glyphnames([32, :A, :B, 32]).should eql([32, 0x41, 0x42, 32])
-  end
-
-  specify "should raise an exception if to_utf8 is called" do
-    e = PDF::Reader::Encoding.new
-    lambda { e.to_utf8("test")}.should raise_error(RuntimeError)
   end
 end
 
 context "The PDF::Reader::Encoding::IdentityH class" do
 
-  specify "should return utf-8  squares if to_utf8 is called without a cmap" do
-    e = PDF::Reader::Encoding::IdentityH.new
+  specify "should return utf-8 squares if to_utf8 is called without a cmap" do
+    e = PDF::Reader::Encoding.new("Identity-H")
     [
       {:expert => "\x22",             :utf8 => ""},
       {:expert => "\x22\xF7",         :utf8 => [0x25AF].pack("U*")},
@@ -99,7 +87,7 @@ context "The PDF::Reader::Encoding::IdentityH class" do
   end
 
   specify "should convert an IdentityH encoded string into UTF-8" do
-    e = PDF::Reader::Encoding::IdentityH.new
+    e = PDF::Reader::Encoding.new("Identity-H")
     cmap = PDF::Reader::CMap.new("")
     cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
     result = e.to_utf8("\x00\x01\x00\x02", cmap)
@@ -116,7 +104,7 @@ end
 context "The PDF::Reader::Encoding::MacExpertEncoding class" do
 
   specify "should correctly convert various expert strings to utf-8" do
-    e = PDF::Reader::Encoding::MacExpertEncoding.new
+    e = PDF::Reader::Encoding.new(:MacExpertEncoding)
     [
       {:expert => "\x22", :utf8 => [0xF6F8].pack("U*")},
       {:expert => "\x62", :utf8 => [0xF762].pack("U*")},
@@ -135,7 +123,7 @@ context "The PDF::Reader::Encoding::MacExpertEncoding class" do
   end
 
   specify "should correctly convert various mac expert strings when a differences table is specified" do
-    e = PDF::Reader::Encoding::MacExpertEncoding.new
+    e = PDF::Reader::Encoding.new(:MacExpertEncoding)
     e.differences = [0xEE, :A]
     [
       {:mac => "\x22\xEE", :utf8 => [0xF6F8, 0x41].pack("U*")}
@@ -154,7 +142,7 @@ context "The PDF::Reader::Encoding::MacExpertEncoding class" do
   end
 
   specify "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
-    e = PDF::Reader::Encoding::MacExpertEncoding.new
+    e = PDF::Reader::Encoding.new(:MacExpertEncoding)
     cmap = PDF::Reader::CMap.new("")
     cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
     result = e.to_utf8("\x01\x02", cmap)
@@ -171,7 +159,7 @@ end
 context "The PDF::Reader::Encoding::MacRomanEncoding class" do
 
   specify "should correctly convert various mac roman strings to utf-8" do
-    e = PDF::Reader::Encoding::MacRomanEncoding.new
+    e = PDF::Reader::Encoding.new(:MacRomanEncoding)
     [
       {:mac => "abc", :utf8 => "abc"},
       {:mac => "ABC", :utf8 => "ABC"},
@@ -192,7 +180,7 @@ context "The PDF::Reader::Encoding::MacRomanEncoding class" do
   end
 
   specify "should correctly convert various mac roman strings when a differences table is specified" do
-    e = PDF::Reader::Encoding::MacRomanEncoding.new
+    e = PDF::Reader::Encoding.new(:MacRomanEncoding)
     e.differences = [0xEE, :A]
     [
       {:mac => "\x24\xEE", :utf8 => [0x24, 0x41].pack("U*")}, # dollar sign, A
@@ -211,7 +199,7 @@ context "The PDF::Reader::Encoding::MacRomanEncoding class" do
   end
 
   specify "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
-    e = PDF::Reader::Encoding::MacRomanEncoding.new
+    e = PDF::Reader::Encoding.new(:MacRomanEncoding)
     cmap = PDF::Reader::CMap.new("")
     cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
     result = e.to_utf8("\x01\x02", cmap)
@@ -228,7 +216,7 @@ end
 context "The PDF::Reader::Encoding::PDFDocEncoding class" do
 
   specify "should correctly convert various PDFDoc strings to utf-8" do
-    e = PDF::Reader::Encoding::PDFDocEncoding.new
+    e = PDF::Reader::Encoding.new(:PDFDocEncoding)
     [
       {:pdf => "\x22", :utf8 => [0x22].pack("U*")},
       {:pdf => "\x62", :utf8 => [0x62].pack("U*")},
@@ -247,7 +235,7 @@ context "The PDF::Reader::Encoding::PDFDocEncoding class" do
   end
 
   specify "should correctly convert various pdf doc strings when a differences table is specified" do
-    e = PDF::Reader::Encoding::PDFDocEncoding.new
+    e = PDF::Reader::Encoding.new(:PDFDocEncoding)
     e.differences = [0xEE, :A]
     [
       {:pdf => "\x22\xEE", :utf8 => [0x22, 0x41].pack("U*")}
@@ -266,7 +254,7 @@ context "The PDF::Reader::Encoding::PDFDocEncoding class" do
   end
 
   specify "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
-    e = PDF::Reader::Encoding::PDFDocEncoding.new
+    e = PDF::Reader::Encoding.new(:PDFDocEncoding)
     cmap = PDF::Reader::CMap.new("")
     cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
     result = e.to_utf8("\x01\x02", cmap)
@@ -283,7 +271,7 @@ end
 context "The PDF::Reader::Encoding::StandardEncoding class" do
 
   specify "should correctly convert various standard strings to utf-8" do
-    e = PDF::Reader::Encoding::StandardEncoding.new
+    e = PDF::Reader::Encoding.new(:StandardEncoding)
     [
       {:standard => "abc",  :utf8 => "abc"},
       {:standard => "ABC",  :utf8 => "ABC"},
@@ -306,7 +294,7 @@ context "The PDF::Reader::Encoding::StandardEncoding class" do
   end
 
   specify "should correctly convert various standard strings when a differences table is specified" do
-    e = PDF::Reader::Encoding::StandardEncoding.new
+    e = PDF::Reader::Encoding.new(:StandardEncoding)
     e.differences = [0xEE, :A]
     [
       {:std => "\x60\xEE", :utf8 => [0x2018, 0x41].pack("U*")}, # ", A
@@ -325,7 +313,7 @@ context "The PDF::Reader::Encoding::StandardEncoding class" do
   end
 
   specify "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
-    e = PDF::Reader::Encoding::StandardEncoding.new
+    e = PDF::Reader::Encoding.new(:StandardEncoding)
     cmap = PDF::Reader::CMap.new("")
     cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
     result = e.to_utf8("\x01\x02", cmap)
@@ -342,7 +330,7 @@ end
 context "The PDF::Reader::Encoding::SymbolEncoding class" do
 
   specify "should correctly convert various symbol strings to utf-8" do
-    e = PDF::Reader::Encoding::SymbolEncoding.new
+    e = PDF::Reader::Encoding.new(:SymbolEncoding)
     [
       {:symbol => "\x41", :utf8 => [0x0391].pack("U*")}, # alpha
       {:symbol => "\x42", :utf8 => [0x0392].pack("U*")}, # beta
@@ -363,7 +351,7 @@ context "The PDF::Reader::Encoding::SymbolEncoding class" do
   end
 
   specify "should correctly convert various symbol strings when a differences table is specified" do
-    e = PDF::Reader::Encoding::SymbolEncoding.new
+    e = PDF::Reader::Encoding.new(:SymbolEncoding)
     e.differences = [0xEE, :A]
     [
       {:symbol => "\x41\xEE", :utf8 => [0x0391, 0x41].pack("U*")}, # alpha, A
@@ -382,7 +370,7 @@ context "The PDF::Reader::Encoding::SymbolEncoding class" do
   end
 
   specify "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
-    e = PDF::Reader::Encoding::SymbolEncoding.new
+    e = PDF::Reader::Encoding.new(:SymbolEncoding)
     cmap = PDF::Reader::CMap.new("")
     cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
     result = e.to_utf8("\x01\x02", cmap)
@@ -399,7 +387,7 @@ end
 context "The PDF::Reader::Encoding::WinAnsiEncoding class" do
 
   specify "should correctly convert various win-1252 strings to utf-8" do
-    e = PDF::Reader::Encoding::WinAnsiEncoding.new
+    e = PDF::Reader::Encoding.new(:WinAnsiEncoding)
     [
       {:win => "abc", :utf8 => "abc"},
       {:win => "ABC", :utf8 => "ABC"},
@@ -420,7 +408,7 @@ context "The PDF::Reader::Encoding::WinAnsiEncoding class" do
   end
   
   specify "should correctly convert various win-1252 strings when a differences table is specified" do
-    e = PDF::Reader::Encoding::WinAnsiEncoding.new
+    e = PDF::Reader::Encoding.new(:WinAnsiEncoding)
     e.differences = [0xEE, :A]
     [
       {:win => "abc", :utf8 => "abc"},
@@ -438,7 +426,7 @@ context "The PDF::Reader::Encoding::WinAnsiEncoding class" do
   end
 
   specify "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
-    e = PDF::Reader::Encoding::WinAnsiEncoding.new
+    e = PDF::Reader::Encoding.new(:WinAnsiEncoding)
     cmap = PDF::Reader::CMap.new("")
     cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
     result = e.to_utf8("\x01\x02", cmap)
@@ -455,7 +443,7 @@ end
 context "The PDF::Reader::Encoding::ZapfDingbatsEncoding class" do
 
   specify "should correctly convert various dingbats strings to utf-8" do
-    e = PDF::Reader::Encoding::ZapfDingbatsEncoding.new
+    e = PDF::Reader::Encoding.new(:ZapfDingbatsEncoding)
     [
       {:dingbats => "\x22", :utf8 => [0x2702].pack("U*")}, # scissors
       {:dingbats => "\x25", :utf8 => [0x260E].pack("U*")}, # telephone
@@ -475,7 +463,7 @@ context "The PDF::Reader::Encoding::ZapfDingbatsEncoding class" do
   end
 
   specify "should correctly convert various dingbats strings when a differences table is specified" do
-    e = PDF::Reader::Encoding::ZapfDingbatsEncoding.new
+    e = PDF::Reader::Encoding.new(:ZapfDingbatsEncoding)
     e.differences = [0xEE, :A]
     [
       {:dingbats => "\x22\xEE", :utf8 => [0x2702, 0x41].pack("U*")}, # scissors
@@ -494,7 +482,7 @@ context "The PDF::Reader::Encoding::ZapfDingbatsEncoding class" do
   end
 
   specify "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
-    e = PDF::Reader::Encoding::ZapfDingbatsEncoding.new
+    e = PDF::Reader::Encoding.new(:ZapfDingbatsEncoding)
     cmap = PDF::Reader::CMap.new("")
     cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
     result = e.to_utf8("\x01\x02", cmap)
@@ -511,10 +499,10 @@ end
 context "The PDF::Reader::Encoding::UTF16Encoding class" do
 
   specify "should correctly convert various PDFDoc strings to utf-8" do
-    e = PDF::Reader::Encoding::UTF16Encoding.new
+    e = PDF::Reader::Encoding.new(:UTF16Encoding)
     [
-      {:utf16 => "\xFE\xFF\x00\x41", :utf8 => [0x41].pack("U*")},
-      {:utf16 => "\xFE\xFF\x20\x22", :utf8 => [0x2022].pack("U*")},
+      {:utf16 => "\x00\x41", :utf8 => [0x41].pack("U*")},
+      {:utf16 => "\x20\x22", :utf8 => [0x2022].pack("U*")},
       {:utf16 => "\x00\x41", :utf8 => [0x41].pack("U*")},
       {:utf16 => "\x20\x22", :utf8 => [0x2022].pack("U*")}
     ].each do |vals| 

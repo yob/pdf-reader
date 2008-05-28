@@ -387,7 +387,7 @@ class PDF::Reader
           @fonts[label].label = label
           @fonts[label].subtype = desc[:Subtype] if desc[:Subtype]
           @fonts[label].basefont = desc[:BaseFont] if desc[:BaseFont]
-          @fonts[label].encoding = PDF::Reader::Encoding.factory(@xref.object(desc[:Encoding]))
+          @fonts[label].encoding = PDF::Reader::Encoding.new(@xref.object(desc[:Encoding]))
           @fonts[label].descendantfonts = desc[:DescendantFonts] if desc[:DescendantFonts]
           if desc[:ToUnicode]
             # this stream is a cmap
@@ -428,9 +428,9 @@ class PDF::Reader
       case obj
       when String then 
         if obj[0,2] == "\376\377"
-          PDF::Reader::Encoding::UTF16Encoding.new.to_utf8(obj)
+          PDF::Reader::Encoding.new(:UTF16Encoding).to_utf8(obj[2, obj.size])
         else
-          PDF::Reader::Encoding::PDFDocEncoding.new.to_utf8(obj)
+          PDF::Reader::Encoding.new(:PDFDocEncoding).to_utf8(obj)
         end
       when Hash   then obj.each { |key,val| obj[key] = decode_strings(val) }
       when Array  then obj.collect { |item| decode_strings(item) }
