@@ -11,6 +11,7 @@ class PageTextReceiver
   def end_page(arg = nil)
     if @content
       puts @content
+      @content = nil
       puts
     end
   end
