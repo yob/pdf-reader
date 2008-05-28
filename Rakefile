@@ -66,6 +66,7 @@ spec = Gem::Specification.new do |spec|
   
   spec.require_path = "lib"
   spec.bindir = "bin"
+  spec.executables << "pdf_object"
   spec.executables << "pdf_text"
   spec.executables << "pdf_list_callbacks"
 	spec.has_rdoc = true
