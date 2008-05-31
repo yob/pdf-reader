@@ -91,4 +91,16 @@ context "PDF::Reader" do
     receiver.content.size.should eql(1)
     receiver.content[0].slice(0,10).should eql(str)
   end
+
+  specify "should correctly process a PDF with a content stream that is missing an operator (has hanging params)" do
+    receiver = PageTextReceiver.new
+    str1 = "Locatrix"
+    str2 = "Ubuntu"
+    PDF::Reader.file(File.dirname(__FILE__) + "/data/content_stream_missing_final_operator.pdf", receiver)
+
+    # confirm the text appears on the correct pages
+    receiver.content.size.should eql(2)
+    receiver.content[0].slice(0,8).should eql(str1)
+    receiver.content[1].slice(0,6).should eql(str2)
+  end
 end

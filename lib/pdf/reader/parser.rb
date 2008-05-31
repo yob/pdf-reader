@@ -47,6 +47,7 @@ class PDF::Reader
       token = @buffer.token
 
       case token
+      when nil                        then return nil
       when "/"                        then return @buffer.token.to_sym
       when "<<"                       then return dictionary()
       when "["                        then return array()

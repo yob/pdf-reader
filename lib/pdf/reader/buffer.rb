@@ -118,7 +118,9 @@ class PDF::Reader
       strip_space = !(i == 0 and @buffer[0,1] == '(')
       tok = head(token_chars, strip_space)
 
-      if tok[0,1] == "%"
+      if tok == ""
+        nil
+      elsif tok[0,1] == "%"
         @buffer = ""
         token
       else

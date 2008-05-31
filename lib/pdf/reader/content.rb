@@ -9,10 +9,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -27,20 +27,20 @@ require 'stringio'
 class PDF::Reader
   ################################################################################
   # Walks the PDF file and calls the appropriate callback methods when something of interest is
-  # found. 
+  # found.
   #
   # The callback methods should exist on the receiver object passed into the constructor. Whenever
-  # some content is found that will trigger a callback, the receiver is checked to see if the callback 
+  # some content is found that will trigger a callback, the receiver is checked to see if the callback
   # is defined.
   #
   # If it is defined it will be called. If not, processing will continue.
   #
   # = Available Callbacks
-  # The following callbacks are available and should be methods defined on your receiver class. Only 
+  # The following callbacks are available and should be methods defined on your receiver class. Only
   # implement the ones you need - the rest will be ignored.
   #
   # Some callbacks will include parameters which will be passed in as an array. For callbacks that supply no
-  # paramters, or where you don't need them, the *params argument can be left off. Some example callback 
+  # paramters, or where you don't need them, the *params argument can be left off. Some example callback
   # method definitions are:
   #
   #   def begin_document
@@ -49,14 +49,14 @@ class PDF::Reader
   #   def fill_stroke(*params)
   #
   # You should be able to infer the basic command the callback is reporting based on the name. For
-  # further experimentation, define the callback with just a *params parameter, then print out the 
+  # further experimentation, define the callback with just a *params parameter, then print out the
   # contents of the array using something like:
   #
   #   puts params.inspect
   #
   # == Text Callbacks
   #
-  # All text passed into these callbacks will be encoded as UTF-8. Depending on where (and when) the 
+  # All text passed into these callbacks will be encoded as UTF-8. Depending on where (and when) the
   # PDF was generated, there's a good chance the text is NOT stored as UTF-8 internally so be careful
   # when doing a comparison on strings returned from PDF::Reader (when doing unit tests for example). The
   # string may not be byte-by-byte identical with the string that was originally written to the PDF.
@@ -155,8 +155,8 @@ class PDF::Reader
   # on a page:
   #
   # In most cases, these callbacks associate a name with each resource, allowing it
-  # to be referred to by name in the page content. For example, an XObject can hold an image. 
-  # If it gets mapped to the name "IM1", then it can be placed on the page using 
+  # to be referred to by name in the page content. For example, an XObject can hold an image.
+  # If it gets mapped to the name "IM1", then it can be placed on the page using
   # invoke_xobject "IM1".
   #
   # - resource_procset
@@ -260,17 +260,17 @@ class PDF::Reader
     # Begin processing the document
     def document (root)
       if root[:Metadata]
-        callback(:xml_metadata,@xref.object(root[:Metadata])) 
+        callback(:xml_metadata,@xref.object(root[:Metadata]))
       end
       callback(:begin_document, [root])
       walk_pages(@xref.object(root[:Pages]))
       callback(:end_document)
     end
     ################################################################################
-    # Walk over all pages in the PDF file, calling the appropriate callbacks for each page and all 
+    # Walk over all pages in the PDF file, calling the appropriate callbacks for each page and all
     # its content
     def walk_pages (page)
-      
+
       if page[:Resources]
         res = page[:Resources]
         page.delete(:Resources)
@@ -293,7 +293,7 @@ class PDF::Reader
         else
           contents = [page[:Contents]]
         end
-        
+
         contents.each do |content|
           obj = @xref.object(content)
           content_stream(obj)
@@ -313,8 +313,9 @@ class PDF::Reader
       until @buffer.eof?
         loop do
           token = @parser.parse_token(OPERATORS)
+          break if token.nil?
 
-          if token.kind_of?(Token) and OPERATORS.has_key?(token) 
+          if token.kind_of?(Token) and OPERATORS.has_key?(token)
             @current_font = @params.first if OPERATORS[token] == :set_text_font_and_size
 
             # handle special cases in response to certain operators
@@ -333,10 +334,10 @@ class PDF::Reader
             end
             callback(OPERATORS[token], @params)
             @params.clear
-            break
+          else
+            @params << token
           end
 
-          @params << token
         end
       end
     rescue EOFError => e
@@ -345,7 +346,7 @@ class PDF::Reader
     ################################################################################
     def walk_resources(resources)
       resources = resolve_references(resources)
-      
+
       # extract any procset information
       if resources[:ProcSet]
         callback(:resource_procset, resources[:ProcSet])
@@ -402,13 +403,13 @@ class PDF::Reader
       end
     end
     ################################################################################
-    # Convert any PDF::Reader::Resource objects into a real object 
+    # Convert any PDF::Reader::Resource objects into a real object
     def resolve_references(obj)
       case obj
-      when PDF::Reader::Stream then 
+      when PDF::Reader::Stream then
         obj.hash = resolve_references(obj.hash)
         obj
-      when PDF::Reader::Reference then 
+      when PDF::Reader::Reference then
         resolve_references(@xref.object(obj))
       when Hash                   then obj.each { |key,val| obj[key] = resolve_references(val) }
       when Array                  then obj.collect { |item| resolve_references(item) }
@@ -426,7 +427,7 @@ class PDF::Reader
     # strings outside of page content should be in either PDFDocEncoding or UTF-16.
     def decode_strings(obj)
       case obj
-      when String then 
+      when String then
         if obj[0,2] == "\376\377"
           PDF::Reader::Encoding.new(:UTF16Encoding).to_utf8(obj[2, obj.size])
         else
