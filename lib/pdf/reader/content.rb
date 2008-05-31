@@ -310,34 +310,28 @@ class PDF::Reader
       @parser = Parser.new(@buffer, @xref)
       @params = [] if @params.nil?
 
-      until @buffer.eof?
-        loop do
-          token = @parser.parse_token(OPERATORS)
-          break if token.nil?
+      while (token = @parser.parse_token(OPERATORS))
+        if token.kind_of?(Token) and OPERATORS.has_key?(token)
+          @current_font = @params.first if OPERATORS[token] == :set_text_font_and_size
 
-          if token.kind_of?(Token) and OPERATORS.has_key?(token)
-            @current_font = @params.first if OPERATORS[token] == :set_text_font_and_size
-
-            # handle special cases in response to certain operators
-            if OPERATORS[token].to_s.include?("show_text") && @fonts[@current_font]
-              # convert any text to utf-8
-              @params = @fonts[@current_font].to_utf8(@params)
-            elsif token == "ID"
-              # inline image data, first convert the current params into a more familiar hash
-              map = {}
-              @params.each_slice(2) do |a|
-                map[a.first] = a.last
-              end
-              @params = [map]
-              # read the raw image data from the buffer without tokenising
-              @params << @buffer.read_until("EI")
+          # handle special cases in response to certain operators
+          if OPERATORS[token].to_s.include?("show_text") && @fonts[@current_font]
+            # convert any text to utf-8
+            @params = @fonts[@current_font].to_utf8(@params)
+          elsif token == "ID"
+            # inline image data, first convert the current params into a more familiar hash
+            map = {}
+            @params.each_slice(2) do |a|
+              map[a.first] = a.last
             end
-            callback(OPERATORS[token], @params)
-            @params.clear
-          else
-            @params << token
+            @params = [map]
+            # read the raw image data from the buffer without tokenising
+            @params << @buffer.read_until("EI")
           end
-
+          callback(OPERATORS[token], @params)
+          @params.clear
+        else
+          @params << token
         end
       end
     rescue EOFError => e
