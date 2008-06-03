@@ -93,7 +93,7 @@ context "The PDF::Reader::Content class" do
 
     # process the instructions
     filename = File.dirname(__FILE__) + "/data/openoffice-2.2.pdf"
-    PDF::Reader.file(filename, receiver)
+    PDF::Reader.file(filename, receiver, :pages => false)
     cb = receiver.first_occurance_of(:metadata)
     meta = cb[:args].first
 
@@ -115,5 +115,16 @@ context "The PDF::Reader::Content class" do
 
     # check the metadata was extracted correctly
     meta.include?("<pdf:Title>file://C:\\Data\\website\\i18nguy\\unicode-example.html</pdf:Title>").should be_true
+  end
+
+  specify "should send the correct page count callback when processing an openoffice PDF" do
+
+    receiver = PDF::Reader::RegisterReceiver.new
+
+    # process the instructions
+    filename = File.dirname(__FILE__) + "/data/openoffice-2.2.pdf"
+    PDF::Reader.file(filename, receiver, :pages => false)
+    cb = receiver.first_occurance_of(:page_count)
+    cb[:args].first.should eql(2)
   end
 end

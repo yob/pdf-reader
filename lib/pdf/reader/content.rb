@@ -146,6 +146,7 @@ class PDF::Reader
   # - end_page
   # - metadata
   # - xml_metadata
+  # - page_count
   #
   # == Resource Callbacks
   #
@@ -254,8 +255,19 @@ class PDF::Reader
     # Begin processing the document metadata
     def metadata (root, info)
       info = decode_strings(info)
+
+      # ye olde metadata
       callback(:metadata, [info]) if info
+
+      # new style xml metadata
       callback(:xml_metadata,@xref.object(root[:Metadata])) if root[:Metadata]
+
+      # page count
+      if (pages = @xref.object(root[:Pages]))
+        if (count = @xref.object(pages[:Count]))
+          callback(:page_count, count.to_i)
+        end
+      end
     end
     ################################################################################
     # Begin processing the document
