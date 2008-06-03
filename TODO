@@ -1,10 +1,7 @@
 v0.8
 - add extra callbacks
-  - pdf_version
-  - page_count (shortcut for counting pages without parsing all page content)
   - list implemented features 
     - encrypted? tagged? bookmarks? annotated? optimised?
-  - file size
 - Allow more than just page content and metadata to be parsed (see spec section 3.6.1)
   - bookmarks?
   - outline?
