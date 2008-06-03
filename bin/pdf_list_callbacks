@@ -4,14 +4,10 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + "/../lib")
 
 require 'pdf/reader'
 
-receiver = PDF::Reader::RegisterReceiver.new
+receiver = PDF::Reader::PrintReceiver.new
 
 if ARGV.empty?
   PDF::Reader.new.parse($stdin, receiver)
 else
   PDF::Reader.file(ARGV[0], receiver)
-end
-
-receiver.callbacks.each do |callback|
-  puts "#{callback[:name]} - #{callback[:args].inspect}"
 end
