@@ -252,16 +252,14 @@ class PDF::Reader
     end
     ################################################################################
     # Begin processing the document metadata
-    def metadata (info)
+    def metadata (root, info)
       info = decode_strings(info)
       callback(:metadata, [info]) if info
+      callback(:xml_metadata,@xref.object(root[:Metadata])) if root[:Metadata]
     end
     ################################################################################
     # Begin processing the document
     def document (root)
-      if root[:Metadata]
-        callback(:xml_metadata,@xref.object(root[:Metadata]))
-      end
       callback(:begin_document, [root])
       walk_pages(@xref.object(root[:Pages]))
       callback(:end_document)

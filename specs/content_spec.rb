@@ -109,7 +109,7 @@ context "The PDF::Reader::Content class" do
 
     # process the instructions
     filename = File.dirname(__FILE__) + "/data/distiller_unicode.pdf"
-    PDF::Reader.file(filename, receiver)
+    PDF::Reader.file(filename, receiver, :pages => false)
     cb = receiver.first_occurance_of(:xml_metadata)
     meta = cb[:args].first
 
