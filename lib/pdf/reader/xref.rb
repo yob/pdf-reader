@@ -37,6 +37,16 @@ class PDF::Reader
       @xref = {}
     end
     ################################################################################
+    # returns the PDF version of the current document. Technically this isn't part of the XRef
+    # table, but it is one of the lowest level data items in the file, so we've lumped it in
+    # with the cross reference code.
+    def pdf_version
+      @buffer.seek(0)
+      m, version = *@buffer.read(8).match(/%PDF-(\d.\d)/)
+      raise MalformedPDFError, 'invalid PDF version' if version.nil?
+      return version.to_f
+    end
+    ################################################################################
     # Read the xref table from the underlying buffer. If offset is specified the table
     # will be loaded from there, otherwise the default offset will be located and used.
     #

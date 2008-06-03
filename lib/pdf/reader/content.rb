@@ -256,6 +256,9 @@ class PDF::Reader
     def metadata (root, info)
       info = decode_strings(info)
 
+      # may be useful to some people
+      callback(:pdf_version, @xref.pdf_version)
+
       # ye olde metadata
       callback(:metadata, [info]) if info
 

@@ -3,6 +3,9 @@ v0.7.3 (UNRELESED)
 - Fix a hard loop bug caused by a content stream that is missing a final operator
 - Significantly simplified the internal code for encoding conversions
   - Fixes YACC parsing bug that occurs on Fedora 8's ruby VM
+- New callbacks
+  - page_count
+  - pdf_version
 
 v0.7.2 (20th May 2008)
 - Throw an UnsupportedFeatureError if we try to open an encrypted/secure PDF

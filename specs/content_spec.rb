@@ -127,4 +127,15 @@ context "The PDF::Reader::Content class" do
     cb = receiver.first_occurance_of(:page_count)
     cb[:args].first.should eql(2)
   end
+
+  specify "should send the correct pdf_version callback when processing an openoffice PDF" do
+
+    receiver = PDF::Reader::RegisterReceiver.new
+
+    # process the instructions
+    filename = File.dirname(__FILE__) + "/data/openoffice-2.2.pdf"
+    PDF::Reader.file(filename, receiver, :pages => false)
+    cb = receiver.first_occurance_of(:pdf_version)
+    cb[:args].first.should eql(1.4)
+  end
 end
