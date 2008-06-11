@@ -70,9 +70,9 @@ spec = Gem::Specification.new do |spec|
   spec.executables << "pdf_text"
   spec.executables << "pdf_list_callbacks"
 	spec.has_rdoc = true
-	spec.extra_rdoc_files = %w{README TODO CHANGELOG}
+	spec.extra_rdoc_files = %w{README.rdoc TODO CHANGELOG}
 	spec.rdoc_options << '--title' << 'PDF::Reader Documentation' <<
-	                     '--main'  << 'README' << '-q'
+	                     '--main'  << 'README.rdoc' << '-q'
   spec.author = "Peter Jones"
 	spec.email = "pjones@pmade.com"
 	spec.rubyforge_project = "pdf-reader"
