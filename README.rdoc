@@ -48,8 +48,11 @@ UnsupportedFeatureError - The PDF uses a feature that PDF::Reader doesn't curren
 support. Again, we welcome submissions of PDF files that exhibit these features to help 
 us with future code improvements.
 
-Any other exceptions should be considered bugs and should be reported (unless they originate
-inside your receiver, in which case you're on your own)
+MalformedPDFError has some subclasses if you want to detect finer grained issues. If you
+don't, 'rescue MalformedPDFError' will catch all the subclassed errors as well.
+
+Any other exceptions should be considered bugs in either PDF::Reader (please
+report it!) your receiver (please don't report it!).
 
 = Maintainers
 
