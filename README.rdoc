@@ -52,7 +52,7 @@ MalformedPDFError has some subclasses if you want to detect finer grained issues
 don't, 'rescue MalformedPDFError' will catch all the subclassed errors as well.
 
 Any other exceptions should be considered bugs in either PDF::Reader (please
-report it!) your receiver (please don't report it!).
+report it!) or your receiver (please don't report it!).
 
 = Maintainers
 
