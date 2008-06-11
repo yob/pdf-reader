@@ -47,4 +47,10 @@ context "PDF::Reader::Font" do
     f.to_utf8(str).should eql("abc\xC2\xA4")
   end
 
+  specify "should correctly store the font BaseFont" do
+    f = PDF::Reader::Font.new
+    f.basefont = :Helvetica
+    f.basefont.should eql(:Helvetica)
+  end
+
 end

@@ -56,6 +56,7 @@ class PDF::Reader
       when "ZapfDingbats" then 
         self.encoding = PDF::Reader::Encoding.new("ZapfDingbatsEncoding")
       end
+      @basefont = font
     end
 
     def to_utf8(params)
