@@ -1,4 +1,4 @@
-v0.7.3 (UNRELESED)
+v0.7.3 (11th June 2008)
 - Add a high level way to get direct access to a PDF object, including a new executable: pdf_object
 - Fix a hard loop bug caused by a content stream that is missing a final operator
 - Significantly simplified the internal code for encoding conversions
