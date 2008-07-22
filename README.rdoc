@@ -18,7 +18,7 @@ The recommended installation method is via Rubygems.
 
 PDF::Reader is designed with a callback-style architecture. The basic concept
 is to build a receiver class and pass that into PDF::Reader along with the PDF
-to process. 
+to process.
 
 As PDF::Reader walks the file and encounters various objects (pages, text,
 images, shapes, etc) it will call methods on the receiver class.  What those
@@ -37,15 +37,15 @@ text will be converted to UTF-8 before it is passed back from PDF::Reader.
 
 = Exceptions
 
-There are two key exceptions that you will need to watch out for when processing a 
+There are two key exceptions that you will need to watch out for when processing a
 PDF file:
 
-MalformedPDFError - The PDF appears to be corrupt in some way. If you believe the 
-file should be valid, or that a corrupt file didn't raise an exception, please 
+MalformedPDFError - The PDF appears to be corrupt in some way. If you believe the
+file should be valid, or that a corrupt file didn't raise an exception, please
 forward a copy of the file to the maintainers and we can attempt improve the code.
 
-UnsupportedFeatureError - The PDF uses a feature that PDF::Reader doesn't currently 
-support. Again, we welcome submissions of PDF files that exhibit these features to help 
+UnsupportedFeatureError - The PDF uses a feature that PDF::Reader doesn't currently
+support. Again, we welcome submissions of PDF files that exhibit these features to help
 us with future code improvements.
 
 MalformedPDFError has some subclasses if you want to detect finer grained issues. If you
@@ -80,9 +80,9 @@ A simple app to count the number of pages in a PDF File.
     attr_accessor :page_count
 
     def initialize
-      @page_count = 0 
+      @page_count = 0
     end
-    
+
     # Called when page parsing ends
     def end_page
       @page_count += 1
@@ -97,7 +97,7 @@ A simple app to count the number of pages in a PDF File.
 
 WARNING: this will generate a *lot* of output, so you probably want to pipe
 it through less or to a text file.
-  
+
   require 'rubygems'
   require 'pdf/reader'
 
@@ -107,7 +107,42 @@ it through less or to a text file.
     puts cb
   end
 
-== Extract metadata only 
+== Extract all text from a single PDF
+
+  class PageTextReceiver
+    attr_accessor :content
+
+    def initialize
+      @content = []
+    end
+
+    # Called when page parsing starts
+    def begin_page(arg = nil)
+      @content << ""
+    end
+
+    # record text that is drawn on the page
+    def show_text(string, *params)
+      @content.last << string.strip
+    end
+
+    # there's a few text callbacks, so make sure we process them all
+    alias :super_show_text :show_text
+    alias :move_to_next_line_and_show_text :show_text
+    alias :set_spacing_next_line_show_text :show_text
+
+    # this final text callback takes slightly different arguments
+    def show_text_with_positioning(*params)
+      params = params.first
+      params.each { |str| show_text(str) if str.kind_of?(String)}
+    end
+  end
+
+  receiver = PageTextReceiver.new
+  pdf = PDF::Reader.file("somefile.pdf", receiver)
+  puts receiver.content.inspect
+
+== Extract metadata only
 
   require 'rubygems'
   require 'pdf/reader'
@@ -150,7 +185,7 @@ A simple app to display the number of pages in a PDF File.
   pdf = PDF::Reader.file("somefile.pdf", receiver, :pages => false)
   puts "#{receiver.pages} pages"
 
-== Basic RSpec of a generated PDF 
+== Basic RSpec of a generated PDF
 
   require 'rubygems'
   require 'pdf/reader'
