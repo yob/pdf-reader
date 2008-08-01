@@ -1,4 +1,6 @@
 v0.8
+- optimise PDF::Reader::Reference#from_buffer
+  - ruby-prof shows the match() call in this function is a real killer
 - add extra callbacks
   - list implemented features 
     - encrypted? tagged? bookmarks? annotated? optimised?
