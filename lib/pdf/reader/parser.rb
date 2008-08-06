@@ -121,7 +121,7 @@ class PDF::Reader
 
         # find the first occurance of ( ) [ \ or ]
         #
-        # we used to use the follow line, but it fails sometimes
+        # we used to use the following line, but it fails sometimes
         # under OSX.
         #   i = @buffer.raw.index(/[\\\(\)]/)
         i = @buffer.raw.unpack("C*").index { |n| [40, 41, 91, 92, 93].include?(n) }
