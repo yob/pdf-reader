@@ -118,7 +118,13 @@ class PDF::Reader
 
       while count != 0
         @buffer.ready_token(false, false)
-        i = @buffer.raw.index(/[\\\(\)]/)
+
+        # find the first occurance of ( ) [ \ or ]
+        #
+        # we used to use the follow line, but it fails sometimes
+        # under OSX.
+        #   i = @buffer.raw.index(/[\\\(\)]/)
+        i = @buffer.raw.unpack("C*").index { |n| [40, 41, 91, 92, 93].include?(n) }
 
         if i.nil?
           str << @buffer.raw + "\n"

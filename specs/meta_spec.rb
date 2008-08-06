@@ -103,4 +103,15 @@ context "PDF::Reader" do
     receiver.content[0].slice(0,8).should eql(str1)
     receiver.content[1].slice(0,6).should eql(str2)
   end
+
+  specify "should correctly process a PDF with a string containing a high byte (D1) under MacRomanEncoding" do
+    # this spec is to detect an hard lock issue some people were encountering on some OSX
+    # systems. Real pain to debug.
+    receiver = PageTextReceiver.new
+    PDF::Reader.file(File.dirname(__FILE__) + "/data/hard_lock_under_osx.pdf", receiver)
+
+    # confirm the text appears on the correct pages
+    receiver.content.size.should eql(1)
+    receiver.content[0].should eql("’")
+  end
 end
