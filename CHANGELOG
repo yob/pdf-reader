@@ -2,6 +2,8 @@ v0.7.4 (7th August 2008)
 - Raise a MalformedPDFError if a content stream contains an unterminated string
 - Fix an bug that was causing an endless loop on some OSX systems
   - valid strings were incorrectly thought to be unterminated
+  - thanks to Jeff Webb for playing email ping pong with me as I tracked this
+    issue down
 
 v0.7.3 (11th June 2008)
 - Add a high level way to get direct access to a PDF object, including a new executable: pdf_object
