@@ -129,6 +129,10 @@ class PDF::Reader
         if i.nil?
           str << @buffer.raw + "\n"
           @buffer.raw.replace("")
+          # if a content stream opens a string, but never closes it, we'll
+          # hit the end of the stream and still be appending stuff to the
+          # string. bad! This check prevents a hard loop.
+          raise MalformedPDFError, 'unterminated string in content stream' if @buffer.eof?
           next
         end
 

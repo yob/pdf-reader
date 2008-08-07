@@ -121,11 +121,9 @@ context "PDF::Reader" do
 
     # this file used to get us into a hard, endless loop. Make sure that doesn't still happen
     Timeout::timeout(3) do
-      PDF::Reader.file(File.dirname(__FILE__) + "/data/broken_string.pdf", receiver)
+      lambda {
+        PDF::Reader.file(File.dirname(__FILE__) + "/data/broken_string.pdf", receiver)
+      }.should raise_error(PDF::Reader::MalformedPDFError)
     end
-
-    # confirm the text appears on the correct pages
-    receiver.content.size.should eql(1)
-    receiver.content[0].should eql("")
   end
 end
