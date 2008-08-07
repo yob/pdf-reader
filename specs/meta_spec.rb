@@ -11,6 +11,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
 # these
 
 require 'pdf/reader'
+require 'timeout'
 
 class PageTextReceiver
   attr_accessor :content
@@ -113,5 +114,18 @@ context "PDF::Reader" do
     # confirm the text appears on the correct pages
     receiver.content.size.should eql(1)
     receiver.content[0].should eql("’")
+  end
+
+  specify "should not hang when processing a PDF that has a content stream with a broken string" do
+    receiver = PageTextReceiver.new
+
+    # this file used to get us into a hard, endless loop. Make sure that doesn't still happen
+    Timeout::timeout(3) do
+      PDF::Reader.file(File.dirname(__FILE__) + "/data/broken_string.pdf", receiver)
+    end
+
+    # confirm the text appears on the correct pages
+    receiver.content.size.should eql(1)
+    receiver.content[0].should eql("")
   end
 end
