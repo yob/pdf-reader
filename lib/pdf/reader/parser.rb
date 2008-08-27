@@ -121,10 +121,16 @@ class PDF::Reader
 
         # find the first occurance of ( ) [ \ or ]
         #
-        # we used to use the following line, but it fails sometimes
-        # under OSX.
-        #   i = @buffer.raw.index(/[\\\(\)]/)
-        i = @buffer.raw.unpack("C*").index { |n| [40, 41, 91, 92, 93].include?(n) }
+        # I originally just used the regexp form of index(), but it seems to be
+        # buggy on some OSX systems (returns nil when there is a match). The
+        # block form of index() is more reliable, but only works on 1.8.7 or
+        # greater.
+        #
+        if RUBY_VERSION >= "1.8.7"
+          i = @buffer.raw.unpack("C*").index { |n| [40, 41, 91, 92, 93].include?(n) }
+        else
+          i = @buffer.raw.index(/[\\\(\)]/)
+        end
 
         if i.nil?
           str << @buffer.raw + "\n"

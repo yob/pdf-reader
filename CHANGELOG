@@ -1,3 +1,6 @@
+v0.7.5 (27th August 2008)
+- Fix a 1.8.7ism
+
 v0.7.4 (7th August 2008)
 - Raise a MalformedPDFError if a content stream contains an unterminated string
 - Fix an bug that was causing an endless loop on some OSX systems
