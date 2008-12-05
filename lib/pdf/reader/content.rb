@@ -293,7 +293,7 @@ class PDF::Reader
       if page[:Type] == :Pages
         callback(:begin_page_container, [page])
         walk_resources(@xref.object(res)) if res
-        page[:Kids].each {|child| walk_pages(@xref.object(child))}
+        @xref.object(page[:Kids]).each {|child| walk_pages(@xref.object(child))}
         callback(:end_page_container)
       elsif page[:Type] == :Page
         callback(:begin_page, [page])
