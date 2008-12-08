@@ -149,7 +149,7 @@ EOT
     dict.size.should eql(3)
     dict[:Registry].should    eql("Adobe")
     dict[:Ordering].should    eql("Japan1")
-    dict[:Supplement].should  eql(5.0)
+    dict[:Supplement].should  eql(5)
   end
 
   specify "should parse an array correctly" do

@@ -61,7 +61,8 @@ class PDF::Reader
       when ">>", "]", ">"             then return Token.new(token)
       else
         if operators.has_key?(token)  then return Token.new(token)
-        else                          return token.to_f
+        elsif token =~ /\d*\.\d/      then return token.to_f
+        else                          return token.to_i
         end
       end
     end
