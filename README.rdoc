@@ -42,7 +42,8 @@ PDF file:
 
 MalformedPDFError - The PDF appears to be corrupt in some way. If you believe the
 file should be valid, or that a corrupt file didn't raise an exception, please
-forward a copy of the file to the maintainers and we can attempt improve the code.
+forward a copy of the file to the maintainers (preferably via the google group)
+and we can attempt to improve the code.
 
 UnsupportedFeatureError - The PDF uses a feature that PDF::Reader doesn't currently
 support. Again, we welcome submissions of PDF files that exhibit these features to help
@@ -56,12 +57,13 @@ report it!) or your receiver (please don't report it!).
 
 = Maintainers
 
-- Peter Jones <mailto:pjones@pmade.com>
 - James Healy <mailto:jimmy@deefa.com>
 
 = Mailing List
 
-Any questions or feedback should be sent to the PDF::Reader google group.
+Any questions or feedback should be sent to the PDF::Reader google group. It's
+better that any answers be available for others instead of hiding in someone's
+inbox.
 
 http://groups.google.com/group/pdf-reader
 
