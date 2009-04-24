@@ -126,4 +126,13 @@ context "PDF::Reader" do
       }.should raise_error(PDF::Reader::MalformedPDFError)
     end
   end
+
+  specify "should correctly process a PDF with a stream that has its length specified as an indirect reference" do
+    receiver = PageTextReceiver.new
+    PDF::Reader.file(File.dirname(__FILE__) + "/data/content_stream_with_length_as_ref.pdf", receiver)
+
+    # confirm the text appears on the correct pages
+    receiver.content.size.should eql(1)
+    receiver.content[0].should eql("HelloWorld")
+  end
 end
