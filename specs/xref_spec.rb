@@ -9,7 +9,7 @@ end
 
 context "The PDF::Reader::XRef class when operating on the cairo-basic PDF" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
     @xref = PDF::Reader::XRef.new(@buffer)
@@ -53,7 +53,7 @@ end
 
 context "The PDF::Reader::XRef class when operating on the cairo-unicode PDF" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/cairo-unicode.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
     @xref = PDF::Reader::XRef.new(@buffer)
@@ -83,7 +83,7 @@ end
 
 context "The PDF::Reader::XRef class when operating on the openoffice-2.2 PDF" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/openoffice-2.2.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
     @xref = PDF::Reader::XRef.new(@buffer)
@@ -113,7 +113,7 @@ end
 
 context "The PDF::Reader::XRef class when operating on the pdf-distiller PDF" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/pdf-distiller.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
     @xref = PDF::Reader::XRef.new(@buffer)
@@ -143,7 +143,7 @@ end
 
 context "The PDF::Reader::XRef class when operating on the prince1 PDF" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/prince1.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
     @xref = PDF::Reader::XRef.new(@buffer)
@@ -173,7 +173,7 @@ end
 
 context "The PDF::Reader::XRef class when operating on the prince2 PDF" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/prince2.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
     @xref = PDF::Reader::XRef.new(@buffer)
@@ -203,7 +203,7 @@ end
 
 context "The PDF::Reader::XRef class when operating on the pdflatex PDF" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/pdflatex.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
     @xref = PDF::Reader::XRef.new(@buffer)
@@ -233,7 +233,7 @@ end
 
 context "The PDF::Reader::XRef class when operating on the pdfwriter manual" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/pdfwriter-manual.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
     @xref = PDF::Reader::XRef.new(@buffer)
@@ -263,7 +263,7 @@ end
 
 context "The PDF::Reader::XRef class when operating on a PDF that has been updated in Adobe Acrobat (and therefore has multiple xref sections with subsections)" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/xref_subsections.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
     @xref = PDF::Reader::XRef.new(@buffer)
@@ -278,7 +278,7 @@ end
 
 context "The PDF::Reader::XRef class when operating on a pdf with no trailer" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/invalid/no_trailer.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
     @xref = PDF::Reader::XRef.new(@buffer)
@@ -292,7 +292,7 @@ end
 
 context "The PDF::Reader::XRef class when operating on a pdf with a trailer that isn't a dict" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/invalid/trailer_is_not_a_dict.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
     @xref = PDF::Reader::XRef.new(@buffer)
@@ -306,7 +306,7 @@ end
 
 context "The PDF::Reader::XRef class when operating on a pdf that uses an XRef Stream" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/cross_ref_stream.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
     @xref = PDF::Reader::XRef.new(@buffer)

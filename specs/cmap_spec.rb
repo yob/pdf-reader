@@ -8,7 +8,7 @@ end
 
 context "PDF::Reader::CMap" do
 
-  setup do
+  before do
     
     @objstr = <<EOF
 /CIDInit /ProcSet findresource begin

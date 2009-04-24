@@ -10,7 +10,7 @@ end
 
 context "The PDF::Reader::Buffer class when operating on the cairo-basic PDF" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
   end
@@ -27,7 +27,7 @@ end
 
 context "The PDF::Reader::Buffer class when operating on the cairo-unicode PDF" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/cairo-unicode.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
   end
@@ -44,7 +44,7 @@ end
 
 context "The PDF::Reader::Buffer class when operating on the prince1 PDF" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/prince1.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
   end
@@ -61,7 +61,7 @@ end
 
 context "The PDF::Reader::Buffer class when operating on the prince2 PDF" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/prince2.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
   end
@@ -78,7 +78,7 @@ end
 
 context "The PDF::Reader::Buffer class when operating on the pdfwriter manual" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/pdfwriter-manual.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
   end
@@ -95,7 +95,7 @@ end
 
 context "The PDF::Reader::Buffer class when operating on the pdf-distiller PDF" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/pdf-distiller.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
   end
@@ -113,7 +113,7 @@ end
 
 context "The PDF::Reader::Buffer class when operating on the pdflatex PDF" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/pdflatex.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
   end
@@ -129,7 +129,7 @@ end
 
 context "The PDF::Reader::Buffer class when operating on the openoffice-2.2 PDF" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/openoffice-2.2.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
   end
@@ -151,7 +151,7 @@ end
 
 context "The PDF::Reader::Buffer class when operating on a PDF with no EOF marker" do
 
-  setup do
+  before do
     @file = File.new(File.dirname(__FILE__) + "/data/invalid/no_eof.pdf")
     @buffer = PDF::Reader::Buffer.new(@file)
   end
