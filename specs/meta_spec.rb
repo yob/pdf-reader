@@ -135,4 +135,16 @@ context "PDF::Reader" do
     receiver.content.size.should eql(1)
     receiver.content[0].should eql("HelloWorld")
   end
+
+  # PDF::Reader::XRef#object was saving an incorrect position when seeking. We
+  # were saving the current pos of the underlying IO stream, then seeking back
+  # to it. This was fine, except when there was still content in the buffer.
+  specify "should correctly process a PDF with a stream that has its length specified as an indirect reference and uses windows line breaks" do
+    receiver = PageTextReceiver.new
+    PDF::Reader.file(File.dirname(__FILE__) + "/data/content_stream_with_length_as_ref_and_windows_breaks.pdf", receiver)
+
+    # confirm the text appears on the correct pages
+    receiver.content.size.should eql(1)
+    receiver.content[0].should eql("HelloWorld")
+  end
 end
