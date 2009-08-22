@@ -2,6 +2,7 @@ v0.7.6 (XXX)
 - Treat float and integer tokens differently (thanks Neil)
 - Correctly handle PDFs where the Kids element of a Pages dict is an indirect
   refernce (thanks Rob Holland)
+- Fix conversion of PDF strings to Ruby strings on 1.8.6
 
 v0.7.5 (27th August 2008)
 - Fix a 1.8.7ism

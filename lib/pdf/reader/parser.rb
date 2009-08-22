@@ -100,7 +100,7 @@ class PDF::Reader
     # Reads a PDF hex string from the buffer and converts it to a Ruby String
     def hex_string
       str = ""
-      
+
       loop do
         token = @buffer.token
         break if token == ">"
@@ -123,14 +123,15 @@ class PDF::Reader
         # find the first occurance of ( ) [ \ or ]
         #
         # I originally just used the regexp form of index(), but it seems to be
-        # buggy on some OSX systems (returns nil when there is a match). The
-        # block form of index() is more reliable, but only works on 1.8.7 or
-        # greater.
+        # buggy on some OSX systems (returns nil when there is a match). This
+        # version is more reliable and was suggested by Andrès Koetsier.
         #
-        if RUBY_VERSION >= "1.8.7"
-          i = @buffer.raw.unpack("C*").index { |n| [40, 41, 91, 92, 93].include?(n) }
-        else
-          i = @buffer.raw.index(/[\\\(\)]/)
+        i = nil
+        @buffer.raw.unpack("C*").each_with_index do |charint, idx|
+          if [40, 41, 91, 92, 93].include?(charint)
+            i = idx
+            break
+          end
         end
 
         if i.nil?
@@ -202,7 +203,7 @@ class PDF::Reader
     def stream (dict)
       raise MalformedPDFError, "PDF malformed, missing stream length" unless dict.has_key?(:Length)
       data = @buffer.read(@xref.object(dict[:Length]))
-      
+
       Error.str_assert(parse_token, "endstream")
       Error.str_assert(parse_token, "endobj")
 
