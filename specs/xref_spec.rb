@@ -127,7 +127,7 @@ context "The PDF::Reader::XRef class when operating on the pdf-distiller PDF" do
   specify "should leave the buffer cursor in the same location when returning an object" do
     ref = PDF::Reader::Reference.new(2,0) # second object, gen 0
     @xref.load
-    cursor = @buffer.pos
+    cursor = @buffer.pos_without_buf
     @xref.object(ref)
     @buffer.pos.should eql(cursor)
   end
@@ -135,7 +135,7 @@ context "The PDF::Reader::XRef class when operating on the pdf-distiller PDF" do
   specify "should not leave the buffer cursor in the same location when returning an object" do
     ref = PDF::Reader::Reference.new(2,0) # second object, gen 0
     @xref.load
-    cursor = @buffer.pos
+    cursor = @buffer.pos_without_buf
     @xref.object(ref,false)
     @buffer.pos.should_not eql(cursor)
   end

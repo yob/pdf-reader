@@ -89,6 +89,10 @@ class PDF::Reader
       @io.pos
     end
     ################################################################################
+    def pos_without_buf
+      @io.pos - @buffer.to_s.size
+    end
+    ################################################################################
     # PDF files are processed by tokenising the content into a series of objects and commands.
     # This prepares the buffer for use by reading the next line of tokens into memory.
     def ready_token (with_strip=true, skip_blanks=true)

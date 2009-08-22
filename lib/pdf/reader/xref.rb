@@ -72,7 +72,7 @@ class PDF::Reader
     # If the object is a stream, that is returned as well
     def object (ref, save_pos = true)
       return ref unless ref.kind_of?(Reference)
-      pos = @buffer.pos - @buffer.raw.to_s.size if save_pos
+      pos = @buffer.pos_without_buf if save_pos
       obj = Parser.new(@buffer.seek(offset_for(ref)), self).object(ref.id, ref.gen)
       @buffer.seek(pos) if save_pos
       return obj
