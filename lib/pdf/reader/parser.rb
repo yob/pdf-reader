@@ -128,7 +128,7 @@ class PDF::Reader
         #
         i = nil
         @buffer.raw.unpack("C*").each_with_index do |charint, idx|
-          if [40, 41, 91, 92, 93].include?(charint)
+          if [40, 41, 92].include?(charint)
             i = idx
             break
           end
