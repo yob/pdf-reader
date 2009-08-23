@@ -18,4 +18,22 @@ context "PDF::Reader::Filter" do
     filter.filter(encoded_data).should eql("Ruby")
   end
 
+  specify "should filter a ASCIIHex stream correctly" do
+    filter = PDF::Reader::Filter.new(:ASCIIHexDecode)
+    encoded_data = "<52756279>"
+    filter.filter(encoded_data).should eql("Ruby")
+  end
+
+  specify "should filter a ASCIIHex stream missing delimiters" do
+    filter = PDF::Reader::Filter.new(:ASCIIHexDecode)
+    encoded_data = "52756279"
+    filter.filter(encoded_data).should eql("Ruby")
+  end
+
+  specify "should filter a ASCIIHex stream with an odd number of nibbles" do
+    filter = PDF::Reader::Filter.new(:ASCIIHexDecode)
+    encoded_data = "5275627"
+    filter.filter(encoded_data).should eql("Rubp")
+  end
+
 end

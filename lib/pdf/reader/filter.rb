@@ -44,6 +44,8 @@ class PDF::Reader
 
       case name.to_sym
       when :ASCII85Decode  then @filter = :ascii85
+      when :ASCIIHexDecode then @filter = :asciihex
+      when :CCITTFaxDecode then @filter = nil
       when :DCTDecode      then @filter = nil
       when :FlateDecode    then @filter = :flate
       when :JBIG2Decode    then @filter = nil
@@ -73,6 +75,19 @@ class PDF::Reader
     rescue Exception => e
       # Oops, there was a problem decoding the stream
       raise MalformedPDFError, "Error occured while decoding an ASCII85 stream (#{e.class.to_s}: #{e.to_s})"
+    end
+    ################################################################################
+    # Decode the specified data using the AsciiHex algorithm.
+    #
+    def asciihex(data)
+      data.chop! if data[-1,1] == ">"
+      data = data[1,data.size] if data[0,1] == "<"
+      data.gsub!(/[^A-Fa-f0-9]/,"")
+      data << "0" if data.size % 2 == 1
+      data.scan(/.{2}/).map { |s| s.hex.chr }.join("")
+    rescue Exception => e
+      # Oops, there was a problem decoding the stream
+      raise MalformedPDFError, "Error occured while decoding an ASCIIHex stream (#{e.class.to_s}: #{e.to_s})"
     end
     ################################################################################
     # Decode the specified data with the Zlib compression algorithm
