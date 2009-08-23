@@ -9,10 +9,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -41,7 +41,7 @@ class PDF::Reader
       self
     end
     ################################################################################
-    # reads the requested number of bytes from the underlying IO stream. 
+    # reads the requested number of bytes from the underlying IO stream.
     #
     # length should be a positive integer.
     def read (length)
@@ -56,13 +56,13 @@ class PDF::Reader
       out
     end
     ################################################################################
-    # Reads from the buffer until the specified token is found, or the end of the buffer 
+    # Reads from the buffer until the specified token is found, or the end of the buffer
     #
     # bytes - the bytes to search for.
     def read_until(bytes)
       out = ""
       size = bytes.size
-       
+
       loop do
         out << @io.read(1)
         if out[-1 * size,size].eql?(bytes)
@@ -74,7 +74,7 @@ class PDF::Reader
       out
     end
     ################################################################################
-    # returns true if the underlying IO object is at end and the internal buffer 
+    # returns true if the underlying IO object is at end and the internal buffer
     # is empty
     def eof?
       ready_token
@@ -109,10 +109,10 @@ class PDF::Reader
     # return the next token from the underlying IO stream
     def token
       ready_token
-      
+
       i = @buffer.index(/[\[\]()<>{}\s\/]/) || @buffer.size
 
-      token_chars = 
+      token_chars =
         if i == 0 and @buffer[i,2] == "<<"    then 2
         elsif i == 0 and @buffer[i,2] == ">>" then 2
         elsif i == 0                          then 1
@@ -152,7 +152,7 @@ class PDF::Reader
       data = @io.read(1024)
 
       # the PDF 1.7 spec (section #3.4) says that EOL markers can be either \r, \n, or both.
-      # To ensure we find the xref offset correctly, change all possible options to a 
+      # To ensure we find the xref offset correctly, change all possible options to a
       # standard format
       data = data.gsub("\r\n","\n").gsub("\n\r","\n").gsub("\r","\n")
       lines = data.split(/\n/).reverse

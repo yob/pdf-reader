@@ -132,7 +132,7 @@ class PDF::Reader
     # ref - a PDF::Reader::Reference object containing an object ID and revision number
     def offset_for (ref)
       @xref[ref.id][ref.gen]
-    rescue 
+    rescue
       raise InvalidObjectError, "Object #{ref.id}, Generation #{ref.gen} is invalid"
     end
     ################################################################################

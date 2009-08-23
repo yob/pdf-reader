@@ -9,10 +9,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -28,12 +28,12 @@ class PDF::Reader
     attr_accessor :label, :subtype, :encoding, :descendantfonts, :tounicode
     attr_reader :basefont
 
-    # returns a hash that maps glyph names to unicode codepoints. The mapping is based on 
+    # returns a hash that maps glyph names to unicode codepoints. The mapping is based on
     # a text file supplied by Adobe at:
     # http://www.adobe.com/devnet/opentype/archives/glyphlist.txt
     def self.glyphnames
       @@glyphs ||= {}
-      
+
       if @@glyphs.empty?
         RUBY_VERSION >= "1.9" ? mode = "r:BINARY" : mode = "r"
         File.open(File.dirname(__FILE__) + "/glyphlist.txt",mode) do |f|
@@ -51,9 +51,9 @@ class PDF::Reader
       # setup a default encoding for the selected font. It can always be overridden
       # with encoding= if required
       case font
-      when "Symbol" then 
+      when "Symbol" then
         self.encoding = PDF::Reader::Encoding.new("SymbolEncoding")
-      when "ZapfDingbats" then 
+      when "ZapfDingbats" then
         self.encoding = PDF::Reader::Encoding.new("ZapfDingbatsEncoding")
       end
       @basefont = font
@@ -64,7 +64,7 @@ class PDF::Reader
 
       if params.class == String
         # translate the bytestram into a UTF-8 string.
-        # If an encoding hasn't been specified, assume the text using this 
+        # If an encoding hasn't been specified, assume the text using this
         # font is in Adobe Standard Encoding.
         (encoding || PDF::Reader::Encoding.new(:StandardEncoding)).to_utf8(params, tounicode)
       elsif params.class == Array

@@ -41,33 +41,33 @@ class PDF::Reader
       end
 
       case enc
-        when nil                   then 
+        when nil                   then
           load_mapping File.dirname(__FILE__) + "/encodings/standard.txt"
           @unpack = "C*"
-        when "Identity-H".to_sym   then 
+        when "Identity-H".to_sym   then
           @unpack = "n*"
           @to_unicode_required = true
-        when :MacRomanEncoding     then 
+        when :MacRomanEncoding     then
           load_mapping File.dirname(__FILE__) + "/encodings/mac_roman.txt"
           @unpack = "C*"
-        when :MacExpertEncoding    then 
+        when :MacExpertEncoding    then
           load_mapping File.dirname(__FILE__) + "/encodings/mac_expert.txt"
           @unpack = "C*"
-        when :PDFDocEncoding       then 
+        when :PDFDocEncoding       then
           load_mapping File.dirname(__FILE__) + "/encodings/pdf_doc.txt"
           @unpack = "C*"
-        when :StandardEncoding     then 
+        when :StandardEncoding     then
           load_mapping File.dirname(__FILE__) + "/encodings/standard.txt"
           @unpack = "C*"
-        when :SymbolEncoding       then 
+        when :SymbolEncoding       then
           load_mapping File.dirname(__FILE__) + "/encodings/symbol.txt"
           @unpack = "C*"
-        when :UTF16Encoding        then 
+        when :UTF16Encoding        then
           @unpack = "n*"
-        when :WinAnsiEncoding      then 
+        when :WinAnsiEncoding      then
           load_mapping File.dirname(__FILE__) + "/encodings/win_ansi.txt"
           @unpack = "C*"
-        when :ZapfDingbatsEncoding then 
+        when :ZapfDingbatsEncoding then
           load_mapping File.dirname(__FILE__) + "/encodings/zapf_dingbats.txt"
           @unpack = "C*"
         else raise UnsupportedFeatureError, "#{enc} is not currently a supported encoding"
