@@ -156,4 +156,13 @@ context "PDF::Reader" do
     receiver.content.size.should eql(1)
     receiver.content[0].should eql("[test]")
   end
+
+  specify "should correctly process a PDF that uses an ASCII85Decode filter" do
+    receiver = PageTextReceiver.new
+    PDF::Reader.file(File.dirname(__FILE__) + "/data/ascii85_filter.pdf", receiver)
+
+    # confirm the text appears on the correct pages
+    receiver.content.size.should eql(1)
+    receiver.content[0][0,19].should eql("Et Iunia sexagesimo")
+  end
 end
