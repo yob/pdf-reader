@@ -63,6 +63,15 @@ class PDF::Reader
       out = ""
       size = bytes.size
 
+      if @buffer && !@buffer.empty?
+        if @buffer.include?(bytes)
+          offset = @buffer.index(bytes) + size
+          return head(offset)
+        else
+          out << head(@buffer.size)
+        end
+      end
+
       loop do
         out << @io.read(1)
         if out[-1 * size,size].eql?(bytes)
