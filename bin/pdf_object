@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'rubygems'
+
 $LOAD_PATH.unshift(File.dirname(__FILE__) + "/../lib")
 
 USAGE = "USAGE: " + File.basename(__FILE__) + " <file> <object id> [generation]"
