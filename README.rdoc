@@ -5,8 +5,19 @@ It provides programmatic access to the contents of a PDF file with a high
 degree of flexibility.
 
 The PDF 1.7 specification is a weighty document and not all aspects are
-currently supported. We welcome submission of PDF files that exhibit
+currently supported. I welcome submission of PDF files that exhibit
 unsupported aspects of the spec to assist with improving out support.
+
+= Development Status
+
+I adopted this library in 2007 when I was learning the fundamentals of the PDF
+spec. I do not currently use it in my day to day work and I just don't have the
+spare time to dedicate to adding new features.
+
+The code as it is works fairly well, and I offer it "as is". All patches bug
+reports are welcome, and I will work on them when I can.
+
+I STRONGLY RECOMMEND NOT USING PDF::READER FOR YOUR PRODUCTION CODE.
 
 = Installation
 
@@ -244,7 +255,7 @@ A simple app to display the number of pages in a PDF File.
 
 = Known Limitations
 
-The order of the callbacks is unpredicable, and is dependent on the internal
+The order of the callbacks is unpredictable, and is dependent on the internal
 layout of the file, not the order objects are displayed to the user. As a
 consequence of this it is highly unlikely that text will be completely in
 order.
