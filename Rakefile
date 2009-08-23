@@ -78,6 +78,7 @@ spec = Gem::Specification.new do |spec|
 	spec.rubyforge_project = "pdf-reader"
 	spec.homepage = "http://software.pmade.com/pdfreader"
 	spec.description = "The PDF::Reader library implements a PDF parser conforming as much as possible to the PDF specification from Adobe"
+  spec.add_dependency('Ascii85', '>=0.9')
 end
 
 # package the library into a gem

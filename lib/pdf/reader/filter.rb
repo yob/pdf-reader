@@ -39,12 +39,13 @@ class PDF::Reader
     # Filters that are only used to encode image data are accepted, but the data is
     # returned untouched. At this stage PDF::Reader has no need to decode images.
     #
-    def initialize (name, options)
+    def initialize (name, options = nil)
       @options = options
 
       case name.to_sym
-      when :FlateDecode    then @filter = :flate
+      when :ASCII85Decode  then @filter = :ascii85
       when :DCTDecode      then @filter = nil
+      when :FlateDecode    then @filter = :flate
       when :JBIG2Decode    then @filter = nil
       else                 raise UnsupportedFeatureError, "Unknown filter: #{name}"
       end
@@ -61,6 +62,17 @@ class PDF::Reader
 
       # decode the data
       self.send(@filter, data)
+    end
+    ################################################################################
+    # Decode the specified data using the Ascii85 algorithm. Relies on the AScii85
+    # rubygem.
+    #
+    def ascii85(data)
+      data = "<~#{data}" unless data.to_s[0,2] == "<~"
+      Ascii85::decode(data)
+    rescue Exception => e
+      # Oops, there was a problem decoding the stream
+      raise MalformedPDFError, "Error occured while decoding an ASCII85 stream (#{e.class.to_s}: #{e.to_s})"
     end
     ################################################################################
     # Decode the specified data with the Zlib compression algorithm
