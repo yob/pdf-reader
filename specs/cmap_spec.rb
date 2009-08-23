@@ -6,7 +6,7 @@ class PDF::Reader::CMap
   attr_reader :map
 end
 
-context "PDF::Reader::CMap" do
+context "PDF::Reader::CMap with a bfchar cmap" do
 
   before do
     
@@ -64,6 +64,12 @@ EOF
     map.decode(0x0003).should eql(0x0020) # mapped with the bfrange operator
     map.decode(0x0004).should eql(0x0020+1) # mapped with the bfrange operator
     map.decode(0x0005).should eql(0x0020+2) # mapped with the bfrange operator
+  end
+
+  specify "should correctly load a cmap that uses the beginbfrange operator" do
+    filename = File.dirname(__FILE__) + "/data/cmap_with_bfrange_two.txt"
+    map = PDF::Reader::CMap.new(File.read(filename))
+    map.decode(0x0100).should eql(0x0100) # mapped with the bfrange operator
   end
 
 end

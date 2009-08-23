@@ -69,14 +69,12 @@ class PDF::Reader
         start_code = "0x#{start_code}".hex
         end_code   = "0x#{end_code}".hex
         dst        = "0x#{dst}".hex
-        incr       = 0
 
         # add all values in the range to our mapping
-        (start_code..end_code).each do |val|
-          @map[val] = dst + incr
-          incr += 1
+        (start_code..end_code).each_with_index do |val, idx|
+          @map[val] = dst + idx
           # ensure a single range does not exceed 255 chars
-          raise PDF::Reader::MalformedPDFError, "a CMap bfrange cann't exceed 255 chars" if incr > 255
+          raise PDF::Reader::MalformedPDFError, "a CMap bfrange cann't exceed 255 chars" if idx > 255
         end
       end
     end
