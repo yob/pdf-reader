@@ -9,10 +9,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -34,17 +34,27 @@ class PDF::Reader
   # in the future.
   class Filter
     ################################################################################
-    # creates a new filter for decoding content
+    # creates a new filter for decoding content.
+    #
+    # Filters that are only used to encode image data are accepted, but the data is
+    # returned untouched. At this stage PDF::Reader has no need to decode images.
+    #
     def initialize (name, options)
       @options = options
 
       case name.to_sym
       when :FlateDecode    then @filter = :flate
-      #else                raise UnsupportedFeatureError, "Unknown filter: #{name}"
+      when :DCTDecode      then @filter = nil
+      when :JBIG2Decode    then @filter = nil
+      else                 raise UnsupportedFeatureError, "Unknown filter: #{name}"
       end
     end
     ################################################################################
     # attempts to decode the specified data with the current filter
+    #
+    # Filters that are only used to encode image data are accepted, but the data is
+    # returned untouched. At this stage PDF::Reader has no need to decode images.
+    #
     def filter (data)
       # leave the data untouched if we don't support the required filter
       return data if @filter.nil?
@@ -63,7 +73,7 @@ class PDF::Reader
         # If that fails, then use an undocumented 'feature' to attempt to inflate
         # the data as a raw RFC1951 stream.
         #
-        # See 
+        # See
         # - http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/243545
         # - http://www.gzip.org/zlib/zlib_faq.html#faq38
         Zlib::Inflate.new(-Zlib::MAX_WBITS).inflate(data)
