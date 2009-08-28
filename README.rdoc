@@ -72,6 +72,11 @@ report it!) or your receiver (please don't report it!).
 
 - James Healy <mailto:jimmy@deefa.com>
 
+= Licensing
+
+This library is distributed under the terms of the MIT License. See the included file for
+more detail.
+
 = Mailing List
 
 Any questions or feedback should be sent to the PDF::Reader google group. It's

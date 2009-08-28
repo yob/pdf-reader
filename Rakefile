@@ -47,8 +47,7 @@ Rake::RDocTask.new("doc") do |rdoc|
   rdoc.rdoc_files.include('README.rdoc')
   rdoc.rdoc_files.include('TODO')
   rdoc.rdoc_files.include('CHANGELOG')
-  #rdoc.rdoc_files.include('COPYING')
-  #rdoc.rdoc_files.include('LICENSE')
+  rdoc.rdoc_files.include('MIT-LICENSE')
   rdoc.rdoc_files.include('lib/**/*.rb')
   rdoc.options << "--inline-source"
 end
@@ -70,7 +69,7 @@ spec = Gem::Specification.new do |spec|
   spec.executables << "pdf_text"
   spec.executables << "pdf_list_callbacks"
 	spec.has_rdoc = true
-	spec.extra_rdoc_files = %w{README.rdoc TODO CHANGELOG}
+	spec.extra_rdoc_files = %w{README.rdoc TODO CHANGELOG MIT-LICENSE }
 	spec.rdoc_options << '--title' << 'PDF::Reader Documentation' <<
 	                     '--main'  << 'README.rdoc' << '-q'
   spec.author = "Peter Jones"
