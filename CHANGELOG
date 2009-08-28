@@ -1,8 +1,13 @@
-v0.7.6 (XXX)
-- Treat float and integer tokens differently (thanks Neil)
-- Correctly handle PDFs where the Kids element of a Pages dict is an indirect
-  refernce (thanks Rob Holland)
-- Fix conversion of PDF strings to Ruby strings on 1.8.6
+v0.7.6 (28th August 2009)
+- Various bug fixes that increase the files we can successfully parse
+  - Treat float and integer tokens differently (thanks Neil)
+  - Correctly handle PDFs where the Kids element of a Pages dict is an indirect
+    reference (thanks Rob Holland)
+  - Fix conversion of PDF strings to Ruby strings on 1.8.6 (thanks Andrès Koetsier)
+  - Fix decoding with ASCII85 and ASCIIHex filters (thanks Andrès Koetsier)
+  - Fix extracting inline images from content streams (thanks Andrès Koetsier)
+  - Fix extracting [ ] from content streams (thanks Christian Rishøj)
+  - Fix conversion of text to UTF8 when the cmap uses bfrange (thanks Federico Gonzalez Lutteroth)
 
 v0.7.5 (27th August 2008)
 - Fix a 1.8.7ism
