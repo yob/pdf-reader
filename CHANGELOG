@@ -1,4 +1,4 @@
-v0.7.7 (XXX)
+v0.7.7 (11th September 2009)
 - Trigger callbacks contained in Form XObjects when we encounter them in a
   content stream
 - Fix inheritance of page resources to comply with section 3.6.2
