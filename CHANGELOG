@@ -1,3 +1,8 @@
+v0.7.7 (XXX)
+- Trigger callbacks contained in Form XObjects when we encounter them in a
+  content stream
+- Fix inheritance of page resources to comply with section 3.6.2
+
 v0.7.6 (28th August 2009)
 - Various bug fixes that increase the files we can successfully parse
   - Treat float and integer tokens differently (thanks Neil)

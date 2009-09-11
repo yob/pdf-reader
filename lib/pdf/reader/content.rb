@@ -147,18 +147,14 @@ class PDF::Reader
   # - metadata
   # - xml_metadata
   # - page_count
+  # - begin_form_xobject
+  # - end_form_xobject
   #
   # == Resource Callbacks
   #
-  # Each page and page_container can contain a range of resources required for the page,
+  # Each page can contain (or inherit) a range of resources required for the page,
   # including things like fonts and images. The following callbacks may appear
-  # after begin_page_container and begin_page if the relevant resources exist
-  # on a page:
-  #
-  # In most cases, these callbacks associate a name with each resource, allowing it
-  # to be referred to by name in the page content. For example, an XObject can hold an image.
-  # If it gets mapped to the name "IM1", then it can be placed on the page using
-  # invoke_xobject "IM1".
+  # after begin_page if the relevant resources exist on a page:
   #
   # - resource_procset
   # - resource_xobject
@@ -166,6 +162,12 @@ class PDF::Reader
   # - resource_colorspace
   # - resource_pattern
   # - resource_font
+  #
+  # In most cases, these callbacks associate a name with each resource, allowing it
+  # to be referred to by name in the page content. For example, an XObject can hold an image.
+  # If it gets mapped to the name "IM1", then it can be placed on the page using
+  # invoke_xobject "IM1".
+  #
   class Content
     OPERATORS = {
       'b'   => :close_fill_stroke,
@@ -284,22 +286,19 @@ class PDF::Reader
     # its content
     def walk_pages (page)
 
-      if page[:Resources]
-        res = page[:Resources]
-        page.delete(:Resources)
-      end
-
       # extract page content
       if page[:Type] == :Pages
         callback(:begin_page_container, [page])
-        walk_resources(@xref.object(res)) if res
+        res = @xref.object(page[:Resources])
+        resources.push res if res
         @xref.object(page[:Kids]).each {|child| walk_pages(@xref.object(child))}
+        resources.pop if res
         callback(:end_page_container)
       elsif page[:Type] == :Page
         callback(:begin_page, [page])
-        walk_resources(@xref.object(res)) if res
-        @page = page
-        @params = []
+        res = @xref.object(page[:Resources])
+        resources.push res if res
+        walk_resources(current_resources)
 
         if @xref.object(page[:Contents]).kind_of?(Array)
           contents = @xref.object(page[:Contents])
@@ -312,8 +311,36 @@ class PDF::Reader
           content_stream(obj)
         end if page.has_key?(:Contents) and page[:Contents]
 
+        resources.pop if res
         callback(:end_page)
       end
+    end
+    ################################################################################
+    # Retreive the XObject for the supplied label and if it's a Form, walk it
+    # like a regular page content stream.
+    #
+    def walk_xobject_form(label)
+      xobjects = current_resources[:XObject] || {}
+      xobject  = @xref.object(xobjects[label])
+
+      if xobject && xobject.hash[:Subtype] == :Form
+        callback(:begin_form_xobject)
+        resources = @xref.object(xobject.hash[:Resources])
+        walk_resources(resources) if resources
+        content_stream(xobject.to_s)
+        callback(:end_form_xobject)
+      end
+    end
+
+    ################################################################################
+    # Return a merged hash of all resources that are current. Pages, page and xobject
+    #
+    def current_resources
+      hash = {}
+      resources.each do |res|
+        hash.merge!(res)
+      end
+      hash
     end
     ################################################################################
     # Reads a PDF content stream and calls all the appropriate callback methods for the operators
@@ -341,8 +368,16 @@ class PDF::Reader
             # read the raw image data from the buffer without tokenising
             @params << @buffer.read_until("EI")
           end
+
           callback(OPERATORS[token], @params)
-          @params.clear
+
+          if OPERATORS[token] == :invoke_xobject
+            xobject_label = @params.first
+            @params.clear
+            walk_xobject_form(xobject_label)
+          else
+            @params.clear
+          end
         else
           @params << token
         end
@@ -352,6 +387,8 @@ class PDF::Reader
     end
     ################################################################################
     def walk_resources(resources)
+      return unless resources.respond_to?(:[])
+
       resources = resolve_references(resources)
 
       # extract any procset information
@@ -445,6 +482,9 @@ class PDF::Reader
       else
         obj
       end
+    end
+    def resources
+      @resources ||= []
     end
   end
   ################################################################################

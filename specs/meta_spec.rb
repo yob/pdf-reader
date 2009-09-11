@@ -174,4 +174,14 @@ context "PDF::Reader" do
     receiver.content.size.should eql(1)
     receiver.content[0][0,7].should eql("WORKING")
   end
+
+  specify "should correctly process a PDF that uses Form XObjects to repeat content" do
+    receiver = PageTextReceiver.new
+    PDF::Reader.file(File.dirname(__FILE__) + "/data/form_xobject.pdf", receiver)
+
+    # confirm the text appears on the correct pages
+    receiver.content.size.should eql(2)
+    receiver.content[0].should eql("James Healy")
+    receiver.content[1].should eql("James Healy")
+  end
 end
