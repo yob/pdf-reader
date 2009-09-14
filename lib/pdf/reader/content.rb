@@ -346,9 +346,9 @@ class PDF::Reader
     # Reads a PDF content stream and calls all the appropriate callback methods for the operators
     # it contains
     def content_stream (instructions)
-      @buffer = Buffer.new(StringIO.new(instructions))
-      @parser = Parser.new(@buffer, @xref)
-      @params = [] if @params.nil?
+      @buffer =   Buffer.new(StringIO.new(instructions))
+      @parser =   Parser.new(@buffer, @xref)
+      @params ||= []
 
       while (token = @parser.parse_token(OPERATORS))
         if token.kind_of?(Token) and OPERATORS.has_key?(token)

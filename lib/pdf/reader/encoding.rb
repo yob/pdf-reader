@@ -113,9 +113,10 @@ class PDF::Reader
       array_orig.each do |num|
         if tounicode && (code = tounicode.decode(num))
           array_enc << code
-        elsif tounicode || (tounicode.nil? && @to_unicode_required)
+        elsif tounicode || ( tounicode.nil? && defined?(@to_unicode_required) &&
+                                               @to_unicode_required )
           array_enc << PDF::Reader::Encoding::UNKNOWN_CHAR
-        elsif @mapping && @mapping[num]
+        elsif defined?(@mapping) && @mapping && @mapping[num]
           array_enc << @mapping[num]
         else
           array_enc << num
