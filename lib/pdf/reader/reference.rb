@@ -48,6 +48,15 @@ class PDF::Reader
     def to_a
       [self]
     end
+    def ==(obj)
+      return false unless obj.kind_of?(PDF::Reader::Reference)
+
+      if obj.id == self.id && obj.gen == self.gen
+        true
+      else
+        false
+      end
+    end
     ################################################################################
   end
   ################################################################################
