@@ -233,3 +233,18 @@ context PDF::Hash, "to_a method" do
     arr.each { |a| a.should be_a_kind_of(Array) }
   end
 end
+
+context PDF::Hash, "trailer method" do
+
+  specify "should return the document trailer dictionary" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Hash.new(filename)
+
+    expected = {:Size => 58,
+                :Root => PDF::Reader::Reference.new(57,0),
+                :Info => PDF::Reader::Reference.new(56,0)}
+    h.trailer[:Size].should eql(58)
+    h.trailer[:Root].should eql(PDF::Reader::Reference.new(57,0))
+    h.trailer[:Info].should eql(PDF::Reader::Reference.new(56,0))
+  end
+end

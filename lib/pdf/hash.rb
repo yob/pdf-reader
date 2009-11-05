@@ -18,6 +18,7 @@ module PDF
     include Enumerable
 
     attr_accessor :default
+    attr_reader :trailer
 
     def initialize(input)
       if input.kind_of?(IO)
@@ -28,7 +29,7 @@ module PDF
       end
       buffer = PDF::Reader::Buffer.new(io)
       @xref  = PDF::Reader::XRef.new(buffer)
-      @xref.load
+      @trailer = @xref.load
     end
 
     # TODO: need a way to specify "get most recent generation"
