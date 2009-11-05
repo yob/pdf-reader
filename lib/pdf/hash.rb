@@ -24,7 +24,11 @@ module PDF
       if input.kind_of?(IO)
         io = input
       elsif File.file?(input.to_s)
-        input = File.read(input.to_s)
+        if File.respond_to?(:binread)
+          input = File.binread(input.to_s)
+        else
+          input = File.read(input.to_s)
+        end
         io = StringIO.new(input)
       end
       buffer = PDF::Reader::Buffer.new(io)
