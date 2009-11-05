@@ -36,6 +36,9 @@ class PDF::Reader
       @buffer = buffer
       @xref = {}
     end
+    def size
+      @xref.size
+    end
     ################################################################################
     # returns the PDF version of the current document. Technically this isn't part of the XRef
     # table, but it is one of the lowest level data items in the file, so we've lumped it in
@@ -134,6 +137,16 @@ class PDF::Reader
       @xref[ref.id][ref.gen]
     rescue
       raise InvalidObjectError, "Object #{ref.id}, Generation #{ref.gen} is invalid"
+    end
+    ################################################################################
+    # iterate over each object in the xref table
+    def each(&block)
+      ids = @xref.keys.sort
+      ids.each do |id|
+        gen = @xref[id].keys.sort[-1]
+        ref = PDF::Reader::Reference.new(id, gen)
+        yield ref, object(ref)
+      end
     end
     ################################################################################
     # Stores an offset value for a particular PDF object ID and revision number

@@ -116,6 +116,7 @@ require 'pdf/reader/stream'
 require 'pdf/reader/text_receiver'
 require 'pdf/reader/token'
 require 'pdf/reader/xref'
+require 'pdf/hash'
 
 class PDF::Reader
   ################################################################################
