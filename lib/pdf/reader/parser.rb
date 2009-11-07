@@ -207,18 +207,6 @@ class PDF::Reader
       Error.str_assert(parse_token, "endstream")
       Error.str_assert(parse_token, "endobj")
 
-      if dict.has_key?(:Filter)
-        options = []
-
-        if dict.has_key?(:DecodeParms)
-          options = Array(dict[:DecodeParms])
-        end
-
-        Array(dict[:Filter]).each_with_index do |filter, index|
-          data = Filter.new(filter, options[index]).filter(data)
-        end
-      end
-
       PDF::Reader::Stream.new(dict, data)
     end
     ################################################################################

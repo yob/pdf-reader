@@ -265,7 +265,10 @@ class PDF::Reader
       callback(:metadata, [info]) if info
 
       # new style xml metadata
-      callback(:xml_metadata,@xref.object(root[:Metadata])) if root[:Metadata]
+      if root[:Metadata]
+        stream = @xref.object(root[:Metadata])
+        callback(:xml_metadata,stream.unfiltered_data)
+      end
 
       # page count
       if (pages = @xref.object(root[:Pages]))
@@ -327,7 +330,7 @@ class PDF::Reader
         callback(:begin_form_xobject)
         resources = @xref.object(xobject.hash[:Resources])
         walk_resources(resources) if resources
-        content_stream(xobject.to_s)
+        content_stream(xobject)
         callback(:end_form_xobject)
       end
     end
@@ -346,6 +349,7 @@ class PDF::Reader
     # Reads a PDF content stream and calls all the appropriate callback methods for the operators
     # it contains
     def content_stream (instructions)
+      instructions = instructions.unfiltered_data if instructions.kind_of?(PDF::Reader::Stream)
       @buffer =   Buffer.new(StringIO.new(instructions))
       @parser =   Parser.new(@buffer, @xref)
       @params ||= []
@@ -437,7 +441,8 @@ class PDF::Reader
           if desc[:ToUnicode]
             # this stream is a cmap
             begin
-              @fonts[label].tounicode = PDF::Reader::CMap.new(desc[:ToUnicode])
+              stream = desc[:ToUnicode]
+              @fonts[label].tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
             rescue
               # if the CMap fails to parse, don't worry too much. Means we can't translate the text properly
             end

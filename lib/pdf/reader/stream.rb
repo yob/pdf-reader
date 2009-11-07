@@ -25,18 +25,39 @@
 
 class PDF::Reader
   ################################################################################
-  # An internal PDF::Reader class that represents a single token from a PDF file.
+  # An internal PDF::Reader class that represents a stream object from a PDF. Stream
+  # objects have 2 components, a dictionary that describes the content (size,
+  # compression, etc) and a stream of bytes.
   #
-  # Behaves exactly like a Ruby String - it basically exists for convenience.
-  class Stream < String
+  class Stream
     attr_accessor :hash
+    attr_reader :data
     ################################################################################
-    # Creates a new token with the specified value
-    def initialize (hash, val)
+    # Creates a new stream with the specified dictionary and data. The dictionary
+    # should be a standard ruby hash, the data should be a standard ruby string.
+    def initialize (hash, data)
       @hash = hash
-      super val
+      @data = data
     end
     ################################################################################
+    # apply this streams filters to its data and return the result.
+    def unfiltered_data
+      return @udata if @udata
+      @udata = data.dup
+
+      if hash.has_key?(:Filter)
+        options = []
+
+        if hash.has_key?(:DecodeParms)
+          options = Array(hash[:DecodeParms])
+        end
+
+        Array(hash[:Filter]).each_with_index do |filter, index|
+          @udata = Filter.new(filter, options[index]).filter(@udata)
+        end
+      end
+      @udata
+    end
   end
   ################################################################################
 end
