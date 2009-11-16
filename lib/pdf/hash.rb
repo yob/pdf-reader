@@ -21,7 +21,7 @@ module PDF
     attr_reader :trailer
 
     def initialize(input)
-      if input.kind_of?(IO)
+      if input.kind_of?(IO) || input.kind_of?(StringIO)
         io = input
       elsif File.file?(input.to_s)
         if File.respond_to?(:binread)
@@ -30,6 +30,8 @@ module PDF
           input = File.read(input.to_s)
         end
         io = StringIO.new(input)
+      else
+        raise ArgumentError, "input must be an IO-like object or a filename"
       end
       buffer = PDF::Reader::Buffer.new(io)
       @xref  = PDF::Reader::XRef.new(buffer)

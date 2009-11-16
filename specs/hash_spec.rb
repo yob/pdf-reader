@@ -13,6 +13,21 @@ context PDF::Hash do
   end
 end
 
+context PDF::Hash do
+  specify "should correctly load a PDF from a StringIO object" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    io = StringIO.new(File.read(filename))
+    h = PDF::Hash.new(io)
+
+    h.map { |ref, obj| obj.class }.size.should eql(57)
+  end
+
+  specify "should raise an ArgumentError if passed a non filename and non IO" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+     lambda {PDF::Hash.new(10)}.should raise_error(ArgumentError)
+  end
+end
+
 context PDF::Hash, "[] method" do
 
   specify "should return nil for any invalid hash key" do
