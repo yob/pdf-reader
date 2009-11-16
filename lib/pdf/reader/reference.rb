@@ -48,6 +48,11 @@ class PDF::Reader
     def to_a
       [self]
     end
+    ################################################################################
+    # returns the ID of this reference. Use with caution, ignores the generation id
+    def to_i
+      self.id
+    end
     def ==(obj)
       return false unless obj.kind_of?(PDF::Reader::Reference)
 

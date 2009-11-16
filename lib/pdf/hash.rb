@@ -36,33 +36,33 @@ module PDF
       @trailer = @xref.load
     end
 
-    # TODO: need a way to specify "get most recent generation"
-    #
-    def [](pdf_id)
-      return default if pdf_id.to_i <= 0
+    def [](key)
+      return default if key.to_i <= 0
 
       begin
-        @xref.object(PDF::Reader::Reference.new(pdf_id.to_i, 0))
+        unless key.kind_of?(PDF::Reader::Reference)
+          key = PDF::Reader::Reference.new(key.to_i, 0)
+        end
+        @xref.object(key)
       rescue
         return default
       end
     end
 
-    def fetch(pdf_id, local_default = nil)
-      raise ArgumentError if pdf_id.to_i <= 0
-
-      @xref.object(PDF::Reader::Reference.new(pdf_id.to_i, 0))
-    rescue
-      if local_default
+    def fetch(key, local_default = nil)
+      obj = self[key]
+      if obj
+        return obj
+      elsif local_default
         return local_default
       else
-        raise IndexError, "#{pdf_id} is invalid" if pdf_id.to_i <= 0
+        raise IndexError, "#{key} is invalid" if key.to_i <= 0
       end
     end
 
     def each(&block)
       @xref.each do |ref, obj|
-        yield ref.id, obj
+        yield ref, obj
       end
     end
     alias :each_pair :each
@@ -89,9 +89,13 @@ module PDF
     end
 
     # TODO update from O(n) to O(1)
-    def has_key?(pdf_id)
+    def has_key?(check_key)
       each_key do |key|
-        return true if pdf_id == key
+        if check_key.kind_of?(PDF::Reader::Reference)
+          return true if check_key == key
+        else
+          return true if check_key.to_i == key.id
+        end
       end
       return false
     end

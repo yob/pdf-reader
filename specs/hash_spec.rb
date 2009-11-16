@@ -39,11 +39,19 @@ context PDF::Hash, "[] method" do
     h["3"].should eql(3649)
     h["3james"].should eql(3649)
   end
+
+  specify "should correctly extract an int object using PDF::Reference as a key" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Hash.new(filename)
+    ref = PDF::Reader::Reference.new(3,0)
+
+    h[ref].should eql(3649)
+  end
 end
 
 context PDF::Hash, "fetch method" do
 
-  specify "should raise KeyError for any invalid hash key when no default is provided" do
+  specify "should raise IndexError for any invalid hash key when no default is provided" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Hash.new(filename)
 
@@ -67,6 +75,14 @@ context PDF::Hash, "fetch method" do
     h.fetch("3").should eql(3649)
     h.fetch("3james").should eql(3649)
   end
+
+  specify "should correctly extract an int object using PDF::Reader::Reference keys" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Hash.new(filename)
+    ref = PDF::Reader::Reference.new(3,0)
+
+    h.fetch(ref).should eql(3649)
+  end
 end
 
 context PDF::Hash, "each method" do
@@ -82,12 +98,12 @@ context PDF::Hash, "each method" do
     count.should eql(57)
   end
 
-  specify "should provide a PDF object ID and an object to each iteration" do
+  specify "should provide a PDF::Reader::Reference to each iteration" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Hash.new(filename)
 
     h.each do |id, obj|
-      id.should be_a_kind_of(Fixnum)
+      id.should be_a_kind_of(PDF::Reader::Reference)
       obj.should_not be_nil
     end
   end
@@ -106,12 +122,12 @@ context PDF::Hash, "each_key method" do
     count.should eql(57)
   end
 
-  specify "should provide a Fixnum to each iteration" do
+  specify "should provide a PDF::Reader::Reference to each iteration" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Hash.new(filename)
 
     h.each_key do |ref|
-      ref.should be_a_kind_of(Fixnum)
+      ref.should be_a_kind_of(PDF::Reader::Reference)
     end
   end
 end
@@ -157,6 +173,7 @@ context PDF::Hash, "has_key? method" do
     h = PDF::Hash.new(filename)
 
     h.has_key?(1).should be_true
+    h.has_key?(PDF::Reader::Reference.new(1,0)).should be_true
   end
 
   specify "should return false when called with an invalid ID" do
@@ -166,6 +183,7 @@ context PDF::Hash, "has_key? method" do
     h.has_key?(-1).should be_false
     h.has_key?(nil).should be_false
     h.has_key?("James").should be_false
+    h.has_key?(PDF::Reader::Reference.new(10000,0)).should be_false
   end
 end
 
@@ -182,9 +200,9 @@ context PDF::Hash, "has_value? method" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Hash.new(filename)
 
-    h.has_key?(-1).should be_false
-    h.has_key?(nil).should be_false
-    h.has_key?("James").should be_false
+    h.has_value?(-1).should be_false
+    h.has_value?(nil).should be_false
+    h.has_value?("James").should be_false
   end
 end
 
@@ -196,7 +214,7 @@ context PDF::Hash, "keys method" do
 
     keys = h.keys
     keys.size.should eql(57)
-    keys.each { |k| k.should be_a_kind_of(Fixnum) }
+    keys.each { |k| k.should be_a_kind_of(PDF::Reader::Reference) }
   end
 end
 
@@ -217,8 +235,11 @@ context PDF::Hash, "values_at method" do
   specify "should return an array of object" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Hash.new(filename)
+    ref3 = PDF::Reader::Reference.new(3,0)
+    ref6 = PDF::Reader::Reference.new(6,0)
 
     h.values_at(3,6).should eql([3649,3287])
+    h.values_at(ref3,ref6).should eql([3649,3287])
   end
 end
 
