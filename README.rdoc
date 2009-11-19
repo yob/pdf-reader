@@ -19,8 +19,6 @@ reports and sample PDFs are welcome - I will work on them when I can. If anyone
 is interested in adding features to PDF::Reader in their own effort to learn
 the PDF file format, I'll happy offer help qand support.
 
-I STRONGLY RECOMMEND NOT USING PDF::READER FOR YOUR PRODUCTION CODE.
-
 = Installation
 
 The recommended installation method is via Rubygems.
