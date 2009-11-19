@@ -38,6 +38,7 @@ class PDF::Reader
     def initialize (hash, data)
       @hash = hash
       @data = data
+      @udata = nil
     end
     ################################################################################
     # apply this streams filters to its data and return the result.
