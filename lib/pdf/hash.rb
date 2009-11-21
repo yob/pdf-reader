@@ -27,7 +27,7 @@ module PDF
     include Enumerable
 
     attr_accessor :default
-    attr_reader :trailer
+    attr_reader :trailer, :version
 
     # Creates a new PDF:Hash object. input can be a string with a valid filename,
     # a string containing a PDF file, or an IO object.
@@ -45,6 +45,7 @@ module PDF
       else
         raise ArgumentError, "input must be an IO-like object or a filename"
       end
+      @version = read_version(io)
       buffer = PDF::Reader::Buffer.new(io)
       @xref  = PDF::Reader::XRef.new(buffer)
       @trailer = @xref.load
@@ -196,6 +197,15 @@ module PDF
         ret << [id, obj]
       end
       ret
+    end
+
+    private
+
+    def read_version(io)
+      io.seek(0)
+      m, version = *io.read(10).match(/PDF-(\d.\d)/)
+      io.seek(0)
+      version
     end
 
   end

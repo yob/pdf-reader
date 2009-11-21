@@ -284,3 +284,13 @@ context PDF::Hash, "trailer method" do
     h.trailer[:Info].should eql(PDF::Reader::Reference.new(56,0))
   end
 end
+
+context PDF::Hash, "version method" do
+
+  specify "should return the document PDF version dictionary" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Hash.new(filename)
+
+    h.version.should eql("1.4")
+  end
+end
