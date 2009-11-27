@@ -1,3 +1,6 @@
+v0.8.1 (27th November 2009)
+- Added PDF::Hash#version. Provides access to the source file PDF version
+
 v0.8.0 (20th November 2009)
 - Added PDF::Hash. It provides direct access to objects from a PDF file
   with an API that emulates the standard Ruby hash
