@@ -184,4 +184,12 @@ context "PDF::Reader" do
     receiver.content[0].should eql("James Healy")
     receiver.content[1].should eql("James Healy")
   end
+
+  specify "should correctly process a PDF that uses indirect Form XObjects to repeat content" do
+    receiver = PageTextReceiver.new
+    PDF::Reader.file(File.dirname(__FILE__) + "/data/indirect_xobject.pdf", receiver)
+
+    # confirm there was a single page of tet
+    receiver.content.size.should eql(1)
+  end
 end

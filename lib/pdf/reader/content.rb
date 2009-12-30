@@ -323,7 +323,7 @@ class PDF::Reader
     # like a regular page content stream.
     #
     def walk_xobject_form(label)
-      xobjects = current_resources[:XObject] || {}
+      xobjects = @xref.object(current_resources[:XObject]) || {}
       xobject  = @xref.object(xobjects[label])
 
       if xobject && xobject.hash[:Subtype] == :Form

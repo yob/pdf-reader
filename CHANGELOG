@@ -1,3 +1,7 @@
+v0.8.2 (XXX)
+- Fix parsing of files that use Form XObjects behind an indirect reference
+  (thanks Cornelius Illi and Patrick Crosby)
+
 v0.8.1 (27th November 2009)
 - Added PDF::Hash#version. Provides access to the source file PDF version
 
