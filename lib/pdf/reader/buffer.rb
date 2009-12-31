@@ -6,6 +6,8 @@ class PDF::Reader
     def initialize (io)
       @io = io
       @tokens = []
+
+      prepare_tokens
     end
 
     def empty?
@@ -24,6 +26,21 @@ class PDF::Reader
 
     def prepare_tokens
       10.times { prepare_token }
+      merge_tokens
+    end
+
+    def merge_tokens
+      @tokens.each_with_index do |tok, idx|
+        if tok == "<" && @tokens[idx+1] == "<"
+          @tokens.inspect
+          @tokens[idx] = "<<"
+          @tokens[idx+1] = nil
+        elsif tok == ">" && @tokens[idx+1] == ">"
+          @tokens[idx] = ">>"
+          @tokens[idx+1] = nil
+        end
+      end
+      @tokens.compact!
     end
 
     def prepare_token
@@ -31,7 +48,6 @@ class PDF::Reader
 
       while chr = @io.read(1)
         case chr
-          # do nothing
         when "\x00", "\x09", "\x0A", "\x0C", "\x0D", "\x20"
           # white space, token finished
           @tokens << tok if tok.size > 0
@@ -39,11 +55,12 @@ class PDF::Reader
         when "\x28", "\x3C", "\x5B", "\x7B", "\x2F", "\x25"
           # opening delimiter, start of new token
           @tokens << tok if tok.size > 0
-          tok = chr
+          @tokens << chr
+          tok = ""
         when "\x29", "\x3E", "\x5D", "\x7D"
           # closing delimiter
-          tok << chr
-          @tokens << tok
+          @tokens << tok if tok.size > 0
+          @tokens << chr
           tok = ""
         else
           tok << chr

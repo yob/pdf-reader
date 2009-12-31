@@ -33,26 +33,56 @@ context PDF::Reader::Buffer, "pop method" do
     buf.pop.should be_nil
   end
 
-  specify "should correctly return a simple token with delimiters" do
-    buf = parse_string("<aaa>")
+  specify "should correctly tokenise opening delimiters" do
+    buf = parse_string("(<[{/%")
 
-    buf.pop.should eql("<aaa>")
+    buf.pop.should eql("(")
+    buf.pop.should eql("<")
+    buf.pop.should eql("[")
+    buf.pop.should eql("{")
+    buf.pop.should eql("/")
+    buf.pop.should eql("%")
     buf.pop.should be_nil
   end
 
-  specify "should correctly return two simple tokens with delimiters" do
+  specify "should correctly tokenise closing delimiters" do
+    buf = parse_string(")>]}")
+
+    buf.pop.should eql(")")
+    buf.pop.should eql(">")
+    buf.pop.should eql("]")
+    buf.pop.should eql("}")
+    buf.pop.should be_nil
+  end
+
+  specify "should correctly tokenise hash delimiters" do
+    buf = parse_string("<<aaa>>")
+
+    buf.pop.should eql("<<")
+    buf.pop.should eql("aaa")
+    buf.pop.should eql(">>")
+    buf.pop.should be_nil
+  end
+
+  specify "should correctly return simple tokens with delimiters" do
     buf = parse_string("<aaa><bbb>")
 
-    buf.pop.should eql("<aaa>")
-    buf.pop.should eql("<bbb>")
+    buf.pop.should eql("<")
+    buf.pop.should eql("aaa")
+    buf.pop.should eql(">")
+    buf.pop.should eql("<")
+    buf.pop.should eql("bbb")
+    buf.pop.should eql(">")
     buf.pop.should be_nil
   end
 
   specify "should correctly return two name tokens" do
     buf = parse_string("/Type/Pages")
 
-    buf.pop.should eql("/Type")
-    buf.pop.should eql("/Pages")
+    buf.pop.should eql("/")
+    buf.pop.should eql("Type")
+    buf.pop.should eql("/")
+    buf.pop.should eql("Pages")
     buf.pop.should be_nil
   end
 
