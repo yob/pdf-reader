@@ -112,16 +112,29 @@ context PDF::Reader::Buffer, "token method" do
   specify "should tokenise a string with a % correctly" do
     buf = parse_string("(James%Healy)")
     buf.token.should eql("(")
-    buf.token.should eql("James%Healy")
+    buf.token.should eql("James")
+    buf.token.should eql("%")
+    buf.token.should eql("Healy")
     buf.token.should eql(")")
   end
 
   specify "should tokenise a string with comments correctly" do
     buf = parse_string("(James%Healy) % this is a comment\n(")
     buf.token.should eql("(")
-    buf.token.should eql("James%Healy")
+    buf.token.should eql("James")
+    buf.token.should eql("%")
+    buf.token.should eql("Healy")
     buf.token.should eql(")")
     buf.token.should eql("(")
+  end
+  
+  specify "should correctly return an indirect reference" do
+    buf = parse_string("aaa 1 0 R bbb")
+
+    buf.token.should eql("aaa")
+    buf.token.should be_a_kind_of(PDF::Reader::Reference)
+    buf.token.should eql("bbb")
+    buf.token.should be_nil
   end
 end
 

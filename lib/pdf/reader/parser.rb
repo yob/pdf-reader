@@ -43,10 +43,10 @@ class PDF::Reader
     #
     # operators - a hash of supported operators to read from the underlying buffer.
     def parse_token (operators={})
-      ref = Reference.from_buffer(@buffer) and return ref
       token = @buffer.token
 
       case token
+      when PDF::Reader::Reference     then return token
       when nil                        then return nil
       when "/"                        then return @buffer.token.to_sym
       when "<<"                       then return dictionary()

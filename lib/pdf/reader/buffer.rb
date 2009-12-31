@@ -9,13 +9,14 @@ class PDF::Reader
     end
 
     def empty?
-      prepare_tokens if @tokens.empty?
+      prepare_tokens if @tokens.size < 3
 
       @tokens.empty?
     end
 
     def token
-      prepare_tokens if @tokens.empty?
+      prepare_tokens if @tokens.size < 3
+      merge_indirect_reference
 
       @tokens.shift
     end
@@ -49,6 +50,18 @@ class PDF::Reader
     def prepare_tokens
       10.times { prepare_token }
       merge_tokens
+    end
+
+    def merge_indirect_reference
+      return if @tokens.size < 3
+      return if @tokens[2] != "R"
+
+      if @tokens[0].match(/\d+/) && @tokens[1].match(/\d+/)
+        @tokens[0] = PDF::Reader::Reference.new(@tokens[0].to_i, @tokens[1].to_i)
+        @tokens[1] = nil
+        @tokens[2] = nil
+        @tokens.compact!
+      end
     end
 
     def merge_tokens
