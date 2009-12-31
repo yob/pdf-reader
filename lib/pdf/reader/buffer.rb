@@ -6,8 +6,6 @@ class PDF::Reader
     def initialize (io)
       @io = io
       @tokens = []
-
-      prepare_tokens
     end
 
     def empty?
