@@ -8,84 +8,121 @@ module BufferHelper
   end
 end
 
-context PDF::Reader::Buffer, "pop method" do
+context PDF::Reader::Buffer, "token method" do
   include BufferHelper
 
   specify "should correctly return a simple token - 1" do
     buf = parse_string("aaa")
 
-    buf.pop.should eql("aaa")
-    buf.pop.should be_nil
+    buf.token.should eql("aaa")
+    buf.token.should be_nil
   end
 
   specify "should correctly return a simple token - 2" do
     buf = parse_string("1.0")
 
-    buf.pop.should eql("1.0")
-    buf.pop.should be_nil
+    buf.token.should eql("1.0")
+    buf.token.should be_nil
   end
 
   specify "should correctly return two simple tokens" do
     buf = parse_string("aaa 1.0")
 
-    buf.pop.should eql("aaa")
-    buf.pop.should eql("1.0")
-    buf.pop.should be_nil
+    buf.token.should eql("aaa")
+    buf.token.should eql("1.0")
+    buf.token.should be_nil
   end
 
   specify "should correctly tokenise opening delimiters" do
     buf = parse_string("(<[{/%")
 
-    buf.pop.should eql("(")
-    buf.pop.should eql("<")
-    buf.pop.should eql("[")
-    buf.pop.should eql("{")
-    buf.pop.should eql("/")
-    buf.pop.should eql("%")
-    buf.pop.should be_nil
+    buf.token.should eql("(")
+    buf.token.should eql("<")
+    buf.token.should eql("[")
+    buf.token.should eql("{")
+    buf.token.should eql("/")
+    buf.token.should eql("%")
+    buf.token.should be_nil
   end
 
   specify "should correctly tokenise closing delimiters" do
     buf = parse_string(")>]}")
 
-    buf.pop.should eql(")")
-    buf.pop.should eql(">")
-    buf.pop.should eql("]")
-    buf.pop.should eql("}")
-    buf.pop.should be_nil
+    buf.token.should eql(")")
+    buf.token.should eql(">")
+    buf.token.should eql("]")
+    buf.token.should eql("}")
+    buf.token.should be_nil
   end
 
   specify "should correctly tokenise hash delimiters" do
     buf = parse_string("<<aaa>>")
 
-    buf.pop.should eql("<<")
-    buf.pop.should eql("aaa")
-    buf.pop.should eql(">>")
-    buf.pop.should be_nil
+    buf.token.should eql("<<")
+    buf.token.should eql("aaa")
+    buf.token.should eql(">>")
+    buf.token.should be_nil
   end
 
   specify "should correctly return simple tokens with delimiters" do
     buf = parse_string("<aaa><bbb>")
 
-    buf.pop.should eql("<")
-    buf.pop.should eql("aaa")
-    buf.pop.should eql(">")
-    buf.pop.should eql("<")
-    buf.pop.should eql("bbb")
-    buf.pop.should eql(">")
-    buf.pop.should be_nil
+    buf.token.should eql("<")
+    buf.token.should eql("aaa")
+    buf.token.should eql(">")
+    buf.token.should eql("<")
+    buf.token.should eql("bbb")
+    buf.token.should eql(">")
+    buf.token.should be_nil
   end
 
   specify "should correctly return two name tokens" do
     buf = parse_string("/Type/Pages")
 
-    buf.pop.should eql("/")
-    buf.pop.should eql("Type")
-    buf.pop.should eql("/")
-    buf.pop.should eql("Pages")
-    buf.pop.should be_nil
+    buf.token.should eql("/")
+    buf.token.should eql("Type")
+    buf.token.should eql("/")
+    buf.token.should eql("Pages")
+    buf.token.should be_nil
   end
 
+  specify "should tokenise a dict correctly" do
+    buf = parse_string("/Registry (Adobe) /Ordering (Japan1) /Supplement")
+    buf.token.should eql("/")
+    buf.token.should eql("Registry")
+    buf.token.should eql("(")
+    buf.token.should eql("Adobe")
+    buf.token.should eql(")")
+    buf.token.should eql("/")
+    buf.token.should eql("Ordering")
+    buf.token.should eql("(")
+    buf.token.should eql("Japan1")
+    buf.token.should eql(")")
+    buf.token.should eql("/")
+    buf.token.should eql("Supplement")
+  end
+
+  specify "should tokenise a string without a % correctly" do
+    buf = parse_string("(James)")
+    buf.token.should eql("(")
+    buf.token.should eql("James")
+    buf.token.should eql(")")
+  end
+
+  specify "should tokenise a string with a % correctly" do
+    buf = parse_string("(James%Healy)")
+    buf.token.should eql("(")
+    buf.token.should eql("James%Healy")
+    buf.token.should eql(")")
+  end
+
+  specify "should tokenise a string with comments correctly" do
+    buf = parse_string("(James%Healy) % this is a comment\n(")
+    buf.token.should eql("(")
+    buf.token.should eql("James%Healy")
+    buf.token.should eql(")")
+    buf.token.should eql("(")
+  end
 end
 
 context PDF::Reader::Buffer, "empty? method" do
@@ -101,7 +138,7 @@ context PDF::Reader::Buffer, "empty? method" do
     buf = parse_string("aaa")
 
     buf.empty?.should be_false
-    buf.pop
+    buf.token
     buf.empty?.should be_true
   end
 end

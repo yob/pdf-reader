@@ -14,7 +14,7 @@ class PDF::Reader
       @tokens.empty?
     end
 
-    def pop
+    def token
       prepare_tokens if @tokens.empty?
 
       @tokens.shift
