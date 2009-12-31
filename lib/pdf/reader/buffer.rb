@@ -22,6 +22,30 @@ class PDF::Reader
       @tokens.shift
     end
 
+    def find_first_xref_offset
+      @io.seek(-1024, IO::SEEK_END) rescue seek(0)
+      data = @io.read(1024)
+
+      # the PDF 1.7 spec (section #3.4) says that EOL markers can be either \r, \n, or both.
+      # To ensure we find the xref offset correctly, change all possible options to a
+      # standard format
+      data = data.gsub("\r\n","\n").gsub("\n\r","\n").gsub("\r","\n")
+      lines = data.split(/\n/).reverse
+
+      eof_index = nil
+
+      lines.each_with_index do |line, index|
+        if line =~ /^%%EOF\r?$/
+          eof_index = index
+          break
+        end
+      end
+
+      raise MalformedPDFError, "PDF does not contain EOF marker" if eof_index.nil?
+      raise MalformedPDFError, "PDF EOF marker does not follow offset" if eof_index >= lines.size-1
+      lines[eof_index+1].to_i
+    end
+
     private
 
     def prepare_tokens

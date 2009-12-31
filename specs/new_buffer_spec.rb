@@ -106,3 +106,69 @@ context PDF::Reader::Buffer, "empty? method" do
   end
 end
 
+context PDF::Reader::Buffer, "find_first_xref_offset method" do
+
+  specify "should find the first xref offset from cairo-basic.pdf correctly" do
+    @file = File.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    @buffer = PDF::Reader::Buffer.new(@file)
+
+    @buffer.find_first_xref_offset.should eql(9243)
+  end
+
+  specify "should find the first xref offset from cairo-unicode.pdf correctly" do
+    @file = File.new(File.dirname(__FILE__) + "/data/cairo-unicode.pdf")
+    @buffer = PDF::Reader::Buffer.new(@file)
+
+    @buffer.find_first_xref_offset.should eql(136174)
+  end
+
+  specify "should find the first xref offset from prince1.pdf correctly" do
+    @file = File.new(File.dirname(__FILE__) + "/data/prince1.pdf")
+    @buffer = PDF::Reader::Buffer.new(@file)
+
+    @buffer.find_first_xref_offset.should eql(678715)
+  end
+
+  specify "should find the first xref offset from prince2.pdf correctly" do
+    @file = File.new(File.dirname(__FILE__) + "/data/prince2.pdf")
+    @buffer = PDF::Reader::Buffer.new(@file)
+
+    @buffer.find_first_xref_offset.should eql(941440)
+  end
+
+  specify "should find the first xref offset from pdfwriter-manual.pdf correctly" do
+    @file = File.new(File.dirname(__FILE__) + "/data/pdfwriter-manual.pdf")
+    @buffer = PDF::Reader::Buffer.new(@file)
+
+    @buffer.find_first_xref_offset.should eql(275320)
+  end
+
+  specify "should find the first xref offset from pdf-distiller.pdf correctly" do
+    @file = File.new(File.dirname(__FILE__) + "/data/pdf-distiller.pdf")
+    @buffer = PDF::Reader::Buffer.new(@file)
+
+    @buffer.find_first_xref_offset.should eql(173)
+  end
+
+  specify "should find the first xref offset from pdflatex.pdf correctly" do
+    @file = File.new(File.dirname(__FILE__) + "/data/pdflatex.pdf")
+    @buffer = PDF::Reader::Buffer.new(@file)
+
+    @buffer.find_first_xref_offset.should eql(152898)
+  end
+
+  specify "should find the first xref offset from openoffice-2.2.pdf correctly" do
+    @file = File.new(File.dirname(__FILE__) + "/data/openoffice-2.2.pdf")
+    @buffer = PDF::Reader::Buffer.new(@file)
+
+    @buffer.find_first_xref_offset.should eql(36961)
+  end
+
+  specify "should raise an exception when buffer doesn't contain an EOF marker" do
+    @file = File.new(File.dirname(__FILE__) + "/data/invalid/no_eof.pdf")
+    @buffer = PDF::Reader::Buffer.new(@file)
+
+    lambda { @buffer.find_first_xref_offset }.should raise_error(PDF::Reader::MalformedPDFError)
+  end
+
+end
