@@ -17,6 +17,10 @@ class PDF::Reader
       @tokens.empty?
     end
 
+    def read(bytes)
+      @io.read(bytes)
+    end
+
     def token
       prepare_tokens if @tokens.size < 3
       merge_indirect_reference
@@ -55,7 +59,7 @@ class PDF::Reader
       10.times do
         if state == :literal_string
           prepare_literal_token
-        else
+        elsif state == :regular
           prepare_regular_token
         end
       end
@@ -64,6 +68,8 @@ class PDF::Reader
     def state
       if @tokens[-1] == "("
         :literal_string
+      elsif @tokens[-1] == "stream"
+        :stream
       else
         :regular
       end

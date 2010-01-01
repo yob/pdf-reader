@@ -1,12 +1,4 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
-
-require 'pdf/reader'
-
-module BufferHelper
-  def parse_string (r)
-    PDF::Reader::Buffer.new(StringIO.new(r))
-  end
-end
+require File.dirname(__FILE__) + "/spec_helper"
 
 context PDF::Reader::Buffer, "token method" do
   include BufferHelper
@@ -270,4 +262,15 @@ context PDF::Reader::Buffer, "find_first_xref_offset method" do
     lambda { @buffer.find_first_xref_offset }.should raise_error(PDF::Reader::MalformedPDFError)
   end
 
+end
+
+context PDF::Reader::Buffer, "read method" do
+  include BufferHelper
+
+  specify "should return raw data from the underlying IO" do
+    buf = parse_string("stream bbb")
+
+    buf.token.should eql("stream")
+    buf.read(3).should eql("bbb")
+  end
 end
