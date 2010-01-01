@@ -181,18 +181,24 @@ class PDF::Reader
       @tokens << ")"
     end
 
-
     def prepare_regular_token
       tok = ""
 
       while chr = @io.read(1)
         case chr
+        when "\x25"
+          # comment, ignore everything until the next EOL char
+          done = false
+          while !done
+            chr = @io.read(1)
+            done = true if chr.nil? || chr == "\x0A" || chr == "\x0D"
+          end
         when "\x00", "\x09", "\x0A", "\x0C", "\x0D", "\x20"
           # white space, token finished
           @tokens << tok if tok.size > 0
           tok = ""
           break
-        when "\x28", "\x3C", "\x5B", "\x7B", "\x2F", "\x25"
+        when "\x28", "\x3C", "\x5B", "\x7B", "\x2F"
           # opening delimiter, start of new token
           @tokens << tok if tok.size > 0
           @tokens << chr

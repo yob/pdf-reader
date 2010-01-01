@@ -33,13 +33,12 @@ context PDF::Reader::Buffer, "token method" do
   end
 
   specify "should correctly tokenise opening delimiters" do
-    buf = parse_string("<[{/%(")
+    buf = parse_string("<[{/(")
 
     buf.token.should eql("<")
     buf.token.should eql("[")
     buf.token.should eql("{")
     buf.token.should eql("/")
-    buf.token.should eql("%")
     buf.token.should eql("(")
     buf.token.should eql(")") # auto adds closing literal string delim
     buf.token.should be_nil
@@ -109,7 +108,7 @@ context PDF::Reader::Buffer, "token method" do
     buf.token.should eql(")")
   end
 
-  specify "should tokenise a string with a % correctly" do
+  specify "should tokenise a literal string with a % correctly" do
     buf = parse_string("(James%Healy)")
     buf.token.should eql("(")
     buf.token.should eql("James%Healy")
@@ -122,6 +121,12 @@ context PDF::Reader::Buffer, "token method" do
     buf.token.should eql("James%Healy")
     buf.token.should eql(")")
     buf.token.should eql("(")
+  end
+
+  specify "should tokenise a string with comments correctly" do
+    buf = parse_string("James % this is a comment")
+    buf.token.should eql("James")
+    buf.token.should be_nil
   end
 
   specify "should tokenise a string with an escaped, unbalanced param correctly" do
