@@ -273,4 +273,18 @@ context PDF::Reader::Buffer, "read method" do
     buf.token.should eql("stream")
     buf.read(3).should eql("bbb")
   end
+
+  specify "should return raw data from the underlying IO" do
+    buf = parse_string("stream\n\nbbb")
+
+    buf.token.should eql("stream")
+    buf.read(4).should eql("\nbbb")
+  end
+
+  specify "should return raw data from the underlying IO and skip LF/CR bytes" do
+    buf = parse_string("stream\n\nbbb")
+
+    buf.token.should eql("stream")
+    buf.read(3, :skip_eol => true).should eql("bbb")
+  end
 end

@@ -17,7 +17,25 @@ class PDF::Reader
       @tokens.empty?
     end
 
-    def read(bytes)
+    # return raw bytes from the underlying IO stream.
+    #
+    # If :skip_eol option is true, the IO stream is advanced past any LF or CR
+    # bytes before it reads any data. This is to handle content streams, which
+    # have a CRLF or LF after the stream token.
+    def read(bytes, opts = {})
+      if opts[:skip_eol]
+        done = false
+        while !done
+          chr = @io.read(1)
+          if chr.nil?
+            return nil
+          elsif chr != "\n" && chr != "\r"
+            @io.seek(-1, IO::SEEK_CUR)
+            done = true
+          end
+        end
+      end
+
       @io.read(bytes)
     end
 
