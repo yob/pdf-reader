@@ -46,8 +46,7 @@ module PDF
         raise ArgumentError, "input must be an IO-like object or a filename"
       end
       @version = read_version(io)
-      buffer = PDF::Reader::Buffer.new(io)
-      @xref  = PDF::Reader::XRef.new(buffer)
+      @xref  = PDF::Reader::XRef.new(io)
       @trailer = @xref.load
     end
 

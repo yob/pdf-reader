@@ -32,8 +32,8 @@ class PDF::Reader
   class XRef
     ################################################################################
     # create a new Xref table based on the contents of the supplied PDF::Reader::Buffer object
-    def initialize (buffer)
-      @buffer = buffer
+    def initialize (io)
+      @io = io
       @xref = {}
     end
     def size
@@ -44,8 +44,8 @@ class PDF::Reader
     # table, but it is one of the lowest level data items in the file, so we've lumped it in
     # with the cross reference code.
     def pdf_version
-      @buffer.seek(0)
-      m, version = *@buffer.read(8).match(/%PDF-(\d.\d)/)
+      @io.seek(0)
+      m, version = *@io.read(8).match(/%PDF-(\d.\d)/)
       raise MalformedPDFError, 'invalid PDF version' if version.nil?
       return version.to_f
     end
@@ -55,13 +55,14 @@ class PDF::Reader
     #
     # Will fail silently if there is no xref table at the requested offset.
     def load (offset = nil)
-      offset ||= @buffer.find_first_xref_offset
-      @buffer.seek(offset)
-      token = @buffer.token
+      offset ||= new_buffer.find_first_xref_offset
+
+      buf = new_buffer(offset)
+      token = buf.token
 
       if token == "xref" || token == "ref"
-        load_xref_table
-      elsif token.to_i >= 0 && @buffer.token.to_i >= 0 && @buffer.token == "obj"
+        load_xref_table(buf)
+      elsif token.to_i >= 0 && buf.token.to_i >= 0 && buf.token == "obj"
         raise PDF::Reader::UnsupportedFeatureError, "XRef streams are not supported in PDF::Reader yet"
       else
         raise PDF::Reader::MalformedPDFError, "xref table not found at offset #{offset} (#{token} != xref)"
@@ -73,51 +74,11 @@ class PDF::Reader
     # number
     #
     # If the object is a stream, that is returned as well
-    def object (ref, save_pos = true)
+    def object (ref)
       return ref unless ref.kind_of?(Reference)
-      pos = @buffer.pos_without_buf if save_pos
-      obj = Parser.new(@buffer.seek(offset_for(ref)), self).object(ref.id, ref.gen)
-      @buffer.seek(pos) if save_pos
+      buf = new_buffer(offset_for(ref))
+      obj = Parser.new(buf, self).object(ref.id, ref.gen)
       return obj
-    end
-    ################################################################################
-    # Assumes the underlying buffer is positioned at the start of an Xref table and
-    # processes it into memory.
-    def load_xref_table
-      tok_one = tok_two = nil
-
-      begin
-        # loop over all subsections of the xref table
-        # In a well formed PDF, the 'trailer' token will indicate
-        # the end of the table. However we need to be careful in case
-        # we're processing a malformed pdf that is missing the trailer.
-        loop do
-          tok_one, tok_two = @buffer.token, @buffer.token
-          if tok_one != "trailer" && !tok_one.match(/\d+/)
-            raise MalformedPDFError, "PDF malformed, missing trailer after cross reference"
-          end
-          break if tok_one == "trailer" or tok_one.nil?
-          objid, count = tok_one.to_i, tok_two.to_i
-
-          count.times do
-            offset = @buffer.token.to_i
-            generation = @buffer.token.to_i
-            state = @buffer.token
-
-            store(objid, generation, offset) if state == "n"
-            objid += 1
-          end
-        end
-      rescue EOFError => e
-        raise MalformedPDFError, "PDF malformed, missing trailer after cross reference"
-      end
-
-      raise MalformedPDFError, "PDF malformed, trailer should be a dictionary" unless tok_two == "<<"
-
-      trailer = Parser.new(@buffer, self).dictionary
-      load(trailer[:Prev].to_i) if trailer.has_key?(:Prev)
-
-      trailer
     end
     # returns the type of object a ref points to
     def obj_type(ref)
@@ -154,6 +115,50 @@ class PDF::Reader
       (@xref[id] ||= {})[gen] ||= offset
     end
     ################################################################################
+    private
+    ################################################################################
+    # Assumes the underlying buffer is positioned at the start of an Xref table and
+    # processes it into memory.
+    def load_xref_table(buf)
+      tok_one = tok_two = nil
+
+      begin
+        # loop over all subsections of the xref table
+        # In a well formed PDF, the 'trailer' token will indicate
+        # the end of the table. However we need to be careful in case
+        # we're processing a malformed pdf that is missing the trailer.
+        loop do
+          tok_one, tok_two = buf.token, buf.token
+          if tok_one != "trailer" && !tok_one.match(/\d+/)
+            raise MalformedPDFError, "PDF malformed, missing trailer after cross reference"
+          end
+          break if tok_one == "trailer" or tok_one.nil?
+          objid, count = tok_one.to_i, tok_two.to_i
+
+          count.times do
+            offset = buf.token.to_i
+            generation = buf.token.to_i
+            state = buf.token
+
+            store(objid, generation, offset) if state == "n"
+            objid += 1
+          end
+        end
+      rescue EOFError => e
+        raise MalformedPDFError, "PDF malformed, missing trailer after cross reference"
+      end
+
+      raise MalformedPDFError, "PDF malformed, trailer should be a dictionary" unless tok_two == "<<"
+
+      trailer = Parser.new(buf, self).dictionary
+      load(trailer[:Prev].to_i) if trailer.has_key?(:Prev)
+
+      trailer
+    end
+
+    def new_buffer(offset = 0)
+      PDF::Reader::Buffer.new(@io, :seek => offset)
+    end
   end
   ################################################################################
 end

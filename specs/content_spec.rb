@@ -61,8 +61,8 @@ context "The PDF::Reader::Content class" do
 
     # access a content stream with an inline image
     filename = File.dirname(__FILE__) + "/data/inline_image.pdf"
-    buffer =   PDF::Reader::Buffer.new(File.new(filename, "r"))
-    xref =     PDF::Reader::XRef.new(buffer)
+    io       = File.new(filename, "r")
+    xref     = PDF::Reader::XRef.new(io)
     xref.xref[3] = Hash.new
     xref.xref[3][0] = 248
     ref =      PDF::Reader::Reference.new(3,0)

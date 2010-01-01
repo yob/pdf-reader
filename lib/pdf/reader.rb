@@ -122,9 +122,7 @@ class PDF::Reader
   ################################################################################
   # Given an IO object that contains PDF data, parse it.
   def parse (io, receiver, opts = {})
-    @buffer   = Buffer.new(io)
-    @xref     = XRef.new(@buffer)
-    @parser   = Parser.new(@buffer, @xref)
+    @xref     = XRef.new(io)
     @content  = (receiver == Explore ? Explore : Content).new(receiver, @xref)
 
     options = {:pages => true, :metadata => true}

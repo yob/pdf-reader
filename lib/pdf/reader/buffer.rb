@@ -75,7 +75,7 @@ class PDF::Reader
     end
 
     def find_first_xref_offset
-      @io.seek(-1024, IO::SEEK_END) rescue seek(0)
+      @io.seek(-1024, IO::SEEK_END) rescue @io.seek(0)
       data = @io.read(1024)
 
       # the PDF 1.7 spec (section #3.4) says that EOL markers can be either \r, \n, or both.
@@ -102,7 +102,6 @@ class PDF::Reader
 
     def reset_pos
       if @io.pos != @pos
-        #puts "io in wrong pos. changing from #{@io.pos} to #{@pos}"
         @io.seek(@pos)
       end
     end
