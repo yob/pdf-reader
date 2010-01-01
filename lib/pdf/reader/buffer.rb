@@ -166,13 +166,10 @@ class PDF::Reader
         chr = @io.read(1)
         if chr.nil?
           count = 0 # unbalanced params
-        end
-
-        case chr
-        when "("
+        elsif chr == "(" && str[-1,1] != "\x5C"
           str << "("
           count += 1
-        when ")"
+        elsif chr == ")" && str[-1,1] != "\x5C"
           count -= 1
           str << ")" unless count == 0
         else

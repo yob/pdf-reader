@@ -166,7 +166,7 @@ context "PDF::Reader" do
     receiver.content[0][0,19].should eql("Et Iunia sexagesimo")
   end
 
-  specify "should correctly process a PDF that has an inlien image in a content stream with no line breaks" do
+  specify "should correctly process a PDF that has an inline image in a content stream with no line breaks" do
     receiver = PageTextReceiver.new
     PDF::Reader.file(File.dirname(__FILE__) + "/data/inline_image_single_line_content_stream.pdf", receiver)
 

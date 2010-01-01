@@ -123,6 +123,13 @@ context PDF::Reader::Buffer, "token method" do
     buf.token.should eql(")")
     buf.token.should eql("(")
   end
+
+  specify "should tokenise a string with an escaped, unbalanced param correctly" do
+    buf = parse_string("(James \\(Code Monkey)")
+    buf.token.should eql("(")
+    buf.token.should eql("James \\(Code Monkey")
+    buf.token.should eql(")")
+  end
   
   specify "should correctly return an indirect reference" do
     buf = parse_string("aaa 1 0 R bbb")
