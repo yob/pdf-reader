@@ -3,12 +3,15 @@
 class PDF::Reader
   class Buffer
 
+    attr_reader :pos
+
     def initialize (io, opts = {})
       @io = io
       @tokens = []
       @options = opts
 
       @io.seek(opts[:seek]) if opts[:seek]
+      @pos = @io.pos
     end
 
     def empty?
@@ -23,6 +26,8 @@ class PDF::Reader
     # bytes before it reads any data. This is to handle content streams, which
     # have a CRLF or LF after the stream token.
     def read(bytes, opts = {})
+      reset_pos
+
       if opts[:skip_eol]
         done = false
         while !done
@@ -36,10 +41,13 @@ class PDF::Reader
         end
       end
 
-      @io.read(bytes)
+      bytes = @io.read(bytes)
+      save_pos
+      bytes
     end
 
     def token
+      reset_pos
       prepare_tokens if @tokens.size < 3
       merge_indirect_reference
       merge_tokens
@@ -73,6 +81,17 @@ class PDF::Reader
 
     private
 
+    def reset_pos
+      if @io.pos != @pos
+        #puts "io in wrong pos. changing from #{@io.pos} to #{@pos}"
+        @io.seek(@pos)
+      end
+    end
+
+    def save_pos
+      @pos = @io.pos
+    end
+
     def prepare_tokens
       10.times do
         if state == :literal_string
@@ -81,6 +100,8 @@ class PDF::Reader
           prepare_regular_token
         end
       end
+
+      save_pos
     end
 
     def state

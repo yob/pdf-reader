@@ -177,6 +177,28 @@ context PDF::Reader::Buffer, "token method" do
     buf.token.should eql(")")
     buf.token.should be_nil
   end
+
+  specify "should record io position" do
+    buf = parse_string("aaa bbb")
+
+    buf.pos.should eql(0)
+    buf.token
+    buf.pos.should eql(7)
+  end
+
+  specify "should restore io position if it's been changed on us" do
+    io = StringIO.new("aaa bbb")
+    buf = PDF::Reader::Buffer.new(io)
+
+    buf.pos.should eql(0)
+    buf.token
+    buf.token
+    buf.pos.should eql(7)
+    io.seek(0)
+
+    buf.token.should be_nil
+    buf.pos.should eql(7)
+  end
 end
 
 context PDF::Reader::Buffer, "empty? method" do
