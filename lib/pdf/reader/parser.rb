@@ -126,11 +126,10 @@ class PDF::Reader
       str.gsub!("\\(","(")
       str.gsub!("\\)",")")
       str.gsub!("\\\\","\\")
-      
-      #if m = @buffer.raw.match(/^\\(\d{1,3})/)
-      #  to_remove = m[0].size
-      #  str << m[1].oct.chr
-      #end
+
+      str.scan(/\\\d\d\d/).each do |octal|
+        str.gsub!(octal, octal[1,3].oct.chr)
+      end
 
       str
     end
