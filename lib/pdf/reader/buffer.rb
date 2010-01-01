@@ -24,11 +24,31 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 ################################################################################
+
 class PDF::Reader
+
+  # A string tokeniser that recognises PDF grammer. When passed an IO stream or a
+  # string, repeated calls to token() will return the next token from the source.
+  #
+  # This is very low level, and getting the raw tokens is not very useful in itself.
+  #
+  # This will usually be used in conjunction with PDF:Reader::Parser, which converts
+  # the raw tokens into objects we can work with (strings, ints, arrays, etc)
+  #
   class Buffer
 
     attr_reader :pos
 
+    # Creates a new buffer.
+    #
+    # Params:
+    #
+    #   io - an IO stream or string with the raw data to tokenise
+    #
+    # options:
+    #
+    #   :seek - a byte offset to seek to before starting to tokenise
+    #
     def initialize (io, opts = {})
       @io = io
       @tokens = []
@@ -38,6 +58,8 @@ class PDF::Reader
       @pos = @io.pos
     end
 
+    # return true if there are no more tokens left
+    #
     def empty?
       prepare_tokens if @tokens.size < 3
 
@@ -46,9 +68,15 @@ class PDF::Reader
 
     # return raw bytes from the underlying IO stream.
     #
-    # If :skip_eol option is true, the IO stream is advanced past any LF or CR
-    # bytes before it reads any data. This is to handle content streams, which
-    # have a CRLF or LF after the stream token.
+    #   bytes - the number of bytes to read
+    #
+    # options:
+    #
+    #   :skip_eol - if true, the IO stream is advanced past any LF or CR
+    #               bytes before it reads any data. This is to handle
+    #               content streams, which have a CRLF or LF after the stream
+    #               token.
+    #
     def read(bytes, opts = {})
       reset_pos
 
@@ -70,6 +98,12 @@ class PDF::Reader
       bytes
     end
 
+    # return raw bytes from the underlying IO stream. All bytes up to the first
+    # occurance of needle will be returned. The match (if any) is not returned.
+    # The IO stream cursor is left on the first byte of the match.
+    #
+    #   needle - a string to search the IO stream for
+    #
     def read_until(needle)
       reset_pos
       out = ""
@@ -88,7 +122,9 @@ class PDF::Reader
       out
     end
 
-
+    # return the next token from the source. Returns a string if a token
+    # is found, nil if there are no tokens left.
+    #
     def token
       reset_pos
       prepare_tokens if @tokens.size < 3
@@ -98,6 +134,8 @@ class PDF::Reader
       @tokens.shift
     end
 
+    # return the byte offset where the first XRef table in th source can be found.
+    #
     def find_first_xref_offset
       @io.seek(-1024, IO::SEEK_END) rescue @io.seek(0)
       data = @io.read(1024)
@@ -124,16 +162,21 @@ class PDF::Reader
 
     private
 
+    # Some bastard moved our IO stream cursor. Restore it.
+    #
     def reset_pos
-      if @io.pos != @pos
-        @io.seek(@pos)
-      end
+      @io.seek(@pos) if @io.pos != @pos
     end
 
+    # save the current position of the source IO stream. If someone else (like another buffer)
+    # moves the cursor, we can then restore it.
+    #
     def save_pos
       @pos = @io.pos
     end
 
+    # attempt to prime the buffer with the next few tokens.
+    #
     def prepare_tokens
       10.times do
         if state == :literal_string
@@ -146,6 +189,9 @@ class PDF::Reader
       save_pos
     end
 
+    # tokenising behaves slightly differently based on the current context.
+    # Determine the current context/state by examining the last token we found
+    #
     def state
       if @tokens[-1] == "("
         :literal_string
@@ -156,6 +202,14 @@ class PDF::Reader
       end
     end
 
+    # detect a series of 3 tokens that make up an indirect object. If we find
+    # them, replace the tokens with a PDF::Reader::Reference instance.
+    #
+    # Merging them into a single string was another option, but that would mean
+    # code further up the stact would need to check every token  to see if it looks
+    # like an indirect object. For optimisation reasons, I'd rather avoid
+    # that extra check.
+    #
     def merge_indirect_reference
       return if @tokens.size < 3
       return if @tokens[2] != "R"
@@ -168,6 +222,10 @@ class PDF::Reader
       end
     end
 
+    # merge any consequtive tokens that are actually 1 token. The only current
+    # time this is the case is << and >>. < and > are valid tokens (they indicate
+    # a hex string) but so are << and >> (they indicate a dictionary).
+    #
     def merge_tokens
       @tokens.each_with_index do |tok, idx|
         if tok == "<" && @tokens[idx+1] == "<"
@@ -182,6 +240,15 @@ class PDF::Reader
       @tokens.compact!
     end
 
+    # if we're currently inside a literal string we more or less just read bytes until
+    # we find the closes ) delimiter. Lots of bytes that would otherwise indicate the
+    # start of a new token in regular mode are left untouched when inside a literal
+    # string.
+    #
+    # The entire literal string will be returned as a single token. It will need further
+    # processing to fix things like escaped new lines, but that's someone else's
+    # problem.
+    #
     def prepare_literal_token
       str = ""
       count = 1
@@ -205,6 +272,11 @@ class PDF::Reader
       @tokens << ")"
     end
 
+    # Extract the next regular token and stock it in our buffer, ready to be returned.
+    #
+    # What each byte means is complex, check out section "3.1.1 Character Set" of the 1.7 spec
+    # to read up on it.
+    #
     def prepare_regular_token
       tok = ""
 
