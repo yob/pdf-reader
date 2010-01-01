@@ -27,12 +27,8 @@ context "The PDF::Reader::Parser class" do
     parse_string("((x)))").parse_token.should eql("(x)")
     parse_string("(Adobe)").parse_token.should eql("Adobe")
     parse_string("(!\"%1)").parse_token.should eql("!\"%1")
-    str = <<EOT
-x
-x \
-x)
-EOT
-    parse_string(str).parse_token.should eql("x\nx x")
+    parse_string("(James\\ Healy)").parse_token.should eql("James Healy")
+    parse_string("(\nx\nx \\\nx)").parse_token.should eql("x\nx x")
   end
 
   specify "should not leave the closing literal string delimiter in the buffer after parsing a string" do
