@@ -23,6 +23,7 @@ context "The PDF::Reader::Parser class" do
     parse_string("(this \\n is a string)").parse_token.should eql("this \n is a string")
     parse_string("(x \\t x)").parse_token.should eql("x \t x")
     parse_string("(x \\101 x)").parse_token.should eql("x A x")
+    parse_string("(x \\61 x)").parse_token.should eql("x 1 x")
     parse_string("(x \\( x)").parse_token.should eql("x ( x")
     parse_string("((x)))").parse_token.should eql("(x)")
     parse_string("(Adobe)").parse_token.should eql("Adobe")

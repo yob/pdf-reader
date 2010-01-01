@@ -152,7 +152,7 @@ class PDF::Reader
       str.gsub!(/\\\n/m,"")
       str.gsub!(/(\n\r|\r\n|\r)/m,"\n")
 
-      str.scan(/\\\d\d\d/).each do |octal|
+      str.scan(/\\\d{1,3}/).each do |octal|
         str.gsub!(octal, octal[1,3].oct.chr)
       end
 
