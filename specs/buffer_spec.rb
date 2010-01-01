@@ -310,3 +310,20 @@ context PDF::Reader::Buffer, "read method" do
     buf.read(3, :skip_eol => true).should eql("bbb")
   end
 end
+
+context PDF::Reader::Buffer, "read_until method" do
+  include BufferHelper
+
+  specify "should return raw data from the underlying IO and leave the cursor in the correct location" do
+    buf = parse_string("aaabbb")
+
+    buf.read_until("bbb").should eql("aaa")
+    buf.pos.should eql(3)
+  end
+
+  specify "should return all remaining data if search string is not found" do
+    buf = parse_string("aaabbb")
+
+    buf.read_until("ccc").should eql("aaabbb")
+  end
+end

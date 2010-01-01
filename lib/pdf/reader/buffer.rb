@@ -46,6 +46,25 @@ class PDF::Reader
       bytes
     end
 
+    def read_until(needle)
+      reset_pos
+      out = ""
+      size = needle.size
+
+      while out[size * -1, size] != needle && !@io.eof?
+        out << @io.read(1)
+      end
+
+      if out[size * -1, size] == needle
+        out = out[0, out.size - size]
+        @io.seek(size * -1, IO::SEEK_CUR)
+      end
+
+      save_pos
+      out
+    end
+
+
     def token
       reset_pos
       prepare_tokens if @tokens.size < 3
