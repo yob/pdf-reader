@@ -11,6 +11,13 @@ end
 context PDF::Reader::Buffer, "token method" do
   include BufferHelper
 
+  specify "should return nil when there's no IO left" do
+    buf = parse_string("aaa")
+
+    buf.token
+    buf.token.should be_nil
+  end
+
   specify "should correctly return a simple token - 1" do
     buf = parse_string("aaa")
 
@@ -34,14 +41,15 @@ context PDF::Reader::Buffer, "token method" do
   end
 
   specify "should correctly tokenise opening delimiters" do
-    buf = parse_string("(<[{/%")
+    buf = parse_string("<[{/%(")
 
-    buf.token.should eql("(")
     buf.token.should eql("<")
     buf.token.should eql("[")
     buf.token.should eql("{")
     buf.token.should eql("/")
     buf.token.should eql("%")
+    buf.token.should eql("(")
+    buf.token.should eql(")") # auto adds closing literal string delim
     buf.token.should be_nil
   end
 
@@ -112,18 +120,14 @@ context PDF::Reader::Buffer, "token method" do
   specify "should tokenise a string with a % correctly" do
     buf = parse_string("(James%Healy)")
     buf.token.should eql("(")
-    buf.token.should eql("James")
-    buf.token.should eql("%")
-    buf.token.should eql("Healy")
+    buf.token.should eql("James%Healy")
     buf.token.should eql(")")
   end
 
   specify "should tokenise a string with comments correctly" do
     buf = parse_string("(James%Healy) % this is a comment\n(")
     buf.token.should eql("(")
-    buf.token.should eql("James")
-    buf.token.should eql("%")
-    buf.token.should eql("Healy")
+    buf.token.should eql("James%Healy")
     buf.token.should eql(")")
     buf.token.should eql("(")
   end
@@ -134,6 +138,51 @@ context PDF::Reader::Buffer, "token method" do
     buf.token.should eql("aaa")
     buf.token.should be_a_kind_of(PDF::Reader::Reference)
     buf.token.should eql("bbb")
+    buf.token.should be_nil
+  end
+
+  specify "should correctly seek to a particular byte of the IO - 1" do
+    str = "aaa bbb ccc"
+    buf = PDF::Reader::Buffer.new(StringIO.new(str), :seek => 4)
+
+    buf.token.should eql("bbb")
+    buf.token.should eql("ccc")
+    buf.token.should be_nil
+  end
+
+  specify "should correctly seek to a particular byte of the IO - 2" do
+    str = "aaa bbb ccc"
+    buf = PDF::Reader::Buffer.new(StringIO.new(str), :seek => 5)
+
+    buf.token.should eql("bb")
+    buf.token.should eql("ccc")
+    buf.token.should be_nil
+  end
+
+  specify "should correctly return a simple literal string" do
+    buf = parse_string("(aaa)")
+
+    buf.token.should eql("(")
+    buf.token.should eql("aaa")
+    buf.token.should eql(")")
+    buf.token.should be_nil
+  end
+
+  specify "should correctly return a simple literal string with spaces" do
+    buf = parse_string("(aaa bbb)")
+
+    buf.token.should eql("(")
+    buf.token.should eql("aaa bbb")
+    buf.token.should eql(")")
+    buf.token.should be_nil
+  end
+
+  specify "should correctly return a simple literal string with nested brackets" do
+    buf = parse_string("(aaa (bbb))")
+
+    buf.token.should eql("(")
+    buf.token.should eql("aaa (bbb)")
+    buf.token.should eql(")")
     buf.token.should be_nil
   end
 end

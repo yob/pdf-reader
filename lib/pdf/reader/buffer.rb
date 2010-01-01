@@ -3,9 +3,12 @@
 class PDF::Reader
   class Buffer
 
-    def initialize (io)
+    def initialize (io, opts = {})
       @io = io
       @tokens = []
+      @options = opts
+
+      @io.seek(opts[:seek]) if opts[:seek]
     end
 
     def empty?
@@ -17,6 +20,7 @@ class PDF::Reader
     def token
       prepare_tokens if @tokens.size < 3
       merge_indirect_reference
+      merge_tokens
 
       @tokens.shift
     end
@@ -48,8 +52,21 @@ class PDF::Reader
     private
 
     def prepare_tokens
-      10.times { prepare_token }
-      merge_tokens
+      10.times do
+        if state == :literal_string
+          prepare_literal_token
+        else
+          prepare_regular_token
+        end
+      end
+    end
+
+    def state
+      if @tokens[-1] == "("
+        :literal_string
+      else
+        :regular
+      end
     end
 
     def merge_indirect_reference
@@ -78,7 +95,34 @@ class PDF::Reader
       @tokens.compact!
     end
 
-    def prepare_token
+    def prepare_literal_token
+      str = ""
+      count = 1
+
+      while count > 0
+        chr = @io.read(1)
+        if chr.nil?
+          count = 0 # unbalanced params
+        end
+
+        case chr
+        when "("
+          str << "("
+          count += 1
+        when ")"
+          count -= 1
+          str << ")" unless count == 0
+        else
+          str << chr unless count == 0
+        end
+      end
+
+      @tokens << str if str.size > 0
+      @tokens << ")"
+    end
+
+
+    def prepare_regular_token
       tok = ""
 
       while chr = @io.read(1)
@@ -87,16 +131,19 @@ class PDF::Reader
           # white space, token finished
           @tokens << tok if tok.size > 0
           tok = ""
+          break
         when "\x28", "\x3C", "\x5B", "\x7B", "\x2F", "\x25"
           # opening delimiter, start of new token
           @tokens << tok if tok.size > 0
           @tokens << chr
           tok = ""
+          break
         when "\x29", "\x3E", "\x5D", "\x7D"
           # closing delimiter
           @tokens << tok if tok.size > 0
           @tokens << chr
           tok = ""
+          break
         else
           tok << chr
         end
