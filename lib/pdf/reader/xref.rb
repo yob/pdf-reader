@@ -120,21 +120,11 @@ class PDF::Reader
     # Assumes the underlying buffer is positioned at the start of an Xref table and
     # processes it into memory.
     def load_xref_table(buf)
-      tok_one = tok_two = nil
+      params = []
 
-      begin
-        # loop over all subsections of the xref table
-        # In a well formed PDF, the 'trailer' token will indicate
-        # the end of the table. However we need to be careful in case
-        # we're processing a malformed pdf that is missing the trailer.
-        loop do
-          tok_one, tok_two = buf.token, buf.token
-          if tok_one != "trailer" && !tok_one.match(/\d+/)
-            raise MalformedPDFError, "PDF malformed, missing trailer after cross reference"
-          end
-          break if tok_one == "trailer" or tok_one.nil?
-          objid, count = tok_one.to_i, tok_two.to_i
-
+      while !params.include?("trailer") && !params.include?(nil)
+        if params.size == 2
+          objid, count = params[0].to_i, params[1].to_i
           count.times do
             offset = buf.token.to_i
             generation = buf.token.to_i
@@ -142,15 +132,16 @@ class PDF::Reader
 
             store(objid, generation, offset) if state == "n"
             objid += 1
+            params.clear
           end
         end
-      rescue EOFError => e
-        raise MalformedPDFError, "PDF malformed, missing trailer after cross reference"
+        params << buf.token
       end
 
-      raise MalformedPDFError, "PDF malformed, trailer should be a dictionary" unless tok_two == "<<"
+      trailer = Parser.new(buf, self).parse_token
 
-      trailer = Parser.new(buf, self).dictionary
+      raise MalformedPDFError, "PDF malformed, trailer should be a dictionary" unless trailer.kind_of?(Hash)
+
       load(trailer[:Prev].to_i) if trailer.has_key?(:Prev)
 
       trailer
