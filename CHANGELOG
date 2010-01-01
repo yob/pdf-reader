@@ -1,6 +1,8 @@
-v0.8.2 (XXX)
+v0.8.2 (1st January 2010)
 - Fix parsing of files that use Form XObjects behind an indirect reference
   (thanks Cornelius Illi and Patrick Crosby)
+- Rewrote Buffer class to fix various speed issues reported over the years
+  - On my sample file extracting full text reduced from 220 seconds to 9 seconds.
 
 v0.8.1 (27th November 2009)
 - Added PDF::Hash#version. Provides access to the source file PDF version
