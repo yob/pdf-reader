@@ -18,6 +18,7 @@ context "The PDF::Reader::Parser class" do
   end
 
   specify "should parse a string correctly" do
+    parse_string("()").parse_token.should eql("")
     parse_string("(this is a string)").parse_token.should eql("this is a string")
     parse_string("(this \\n is a string)").parse_token.should eql("this \n is a string")
     parse_string("(x \\t x)").parse_token.should eql("x \t x")

@@ -115,6 +115,7 @@ class PDF::Reader
     # Reads a PDF String from the buffer and converts it to a Ruby String
     def string
       str = @buffer.token
+      return "" if str == ")"
       Error.assert_equal(parse_token, ")")
 
       str.gsub!("\\n","\n")

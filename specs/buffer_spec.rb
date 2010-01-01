@@ -167,6 +167,14 @@ context PDF::Reader::Buffer, "token method" do
     buf.token.should be_nil
   end
 
+  specify "should correctly return an empty literal string" do
+    buf = parse_string("()")
+
+    buf.token.should eql("(")
+    buf.token.should eql(")")
+    buf.token.should be_nil
+  end
+
   specify "should correctly return a simple literal string with spaces" do
     buf = parse_string("(aaa bbb)")
 
