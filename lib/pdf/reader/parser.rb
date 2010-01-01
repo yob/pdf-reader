@@ -67,6 +67,29 @@ class PDF::Reader
       end
     end
     ################################################################################
+    # Reads an entire PDF object from the buffer and returns it as a Ruby String.
+    # If the object is a content stream, returns both the stream and the dictionary
+    # that describes it
+    #
+    # id  - the object ID to return
+    # gen - the object revision number to return
+    def object (id, gen)
+      Error.assert_equal(parse_token, id)
+      Error.assert_equal(parse_token, gen)
+      Error.str_assert(parse_token, "obj")
+
+      obj = parse_token
+      post_obj = parse_token
+      case post_obj
+      when "endobj"   then return obj
+      when "stream"   then return stream(obj)
+      else            raise MalformedPDFError, "PDF malformed, unexpected token #{post_obj}"
+      end
+    end
+
+    private
+
+    ################################################################################
     # reads a PDF dict from the buffer and converts it to a Ruby Hash.
     def dictionary
       dict = {}
@@ -132,26 +155,6 @@ class PDF::Reader
       end
 
       str
-    end
-    ################################################################################
-    # Reads an entire PDF object from the buffer and returns it as a Ruby String.
-    # If the object is a content stream, returns both the stream and the dictionary
-    # that describes it
-    #
-    # id  - the object ID to return
-    # gen - the object revision number to return
-    def object (id, gen)
-      Error.assert_equal(parse_token, id)
-      Error.assert_equal(parse_token, gen)
-      Error.str_assert(parse_token, "obj")
-
-      obj = parse_token
-      post_obj = parse_token
-      case post_obj
-      when "endobj"   then return obj
-      when "stream"   then return stream(obj)
-      else            raise MalformedPDFError, "PDF malformed, unexpected token #{post_obj}"
-      end
     end
     ################################################################################
     # Decodes the contents of a PDF Stream and returns it as a Ruby String.
