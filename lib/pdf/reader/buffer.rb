@@ -134,6 +134,14 @@ class PDF::Reader
       @tokens.shift
     end
 
+    # Puts the given token back on the source. Used when reading hex strings:
+    # when presented with "> >>", the parser pulls out ">>" first and we want to
+    # put one of those >s back.
+    #
+    def put_back(token)
+      @tokens.unshift(token)
+    end
+
     # return the byte offset where the first XRef table in th source can be found.
     #
     def find_first_xref_offset

@@ -127,6 +127,10 @@ class PDF::Reader
       loop do
         token = @buffer.token
         break if token == ">"
+        if token == ">>" # we read too much
+          @buffer.put_back(">")
+          break
+        end
         str << token
       end
 
