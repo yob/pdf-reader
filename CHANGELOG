@@ -1,3 +1,7 @@
+v0.8.3 (14th February 2010)
+- Fix a bug in tokenising of hex strings inside dictionaries
+  - Thanks to Brad Ediger for detecting the issue and proposing a solution
+
 v0.8.2 (1st January 2010)
 - Fix parsing of files that use Form XObjects behind an indirect reference
   (thanks Cornelius Illi and Patrick Crosby)

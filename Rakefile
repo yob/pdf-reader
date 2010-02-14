@@ -6,7 +6,7 @@ require 'rake/testtask'
 require "rake/gempackagetask"
 require 'spec/rake/spectask'
 
-PKG_VERSION = "0.8.2"
+PKG_VERSION = "0.8.3"
 PKG_NAME = "pdf-reader"
 PKG_FILE_NAME = "#{PKG_NAME}-#{PKG_VERSION}"
 
