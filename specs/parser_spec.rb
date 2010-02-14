@@ -50,6 +50,12 @@ context "The PDF::Reader::Parser class" do
     parse_string("<48656C6C6F20\n4A616D6573>").parse_token.should eql("Hello James")
   end
 
+  specify "should parse dictionary with embedded hex string correctly" do
+    dict = parse_string("<< /X <48656C6C6F> >>").parse_token
+    dict.size.should eql(1)
+    dict[:X].should eql("Hello")
+  end
+
   specify "should parse various dictionaries correctly" do
     str = "<< /Registry (Adobe) /Ordering (Japan1) /Supplement 5 >>"
     dict = parse_string(str).parse_token
