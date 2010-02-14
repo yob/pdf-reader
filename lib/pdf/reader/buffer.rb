@@ -129,17 +129,9 @@ class PDF::Reader
       reset_pos
       prepare_tokens if @tokens.size < 3
       merge_indirect_reference
-      merge_tokens
+      prepare_tokens if @tokens.size < 3
 
       @tokens.shift
-    end
-
-    # Puts the given token back on the source. Used when reading hex strings:
-    # when presented with "> >>", the parser pulls out ">>" first and we want to
-    # put one of those >s back.
-    #
-    def put_back(token)
-      @tokens.unshift(token)
     end
 
     # return the byte offset where the first XRef table in th source can be found.
@@ -234,26 +226,8 @@ class PDF::Reader
       end
     end
 
-    # merge any consecutive tokens that are actually 1 token. The only current
-    # time this is the case is << and >>. < and > are valid tokens (they indicate
-    # a hex string) but so are << and >> (they indicate a dictionary).
-    #
-    def merge_tokens
-      @tokens.each_with_index do |tok, idx|
-        if tok == "<" && @tokens[idx+1] == "<"
-          @tokens.inspect
-          @tokens[idx] = "<<"
-          @tokens[idx+1] = nil
-        elsif tok == ">" && @tokens[idx+1] == ">"
-          @tokens[idx] = ">>"
-          @tokens[idx+1] = nil
-        end
-      end
-      @tokens.compact!
-    end
-
     # if we're currently inside a literal string we more or less just read bytes until
-    # we find the closes ) delimiter. Lots of bytes that would otherwise indicate the
+    # we find the closing ) delimiter. Lots of bytes that would otherwise indicate the
     # start of a new token in regular mode are left untouched when inside a literal
     # string.
     #
@@ -306,13 +280,27 @@ class PDF::Reader
           @tokens << tok if tok.size > 0
           tok = ""
           break
-        when "\x28", "\x3C", "\x5B", "\x7B", "\x2F"
+        when "\x3C"
+          # opening delimiter '<', start of new token
+          @tokens << tok if tok.size > 0
+          chr << @io.read(1) if peek_char == "\x3C" # check if token is actually '<<'
+          @tokens << chr
+          tok = ""
+          break
+        when "\x3E"
+          # closing delimiter '>', start of new token
+          @tokens << tok if tok.size > 0
+          chr << @io.read(1) if peek_char == "\x3E" # check if token is actually '>>'
+          @tokens << chr
+          tok = ""
+          break
+        when "\x28", "\x5B", "\x7B", "\x2F"
           # opening delimiter, start of new token
           @tokens << tok if tok.size > 0
           @tokens << chr
           tok = ""
           break
-        when "\x29", "\x3E", "\x5D", "\x7D"
+        when "\x29", "\x5D", "\x7D"
           # closing delimiter
           @tokens << tok if tok.size > 0
           @tokens << chr
@@ -324,6 +312,15 @@ class PDF::Reader
       end
 
       @tokens << tok if tok.size > 0
+    end
+
+    # peek at the next character in the io stream, leaving the stream position
+    # untouched
+    #
+    def peek_char
+      chr = @io.read(1)
+      @io.seek(-1, IO::SEEK_CUR) unless chr.nil?
+      chr
     end
   end
 end

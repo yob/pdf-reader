@@ -145,6 +145,14 @@ context PDF::Reader::Buffer, "token method" do
     buf.token.should be_nil
   end
 
+  specify "should correctly return two indirect references" do
+    buf = parse_string("1 0 R 2 0 R")
+
+    buf.token.should be_a_kind_of(PDF::Reader::Reference)
+    buf.token.should be_a_kind_of(PDF::Reader::Reference)
+    buf.token.should be_nil
+  end
+
   specify "should correctly seek to a particular byte of the IO - 1" do
     str = "aaa bbb ccc"
     buf = PDF::Reader::Buffer.new(StringIO.new(str), :seek => 4)
@@ -196,6 +204,41 @@ context PDF::Reader::Buffer, "token method" do
     buf.token.should eql("aaa (bbb)")
     buf.token.should eql(")")
     buf.token.should be_nil
+  end
+
+  specify "should correctly return a dictionary with embedded hex string" do
+    buf = parse_string("<< /X <48656C6C6F> >>")
+    buf.token.should eql("<<")
+    buf.token.should eql("/")
+    buf.token.should eql("X")
+    buf.token.should eql("<")
+    buf.token.should eql("48656C6C6F")
+    buf.token.should eql(">")
+    buf.token.should eql(">>")
+  end
+
+  specify "should correctly return a dictionary with an indirect reference" do
+    buf = parse_string("<< /X 10 0 R >>")
+    buf.token.should eql("<<")
+    buf.token.should eql("/")
+    buf.token.should eql("X")
+    buf.token.should be_a_kind_of(PDF::Reader::Reference)
+    buf.token.should eql(">>")
+  end
+
+  specify "should correctly return a dictionary with an indirect reference and more than 10 tokens" do
+    buf = parse_string("<< /X 10 0 R /Y 11 0 R /Z 12 0 R >>")
+    buf.token.should eql("<<")
+    buf.token.should eql("/")
+    buf.token.should eql("X")
+    buf.token.should be_a_kind_of(PDF::Reader::Reference)
+    buf.token.should eql("/")
+    buf.token.should eql("Y")
+    buf.token.should be_a_kind_of(PDF::Reader::Reference)
+    buf.token.should eql("/")
+    buf.token.should eql("Z")
+    buf.token.should be_a_kind_of(PDF::Reader::Reference)
+    buf.token.should eql(">>")
   end
 
   specify "should record io position" do
