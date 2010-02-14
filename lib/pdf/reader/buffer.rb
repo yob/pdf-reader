@@ -27,7 +27,7 @@
 
 class PDF::Reader
 
-  # A string tokeniser that recognises PDF grammer. When passed an IO stream or a
+  # A string tokeniser that recognises PDF grammar. When passed an IO stream or a
   # string, repeated calls to token() will return the next token from the source.
   #
   # This is very low level, and getting the raw tokens is not very useful in itself.
@@ -99,7 +99,7 @@ class PDF::Reader
     end
 
     # return raw bytes from the underlying IO stream. All bytes up to the first
-    # occurance of needle will be returned. The match (if any) is not returned.
+    # occurrence of needle will be returned. The match (if any) is not returned.
     # The IO stream cursor is left on the first byte of the match.
     #
     #   needle - a string to search the IO stream for
@@ -214,9 +214,13 @@ class PDF::Reader
     # them, replace the tokens with a PDF::Reader::Reference instance.
     #
     # Merging them into a single string was another option, but that would mean
-    # code further up the stact would need to check every token  to see if it looks
+    # code further up the stack would need to check every token  to see if it looks
     # like an indirect object. For optimisation reasons, I'd rather avoid
     # that extra check.
+    #
+    # It's incredibly likely that the next 3 tokens in the buffer are NOT an
+    # indirect reference, so test for that case first and avoid the relatively
+    # expensive regexp checks if possible.
     #
     def merge_indirect_reference
       return if @tokens.size < 3
@@ -230,7 +234,7 @@ class PDF::Reader
       end
     end
 
-    # merge any consequtive tokens that are actually 1 token. The only current
+    # merge any consecutive tokens that are actually 1 token. The only current
     # time this is the case is << and >>. < and > are valid tokens (they indicate
     # a hex string) but so are << and >> (they indicate a dictionary).
     #
