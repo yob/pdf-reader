@@ -350,40 +350,41 @@ class PDF::Reader
     # it contains
     def content_stream (instructions)
       instructions = instructions.unfiltered_data if instructions.kind_of?(PDF::Reader::Stream)
-      @buffer =   Buffer.new(StringIO.new(instructions))
-      @parser =   Parser.new(@buffer, @xref)
-      @params ||= []
+      buffer       =   Buffer.new(StringIO.new(instructions))
+      parser       =   Parser.new(buffer, @xref)
+      current_font = nil
+      params       = []
 
-      while (token = @parser.parse_token(OPERATORS))
+      while (token = parser.parse_token(OPERATORS))
         if token.kind_of?(Token) and OPERATORS.has_key?(token)
-          @current_font = @params.first if OPERATORS[token] == :set_text_font_and_size
+          current_font = params.first if OPERATORS[token] == :set_text_font_and_size
 
           # handle special cases in response to certain operators
-          if OPERATORS[token].to_s.include?("show_text") && @fonts[@current_font]
+          if OPERATORS[token].to_s.include?("show_text") && @fonts[current_font]
             # convert any text to utf-8
-            @params = @fonts[@current_font].to_utf8(@params)
+            params = @fonts[current_font].to_utf8(params)
           elsif token == "ID"
             # inline image data, first convert the current params into a more familiar hash
             map = {}
-            @params.each_slice(2) do |a|
+            params.each_slice(2) do |a|
               map[a.first] = a.last
             end
-            @params = [map]
+            params = [map]
             # read the raw image data from the buffer without tokenising
-            @params << @buffer.read_until("EI")
+            params << buffer.read_until("EI")
           end
 
-          callback(OPERATORS[token], @params)
+          callback(OPERATORS[token], params)
 
           if OPERATORS[token] == :invoke_xobject
-            xobject_label = @params.first
-            @params.clear
+            xobject_label = params.first
+            params.clear
             walk_xobject_form(xobject_label)
           else
-            @params.clear
+            params.clear
           end
         else
-          @params << token
+          params << token
         end
       end
     rescue EOFError => e

@@ -36,6 +36,7 @@ class PageTextReceiver
 
   def show_text_with_positioning(*params)
     params = params.first
+    params ||= []
     params.each { |str| show_text(str) if str.kind_of?(String)}
   end
 end
@@ -183,6 +184,22 @@ context "PDF::Reader" do
     receiver.content.size.should eql(2)
     receiver.content[0].should eql("James Healy")
     receiver.content[1].should eql("James Healy")
+  end
+
+  specify "should correctly process a PDF that uses Form XObjects to repeat content" do
+    receiver = PageTextReceiver.new
+    PDF::Reader.file(File.dirname(__FILE__) + "/data/form_xobject_more.pdf", receiver)
+
+    # confirm the text appears on the correct pages
+    receiver.content.size.should eql(2)
+
+    # regular content should be visible
+    receiver.content[0].include?("Some regular content").should be_true
+    receiver.content[1].include?("Some more regular content").should be_true
+
+    # form xobject content should be visible
+    receiver.content[0].include?("James Healy").should be_true
+    receiver.content[1].include?("James Healy").should be_true
   end
 
   specify "should correctly process a PDF that uses indirect Form XObjects to repeat content" do

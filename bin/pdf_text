@@ -29,6 +29,7 @@ class PageTextReceiver
 
   def show_text_with_positioning(*params)
     params = params.first
+    params ||= []
     params.each { |str| show_text(str) if str.kind_of?(String)}
   end
 end
