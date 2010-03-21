@@ -195,7 +195,7 @@ context "PDF::Reader" do
 
     # regular content should be visible
     receiver.content[0].include?("Some regular content").should be_true
-    receiver.content[1].include?("Some more regular content").should be_true
+    receiver.content[1].include?("€10").should be_true
 
     # form xobject content should be visible
     receiver.content[0].include?("James Healy").should be_true

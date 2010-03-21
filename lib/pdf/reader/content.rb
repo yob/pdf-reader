@@ -251,7 +251,6 @@ class PDF::Reader
     def initialize (receiver, xref)
       @receiver = receiver
       @xref     = xref
-      @fonts ||= {}
     end
     ################################################################################
     # Begin processing the document metadata
@@ -309,10 +308,14 @@ class PDF::Reader
           contents = [page[:Contents]]
         end
 
-        contents.each do |content|
-          obj = @xref.object(content)
-          content_stream(obj)
-        end if page.has_key?(:Contents) and page[:Contents]
+        fonts = font_hash_from_resources(current_resources)
+
+        if page.has_key?(:Contents) and page[:Contents]
+          contents.each do |content|
+            obj = @xref.object(content)
+            content_stream(obj, fonts)
+          end 
+        end
 
         resources.pop if res
         callback(:end_page)
@@ -330,7 +333,8 @@ class PDF::Reader
         callback(:begin_form_xobject)
         resources = @xref.object(xobject.hash[:Resources])
         walk_resources(resources) if resources
-        content_stream(xobject)
+        fonts = font_hash_from_resources(resources)
+        content_stream(xobject, fonts)
         callback(:end_form_xobject)
       end
     end
@@ -348,10 +352,10 @@ class PDF::Reader
     ################################################################################
     # Reads a PDF content stream and calls all the appropriate callback methods for the operators
     # it contains
-    def content_stream (instructions)
+    def content_stream (instructions, fonts = {})
       instructions = instructions.unfiltered_data if instructions.kind_of?(PDF::Reader::Stream)
-      buffer       =   Buffer.new(StringIO.new(instructions))
-      parser       =   Parser.new(buffer, @xref)
+      buffer       = Buffer.new(StringIO.new(instructions))
+      parser       = Parser.new(buffer, @xref)
       current_font = nil
       params       = []
 
@@ -360,9 +364,9 @@ class PDF::Reader
           current_font = params.first if OPERATORS[token] == :set_text_font_and_size
 
           # handle special cases in response to certain operators
-          if OPERATORS[token].to_s.include?("show_text") && @fonts[current_font]
+          if OPERATORS[token].to_s.include?("show_text") && fonts[current_font]
             # convert any text to utf-8
-            params = @fonts[current_font].to_utf8(params)
+            params = fonts[current_font].to_utf8(params)
           elsif token == "ID"
             # inline image data, first convert the current params into a more familiar hash
             map = {}
@@ -431,24 +435,9 @@ class PDF::Reader
 
       # extract any font information
       if resources[:Font]
-        @xref.object(resources[:Font]).each do |label, desc|
-          desc = @xref.object(desc)
-          @fonts[label] = PDF::Reader::Font.new
-          @fonts[label].label = label
-          @fonts[label].subtype = desc[:Subtype] if desc[:Subtype]
-          @fonts[label].basefont = desc[:BaseFont] if desc[:BaseFont]
-          @fonts[label].encoding = PDF::Reader::Encoding.new(@xref.object(desc[:Encoding]))
-          @fonts[label].descendantfonts = desc[:DescendantFonts] if desc[:DescendantFonts]
-          if desc[:ToUnicode]
-            # this stream is a cmap
-            begin
-              stream = desc[:ToUnicode]
-              @fonts[label].tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
-            rescue
-              # if the CMap fails to parse, don't worry too much. Means we can't translate the text properly
-            end
-          end
-          callback(:resource_font, [label, @fonts[label]])
+        fonts = font_hash_from_resources(resources)
+        fonts.each do  |label, font|
+          callback(:resource_font, [label, fonts])
         end
       end
     end
@@ -474,6 +463,32 @@ class PDF::Reader
     end
     ################################################################################
     private
+    ################################################################################
+    def font_hash_from_resources(resources)
+      return {} unless resources.respond_to?(:[])
+
+      fonts = {}
+      resources = @xref.object(resources[:Font]) || {}
+      resources.each do |label, desc|
+        desc = @xref.object(desc)
+        fonts[label] = PDF::Reader::Font.new
+        fonts[label].label = label
+        fonts[label].subtype = desc[:Subtype] if desc[:Subtype]
+        fonts[label].basefont = desc[:BaseFont] if desc[:BaseFont]
+        fonts[label].encoding = PDF::Reader::Encoding.new(@xref.object(desc[:Encoding]))
+        fonts[label].descendantfonts = desc[:DescendantFonts] if desc[:DescendantFonts]
+        if desc[:ToUnicode]
+          # this stream is a cmap
+          begin
+            stream = desc[:ToUnicode]
+            fonts[label].tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
+          rescue
+            # if the CMap fails to parse, don't worry too much. Means we can't translate the text properly
+          end
+        end
+      end
+      fonts
+    end
     # strings outside of page content should be in either PDFDocEncoding or UTF-16.
     def decode_strings(obj)
       case obj
