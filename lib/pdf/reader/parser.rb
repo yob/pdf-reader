@@ -33,7 +33,7 @@ class PDF::Reader
     #
     # buffer - a PDF::Reader::Buffer object that contains PDF data
     # xref   - a PDF::Reader::XRef object that represents the document's object offsets
-    def initialize (buffer, xref)
+    def initialize (buffer, xref=nil)
       @buffer = buffer
       @xref   = xref
     end
