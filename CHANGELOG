@@ -1,6 +1,12 @@
 v0.8.4 (XXX)
 - fix parsing of files that use Form XObjects
   - thanks to Andrea Barisani for reporting the issue
+- fix two issues that caused a small number of characters to convert to Unicode
+  incorrectly
+  - thanks to Andrea Barisani for reporting the issue
+- require 'pdf-reader' now works a well as 'pdf/reader'
+  - good practice to have the require file match the gem name
+  - thanks to Chris O'Meara for highlighting this
 
 v0.8.3 (14th February 2010)
 - Fix a bug in tokenising of hex strings inside dictionaries
