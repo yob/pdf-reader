@@ -141,6 +141,7 @@ class PDF::Reader
       return "" if str == ")"
       Error.assert_equal(parse_token, ")")
 
+      str.gsub!(/([^\\])(\n\r|\r\n|\r)/m,'\1\n')
       str.gsub!("\\n","\n")
       str.gsub!("\\r","\r")
       str.gsub!("\\t","\t")
@@ -150,7 +151,6 @@ class PDF::Reader
       str.gsub!("\\)",")")
       str.gsub!("\\\\","\\")
       str.gsub!(/\\\n/m,"")
-      str.gsub!(/(\n\r|\r\n|\r)/m,"\n")
 
       str.scan(/\\\d{1,3}/).each do |octal|
         str.gsub!(octal, octal[1,3].oct.chr)

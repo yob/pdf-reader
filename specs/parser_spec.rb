@@ -32,6 +32,9 @@ context "The PDF::Reader::Parser class" do
     parse_string("(x\nx)").parse_token.should eql("x\nx")
     parse_string("(x\rx)").parse_token.should eql("x\nx")
     parse_string("(x\r\nx)").parse_token.should eql("x\nx")
+    parse_string("(x\\rx)").parse_token.should eql("x\rx")
+    parse_string("(\\rx)").parse_token.should eql("\rx")
+    parse_string("(\\r)").parse_token.should eql("\r")
     parse_string("(x\n\rx)").parse_token.should eql("x\nx")
     parse_string("(x \x5C\nx)").parse_token.should eql("x x")
   end
