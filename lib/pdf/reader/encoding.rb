@@ -30,9 +30,11 @@ class PDF::Reader
 
     UNKNOWN_CHAR = 0x25AF # ▯
 
-    attr_reader :differences
+    attr_reader :differences, :unpack
 
     def initialize(enc)
+      @to_unicode_required = false
+
       if enc.kind_of?(Hash)
         self.differences=enc[:Differences] if enc[:Differences]
         enc = enc[:Encoding] || enc[:BaseEncoding]
@@ -74,6 +76,10 @@ class PDF::Reader
       end
     end
 
+    def to_unicode_required?
+      @to_unicode_required
+    end
+
     # set the differences table for this encoding. should be an array in the following format:
     #
     #   [25, :A, 26, :B]
@@ -101,25 +107,22 @@ class PDF::Reader
 
     # convert the specified string to utf8
     def to_utf8(str, tounicode = nil)
-
       # unpack the single bytes
-      array_orig = str.unpack(@unpack)
+      array_orig = str.unpack(unpack)
 
       # replace any relevant bytes with a glyph name
       array_orig = process_differences(array_orig)
 
       # replace any remaining bytes with a unicode codepoint
-      array_enc = []
-      array_orig.each do |num|
+      array_enc = array_orig.map do |num|
         if tounicode && (code = tounicode.decode(num))
-          array_enc << code
-        elsif tounicode || ( tounicode.nil? && defined?(@to_unicode_required) &&
-                                               @to_unicode_required )
-          array_enc << PDF::Reader::Encoding::UNKNOWN_CHAR
-        elsif defined?(@mapping) && @mapping && @mapping[num]
-          array_enc << @mapping[num]
+          code
+        elsif tounicode || ( tounicode.nil? && to_unicode_required? )
+          PDF::Reader::Encoding::UNKNOWN_CHAR
+        elsif mapping[num]
+          mapping[num]
         else
-          array_enc << num
+          num
         end
       end
 
@@ -140,6 +143,14 @@ class PDF::Reader
 
     private
 
+    def mapping
+      @mapping ||= {}
+    end
+
+    def has_mapping?
+      mapping.size > 0
+    end
+
     # accepts an array of byte numbers, and replaces any that have entries in the differences table
     # with a glyph name
     def process_differences(arr)
@@ -154,12 +165,13 @@ class PDF::Reader
     end
 
     def load_mapping(file)
-      @mapping = {}
+      return if has_mapping?
+
       RUBY_VERSION >= "1.9" ? mode = "r:BINARY" : mode = "r"
       File.open(file, mode) do |f|
         f.each do |l|
           m, single_byte, unicode = *l.match(/([0-9A-Za-z]+);([0-9A-F]{4})/)
-          @mapping["0x#{single_byte}".hex] = "0x#{unicode}".hex if single_byte
+          mapping["0x#{single_byte}".hex] = "0x#{unicode}".hex if single_byte
         end
       end
     end
