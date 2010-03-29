@@ -1,156 +1,241 @@
-################################################################################
-#
-# Copyright (C) 2006 Peter J Jones (pjones@pmade.com)
-#
-# Permission is hereby granted, free of charge, to any person obtaining
-# a copy of this software and associated documentation files (the
-# "Software"), to deal in the Software without restriction, including
-# without limitation the rights to use, copy, modify, merge, publish,
-# distribute, sublicense, and/or sell copies of the Software, and to
-# permit persons to whom the Software is furnished to do so, subject to
-# the following conditions:
-#
-# The above copyright notice and this permission notice shall be
-# included in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-#
-################################################################################
+# coding: utf-8
 
 class PDF::Reader
-  ################################################################################
-  # An internal PDF::Reader class that represents the Xref table in a PDF file
-  # An Xref table is a map of object identifiers and byte offsets. Any time a particular
-  # object needs to be found, the Xref table is used to find where it is stored in the
-  # file.
+  # Provides low level access to the objects in a PDF file via a hash-like
+  # object.
+  #
+  # A PDF file can be viewed as a large hash map. It is a series of objects
+  # stored at an exact byte offsets, and a table that maps object IDs to byte
+  # offsets. Given an object ID, looking up an object is an O(1) operation.
+  #
+  # Each PDF object can be mapped to a ruby object, so by passing an object
+  # ID to the [] method, a ruby representation of that object will be
+  # retrieved.
+  #
+  # The class behaves much like a standard Ruby hash, including the use of
+  # the Enumerable mixin. The key difference is no []= method - the hash
+  # is read only.
+  #
+  # == Basic Usage
+  #
+  #     h = PDF::Hash.new("somefile.pdf")
+  #     h[1]
+  #     => 3469
+  #
+  #     h[PDF::Reader::Reference.new(1,0)]
+  #     => 3469
+  #
   class XRef
-    ################################################################################
-    # create a new Xref table based on the contents of the supplied PDF::Reader::Buffer object
-    def initialize (io)
-      @io = io
-      @xref = {}
-    end
-    def size
-      @xref.size
-    end
-    ################################################################################
-    # returns the PDF version of the current document. Technically this isn't part of the XRef
-    # table, but it is one of the lowest level data items in the file, so we've lumped it in
-    # with the cross reference code.
-    def pdf_version
-      @io.seek(0)
-      m, version = *@io.read(8).match(/%PDF-(\d.\d)/)
-      raise MalformedPDFError, 'invalid PDF version' if version.nil?
-      return version.to_f
-    end
-    ################################################################################
-    # Read the xref table from the underlying buffer. If offset is specified the table
-    # will be loaded from there, otherwise the default offset will be located and used.
+    include Enumerable
+
+    attr_accessor :default
+    attr_reader :trailer, :pdf_version
+
+    # Creates a new PDF:Hash object. input can be a string with a valid filename,
+    # a string containing a PDF file, or an IO object.
     #
-    # Will fail silently if there is no xref table at the requested offset.
-    def load (offset = nil)
-      offset ||= new_buffer.find_first_xref_offset
-
-      buf = new_buffer(offset)
-      token = buf.token
-
-      if token == "xref" || token == "ref"
-        load_xref_table(buf)
-      elsif token.to_i >= 0 && buf.token.to_i >= 0 && buf.token == "obj"
-        raise PDF::Reader::UnsupportedFeatureError, "XRef streams are not supported in PDF::Reader yet"
+    def initialize(input)
+      if input.kind_of?(IO) || input.kind_of?(StringIO)
+        @io = input
+      elsif File.file?(input.to_s)
+        if File.respond_to?(:binread)
+          input = File.binread(input.to_s)
+        else
+          input = File.read(input.to_s)
+        end
+        @io = StringIO.new(input)
       else
-        raise PDF::Reader::MalformedPDFError, "xref table not found at offset #{offset} (#{token} != xref)"
+        raise ArgumentError, "input must be an IO-like object or a filename"
       end
+      @pdf_version = read_version
+      @offsets     = PDF::Reader::OffsetTable.new(@io)
+      @trailer     = @offsets.trailer
     end
-    ################################################################################
-    # Return a string containing the contents of an entire PDF object. The object is requested
-    # by specifying a PDF::Reader::Reference object that contains the objects ID and revision
-    # number
-    #
-    # If the object is a stream, that is returned as well
-    def object (ref)
-      return ref unless ref.kind_of?(Reference)
-      buf = new_buffer(offset_for(ref))
-      obj = Parser.new(buf, self).object(ref.id, ref.gen)
-      return obj
-    end
+
     # returns the type of object a ref points to
     def obj_type(ref)
-      obj = object(ref)
-      obj.class.to_s.to_sym
+      self[ref].class.to_s.to_sym
+    rescue
+      nil
     end
     # returns true if the supplied references points to an object with a stream
     def stream?(ref)
-      obj, stream = @xref.object(ref)
-      stream ? true : false
-    end
-    ################################################################################
-    # returns the byte offset for the specified PDF object.
-    #
-    # ref - a PDF::Reader::Reference object containing an object ID and revision number
-    def offset_for (ref)
-      @xref[ref.id][ref.gen]
+      self[ref].class == PDF::Reader::Stream
     rescue
-      raise InvalidObjectError, "Object #{ref.id}, Generation #{ref.gen} is invalid"
+      false
     end
-    ################################################################################
-    # iterate over each object in the xref table
-    def each(&block)
-      ids = @xref.keys.sort
-      ids.each do |id|
-        gen = @xref[id].keys.sort[-1]
-        ref = PDF::Reader::Reference.new(id, gen)
-        yield ref, object(ref)
-      end
-    end
-    ################################################################################
-    # Stores an offset value for a particular PDF object ID and revision number
-    def store (id, gen, offset)
-      (@xref[id] ||= {})[gen] ||= offset
-    end
-    ################################################################################
-    private
-    ################################################################################
-    # Assumes the underlying buffer is positioned at the start of an Xref table and
-    # processes it into memory.
-    def load_xref_table(buf)
-      params = []
 
-      while !params.include?("trailer") && !params.include?(nil)
-        if params.size == 2
-          objid, count = params[0].to_i, params[1].to_i
-          count.times do
-            offset = buf.token.to_i
-            generation = buf.token.to_i
-            state = buf.token
-
-            store(objid, generation, offset) if state == "n"
-            objid += 1
-            params.clear
-          end
+    # Access an object from the PDF. key can be an int or a PDF::Reader::Reference
+    # object.
+    #
+    # If an int is used, the object with that ID and a generation number of 0 will
+    # be returned.
+    #
+    # If a PDF::Reader::Reference object is used the exact ID and generation number
+    # can be specified.
+    #
+    def [](key)
+      return default if key.to_i <= 0
+      begin
+        unless key.kind_of?(PDF::Reader::Reference)
+          key = PDF::Reader::Reference.new(key.to_i, 0)
         end
-        params << buf.token
+        buf = new_buffer(offsets[key])
+        Parser.new(buf, self).object(key.id, key.gen)
+      rescue InvalidObjectError
+        return default
       end
-
-      trailer = Parser.new(buf, self).parse_token
-
-      raise MalformedPDFError, "PDF malformed, trailer should be a dictionary" unless trailer.kind_of?(Hash)
-
-      load(trailer[:Prev].to_i) if trailer.has_key?(:Prev)
-
-      trailer
     end
+    
+    # If key is a PDF::Reader::Reference object, lookup the corresponding
+    # object in the PDF and return it. Otherwise return key untouched.
+    #
+    def object(key)
+      key.is_a?(PDF::Reader::Reference) ? self[key] : key
+    end
+
+    # Access an object from the PDF. key can be an int or a PDF::Reader::Reference
+    # object.
+    #
+    # If an int is used, the object with that ID and a generation number of 0 will
+    # be returned.
+    #
+    # If a PDF::Reader::Reference object is used the exact ID and generation number
+    # can be specified.
+    #
+    # local_deault is the object that will be returned if the requested key doesn't
+    # exist.
+    #
+    def fetch(key, local_default = nil)
+      obj = self[key]
+      if obj
+        return obj
+      elsif local_default
+        return local_default
+      else
+        raise IndexError, "#{key} is invalid" if key.to_i <= 0
+      end
+    end
+
+    # iterate over each key, value. Just like a ruby hash.
+    #
+    def each(&block)
+      @offsets.each do |ref|
+        yield ref, self[ref]
+      end
+    end
+    alias :each_pair :each
+
+    # iterate over each key. Just like a ruby hash.
+    #
+    def each_key(&block)
+      each do |id, obj|
+        yield id
+      end
+    end
+
+    # iterate over each value. Just like a ruby hash.
+    #
+    def each_value(&block)
+      each do |id, obj|
+        yield obj
+      end
+    end
+
+    # return the number of objects in the file. An object with multiple generations
+    # is counted once.
+    def size
+      offsets.size
+    end
+    alias :length :size
+
+    # return true if there are no objects in this file
+    #
+    def empty?
+      size == 0 ? true : false
+    end
+
+    # return true if the specified key exists in the file. key
+    # can be an int or a PDF::Reader::Reference
+    #
+    def has_key?(check_key)
+      # TODO update from O(n) to O(1)
+      each_key do |key|
+        if check_key.kind_of?(PDF::Reader::Reference)
+          return true if check_key == key
+        else
+          return true if check_key.to_i == key.id
+        end
+      end
+      return false
+    end
+    alias :include? :has_key?
+    alias :key? :has_key?
+    alias :member? :has_key?
+
+    # return true if the specifiedvalue exists in the file
+    #
+    def has_value?(value)
+      # TODO update from O(n) to O(1)
+      each_value do |obj|
+        return true if obj == value
+      end
+      return false
+    end
+    alias :value? :has_key?
+
+    def to_s
+      "<PDF::Hash size: #{self.size}>"
+    end
+
+    # return an array of all keys in the file
+    #
+    def keys
+      ret = []
+      each_key { |k| ret << k }
+      ret
+    end
+
+    # return an array of all values in the file
+    #
+    def values
+      ret = []
+      each_value { |v| ret << v }
+      ret
+    end
+
+    # return an array of all values from the specified keys
+    #
+    def values_at(*ids)
+      ids.map { |id| self[id] }
+    end
+
+    # return an array of arrays. Each sub array contains a key/value pair.
+    #
+    def to_a
+      ret = []
+      each do |id, obj|
+        ret << [id, obj]
+      end
+      ret
+    end
+
+    private
 
     def new_buffer(offset = 0)
       PDF::Reader::Buffer.new(@io, :seek => offset)
     end
+
+    def offsets
+      @offsets || {}
+    end
+
+    def read_version
+      @io.seek(0)
+      m, version = *@io.read(10).match(/PDF-(\d.\d)/)
+      @io.seek(0)
+      version.to_f
+    end
+
   end
-  ################################################################################
 end
-################################################################################

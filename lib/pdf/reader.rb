@@ -108,6 +108,7 @@ require 'pdf/reader/encoding'
 require 'pdf/reader/error'
 require 'pdf/reader/filter'
 require 'pdf/reader/font'
+require 'pdf/reader/offset_table'
 require 'pdf/reader/parser'
 require 'pdf/reader/print_receiver'
 require 'pdf/reader/reference'
@@ -128,7 +129,7 @@ class PDF::Reader
     options = {:pages => true, :metadata => true}
     options.merge!(opts)
 
-    trailer = @xref.load
+    trailer = @xref.trailer
     raise PDF::Reader::UnsupportedFeatureError, 'PDF::Reader cannot read encrypted PDF files' if trailer[:Encrypt]
     @content.metadata(@xref.object(trailer[:Root]), @xref.object(trailer[:Info])) if options[:metadata]
     @content.document(@xref.object(trailer[:Root])) if options[:pages]

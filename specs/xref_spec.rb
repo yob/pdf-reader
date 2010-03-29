@@ -1,183 +1,315 @@
+# coding: utf-8
+
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
 
 require 'pdf/reader'
 
-# expose the xrefs hash inside the XRef class so we can ensure it's built correctly
-class PDF::Reader::XRef
-  attr_reader :xref
-end
+context PDF::Reader::XRef do
+  specify "should have enumerable mixed in" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
 
-context "The PDF::Reader::XRef class when operating on the cairo-basic PDF" do
-
-  before do
-    @file = File.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
-    @xref = PDF::Reader::XRef.new(@file)
-  end
-
-  specify "should load all xrefs corectly" do
-    @xref.load
-    @xref.xref.keys.size.should eql(15) # 1 xref table with 16 items (ignore the first)
-  end
-
-  specify "should not attempt to translate a non reference into an object" do
-    ref = "James"
-    @xref.load
-    obj, stream = @xref.object(ref)
-    obj.should eql(ref)
-  end
-
-  specify "should return a stream-less object correctly" do
-    ref = PDF::Reader::Reference.new(6,0)
-    @xref.load
-    @xref.object(ref).should eql(267)
+    h.map { |ref, obj| obj.class }.size.should eql(57)
   end
 end
 
-context "The PDF::Reader::XRef class when operating on the cairo-unicode PDF" do
+context PDF::Reader::XRef do
+  specify "should correctly load a PDF from a StringIO object" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    io = StringIO.new(File.read(filename))
+    h = PDF::Reader::XRef.new(io)
 
-  before do
-    @file = File.new(File.dirname(__FILE__) + "/data/cairo-unicode.pdf")
-    @xref = PDF::Reader::XRef.new(@file)
+    h.map { |ref, obj| obj.class }.size.should eql(57)
   end
 
-  specify "should load all xrefs corectly" do
-    @xref.load
-    @xref.xref.keys.size.should eql(57) # 1 xref table with 58 items (ignore the first)
-  end
-end
-
-context "The PDF::Reader::XRef class when operating on the openoffice-2.2 PDF" do
-
-  before do
-    @file = File.new(File.dirname(__FILE__) + "/data/openoffice-2.2.pdf")
-    @xref = PDF::Reader::XRef.new(@file)
-  end
-
-  specify "should load all xrefs corectly" do
-    @xref.load
-    @xref.xref.keys.size.should eql(28) # 1 xref table with 29 items (ignore the first)
-  end
-
-end
-
-context "The PDF::Reader::XRef class when operating on the pdf-distiller PDF" do
-
-  before do
-    @file = File.new(File.dirname(__FILE__) + "/data/pdf-distiller.pdf")
-    @xref = PDF::Reader::XRef.new(@file)
-  end
-
-  specify "should load all xrefs corectly" do
-    @xref.load
-    @xref.xref.keys.size.should eql(536) # 2 xref tables with 55+481 items
+  specify "should raise an ArgumentError if passed a non filename and non IO" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+     lambda {PDF::Reader::XRef.new(10)}.should raise_error(ArgumentError)
   end
 end
 
-context "The PDF::Reader::XRef class when operating on the prince1 PDF" do
+context PDF::Reader::XRef, "[] method" do
 
-  before do
-    @file = File.new(File.dirname(__FILE__) + "/data/prince1.pdf")
-    @xref = PDF::Reader::XRef.new(@file)
+  specify "should return nil for any invalid hash key" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    h[-1].should be_nil
+    h[nil].should be_nil
+    h["James"].should be_nil
   end
 
-  specify "should load all xrefs corectly" do
-    @xref.load
-    @xref.xref.keys.size.should eql(39) # 1 xref table with 40 items (ignore the first)
+  specify "should return nil for any hash key that doesn't exist" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    h[10000].should be_nil
   end
 
+  specify "should correctly extract an int object using int or string keys" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    h[3].should eql(3649)
+    h["3"].should eql(3649)
+    h["3james"].should eql(3649)
+  end
+
+  specify "should correctly extract an int object using PDF::Reference as a key" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+    ref = PDF::Reader::Reference.new(3,0)
+
+    h[ref].should eql(3649)
+  end
 end
 
-context "The PDF::Reader::XRef class when operating on the prince2 PDF" do
+context PDF::Reader::XRef, "object method" do
 
-  before do
-    @file = File.new(File.dirname(__FILE__) + "/data/prince2.pdf")
-    @xref = PDF::Reader::XRef.new(@file)
+  specify "should return regular objects unchanged" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    h.object(-1).should      eql(-1)
+    h.object(nil).should     be_nil
+    h.object("James").should eql("James")
   end
 
-  specify "should load all xrefs corectly" do
-    @xref.load
-    @xref.xref.keys.size.should eql(135) # 1 xref table with 136 items (ignore the first)
-  end
+  specify "should translate reference objects into an extracted PDF object" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
 
+    h.object(PDF::Reader::Reference.new(3,0)).should eql(3649)
+  end
 end
 
-context "The PDF::Reader::XRef class when operating on the pdflatex PDF" do
+context PDF::Reader::XRef, "fetch method" do
 
-  before do
-    @file = File.new(File.dirname(__FILE__) + "/data/pdflatex.pdf")
-    @xref = PDF::Reader::XRef.new(@file)
+  specify "should raise IndexError for any invalid hash key when no default is provided" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    lambda { h.fetch(-1) }.should raise_error(IndexError)
+    lambda { h.fetch(nil) }.should raise_error(IndexError)
+    lambda { h.fetch("James") }.should raise_error(IndexError)
   end
 
-  specify "should load all xrefs corectly" do
-    @xref.load
-    @xref.xref.keys.size.should eql(353) # 1 xref table with 360 items (but a bunch are ignored)
+  specify "should return default for any hash key that doesn't exist when a default is provided" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    h.fetch(10000, "default").should eql("default")
   end
 
+  specify "should correctly extract an int object using int or string keys" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    h.fetch(3).should eql(3649)
+    h.fetch("3").should eql(3649)
+    h.fetch("3james").should eql(3649)
+  end
+
+  specify "should correctly extract an int object using PDF::Reader::Reference keys" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+    ref = PDF::Reader::Reference.new(3,0)
+
+    h.fetch(ref).should eql(3649)
+  end
 end
 
-context "The PDF::Reader::XRef class when operating on the pdfwriter manual" do
+context PDF::Reader::XRef, "each method" do
 
-  before do
-    @file = File.new(File.dirname(__FILE__) + "/data/pdfwriter-manual.pdf")
-    @xref = PDF::Reader::XRef.new(@file)
+  specify "should iterate 57 times when using cairo-unicode PDF" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    count = 0
+    h.each do 
+      count += 1
+    end
+    count.should eql(57)
   end
 
-  specify "should load all xrefs corectly" do
-    @xref.load
-    @xref.xref.keys.size.should eql(1242) # 1 xref table with 1243 items (ignore the first)
-  end
+  specify "should provide a PDF::Reader::Reference to each iteration" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
 
+    h.each do |id, obj|
+      id.should be_a_kind_of(PDF::Reader::Reference)
+      obj.should_not be_nil
+    end
+  end
 end
 
-context "The PDF::Reader::XRef class when operating on a PDF that has been updated in Adobe Acrobat (and therefore has multiple xref sections with subsections)" do
+context PDF::Reader::XRef, "each_key method" do
 
-  before do
-    @file = File.new(File.dirname(__FILE__) + "/data/xref_subsections.pdf")
-    @xref = PDF::Reader::XRef.new(@file)
+  specify "should iterate 57 times when using cairo-unicode PDF" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    count = 0
+    h.each_key do 
+      count += 1
+    end
+    count.should eql(57)
   end
 
-  specify "should load all xrefs corectly" do
-    @xref.load
-    @xref.xref.keys.size.should eql(66)
-  end
+  specify "should provide a PDF::Reader::Reference to each iteration" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
 
+    h.each_key do |ref|
+      ref.should be_a_kind_of(PDF::Reader::Reference)
+    end
+  end
 end
 
-context "The PDF::Reader::XRef class when operating on a pdf with no trailer" do
+context PDF::Reader::XRef, "each_value method" do
 
-  before do
-    @file = File.new(File.dirname(__FILE__) + "/data/invalid/no_trailer.pdf")
-    @xref = PDF::Reader::XRef.new(@file)
+  specify "should iterate 57 times when using cairo-unicode PDF" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    count = 0
+    h.each_value do 
+      count += 1
+    end
+    count.should eql(57)
   end
-
-  specify "should raise an error when attempting to locate the xref table" do
-    lambda { @xref.load}.should raise_error(PDF::Reader::MalformedPDFError)
-  end
-
 end
 
-context "The PDF::Reader::XRef class when operating on a pdf with a trailer that isn't a dict" do
+context PDF::Reader::XRef, "size method" do
 
-  before do
-    @file = File.new(File.dirname(__FILE__) + "/data/invalid/trailer_is_not_a_dict.pdf")
-    @xref = PDF::Reader::XRef.new(@file)
+  specify "should return 57 when using cairo-unicode PDF" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    h.size.should eql(57)
   end
-
-  specify "should raise an error when attempting to locate the xref table" do
-    lambda { @xref.load}.should raise_error(PDF::Reader::MalformedPDFError)
-  end
-
 end
 
-context "The PDF::Reader::XRef class when operating on a pdf that uses an XRef Stream" do
+context PDF::Reader::XRef, "empty? method" do
 
-  before do
-    @file = File.new(File.dirname(__FILE__) + "/data/cross_ref_stream.pdf")
-    @xref = PDF::Reader::XRef.new(@file)
+  specify "should return false when using cairo-unicode PDF" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    h.empty?.should be_false
+  end
+end
+
+context PDF::Reader::XRef, "has_key? method" do
+
+  specify "should return true when called with a valid ID" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    h.has_key?(1).should be_true
+    h.has_key?(PDF::Reader::Reference.new(1,0)).should be_true
   end
 
-  specify "should raise an error when attempting to locate the xref table" do
-    lambda { @xref.load}.should raise_error(PDF::Reader::UnsupportedFeatureError)
+  specify "should return false when called with an invalid ID" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    h.has_key?(-1).should be_false
+    h.has_key?(nil).should be_false
+    h.has_key?("James").should be_false
+    h.has_key?(PDF::Reader::Reference.new(10000,0)).should be_false
+  end
+end
+
+context PDF::Reader::XRef, "has_value? method" do
+
+  specify "should return true when called with a valid object" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    h.has_value?(3649).should be_true
   end
 
+  specify "should return false when called with an invalid object" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    h.has_value?(-1).should be_false
+    h.has_value?(nil).should be_false
+    h.has_value?("James").should be_false
+  end
+end
+
+context PDF::Reader::XRef, "keys method" do
+
+  specify "should return an array of keys" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    keys = h.keys
+    keys.size.should eql(57)
+    keys.each { |k| k.should be_a_kind_of(PDF::Reader::Reference) }
+  end
+end
+
+context PDF::Reader::XRef, "values method" do
+
+  specify "should return an array of object" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    values = h.values
+    values.size.should eql(57)
+    values.each { |v| v.should_not be_nil }
+  end
+end
+
+context PDF::Reader::XRef, "values_at method" do
+
+  specify "should return an array of object" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+    ref3 = PDF::Reader::Reference.new(3,0)
+    ref6 = PDF::Reader::Reference.new(6,0)
+
+    h.values_at(3,6).should eql([3649,3287])
+    h.values_at(ref3,ref6).should eql([3649,3287])
+  end
+end
+
+context PDF::Reader::XRef, "to_a method" do
+
+  specify "should return an array of 57 arrays" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    arr = h.to_a
+    arr.size.should eql(57)
+    arr.each { |a| a.should be_a_kind_of(Array) }
+  end
+end
+
+context PDF::Reader::XRef, "trailer method" do
+
+  specify "should return the document trailer dictionary" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    expected = {:Size => 58,
+                :Root => PDF::Reader::Reference.new(57,0),
+                :Info => PDF::Reader::Reference.new(56,0)}
+    h.trailer[:Size].should eql(58)
+    h.trailer[:Root].should eql(PDF::Reader::Reference.new(57,0))
+    h.trailer[:Info].should eql(PDF::Reader::Reference.new(56,0))
+  end
+end
+
+context PDF::Reader::XRef, "pdf_version method" do
+
+  specify "should return the document PDF version dictionary" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::XRef.new(filename)
+
+    h.pdf_version.should eql(1.4)
+  end
 end

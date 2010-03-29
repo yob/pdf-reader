@@ -16,7 +16,6 @@ context PDF::Reader::Stream do
 
     io = File.new(File.dirname(__FILE__) + "/data/pdfwriter-manual.pdf")
     xref = PDF::Reader::XRef.new(io)
-    xref.load
     obj = xref.object(PDF::Reader::Reference.new(7, 0))
     obj.should be_a_kind_of(PDF::Reader::Stream)
     obj.unfiltered_data.should eql(decoded_stream)
@@ -95,7 +94,6 @@ EOF
 
     File.open(File.dirname(__FILE__) + "/data/zlib_stream_issue.pdf") do |io|
       xref = PDF::Reader::XRef.new(io)
-      xref.load
       ref = PDF::Reader::Reference.new(30,0)
       obj = xref.object(ref)
       lambda { obj.unfiltered_data }.should raise_error(PDF::Reader::MalformedPDFError)

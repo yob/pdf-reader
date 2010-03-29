@@ -63,8 +63,6 @@ context "The PDF::Reader::Content class" do
     filename = File.dirname(__FILE__) + "/data/inline_image.pdf"
     io       = File.new(filename, "r")
     xref     = PDF::Reader::XRef.new(io)
-    xref.xref[3] = Hash.new
-    xref.xref[3][0] = 248
     ref =      PDF::Reader::Reference.new(3,0)
     obj = xref.object(ref)
 
