@@ -5,7 +5,20 @@ context "The PDF::Reader::Parser class" do
 
   specify "should parse a name correctly" do
     parse_string("/James").parse_token.should eql(:James)
+    parse_string("/A;Name_With−Various***Characters?").parse_token.should eql(:"A;Name_With−Various***Characters?")
+    parse_string("/1.2").parse_token.should eql(:"1.2")
+    parse_string("/$$").parse_token.should eql(:"$$")
+    parse_string("/@pattern").parse_token.should eql(:"@pattern")
+    parse_string("/.notdef").parse_token.should eql(:".notdef")
+    parse_string("/James#20Healy").parse_token.should eql(:"James Healy")
+    parse_string("/James#23Healy").parse_token.should eql(:"James#Healy")
   end
+
+  # '/' is a valid PDF name, but :"" is not a valid ruby symbol.
+  # How should I handle this?
+  specify "should parse an empty name correctly" #do
+    #parse_string("/").parse_token.should eql(:"")
+  #end
 
   specify "should parse booleans correctly" do
     parse_string("true").parse_token.should be_true

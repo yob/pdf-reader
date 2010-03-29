@@ -48,7 +48,7 @@ class PDF::Reader
       case token
       when PDF::Reader::Reference     then return token
       when nil                        then return nil
-      when "/"                        then return @buffer.token.to_sym
+      when "/"                        then return pdf_name()
       when "<<"                       then return dictionary()
       when "["                        then return array()
       when "("                        then return string()
@@ -105,6 +105,16 @@ class PDF::Reader
       end
 
       dict
+    end
+    ################################################################################
+    # reads a PDF name from the buffer and converts it to a Ruby Symbol
+    def pdf_name
+      tok = @buffer.token
+      tok.scan(/#(\d\d)/).each do |find|
+        replace = find[0].hex.chr
+        tok.gsub!("#"+find[0], replace)
+      end
+      tok.to_sym
     end
     ################################################################################
     # reads a PDF array from the buffer and converts it to a Ruby Array.
