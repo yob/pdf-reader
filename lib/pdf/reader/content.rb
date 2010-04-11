@@ -437,7 +437,7 @@ class PDF::Reader
       if resources[:Font]
         fonts = font_hash_from_resources(resources)
         fonts.each do  |label, font|
-          callback(:resource_font, [label, fonts])
+          callback(:resource_font, [label, font])
         end
       end
     end
