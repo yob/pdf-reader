@@ -191,7 +191,7 @@ class PDF::Reader
 
       params.each do |p|
         case p
-        when Float
+        when Float, Fixnum
           @state.last[:tj_adjustment] = p
         else
           show_text(p)
