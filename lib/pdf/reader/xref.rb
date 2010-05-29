@@ -86,7 +86,7 @@ class PDF::Reader
         return default
       end
     end
-    
+
     # If key is a PDF::Reader::Reference object, lookup the corresponding
     # object in the PDF and return it. Otherwise return key untouched.
     #
