@@ -27,7 +27,8 @@ require 'enumerator'
 
 class PDF::Reader
   class Encoding
-
+    CONTROL_CHARS = [0,1,2,3,4,5,6,7,8,11,12,14,15,16,17,18,19,20,21,22,23,
+                     24,25,26,27,28,29,30,31]
     UNKNOWN_CHAR = 0x25AF # ▯
 
     attr_reader :differences, :unpack
@@ -121,6 +122,8 @@ class PDF::Reader
           PDF::Reader::Encoding::UNKNOWN_CHAR
         elsif mapping[num]
           mapping[num]
+        elsif PDF::Reader::Encoding::CONTROL_CHARS.include?(num)
+          PDF::Reader::Encoding::UNKNOWN_CHAR
         else
           num
         end

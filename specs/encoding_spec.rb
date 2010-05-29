@@ -9,7 +9,7 @@ class PDF::Reader::Encoding
   public :process_glyphnames
 end
 
-context "The PDF::Reader::Encoding class" do
+context PDF::Reader::Encoding do
 
   specify "should return a new encoding object on request, or raise an error if unrecognised" do
     lambda { PDF::Reader::Encoding.new("FakeEncoding")}.should raise_error(PDF::Reader::UnsupportedFeatureError)
@@ -45,6 +45,15 @@ context "The PDF::Reader::Encoding class" do
     enc.differences.should be_a_kind_of(Hash)
     enc.differences[25].should eql(:A)
     enc.differences[26].should eql(:B)
+  end
+
+  specify "should correctly replace control characters with 'unknown char' when there's no applicable difference table entry" do
+    win =  {
+             :Encoding    => :WinAnsiEncoding,
+             :Differences => [1, :A,]
+           }
+    enc = PDF::Reader::Encoding.new(win)
+    enc.to_utf8("\002").should eql("▯")
   end
 
   specify "should correctly replaces all bytes in an array with glyph names" do

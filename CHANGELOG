@@ -1,4 +1,8 @@
-v0.8.4 (XXX)
+v0.8.5 (11th April 2010)
+- fix a regression introduced in 0.8.4.
+  - Parameters passed to resource_font callback were inadvertently changed
+
+v0.8.4 (30th March 2010)
 - fix parsing of files that use Form XObjects
   - thanks to Andrea Barisani for reporting the issue
 - fix two issues that caused a small number of characters to convert to Unicode
@@ -85,10 +89,10 @@ v0.7 (6th May 2008)
 - Added an option to PDF::Reader#file and PDF::Reader#string to enable parsing of only parts of a PDF file(ie. only metadata, etc)
 
 v0.6.2 (22nd March 2008)
-- Catch low level errors when applying filters to a content stream and raise a MalformedPDFError instead. 
+- Catch low level errors when applying filters to a content stream and raise a MalformedPDFError instead.
 - Added support for processing inline images
 - Support for parsing XRef tables that have multiple subsections
-- Added a few callbacks to improve the way we supply information on page resources 
+- Added a few callbacks to improve the way we supply information on page resources
 - Ignore whitespace in hex strings, as required by the spec (section 3.2.3)
 - Use our "unknown character box" when a single character in an Identity-H string fails to decode
 - Support ToUnicode CMaps that use the bfrange operator
@@ -97,7 +101,7 @@ v0.6.2 (22nd March 2008)
 v0.6.1 (12th March 2008)
 - Tweaked behaviour when we encounter Identity-H encoded text that doesn't have a ToUnicode mapping. We
   just replace each character with a little box.
-- Use the same little box when invalid characters are found in other encodings instead of throwing an ugly 
+- Use the same little box when invalid characters are found in other encodings instead of throwing an ugly
   NoMethodError.
 - Added a method to RegisterReceiver that returns all occurrences of a callback
 
