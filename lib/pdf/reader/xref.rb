@@ -80,8 +80,14 @@ class PDF::Reader
         unless key.kind_of?(PDF::Reader::Reference)
           key = PDF::Reader::Reference.new(key.to_i, 0)
         end
-        buf = new_buffer(offsets[key])
-        Parser.new(buf, self).object(key.id, key.gen)
+        if offsets[key].is_a?(Fixnum)
+          buf = new_buffer(offsets[key])
+          Parser.new(buf, self).object(key.id, key.gen)
+        elsif offsets[key].is_a?(PDF::Reader::Reference)
+          container_key = offsets[key]
+          object_streams[container_key] ||= PDF::Reader::ObjectStream.new(object(container_key))
+          object_streams[container_key][key.id]
+        end
       rescue InvalidObjectError
         return default
       end
@@ -228,6 +234,10 @@ class PDF::Reader
 
     def offsets
       @offsets || {}
+    end
+
+    def object_streams
+      @object_stream ||= {}
     end
 
     def read_version

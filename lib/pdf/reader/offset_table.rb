@@ -106,7 +106,7 @@ class PDF::Reader
         index = 0
       end
       stream.hash[:Size].times do |i|
-        entry = raw_data[i*entry_length, entry_length]
+        entry = raw_data[i*entry_length, entry_length] || ""
         f1    = unpack_bytes(entry[0,widths[0]])
         f2    = unpack_bytes(entry[widths[0],widths[1]])
         f3    = unpack_bytes(entry[widths[0]+widths[1],widths[2]])
@@ -123,7 +123,9 @@ class PDF::Reader
     end
     ################################################################################
     def unpack_bytes(bytes)
-      if bytes.size == 1
+      if bytes.to_s.size == 0
+        0
+      elsif bytes.size == 1
         bytes.unpack("C")[0]
       elsif bytes.size == 2
         bytes.unpack("n")[0]
@@ -161,6 +163,7 @@ class PDF::Reader
 
       raise MalformedPDFError, "PDF malformed, trailer should be a dictionary" unless trailer.kind_of?(Hash)
 
+      load_offsets(trailer[:XRefStm])   if trailer.has_key?(:XRefStm)
       load_offsets(trailer[:Prev].to_i) if trailer.has_key?(:Prev)
 
       trailer
