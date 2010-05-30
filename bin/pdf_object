@@ -30,6 +30,9 @@ begin
   case obj
   when Hash, Array
     puts obj.inspect
+  when PDF::Reader::Stream
+    puts obj.hash.inspect
+    puts obj.unfiltered_data
   else
     puts obj
   end

@@ -140,7 +140,6 @@ class PDF::Reader
   # Given an IO object that contains PDF data, return the contents of a single object
   def object (io, id, gen)
     @xref     = XRef.new(io)
-    @xref.load
 
     @xref.object(Reference.new(id, gen))
   end
