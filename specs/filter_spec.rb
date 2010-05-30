@@ -6,6 +6,13 @@ context "PDF::Reader::Filter" do
 
   specify "should inflate a RFC1950 (zlib) deflated stream correctly"
   specify "should inflate a raw RFC1951 deflated stream correctly"
+  specify "should inflate a deflated stream with predictors correctly" do
+    filter = PDF::Reader::Filter.new(:FlateDecode, :Columns => 5, :Predictor => 12)
+    deflated_data    = File.open(File.dirname(__FILE__) + "/data/deflated_with_predictors.dat","r") { |f| f.read }
+    depredicted_data = File.open(File.dirname(__FILE__) + "/data/deflated_with_predictors_result.dat","r") { |f| f.read }
+    filter.filter(deflated_data).should eql(depredicted_data)
+  end
+
   specify "should filter a ASCII85 stream correctly" do
     filter = PDF::Reader::Filter.new(:ASCII85Decode)
     encoded_data = Ascii85::encode("Ruby")

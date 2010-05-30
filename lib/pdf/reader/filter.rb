@@ -92,8 +92,9 @@ class PDF::Reader
     ################################################################################
     # Decode the specified data with the Zlib compression algorithm
     def flate (data)
+      deflated = nil
       begin
-        Zlib::Inflate.new.inflate(data)
+        deflated = Zlib::Inflate.new.inflate(data)
       rescue Zlib::DataError => e
         # by default, Ruby's Zlib assumes the data it's inflating
         # is RFC1951 deflated data, wrapped in a RFC1951 zlib container.
@@ -103,13 +104,92 @@ class PDF::Reader
         # See
         # - http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/243545
         # - http://www.gzip.org/zlib/zlib_faq.html#faq38
-        Zlib::Inflate.new(-Zlib::MAX_WBITS).inflate(data)
+        deflated = Zlib::Inflate.new(-Zlib::MAX_WBITS).inflate(data)
       end
+      depredict(deflated, @options)
     rescue Exception => e
       # Oops, there was a problem inflating the stream
       raise MalformedPDFError, "Error occured while inflating a compressed stream (#{e.class.to_s}: #{e.to_s})"
     end
     ################################################################################
+    def depredict(data, opts = {})
+      return data if opts.nil? || opts[:Predictor].to_i < 10
+
+      data = data.unpack("C*")
+
+      pixel_bytes     = 1 #pixel_bitlength / 8
+      scanline_length = (pixel_bytes * opts[:Columns]) + 1
+      row = 0
+      pixels = []
+      paeth, pa, pb, pc = nil
+      until data.empty? do
+        row_data = data.slice! 0, scanline_length
+        filter = row_data.shift
+        case filter
+        when 0 # None
+        when 1 # Sub
+          row_data.each_with_index do |byte, index|
+            left = index < pixel_bytes ? 0 : row_data[index - pixel_bytes]
+            row_data[index] = (byte + left) % 256
+            #p [byte, left, row_data[index]]
+          end
+        when 2 # Up
+          row_data.each_with_index do |byte, index|
+            col = index / pixel_bytes
+            upper = row == 0 ? 0 : pixels[row-1][col][index % pixel_bytes]
+            row_data[index] = (upper + byte) % 256
+          end
+        when 3  # Average
+          row_data.each_with_index do |byte, index|
+            col = index / pixel_bytes
+            upper = row == 0 ? 0 : pixels[row-1][col][index % pixel_bytes]
+            left = index < pixel_bytes ? 0 : row_data[index - pixel_bytes]
+
+            row_data[index] = (byte + ((left + upper)/2).floor) % 256
+          end
+        when 4 # Paeth
+          left = upper = upper_left = nil
+          row_data.each_with_index do |byte, index|
+            col = index / pixel_bytes
+
+            left = index < pixel_bytes ? 0 : row_data[index - pixel_bytes]
+            if row.zero?
+              upper = upper_left = 0
+            else
+              upper = pixels[row-1][col][index % pixel_bytes]
+              upper_left = col.zero? ? 0 :
+                pixels[row-1][col-1][index % pixel_bytes]
+            end
+
+            p = left + upper - upper_left
+            pa = (p - left).abs
+            pb = (p - upper).abs
+            pc = (p - upper_left).abs
+
+            paeth = if pa <= pb && pa <= pc
+                      left
+                    elsif pb <= pc
+                      upper
+                    else
+                      upper_left
+                    end
+
+            row_data[index] = (byte + paeth) % 256
+          end
+        else
+          raise ArgumentError, "Invalid filter algorithm #{filter}"
+        end
+
+        s = []
+        row_data.each_slice pixel_bytes do |slice|
+          s << slice
+        end
+        pixels << s
+        row += 1
+      end
+
+      pixels.map { |row| row.flatten.pack("C*") }.join("")
+    end
   end
   ################################################################################
 end
