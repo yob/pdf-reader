@@ -174,7 +174,12 @@ class PDF::Reader
     # Decodes the contents of a PDF Stream and returns it as a Ruby String.
     def stream (dict)
       raise MalformedPDFError, "PDF malformed, missing stream length" unless dict.has_key?(:Length)
-      data = @buffer.read(@xref.object(dict[:Length]), :skip_eol => true)
+      if @xref
+        length = @xref.object(dict[:Length])
+      else
+        length = dict[:Length] || 0
+      end
+      data = @buffer.read(length, :skip_eol => true)
 
       Error.str_assert(parse_token, "endstream")
       Error.str_assert(parse_token, "endobj")
