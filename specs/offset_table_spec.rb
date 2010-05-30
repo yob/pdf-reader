@@ -63,11 +63,21 @@ end
 
 context PDF::Reader::OffsetTable, "when operating on a pdf that uses an XRef Stream" do
 
-  specify "should raise an error when attempting to locate the xref table" do
+  before(:each) do
     @file = File.new(File.dirname(__FILE__) + "/data/cross_ref_stream.pdf")
-    lambda { 
-      PDF::Reader::OffsetTable.new(@file)
-    }.should raise_error(PDF::Reader::UnsupportedFeatureError)
+    @tbl = PDF::Reader::OffsetTable.new(@file)
+  end
+
+  specify "should correctly load all object locations" do
+    @tbl.xref.keys.size.should eql(327) # 1 xref stream with 344 items (ignore the 17 free objects)
+  end
+
+  specify "should load type 1 objects references" do
+    @tbl.xref[66][0].should eql(298219)
+  end
+
+  specify "should load type 2 objects references" do
+    @tbl.xref[281][0].should eql([341,4])
   end
 
 end

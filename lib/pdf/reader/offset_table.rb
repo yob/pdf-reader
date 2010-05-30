@@ -72,14 +72,67 @@ class PDF::Reader
       offset ||= new_buffer.find_first_xref_offset
 
       buf = new_buffer(offset)
-      token = buf.token
+      tok_one = buf.token
 
-      if token == "xref" || token == "ref"
-        load_xref_table(buf)
-      elsif token.to_i >= 0 && buf.token.to_i >= 0 && buf.token == "obj"
-        raise PDF::Reader::UnsupportedFeatureError, "XRef streams are not supported in PDF::Reader yet"
+      return load_xref_table(buf) if tok_one == "xref" || tok_one == "ref"
+
+      tok_two   = buf.token
+      tok_three = buf.token
+
+      if tok_one.to_i >= 0 && tok_two.to_i >= 0 && tok_three == "obj"
+        buf = new_buffer(offset)
+        stream = PDF::Reader::Parser.new(buf).object(tok_one.to_i, tok_two.to_i)
+        return load_xref_stream(stream)
+      end
+
+      raise PDF::Reader::MalformedPDFError, "xref table not found at offset #{offset} (#{tok_one} != xref)"
+    end
+    ################################################################################
+    def load_xref_stream(stream)
+      unless stream.hash[:Type] == :XRef
+        raise PDF::Reader::MalformedPDFError, "xref stream not found when expected"
+      end
+      trailer = {}
+      trailer[:Root] = stream.hash[:Root] if stream.hash[:Root]
+      trailer[:Info] = stream.hash[:Info] if stream.hash[:Info]
+      trailer[:Prev] = stream.hash[:Prev] if stream.hash[:Prev]
+
+      widths = stream.hash[:W]
+      entry_length = widths.inject(0) { |s, w| s + w }
+      raw_data = stream.unfiltered_data
+      if stream.hash[:Index]
+        index = stream.hash[:Index][0]
       else
-        raise PDF::Reader::MalformedPDFError, "xref table not found at offset #{offset} (#{token} != xref)"
+        index = 0
+      end
+      stream.hash[:Size].times do |i|
+        entry = raw_data[i*entry_length, entry_length]
+        f1    = unpack_bytes(entry[0,widths[0]])
+        f2    = unpack_bytes(entry[widths[0],widths[1]])
+        f3    = unpack_bytes(entry[widths[0]+widths[1],widths[2]])
+        if f1 == 1
+          store(index + i, f3, f2)
+        elsif f1 == 2
+          store(index + i, 0, [f2, f3])
+        end
+      end
+
+      load_offsets(trailer[:Prev].to_i) if trailer.has_key?(:Prev)
+
+      trailer
+    end
+    ################################################################################
+    def unpack_bytes(bytes)
+      if bytes.size == 1
+        bytes.unpack("C")[0]
+      elsif bytes.size == 2
+        bytes.unpack("n")[0]
+      elsif bytes.size == 3
+        ("\x00" + bytes).unpack("N")[0]
+      elsif bytes.size == 4
+        bytes.unpack("N")[0]
+      else
+        raise UnsupportedFeatureError, "Unable to unpack xref stream entries with more than 4 bytes"
       end
     end
     ################################################################################
