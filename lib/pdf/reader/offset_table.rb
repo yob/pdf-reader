@@ -113,7 +113,7 @@ class PDF::Reader
         if f1 == 1
           store(index + i, f3, f2)
         elsif f1 == 2
-          store(index + i, 0, [f2, f3])
+          store(index + i, 0, PDF::Reader::Reference.new(f2, 0))
         end
       end
 

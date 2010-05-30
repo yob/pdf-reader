@@ -77,7 +77,7 @@ context PDF::Reader::OffsetTable, "when operating on a pdf that uses an XRef Str
   end
 
   specify "should load type 2 objects references" do
-    @tbl.xref[281][0].should eql([341,4])
+    @tbl.xref[281][0].should eql(PDF::Reader::Reference.new(341,0))
   end
 
 end
