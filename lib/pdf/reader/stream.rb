@@ -50,7 +50,11 @@ class PDF::Reader
         options = []
 
         if hash.has_key?(:DecodeParms)
-          options = Array(hash[:DecodeParms])
+          if hash[:DecodeParms].is_a?(Hash)
+            options = [hash[:DecodeParms]]
+          else
+            options = hash[:DecodeParms]
+          end
         end
 
         Array(hash[:Filter]).each_with_index do |filter, index|
