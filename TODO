@@ -1,6 +1,8 @@
 v0.8
+- rename XRef class to ObjectHash
+- rename OffsetTable class to XRef
 - add extra callbacks
-  - list implemented features 
+  - list implemented features
     - encrypted? tagged? bookmarks? annotated? optimised?
 - Allow more than just page content and metadata to be parsed (see spec section 3.6.1)
   - bookmarks?
@@ -31,12 +33,12 @@ Sometime
 - Ship some extra receivers in the standard package, particuarly ones that are useful for running
   rspec over generated PDF files
 
-- When we encounter Identity-H encoded text with no ToUnicode CMap, render the glyphs and treat them as images, as there's no 
+- When we encounter Identity-H encoded text with no ToUnicode CMap, render the glyphs and treat them as images, as there's no
   sensible way to convert them to unicode
 
 - Add support for additional filters: ASCIIHexDecode, ASCII85Decode, LZWDecode, RunLengthDecode, CCITTFaxDecode, JBIG2Decode, DCTDecode, JPXDecode, Crypt?
 
-- Add support for additional encodings: 
+- Add support for additional encodings:
   - PDFDocEncoding
   - Identity-V(I *think* this relates to vertical text. Not sure how we'd support it sensibly)
 
