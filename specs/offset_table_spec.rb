@@ -33,10 +33,10 @@ context PDF::Reader::OffsetTable, "load_offsets method" do
     @tbl.xref.keys.size.should eql(353) # 1 xref table with 360 items (but a bunch are ignored)
   end
 
-  specify "should load all xrefs corectly from a PDF that has multiple xref sections with subsections" do
+  specify "should load all xrefs corectly from a PDF that has multiple xref sections with subsections and xref streams" do
     @file = File.new(File.dirname(__FILE__) + "/data/xref_subsections.pdf")
     @tbl = PDF::Reader::OffsetTable.new(@file)
-    @tbl.xref.keys.size.should eql(66)
+    @tbl.xref.keys.size.should eql(537)
   end
 end
 
