@@ -17,9 +17,11 @@ class PageTextReceiver
     end
   end
 
-  def show_text(string, *params)
+  def show_text(*params)
     @content = "" if @content.nil?
-    @content << string
+    params.each do |str|
+      @content << str.to_s
+    end
   end
 
   # there's a few text callbacks, so make sure we process them all
