@@ -1,3 +1,5 @@
+# coding: utf-8
+
 require File.dirname(__FILE__) + "/spec_helper"
 
 context "The PDF::Reader::Parser class" do
@@ -5,7 +7,7 @@ context "The PDF::Reader::Parser class" do
 
   specify "should parse a name correctly" do
     parse_string("/James").parse_token.should eql(:James)
-    parse_string("/A;Name_With−Various***Characters?").parse_token.should eql(:"A;Name_With−Various***Characters?")
+    parse_string("/A;Name_With-Various***Characters?").parse_token.should eql(:"A;Name_With-Various***Characters?")
     parse_string("/1.2").parse_token.should eql(:"1.2")
     parse_string("/$$").parse_token.should eql(:"$$")
     parse_string("/@pattern").parse_token.should eql(:"@pattern")
