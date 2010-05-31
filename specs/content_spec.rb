@@ -8,7 +8,7 @@ class PDF::Reader::XRef
   attr_accessor :xref
 end
 
-context "The PDF::Reader::Content class" do
+context PDF::Reader::Content do
 
   specify "should send the correct callbacks when processing instructions containing a single text block" do
 
@@ -69,6 +69,21 @@ context "The PDF::Reader::Content class" do
     # process the instructions
     content = PDF::Reader::Content.new(receiver, nil)
     content.content_stream(obj)
+  end
+
+  # test for a bug reported by Jack Rusher where params at the end of a stream would be
+  # silently dropped if their matching operator was in the next contream stream in a series
+  specify "should send the correct callbacks when processing a PDF with content over multiple streams" do
+
+    receiver = PDF::Reader::RegisterReceiver.new
+
+    filename = File.dirname(__FILE__) + "/data/split_params_and_operator.pdf"
+    PDF::Reader.file(filename, receiver)
+
+    text_callbacks = receiver.all(:show_text_with_positioning)
+    text_callbacks.size.should eql(2)
+    text_callbacks[0][:args].should eql([["My name is"]])
+    text_callbacks[1][:args].should eql([["James Healy"]])
   end
 
   specify "should send the correct metadata callbacks when processing an PrinceXML PDF" do

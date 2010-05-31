@@ -206,7 +206,17 @@ context "PDF::Reader" do
     receiver = PageTextReceiver.new
     PDF::Reader.file(File.dirname(__FILE__) + "/data/indirect_xobject.pdf", receiver)
 
-    # confirm there was a single page of tet
+    # confirm there was a single page of text
     receiver.content.size.should eql(1)
+  end
+
+  specify "should correctly process a PDF that uses multiple content streams for a single page" do
+    receiver = PageTextReceiver.new
+    PDF::Reader.file(File.dirname(__FILE__) + "/data/split_params_and_operator.pdf", receiver)
+
+    # confirm there was a single page of text
+    receiver.content.size.should eql(1)
+    receiver.content[0].include?("My name is").should be_true
+    receiver.content[0].include?("James Healy").should be_true
   end
 end

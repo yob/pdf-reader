@@ -311,10 +311,8 @@ class PDF::Reader
         fonts = font_hash_from_resources(current_resources)
 
         if page.has_key?(:Contents) and page[:Contents]
-          contents.each do |content|
-            obj = @xref.object(content)
-            content_stream(obj, fonts)
-          end 
+          direct_contents = contents.map { |content| @xref.object(content) }
+          content_stream(direct_contents, fonts)
         end
 
         resources.pop if res
@@ -353,7 +351,10 @@ class PDF::Reader
     # Reads a PDF content stream and calls all the appropriate callback methods for the operators
     # it contains
     def content_stream (instructions, fonts = {})
-      instructions = instructions.unfiltered_data if instructions.kind_of?(PDF::Reader::Stream)
+      instructions = [instructions] unless instructions.kind_of?(Array)
+      instructions = instructions.map { |ins|
+        ins.is_a?(PDF::Reader::Stream) ? ins.unfiltered_data : ins.to_s
+      }.join
       buffer       = Buffer.new(StringIO.new(instructions))
       parser       = Parser.new(buffer, @xref)
       current_font = nil
