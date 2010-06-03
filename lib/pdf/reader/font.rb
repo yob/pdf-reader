@@ -50,9 +50,11 @@ class PDF::Reader
       # with encoding= if required
       case font
       when "Symbol" then
-        self.encoding = PDF::Reader::Encoding.new("SymbolEncoding")
+        @encoding = PDF::Reader::Encoding.new("SymbolEncoding")
       when "ZapfDingbats" then
-        self.encoding = PDF::Reader::Encoding.new("ZapfDingbatsEncoding")
+        @encoding = PDF::Reader::Encoding.new("ZapfDingbatsEncoding")
+      else
+        @encoding = nil
       end
       @basefont = font
     end
