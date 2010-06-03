@@ -100,7 +100,6 @@ module PDF
   ################################################################################
 end
 ################################################################################
-require 'pdf/reader/explore'
 require 'pdf/reader/buffer'
 require 'pdf/reader/cmap'
 require 'pdf/reader/content'
@@ -125,7 +124,7 @@ class PDF::Reader
   # Given an IO object that contains PDF data, parse it.
   def parse (io, receiver, opts = {})
     @ohash    = ObjectHash.new(io)
-    @content  = (receiver == Explore ? Explore : Content).new(receiver, @ohash)
+    @content  = Content.new(receiver, @ohash)
 
     options = {:pages => true, :metadata => true}
     options.merge!(opts)
