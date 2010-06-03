@@ -5,6 +5,8 @@ require 'rake/rdoctask'
 require 'rake/testtask'
 require "rake/gempackagetask"
 require 'spec/rake/spectask'
+require 'roodi'
+require 'roodi_task'
 
 PKG_VERSION = "0.8.5"
 PKG_NAME = "pdf-reader"
@@ -81,7 +83,6 @@ end
 
 # package the library into a gem
 desc "Generate a gem for pdf-reader"
-Rake::GemPackageTask.new(spec) do |pkg|
-	pkg.need_zip = true
-	pkg.need_tar = true
-end
+Rake::GemPackageTask.new(spec)
+
+RoodiTask.new 'roodi', ['lib/**/*.rb']
