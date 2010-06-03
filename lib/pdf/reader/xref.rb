@@ -25,21 +25,40 @@
 
 class PDF::Reader
   ################################################################################
-  # An internal PDF::Reader class that represents the Xref table in a PDF file
+  # An internal PDF::Reader class that represents the XRef table in a PDF file as a
+  # hash-like object.
+  #
   # An Xref table is a map of object identifiers and byte offsets. Any time a particular
   # object needs to be found, the Xref table is used to find where it is stored in the
   # file.
-  class OffsetTable
+  #
+  # Hash keys are object ids, values are either:
+  #
+  # * a byte offset where the object starts (regular PDF objects)
+  # * a PDF::Reader::Reference instance that points to a stream that contains the
+  #   desired object (PDF objects embedded in an object stream)
+  #
+  # The class behaves much like a standard Ruby hash, including the use of
+  # the Enumerable mixin. The key difference is no []= method - the hash
+  # is read only.
+  #
+  class XRef
     include Enumerable
     attr_reader :trailer
 
     ################################################################################
-    # create a new Xref table based on the contents of the supplied PDF::Reader::Buffer object
+    # create a new Xref table based on the contents of the supplied io object
+    #
+    # io - must be an IO object, generally either a file or a StringIO
+    #
     def initialize (io)
       @io = io
       @xref = {}
       @trailer = load_offsets
     end
+    ################################################################################
+    # return the number of objects in this file. Objects with multiple generations are
+    # only counter once.
     def size
       @xref.size
     end
@@ -64,11 +83,15 @@ class PDF::Reader
     ################################################################################
     private
     ################################################################################
-    # Read the xref table from the underlying buffer. If offset is specified the table
-    # will be loaded from there, otherwise the default offset will be located and used.
+    # Read a xref table from the underlying buffer.
     #
-    # Will fail silently if there is no xref table at the requested offset.
-    def load_offsets (offset = nil)
+    # If offset is specified the table will be loaded from there, otherwise the
+    # default offset will be located and used.
+    #
+    # After seeking to the offset, processing is handed of to either load_xref_table()
+    # or load_xref_stream() based on what we find there.
+    #
+    def load_offsets(offset = nil)
       offset ||= new_buffer.find_first_xref_offset
 
       buf = new_buffer(offset)
@@ -88,6 +111,40 @@ class PDF::Reader
       raise PDF::Reader::MalformedPDFError, "xref table not found at offset #{offset} (#{tok_one} != xref)"
     end
     ################################################################################
+    # Assumes the underlying buffer is positioned at the start of a traditional
+    # Xref table and processes it into memory.
+    def load_xref_table(buf)
+      params = []
+
+      while !params.include?("trailer") && !params.include?(nil)
+        if params.size == 2
+          objid, count = params[0].to_i, params[1].to_i
+          count.times do
+            offset = buf.token.to_i
+            generation = buf.token.to_i
+            state = buf.token
+
+            store(objid, generation, offset) if state == "n"
+            objid += 1
+            params.clear
+          end
+        end
+        params << buf.token
+      end
+
+      trailer = Parser.new(buf, self).parse_token
+
+      raise MalformedPDFError, "PDF malformed, trailer should be a dictionary" unless trailer.kind_of?(Hash)
+
+      load_offsets(trailer[:XRefStm])   if trailer.has_key?(:XRefStm)
+      load_offsets(trailer[:Prev].to_i) if trailer.has_key?(:Prev)
+
+      trailer
+    end
+
+    ################################################################################
+    # Read a XReaf stream from the underlying buffer instead of a traditional xref table.
+    #
     def load_xref_stream(stream)
       unless stream.hash[:Type] == :XRef
         raise PDF::Reader::MalformedPDFError, "xref stream not found when expected"
@@ -122,6 +179,9 @@ class PDF::Reader
       trailer
     end
     ################################################################################
+    # XRef streams pack info into integers 1-N bytes wide. Depending on the number of
+    # bytes they need to be converted to an int in different ways.
+    #
     def unpack_bytes(bytes)
       if bytes.to_s.size == 0
         0
@@ -138,43 +198,17 @@ class PDF::Reader
       end
     end
     ################################################################################
-    # Assumes the underlying buffer is positioned at the start of an Xref table and
-    # processes it into memory.
-    def load_xref_table(buf)
-      params = []
-
-      while !params.include?("trailer") && !params.include?(nil)
-        if params.size == 2
-          objid, count = params[0].to_i, params[1].to_i
-          count.times do
-            offset = buf.token.to_i
-            generation = buf.token.to_i
-            state = buf.token
-
-            store(objid, generation, offset) if state == "n"
-            objid += 1
-            params.clear
-          end
-        end
-        params << buf.token
-      end
-
-      trailer = Parser.new(buf, self).parse_token
-
-      raise MalformedPDFError, "PDF malformed, trailer should be a dictionary" unless trailer.kind_of?(Hash)
-
-      load_offsets(trailer[:XRefStm])   if trailer.has_key?(:XRefStm)
-      load_offsets(trailer[:Prev].to_i) if trailer.has_key?(:Prev)
-
-      trailer
-    end
-
+    # Wrap the io stream we're working with in a buffer that can tokenise it for us.
+    #
+    # We create multiple buffers so we can be tokenising multiple sections of the file
+    # at the same time without worring about clearing the buffers contents.
+    #
     def new_buffer(offset = 0)
       PDF::Reader::Buffer.new(@io, :seek => offset)
     end
-
     ################################################################################
     # Stores an offset value for a particular PDF object ID and revision number
+    #
     def store (id, gen, offset)
       (@xref[id] ||= {})[gen] ||= offset
     end

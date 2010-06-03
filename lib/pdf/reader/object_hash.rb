@@ -48,8 +48,8 @@ class PDF::Reader
         raise ArgumentError, "input must be an IO-like object or a filename"
       end
       @pdf_version = read_version
-      @offsets     = PDF::Reader::OffsetTable.new(@io)
-      @trailer     = @offsets.trailer
+      @xref        = PDF::Reader::XRef.new(@io)
+      @trailer     = @xref.trailer
     end
 
     # returns the type of object a ref points to
@@ -81,11 +81,11 @@ class PDF::Reader
         unless key.kind_of?(PDF::Reader::Reference)
           key = PDF::Reader::Reference.new(key.to_i, 0)
         end
-        if offsets[key].is_a?(Fixnum)
-          buf = new_buffer(offsets[key])
+        if xref[key].is_a?(Fixnum)
+          buf = new_buffer(xref[key])
           Parser.new(buf, self).object(key.id, key.gen)
-        elsif offsets[key].is_a?(PDF::Reader::Reference)
-          container_key = offsets[key]
+        elsif xref[key].is_a?(PDF::Reader::Reference)
+          container_key = xref[key]
           object_streams[container_key] ||= PDF::Reader::ObjectStream.new(object(container_key))
           object_streams[container_key][key.id]
         end
@@ -127,7 +127,7 @@ class PDF::Reader
     # iterate over each key, value. Just like a ruby hash.
     #
     def each(&block)
-      @offsets.each do |ref|
+      @xref.each do |ref|
         yield ref, self[ref]
       end
     end
@@ -152,7 +152,7 @@ class PDF::Reader
     # return the number of objects in the file. An object with multiple generations
     # is counted once.
     def size
-      offsets.size
+      xref.size
     end
     alias :length :size
 
@@ -233,8 +233,8 @@ class PDF::Reader
       PDF::Reader::Buffer.new(@io, :seek => offset)
     end
 
-    def offsets
-      @offsets || {}
+    def xref
+      @xref
     end
 
     def object_streams
