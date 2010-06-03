@@ -32,10 +32,10 @@ class PDF::Reader
     # Create a new parser around a PDF::Reader::Buffer object
     #
     # buffer - a PDF::Reader::Buffer object that contains PDF data
-    # xref   - a PDF::Reader::XRef object that represents the document's object offsets
-    def initialize (buffer, xref=nil)
+    # ohash  - a PDF::Reader::ObjectHash object that can return objects from the PDF file
+    def initialize (buffer, ohash=nil)
       @buffer = buffer
-      @xref   = xref
+      @ohash  = ohash
     end
     ################################################################################
     # Reads the next token from the underlying buffer and convets it to an appropriate
@@ -174,8 +174,8 @@ class PDF::Reader
     # Decodes the contents of a PDF Stream and returns it as a Ruby String.
     def stream (dict)
       raise MalformedPDFError, "PDF malformed, missing stream length" unless dict.has_key?(:Length)
-      if @xref
-        length = @xref.object(dict[:Length])
+      if @ohash
+        length = @ohash.object(dict[:Length])
       else
         length = dict[:Length] || 0
       end

@@ -247,10 +247,10 @@ class PDF::Reader
     ################################################################################
     # Create a new PDF::Reader::Content object to process the contents of PDF file
     # - receiver - an object containing the required callback methods
-    # - xref     - a PDF::Reader::Xref object that contains references to all the objects in a PDF file
-    def initialize (receiver, xref)
+    # - ohash    - a PDF::Reader::ObjectHash object that can return all objects in a PDF file
+    def initialize (receiver, ohash)
       @receiver = receiver
-      @xref     = xref
+      @ohash     = ohash
     end
     ################################################################################
     # Begin processing the document metadata
@@ -258,20 +258,20 @@ class PDF::Reader
       info = decode_strings(info)
 
       # may be useful to some people
-      callback(:pdf_version, @xref.pdf_version)
+      callback(:pdf_version, @ohash.pdf_version)
 
       # ye olde metadata
       callback(:metadata, [info]) if info
 
       # new style xml metadata
       if root[:Metadata]
-        stream = @xref.object(root[:Metadata])
+        stream = @ohash.object(root[:Metadata])
         callback(:xml_metadata,stream.unfiltered_data)
       end
 
       # page count
-      if (pages = @xref.object(root[:Pages]))
-        if (count = @xref.object(pages[:Count]))
+      if (pages = @ohash.object(root[:Pages]))
+        if (count = @ohash.object(pages[:Count]))
           callback(:page_count, count.to_i)
         end
       end
@@ -280,7 +280,7 @@ class PDF::Reader
     # Begin processing the document
     def document (root)
       callback(:begin_document, [root])
-      walk_pages(@xref.object(root[:Pages]))
+      walk_pages(@ohash.object(root[:Pages]))
       callback(:end_document)
     end
     ################################################################################
@@ -291,19 +291,19 @@ class PDF::Reader
       # extract page content
       if page[:Type] == :Pages
         callback(:begin_page_container, [page])
-        res = @xref.object(page[:Resources])
+        res = @ohash.object(page[:Resources])
         resources.push res if res
-        @xref.object(page[:Kids]).each {|child| walk_pages(@xref.object(child))}
+        @ohash.object(page[:Kids]).each {|child| walk_pages(@ohash.object(child))}
         resources.pop if res
         callback(:end_page_container)
       elsif page[:Type] == :Page
         callback(:begin_page, [page])
-        res = @xref.object(page[:Resources])
+        res = @ohash.object(page[:Resources])
         resources.push res if res
         walk_resources(current_resources)
 
-        if @xref.object(page[:Contents]).kind_of?(Array)
-          contents = @xref.object(page[:Contents])
+        if @ohash.object(page[:Contents]).kind_of?(Array)
+          contents = @ohash.object(page[:Contents])
         else
           contents = [page[:Contents]]
         end
@@ -311,7 +311,7 @@ class PDF::Reader
         fonts = font_hash_from_resources(current_resources)
 
         if page.has_key?(:Contents) and page[:Contents]
-          direct_contents = contents.map { |content| @xref.object(content) }
+          direct_contents = contents.map { |content| @ohash.object(content) }
           content_stream(direct_contents, fonts)
         end
 
@@ -324,12 +324,12 @@ class PDF::Reader
     # like a regular page content stream.
     #
     def walk_xobject_form(label)
-      xobjects = @xref.object(current_resources[:XObject]) || {}
-      xobject  = @xref.object(xobjects[label])
+      xobjects = @ohash.object(current_resources[:XObject]) || {}
+      xobject  = @ohash.object(xobjects[label])
 
       if xobject && xobject.hash[:Subtype] == :Form
         callback(:begin_form_xobject)
-        resources = @xref.object(xobject.hash[:Resources])
+        resources = @ohash.object(xobject.hash[:Resources])
         walk_resources(resources) if resources
         fonts = font_hash_from_resources(resources)
         content_stream(xobject, fonts)
@@ -356,7 +356,7 @@ class PDF::Reader
         ins.is_a?(PDF::Reader::Stream) ? ins.unfiltered_data : ins.to_s
       }.join
       buffer       = Buffer.new(StringIO.new(instructions))
-      parser       = Parser.new(buffer, @xref)
+      parser       = Parser.new(buffer, @ohash)
       current_font = nil
       params       = []
 
@@ -408,29 +408,29 @@ class PDF::Reader
 
       # extract any xobject information
       if resources[:XObject]
-        @xref.object(resources[:XObject]).each do |name, val|
-          callback(:resource_xobject, [name, @xref.object(val)])
+        @ohash.object(resources[:XObject]).each do |name, val|
+          callback(:resource_xobject, [name, @ohash.object(val)])
         end
       end
 
       # extract any extgstate information
       if resources[:ExtGState]
-        @xref.object(resources[:ExtGState]).each do |name, val|
-          callback(:resource_extgstate, [name, @xref.object(val)])
+        @ohash.object(resources[:ExtGState]).each do |name, val|
+          callback(:resource_extgstate, [name, @ohash.object(val)])
         end
       end
 
       # extract any colorspace information
       if resources[:ColorSpace]
-        @xref.object(resources[:ColorSpace]).each do |name, val|
-          callback(:resource_colorspace, [name, @xref.object(val)])
+        @ohash.object(resources[:ColorSpace]).each do |name, val|
+          callback(:resource_colorspace, [name, @ohash.object(val)])
         end
       end
 
       # extract any pattern information
       if resources[:Pattern]
-        @xref.object(resources[:Pattern]).each do |name, val|
-          callback(:resource_pattern, [name, @xref.object(val)])
+        @ohash.object(resources[:Pattern]).each do |name, val|
+          callback(:resource_pattern, [name, @ohash.object(val)])
         end
       end
 
@@ -450,7 +450,7 @@ class PDF::Reader
         obj.hash = resolve_references(obj.hash)
         obj
       when PDF::Reader::Reference then
-        resolve_references(@xref.object(obj))
+        resolve_references(@ohash.object(obj))
       when Hash                   then obj.each { |key,val| obj[key] = resolve_references(val) }
       when Array                  then obj.collect { |item| resolve_references(item) }
       else
@@ -469,14 +469,14 @@ class PDF::Reader
       return {} unless resources.respond_to?(:[])
 
       fonts = {}
-      resources = @xref.object(resources[:Font]) || {}
+      resources = @ohash.object(resources[:Font]) || {}
       resources.each do |label, desc|
-        desc = @xref.object(desc)
+        desc = @ohash.object(desc)
         fonts[label] = PDF::Reader::Font.new
         fonts[label].label = label
         fonts[label].subtype = desc[:Subtype] if desc[:Subtype]
         fonts[label].basefont = desc[:BaseFont] if desc[:BaseFont]
-        fonts[label].encoding = PDF::Reader::Encoding.new(@xref.object(desc[:Encoding]))
+        fonts[label].encoding = PDF::Reader::Encoding.new(@ohash.object(desc[:Encoding]))
         fonts[label].descendantfonts = desc[:DescendantFonts] if desc[:DescendantFonts]
         if desc[:ToUnicode]
           # this stream is a cmap

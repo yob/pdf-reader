@@ -18,20 +18,20 @@ class PDF::Reader
   #
   # == Basic Usage
   #
-  #     h = PDF::Hash.new("somefile.pdf")
+  #     h = PDF::Reader::ObjectHash.new("somefile.pdf")
   #     h[1]
   #     => 3469
   #
   #     h[PDF::Reader::Reference.new(1,0)]
   #     => 3469
   #
-  class XRef
+  class ObjectHash
     include Enumerable
 
     attr_accessor :default
     attr_reader :trailer, :pdf_version
 
-    # Creates a new PDF:Hash object. input can be a string with a valid filename,
+    # Creates a new ObjectHash object. input can be a string with a valid filename,
     # a string containing a PDF file, or an IO object.
     #
     def initialize(input)
@@ -58,6 +58,7 @@ class PDF::Reader
     rescue
       nil
     end
+
     # returns true if the supplied references points to an object with a stream
     def stream?(ref)
       self[ref].class == PDF::Reader::Stream
@@ -109,7 +110,7 @@ class PDF::Reader
     # If a PDF::Reader::Reference object is used the exact ID and generation number
     # can be specified.
     #
-    # local_deault is the object that will be returned if the requested key doesn't
+    # local_default is the object that will be returned if the requested key doesn't
     # exist.
     #
     def fetch(key, local_default = nil)
@@ -191,7 +192,7 @@ class PDF::Reader
     alias :value? :has_key?
 
     def to_s
-      "<PDF::Hash size: #{self.size}>"
+      "<PDF::Reader::ObejctHash size: #{self.size}>"
     end
 
     # return an array of all keys in the file

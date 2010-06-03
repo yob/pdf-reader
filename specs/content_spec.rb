@@ -4,10 +4,6 @@ require 'test/unit'
 require 'pdf/reader'
 require 'date'
 
-class PDF::Reader::XRef
-  attr_accessor :xref
-end
-
 context PDF::Reader::Content do
 
   specify "should send the correct callbacks when processing instructions containing a single text block" do
@@ -62,9 +58,9 @@ context PDF::Reader::Content do
     # access a content stream with an inline image
     filename = File.dirname(__FILE__) + "/data/inline_image.pdf"
     io       = File.new(filename, "r")
-    xref     = PDF::Reader::XRef.new(io)
-    ref =      PDF::Reader::Reference.new(3,0)
-    obj = xref.object(ref)
+    ohash    = PDF::Reader::ObjectHash.new(io)
+    ref      = PDF::Reader::Reference.new(3,0)
+    obj      = ohash[ref]
 
     # process the instructions
     content = PDF::Reader::Content.new(receiver, nil)

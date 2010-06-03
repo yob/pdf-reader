@@ -108,6 +108,7 @@ require 'pdf/reader/encoding'
 require 'pdf/reader/error'
 require 'pdf/reader/filter'
 require 'pdf/reader/font'
+require 'pdf/reader/object_hash'
 require 'pdf/reader/object_stream'
 require 'pdf/reader/offset_table'
 require 'pdf/reader/parser'
@@ -117,31 +118,30 @@ require 'pdf/reader/register_receiver'
 require 'pdf/reader/stream'
 require 'pdf/reader/text_receiver'
 require 'pdf/reader/token'
-require 'pdf/reader/xref'
 require 'pdf/hash'
 
 class PDF::Reader
   ################################################################################
   # Given an IO object that contains PDF data, parse it.
   def parse (io, receiver, opts = {})
-    @xref     = XRef.new(io)
-    @content  = (receiver == Explore ? Explore : Content).new(receiver, @xref)
+    @ohash    = ObjectHash.new(io)
+    @content  = (receiver == Explore ? Explore : Content).new(receiver, @ohash)
 
     options = {:pages => true, :metadata => true}
     options.merge!(opts)
 
-    trailer = @xref.trailer
+    trailer = @ohash.trailer
     raise PDF::Reader::UnsupportedFeatureError, 'PDF::Reader cannot read encrypted PDF files' if trailer[:Encrypt]
-    @content.metadata(@xref.object(trailer[:Root]), @xref.object(trailer[:Info])) if options[:metadata]
-    @content.document(@xref.object(trailer[:Root])) if options[:pages]
+    @content.metadata(@ohash.object(trailer[:Root]), @ohash.object(trailer[:Info])) if options[:metadata]
+    @content.document(@ohash.object(trailer[:Root])) if options[:pages]
     self
   end
   ################################################################################
   # Given an IO object that contains PDF data, return the contents of a single object
   def object (io, id, gen)
-    @xref     = XRef.new(io)
+    @ohash = ObjectHash.new(io)
 
-    @xref.object(Reference.new(id, gen))
+    @ohash.object(Reference.new(id, gen))
   end
   ################################################################################
 end
