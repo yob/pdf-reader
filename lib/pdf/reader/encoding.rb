@@ -34,47 +34,19 @@ class PDF::Reader
     attr_reader :differences, :unpack
 
     def initialize(enc)
-      @to_unicode_required = false
-
       if enc.kind_of?(Hash)
-        self.differences=enc[:Differences] if enc[:Differences]
+        self.differences = enc[:Differences] if enc[:Differences]
         enc = enc[:Encoding] || enc[:BaseEncoding]
       elsif enc != nil
         enc = enc.to_sym
+      else
+        enc = nil
       end
 
-      case enc
-        when nil                   then
-          load_mapping File.dirname(__FILE__) + "/encodings/standard.txt"
-          @unpack = "C*"
-        when "Identity-H".to_sym   then
-          @unpack = "n*"
-          @to_unicode_required = true
-        when :MacRomanEncoding     then
-          load_mapping File.dirname(__FILE__) + "/encodings/mac_roman.txt"
-          @unpack = "C*"
-        when :MacExpertEncoding    then
-          load_mapping File.dirname(__FILE__) + "/encodings/mac_expert.txt"
-          @unpack = "C*"
-        when :PDFDocEncoding       then
-          load_mapping File.dirname(__FILE__) + "/encodings/pdf_doc.txt"
-          @unpack = "C*"
-        when :StandardEncoding     then
-          load_mapping File.dirname(__FILE__) + "/encodings/standard.txt"
-          @unpack = "C*"
-        when :SymbolEncoding       then
-          load_mapping File.dirname(__FILE__) + "/encodings/symbol.txt"
-          @unpack = "C*"
-        when :UTF16Encoding        then
-          @unpack = "n*"
-        when :WinAnsiEncoding      then
-          load_mapping File.dirname(__FILE__) + "/encodings/win_ansi.txt"
-          @unpack = "C*"
-        when :ZapfDingbatsEncoding then
-          load_mapping File.dirname(__FILE__) + "/encodings/zapf_dingbats.txt"
-          @unpack = "C*"
-        else raise UnsupportedFeatureError, "#{enc} is not currently a supported encoding"
-      end
+      @to_unicode_required = unicode_required?(enc)
+      @unpack   = get_unpack(enc)
+      @map_file = get_mapping_file(enc)
+      load_mapping(@map_file) if @map_file
     end
 
     def to_unicode_required?
@@ -145,6 +117,40 @@ class PDF::Reader
     end
 
     private
+
+    def get_unpack(enc)
+      case enc
+      when :"Identity-H", :UTF16Encoding
+        "n*"
+      else
+        "C*"
+      end
+    end
+
+    def get_mapping_file(enc)
+      return File.dirname(__FILE__) + "/encodings/standard.txt" if enc.nil?
+      files = {
+        :"Identity-H"      => nil,
+        :MacRomanEncoding  => File.dirname(__FILE__) + "/encodings/mac_roman.txt",
+        :MacExpertEncoding => File.dirname(__FILE__) + "/encodings/mac_expert.txt",
+        :PDFDocEncoding    => File.dirname(__FILE__) + "/encodings/pdf_doc.txt",
+        :StandardEncoding  => File.dirname(__FILE__) + "/encodings/standard.txt",
+        :SymbolEncoding    => File.dirname(__FILE__) + "/encodings/symbol.txt",
+        :UTF16Encoding     => nil,
+        :WinAnsiEncoding   => File.dirname(__FILE__) + "/encodings/win_ansi.txt",
+        :ZapfDingbatsEncoding => File.dirname(__FILE__) + "/encodings/zapf_dingbats.txt"
+      }
+
+      if files.has_key?(enc)
+        files[enc]
+      else
+        raise UnsupportedFeatureError, "#{enc} is not currently a supported encoding"
+      end
+    end
+
+    def unicode_required?(enc)
+      enc == :"Identity-H"
+    end
 
     def mapping
       @mapping ||= {}
