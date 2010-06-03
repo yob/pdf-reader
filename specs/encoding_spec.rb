@@ -4,11 +4,6 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
 
 require 'pdf/reader'
 
-class PDF::Reader::Encoding
-  public :process_differences
-  public :process_glyphnames
-end
-
 context PDF::Reader::Encoding do
 
   specify "should return a new encoding object on request, or raise an error if unrecognised" do
@@ -54,24 +49,6 @@ context PDF::Reader::Encoding do
            }
     enc = PDF::Reader::Encoding.new(win)
     enc.to_utf8("\002").should eql("▯")
-  end
-
-  specify "should correctly replaces all bytes in an array with glyph names" do
-    win =  {
-             :Encoding    => :WinAnsiEncoding,
-             :Differences => [25, :A, :B]
-           }
-    enc = PDF::Reader::Encoding.new(win)
-    enc.process_differences([32, 25, 26, 32]).should eql([32, :A, :B, 32])
-  end
-
-  specify "should correctly replaces all glyph names in an array with unicode codepoints" do
-    win =  {
-             :Encoding    => :WinAnsiEncoding,
-             :Differences => [25, :A, :B]
-           }
-    enc = PDF::Reader::Encoding.new(win)
-    enc.process_glyphnames([32, :A, :B, 32]).should eql([32, 0x41, 0x42, 32])
   end
 end
 

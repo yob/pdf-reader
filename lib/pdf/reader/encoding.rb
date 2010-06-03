@@ -31,7 +31,7 @@ class PDF::Reader
                      24,25,26,27,28,29,30,31]
     UNKNOWN_CHAR = 0x25AF # ▯
 
-    attr_reader :differences, :unpack
+    attr_reader :unpack
 
     def initialize(enc)
       if enc.kind_of?(Hash)
@@ -57,9 +57,9 @@ class PDF::Reader
     #
     #   [25, :A, 26, :B]
     #
-    # The array alternates bewteen a decimal byte number and a glyph name to map to that byte
+    # The array alternates between a decimal byte number and a glyph name to map to that byte
     #
-    # To save space the following array is also valid and equivilant to the previous one
+    # To save space the following array is also valid and equivalent to the previous one
     #
     #   [25, :A, :B]
     def differences=(diff)
@@ -78,45 +78,52 @@ class PDF::Reader
       @differences
     end
 
+    def differences
+      @differences ||= {}
+    end
+
     # convert the specified string to utf8
+    #
+    # * unpack raw bytes into codepoints
+    # * replace any that have entries in the differences table with a glyph name
+    # * convert codepoints from source encoding to Unicode codepoints
+    # * convert any glyph names to Unicode codepoints
+    # * replace characters that didn't convert to Unicode nicely with something
+    #   valid
+    # * pack the final array of Unicode codepoints into a utf-8 string
+    # * mark the string as utf-8 if we're running on a M17N aware VM
+    #
     def to_utf8(str, tounicode = nil)
-      # unpack the single bytes
-      array_orig = str.unpack(unpack)
+      ret = str.unpack(unpack).map { |c|
+        differences[c] || c
+      }.map { |num|
+        original_codepoint_to_unicode(num, tounicode)
+      }.map { |c|
+        glyphnames[c] || c
+      }.map { |c|
+        c ? c : PDF::Reader::Encoding::UNKNOWN_CHAR 
+      }.pack("U*")
 
-      # replace any relevant bytes with a glyph name
-      array_orig = process_differences(array_orig)
-
-      # replace any remaining bytes with a unicode codepoint
-      array_enc = array_orig.map do |num|
-        if tounicode && (code = tounicode.decode(num))
-          code
-        elsif tounicode || ( tounicode.nil? && to_unicode_required? )
-          PDF::Reader::Encoding::UNKNOWN_CHAR
-        elsif mapping[num]
-          mapping[num]
-        elsif PDF::Reader::Encoding::CONTROL_CHARS.include?(num)
-          PDF::Reader::Encoding::UNKNOWN_CHAR
-        else
-          num
-        end
-      end
-
-      # convert any glyph names to unicode codepoints
-      array_enc = process_glyphnames(array_enc)
-
-      # replace charcters that didn't convert to unicode nicely with something valid
-      array_enc.collect! { |c| c ? c : PDF::Reader::Encoding::UNKNOWN_CHAR }
-
-      # pack all our Unicode codepoints into a UTF-8 string
-      ret = array_enc.pack("U*")
-
-      # set the strings encoding correctly under ruby 1.9+
       ret.force_encoding("UTF-8") if ret.respond_to?(:force_encoding)
 
-      return ret
+      ret
     end
 
     private
+
+    def original_codepoint_to_unicode(cp, tounicode = nil)
+      if tounicode && (code = tounicode.decode(cp))
+        code
+      elsif tounicode || ( tounicode.nil? && to_unicode_required? )
+        PDF::Reader::Encoding::UNKNOWN_CHAR
+      elsif mapping[cp]
+        mapping[cp]
+      elsif PDF::Reader::Encoding::CONTROL_CHARS.include?(cp)
+        PDF::Reader::Encoding::UNKNOWN_CHAR
+      else
+        cp
+      end
+    end
 
     def get_unpack(enc)
       case enc
@@ -160,21 +167,8 @@ class PDF::Reader
       mapping.size > 0
     end
 
-    # accepts an array of byte numbers, and replaces any that have entries in the differences table
-    # with a glyph name
-    def process_differences(arr)
-      @differences ||= {}
-      arr.collect! { |n| @differences[n].nil? ? n : @differences[n]}
-    end
-
     def glyphnames
       @glyphnames ||= PDF::Reader::Font.glyphnames
-    end
-
-    # accepts an array of unicode code points and glyphnames, and converts any glyph names to codepoints
-    def process_glyphnames(arr)
-      @differences ||= {}
-      arr.collect! { |n| n.kind_of?(Numeric) ? n : glyphnames[n]}
     end
 
     def load_mapping(file)
