@@ -151,24 +151,57 @@ class PDF::Reader
       return "" if str == ")"
       Error.assert_equal(parse_token, ")")
 
-      str.gsub!(/([^\\])(\n\r|\r\n|\r)/m,'\1\n')
-      str.gsub!("\\n","\n")
-      str.gsub!("\\r","\r")
-      str.gsub!("\\t","\t")
-      str.gsub!("\\b","\b")
-      str.gsub!("\\f","\f")
-      str.gsub!("\\(","(")
-      str.gsub!("\\)",")")
-      str.gsub!("\\\\","\\")
-      str.gsub!(/\\\n/m,"")
+      ret = ""
+      idx = 0
 
-      str.scan(/\\\d{1,3}/).each do |octal|
-        str.gsub!(octal, octal[1,3].oct.chr)
+      while idx < str.size
+        chr = str[idx,1]
+        jump = 1
+
+        if chr == "\\"
+          jump = 2
+          case str[idx+1, 1]
+          when "" then jump = 1
+          when "n"  then chr = "\n"
+          when "r"  then chr = "\r"
+          when "t"  then chr = "\t"
+          when "b"  then chr = "\b"
+          when "f"  then chr = "\f"
+          when "("  then chr = "("
+          when ")"  then chr = ")"
+          when "\\" then chr = "\\"
+          when "\n" then
+            chr = ""
+            jump = 2
+          else
+            if str[idx+1,3].match(/\d{3}/)
+              jump = 4
+              chr = str[idx+1,3].oct.chr
+            elsif str[idx+1,2].match(/\d{2}/)
+              jump = 3
+              chr = ("0"+str[idx+1,2]).oct.chr
+            elsif str[idx+1,1].match(/\d/)
+              jump = 2
+              chr = ("00"+str[idx+1,1]).oct.chr
+            else
+              jump = 1
+              chr = ""
+            end
+
+          end
+        elsif chr == "\r" && str[idx+1,1] == "\n"
+          chr = "\n"
+          jump = 2
+        elsif chr == "\n" && str[idx+1,1] == "\r"
+          chr = "\n"
+          jump = 2
+        elsif chr == "\r"
+          chr = "\n"
+        end
+        ret << chr
+        idx += jump
       end
-
-      str.gsub!(/\\([^\\])/,'\1')
-
-      str
+      ret
     end
     ################################################################################
     # Decodes the contents of a PDF Stream and returns it as a Ruby String.

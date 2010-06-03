@@ -3,6 +3,9 @@ v0.8.6 (XXX)
 - support streams that use a flate filter with the predictor option
 - ensure all content instructions are parsed when split over multiple stream
   - thanks to Jack Rusher for reporting
+- Fix a string parsing bug that was causing some character conversions to utf-8
+  to fail
+  - thanks to Andrea Barisani for reporting the issue
 
 v0.8.5 (11th April 2010)
 - fix a regression introduced in 0.8.4.

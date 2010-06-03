@@ -39,6 +39,7 @@ context "The PDF::Reader::Parser class" do
     parse_string("(x \\t x)").parse_token.should eql("x \t x")
     parse_string("(x \\101 x)").parse_token.should eql("x A x")
     parse_string("(x \\61 x)").parse_token.should eql("x 1 x")
+    parse_string("(x \\1 x)").parse_token.should eql("x \x01 x")
     parse_string("(x \\( x)").parse_token.should eql("x ( x")
     parse_string("((x)))").parse_token.should eql("(x)")
     parse_string("(Adobe)").parse_token.should eql("Adobe")
@@ -51,7 +52,8 @@ context "The PDF::Reader::Parser class" do
     parse_string("(\\rx)").parse_token.should eql("\rx")
     parse_string("(\\r)").parse_token.should eql("\r")
     parse_string("(x\n\rx)").parse_token.should eql("x\nx")
-    parse_string("(x \x5C\nx)").parse_token.should eql("x x")
+    parse_string("(x \\\nx)").parse_token.should eql("x x")
+    parse_string("(\\\\f)").parse_token.should eql("\\f")
   end
 
   specify "should not leave the closing literal string delimiter in the buffer after parsing a string" do
