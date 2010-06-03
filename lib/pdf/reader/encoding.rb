@@ -161,10 +161,14 @@ class PDF::Reader
       arr.collect! { |n| @differences[n].nil? ? n : @differences[n]}
     end
 
+    def glyphnames
+      @glyphnames ||= PDF::Reader::Font.glyphnames
+    end
+
     # accepts an array of unicode code points and glyphnames, and converts any glyph names to codepoints
     def process_glyphnames(arr)
       @differences ||= {}
-      arr.collect! { |n| n.kind_of?(Numeric) ? n : PDF::Reader::Font.glyphnames[n]}
+      arr.collect! { |n| n.kind_of?(Numeric) ? n : glyphnames[n]}
     end
 
     def load_mapping(file)
