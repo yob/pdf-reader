@@ -9,10 +9,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,6 +24,8 @@
 ################################################################################
 
 require 'stringio'
+require 'zlib'
+
 require 'ascii85'
 
 module PDF
@@ -37,26 +39,26 @@ module PDF
   # on receivers.
   #
   # = Parsing a file
-  #   
+  #
   #   PDF::Reader.file("somefile.pdf", receiver)
   #
   # = Parsing a String
-  # 
+  #
   # This is useful for processing a PDF that is already in memory
   #
   #   PDF::Reader.string(pdf_string, receiver)
   #
   # = Parsing an IO object
-  # 
+  #
   # This can be a useful alternative to the first 2 options in some situations
   #
   #   pdf = PDF::Reader.new
   #   pdf.parse(File.new("somefile.pdf"), receiver)
   #
   # = Parsing parts of a file
-  # 
+  #
   # Both PDF::Reader#file and PDF::Reader#string accept a 3 argument that specifies which
-  # parts of the file to process. By default, all options are enabled, so this can be useful 
+  # parts of the file to process. By default, all options are enabled, so this can be useful
   # to cut down processing time if you're only interested in say, metadata.
   #
   # As an example, the following call will disable parsing the contents of pages in the file,
@@ -65,7 +67,7 @@ module PDF
   #   PDF::Reader.new("somefile.pdf", receiver, {:metadata => true, :pages => false})
   #
   # Available options are currently:
-  #   
+  #
   #   :metadata
   #   :pages
   class Reader
@@ -84,22 +86,48 @@ module PDF
       end
     end
     ################################################################################
-    def self.object_file(name, id, gen)
-      File.open(name,"rb") do |f|
-        new.object(f, id, gen)
-      end
+    # Parse the file with the given name, returning an unmarshalled ruby version of
+    # represents the requested pdf object
+    def self.object_file(name, id, gen = 0)
+      File.open(name,"rb") { |f|
+        new.object(f, id.to_i, gen.to_i)
+      }
     end
     ################################################################################
-    def self.object_string(name, id, gen)
-      StringIO.open(str) do |s|
-        new.object(s, id, gen)
-      end
+    # Parse the given string, returning an unmarshalled ruby version of represents
+    # the requested pdf object
+    def self.object_string(str, id, gen = 0)
+      StringIO.open(str) { |s|
+        new.object(s, id.to_i, gen.to_i)
+      }
+    end
+    ################################################################################
+    # Given an IO object that contains PDF data, parse it.
+    def parse (io, receiver, opts = {})
+      @ohash    = ObjectHash.new(io)
+      @content  = Content.new(receiver, @ohash)
+
+      options = {:pages => true, :metadata => true}
+      options.merge!(opts)
+
+      trailer = @ohash.trailer
+      raise PDF::Reader::UnsupportedFeatureError, 'PDF::Reader cannot read encrypted PDF files' if trailer[:Encrypt]
+      @content.metadata(@ohash.object(trailer[:Root]), @ohash.object(trailer[:Info])) if options[:metadata]
+      @content.document(@ohash.object(trailer[:Root])) if options[:pages]
+      self
+    end
+    ################################################################################
+    # Given an IO object that contains PDF data, return the contents of a single object
+    def object (io, id, gen)
+      @ohash = ObjectHash.new(io)
+
+      @ohash.object(Reference.new(id, gen))
     end
     ################################################################################
   end
-  ################################################################################
 end
 ################################################################################
+
 require 'pdf/reader/buffer'
 require 'pdf/reader/cmap'
 require 'pdf/reader/content'
@@ -118,30 +146,3 @@ require 'pdf/reader/text_receiver'
 require 'pdf/reader/token'
 require 'pdf/reader/xref'
 require 'pdf/hash'
-
-class PDF::Reader
-  ################################################################################
-  # Given an IO object that contains PDF data, parse it.
-  def parse (io, receiver, opts = {})
-    @ohash    = ObjectHash.new(io)
-    @content  = Content.new(receiver, @ohash)
-
-    options = {:pages => true, :metadata => true}
-    options.merge!(opts)
-
-    trailer = @ohash.trailer
-    raise PDF::Reader::UnsupportedFeatureError, 'PDF::Reader cannot read encrypted PDF files' if trailer[:Encrypt]
-    @content.metadata(@ohash.object(trailer[:Root]), @ohash.object(trailer[:Info])) if options[:metadata]
-    @content.document(@ohash.object(trailer[:Root])) if options[:pages]
-    self
-  end
-  ################################################################################
-  # Given an IO object that contains PDF data, return the contents of a single object
-  def object (io, id, gen)
-    @ohash = ObjectHash.new(io)
-
-    @ohash.object(Reference.new(id, gen))
-  end
-  ################################################################################
-end
-################################################################################
