@@ -25,8 +25,8 @@
 
 class PDF::Reader
   ################################################################################
-  # Walks the PDF file and calls the appropriate callback methods when something of interest is
-  # found.
+  # Walks the pages of the PDF file and calls the appropriate callback methods when
+  # something of interest is found.
   #
   # The callback methods should exist on the receiver object passed into the constructor. Whenever
   # some content is found that will trigger a callback, the receiver is checked to see if the callback
@@ -167,7 +167,7 @@ class PDF::Reader
   # If it gets mapped to the name "IM1", then it can be placed on the page using
   # invoke_xobject "IM1".
   #
-  class Content
+  class PagesVisitor < AbstractVisitor
     OPERATORS = {
       'b'   => :close_fill_stroke,
       'B'   => :fill_stroke,
@@ -243,45 +243,17 @@ class PDF::Reader
       '\''  => :move_to_next_line_and_show_text,
       '"'   => :set_spacing_next_line_show_text,
     }
-    ################################################################################
-    # Create a new PDF::Reader::Content object to process the contents of PDF file
-    # - receiver - an object containing the required callback methods
-    # - ohash    - a PDF::Reader::ObjectHash object that can return all objects in a PDF file
-    def initialize (receiver, ohash)
-      @receiver = receiver
-      @ohash     = ohash
-    end
-    ################################################################################
-    # Begin processing the document metadata
-    def metadata (root, info)
-      info = decode_strings(info)
-
-      # may be useful to some people
-      callback(:pdf_version, @ohash.pdf_version)
-
-      # ye olde metadata
-      callback(:metadata, [info]) if info
-
-      # new style xml metadata
-      if root[:Metadata]
-        stream = @ohash.object(root[:Metadata])
-        callback(:xml_metadata,stream.unfiltered_data)
-      end
-
-      # page count
-      if (pages = @ohash.object(root[:Pages]))
-        if (count = @ohash.object(pages[:Count]))
-          callback(:page_count, count.to_i)
-        end
-      end
+    def self.to_sym
+      :pages
     end
     ################################################################################
     # Begin processing the document
-    def document (root)
+    def process
       callback(:begin_document, [root])
       walk_pages(@ohash.object(root[:Pages]))
       callback(:end_document)
     end
+    private
     ################################################################################
     # Walk over all pages in the PDF file, calling the appropriate callbacks for each page and all
     # its content
@@ -349,6 +321,7 @@ class PDF::Reader
     ################################################################################
     # Reads a PDF content stream and calls all the appropriate callback methods for the operators
     # it contains
+    #
     def content_stream (instructions, fonts = {})
       instructions = [instructions] unless instructions.kind_of?(Array)
       instructions = instructions.map { |ins|
@@ -457,12 +430,6 @@ class PDF::Reader
       end
     end
     ################################################################################
-    # calls the name callback method on the receiver class with params as the arguments
-    def callback (name, params=[])
-      @receiver.send(name, *params) if @receiver.respond_to?(name)
-    end
-    ################################################################################
-    private
     ################################################################################
     def font_hash_from_resources(resources)
       return {} unless resources.respond_to?(:[])
@@ -488,21 +455,6 @@ class PDF::Reader
         end
       end
       fonts
-    end
-    # strings outside of page content should be in either PDFDocEncoding or UTF-16.
-    def decode_strings(obj)
-      case obj
-      when String then
-        if obj[0,2] == "\376\377"
-          PDF::Reader::Encoding.new(:UTF16Encoding).to_utf8(obj[2, obj.size])
-        else
-          PDF::Reader::Encoding.new(:PDFDocEncoding).to_utf8(obj)
-        end
-      when Hash   then obj.each { |key,val| obj[key] = decode_strings(val) }
-      when Array  then obj.collect { |item| decode_strings(item) }
-      else
-        obj
-      end
     end
     def resources
       @resources ||= []

@@ -71,72 +71,93 @@ module PDF
   #   :metadata
   #   :pages
   class Reader
-    ################################################################################
+
     # Parse the file with the given name, sending events to the given receiver.
+    #
     def self.file(name, receiver, opts = {})
       File.open(name,"rb") do |f|
         new.parse(f, receiver, opts)
       end
     end
-    ################################################################################
+
     # Parse the given string, sending events to the given receiver.
+    #
     def self.string(str, receiver, opts = {})
       StringIO.open(str) do |s|
         new.parse(s, receiver, opts)
       end
     end
-    ################################################################################
+
     # Parse the file with the given name, returning an unmarshalled ruby version of
     # represents the requested pdf object
+    #
     def self.object_file(name, id, gen = 0)
       File.open(name,"rb") { |f|
         new.object(f, id.to_i, gen.to_i)
       }
     end
-    ################################################################################
+
     # Parse the given string, returning an unmarshalled ruby version of represents
     # the requested pdf object
+    #
     def self.object_string(str, id, gen = 0)
       StringIO.open(str) { |s|
         new.object(s, id.to_i, gen.to_i)
       }
     end
-    ################################################################################
+
     # Given an IO object that contains PDF data, parse it.
-    def parse (io, receiver, opts = {})
-      @ohash    = ObjectHash.new(io)
-      @content  = Content.new(receiver, @ohash)
+    #
+    def parse(io, receiver, opts = {})
+      ohash    = ObjectHash.new(io)
+
+      if ohash.trailer[:Encrypt]
+        raise PDF::Reader::UnsupportedFeatureError, 'PDF::Reader cannot read encrypted PDF files'
+      end
 
       options = {:pages => true, :metadata => true}
       options.merge!(opts)
 
-      trailer = @ohash.trailer
-      raise PDF::Reader::UnsupportedFeatureError, 'PDF::Reader cannot read encrypted PDF files' if trailer[:Encrypt]
-      @content.metadata(@ohash.object(trailer[:Root]), @ohash.object(trailer[:Info])) if options[:metadata]
-      @content.document(@ohash.object(trailer[:Root])) if options[:pages]
+      visitors.select { |v|
+        options.keys.include?(v.to_sym)
+      }.each { |v|
+        v.new(ohash, receiver).process
+      }
+
       self
     end
-    ################################################################################
+
     # Given an IO object that contains PDF data, return the contents of a single object
+    #
     def object (io, id, gen)
       @ohash = ObjectHash.new(io)
 
       @ohash.object(Reference.new(id, gen))
     end
-    ################################################################################
+
+    private
+
+    def visitors
+      @visitors ||= [
+        PDF::Reader::MetadataVisitor,
+        PDF::Reader::PagesVisitor
+      ]
+    end
   end
 end
 ################################################################################
 
+require 'pdf/reader/abstract_visitor'
 require 'pdf/reader/buffer'
 require 'pdf/reader/cmap'
-require 'pdf/reader/content'
 require 'pdf/reader/encoding'
 require 'pdf/reader/error'
 require 'pdf/reader/filter'
 require 'pdf/reader/font'
+require 'pdf/reader/metadata_visitor'
 require 'pdf/reader/object_hash'
 require 'pdf/reader/object_stream'
+require 'pdf/reader/pages_visitor'
 require 'pdf/reader/parser'
 require 'pdf/reader/print_receiver'
 require 'pdf/reader/reference'
