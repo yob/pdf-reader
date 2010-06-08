@@ -119,7 +119,7 @@ module PDF
       options.merge!(opts)
 
       visitors.select { |v|
-        options.keys.include?(v.to_sym)
+        options[v.to_sym]
       }.each { |v|
         v.new(ohash, receiver).process
       }
