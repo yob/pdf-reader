@@ -343,8 +343,8 @@ class PDF::Reader
           elsif token == "ID"
             # inline image data, first convert the current params into a more familiar hash
             map = {}
-            params.each_slice(2) do |a|
-              map[a.first] = a.last
+            params.each_slice(2) do |key, value|
+              map[key] = value
             end
             params = [map]
             # read the raw image data from the buffer without tokenising
