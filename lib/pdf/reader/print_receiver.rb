@@ -8,7 +8,6 @@ class PDF::Reader
     end
 
     def respond_to?(meth)
-      return false if [:begin_inline_image_data].include?(meth)
       true
     end
 
