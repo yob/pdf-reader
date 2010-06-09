@@ -327,7 +327,7 @@ class PDF::Reader
       instructions = instructions.map { |ins|
         ins.is_a?(PDF::Reader::Stream) ? ins.unfiltered_data : ins.to_s
       }.join
-      buffer       = Buffer.new(StringIO.new(instructions))
+      buffer       = Buffer.new(StringIO.new(instructions), :content_stream => true)
       parser       = Parser.new(buffer, @ohash)
       current_font = nil
       params       = []
@@ -346,9 +346,7 @@ class PDF::Reader
             params.each_slice(2) do |key, value|
               map[key] = value
             end
-            params = [map]
-            # read the raw image data from the buffer without tokenising
-            params << buffer.read_until("EI")
+            params = [map, buffer.token]
           end
 
           callback(OPERATORS[token], params)

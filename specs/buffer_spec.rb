@@ -264,6 +264,31 @@ context PDF::Reader::Buffer, "token method" do
     buf.token.should be_nil
     buf.pos.should eql(7)
   end
+
+  specify "should correctly tokenise an inline image when inside a content stream" do
+    io = StringIO.new("BT ID aaa bbb ccc \xF0\xF0\xF0 EI")
+    buf = PDF::Reader::Buffer.new(io, :content_stream => true)
+
+    buf.pos.should eql(0)
+    buf.token.should eql("BT")
+    buf.token.should eql("ID")
+    buf.token.should eql("aaa bbb ccc \xF0\xF0\xF0")
+    buf.token.should eql("EI")
+  end
+
+  specify "should correctly tokenise an inline image when outside a content stream" do
+    io = StringIO.new("BT ID aaa bbb ccc \xF0\xF0\xF0 EI")
+    buf = PDF::Reader::Buffer.new(io, :content_stream => false)
+
+    buf.pos.should eql(0)
+    buf.token.should eql("BT")
+    buf.token.should eql("ID")
+    buf.token.should eql("aaa")
+    buf.token.should eql("bbb")
+    buf.token.should eql("ccc")
+    buf.token.should eql("\xF0\xF0\xF0")
+    buf.token.should eql("EI")
+  end
 end
 
 context PDF::Reader::Buffer, "empty? method" do

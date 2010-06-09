@@ -48,11 +48,13 @@ class PDF::Reader
     # options:
     #
     #   :seek - a byte offset to seek to before starting to tokenise
+    #   :content_stream - set to true if buffer will be tokenising a
+    #                     content stream. Defaults to false
     #
     def initialize (io, opts = {})
       @io = io
       @tokens = []
-      @options = opts
+      @in_content_stream = opts[:content_stream]
 
       @io.seek(opts[:seek]) if opts[:seek]
       @pos = @io.pos
@@ -162,6 +164,12 @@ class PDF::Reader
 
     private
 
+    # Returns true if this buffer is parsing a content stream
+    #
+    def in_content_stream?
+      @in_content_stream ? true : false
+    end
+
     # Some bastard moved our IO stream cursor. Restore it.
     #
     def reset_pos
@@ -183,6 +191,8 @@ class PDF::Reader
           prepare_literal_token
         elsif state == :regular
           prepare_regular_token
+        elsif state == :inline
+          prepare_inline_token
         end
       end
 
@@ -197,6 +207,8 @@ class PDF::Reader
         :literal_string
       elsif @tokens[-1] == "stream"
         :stream
+      elsif in_content_stream? && @tokens[-1] == "ID"
+        :inline
       else
         :regular
       end
@@ -224,6 +236,19 @@ class PDF::Reader
         @tokens[2] = nil
         @tokens.compact!
       end
+    end
+
+    def prepare_inline_token
+      str = ""
+
+      while str[-2,2] != "EI"
+        chr = @io.read(1)
+        break if chr.nil?
+        str << chr
+      end
+
+      @tokens << str[0, str.size-2].strip
+      @io.seek(-2, IO::SEEK_CUR) unless chr.nil?
     end
 
     # if we're currently inside a literal string we more or less just read bytes until
