@@ -1,9 +1,6 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
+# coding: utf-8
 
-require 'stringio'
-require 'test/unit'
-require 'pdf/reader'
-require 'pdf/reader/error'
+require File.dirname(__FILE__) + "/spec_helper"
 
 context PDF::Reader::Stream do
 

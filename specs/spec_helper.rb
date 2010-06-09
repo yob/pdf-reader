@@ -3,6 +3,7 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
 
 require 'pdf/reader'
+require 'timeout'
 
 module BufferHelper
   def parse_string (r)

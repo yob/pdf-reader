@@ -1,6 +1,6 @@
 # coding: utf-8
 
-$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
+require File.dirname(__FILE__) + "/spec_helper"
 
 # These specs are a kind of "meta spec". They're not unit testing small pieces
 # of code, it's just parsing a range of PDF files and ensuring the result is
@@ -9,9 +9,6 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
 #
 # Where possible, specs that unit test correctly should be written in prefernce to
 # these
-
-require 'pdf/reader'
-require 'timeout'
 
 class PageTextReceiver
   attr_accessor :content
@@ -42,7 +39,7 @@ class PageTextReceiver
 end
 
 
-context "PDF::Reader" do
+context PDF::Reader, "meta specs" do
 
   specify "should interpret unicode strings correctly" do
     receiver = PageTextReceiver.new

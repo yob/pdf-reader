@@ -1,8 +1,6 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
-require 'stringio'
-require 'test/unit'
-require 'pdf/reader'
-require 'date'
+# coding: utf-8
+
+require File.dirname(__FILE__) + "/spec_helper"
 
 class PDF::Reader::PagesVisitor
   public :content_stream

@@ -1,8 +1,6 @@
 # coding: utf-8
 
-$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
-
-require 'pdf/reader'
+require File.dirname(__FILE__) + "/spec_helper"
 
 context PDF::Reader::ObjectHash do
   specify "should have enumerable mixed in" do

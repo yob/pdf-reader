@@ -1,8 +1,8 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
+# coding: utf-8
 
-require 'pdf/reader'
+require File.dirname(__FILE__) + "/spec_helper"
 
-context "PDF::Reader::Filter" do
+context PDF::Reader::Filter do
 
   specify "should inflate a RFC1950 (zlib) deflated stream correctly"
   specify "should inflate a raw RFC1951 deflated stream correctly"

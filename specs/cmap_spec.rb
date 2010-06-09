@@ -1,6 +1,6 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
+# coding: utf-8
 
-require 'pdf/reader'
+require File.dirname(__FILE__) + "/spec_helper"
 
 class PDF::Reader::CMap
   attr_reader :map

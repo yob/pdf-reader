@@ -1,6 +1,6 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
+# coding: utf-8
 
-require 'pdf/reader'
+require File.dirname(__FILE__) + "/spec_helper"
 
 # expose the xrefs hash inside the XRef class so we can ensure it's built correctly
 class PDF::Reader::XRef

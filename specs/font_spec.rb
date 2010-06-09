@@ -1,11 +1,8 @@
 # coding: utf-8
 
-$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
+require File.dirname(__FILE__) + "/spec_helper"
 
-require 'pdf/reader'
-
-
-context "PDF::Reader::Font" do
+context PDF::Reader::Font do
 
   specify "should select a sensible encoding when set to a symbol font" do
     f = PDF::Reader::Font.new

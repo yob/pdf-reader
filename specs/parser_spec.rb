@@ -2,7 +2,7 @@
 
 require File.dirname(__FILE__) + "/spec_helper"
 
-context "The PDF::Reader::Parser class" do
+context PDF::Reader::Parser do
   include ParserHelper
 
   specify "should parse a name correctly" do
