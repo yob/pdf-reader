@@ -16,10 +16,7 @@ class PDF::Reader
       callback(:metadata, [decoded_info]) if info?
 
       # new style xml metadata
-      if root[:Metadata]
-        stream = ohash.object(root[:Metadata])
-        callback(:xml_metadata, stream.unfiltered_data)
-      end
+      callback(:xml_metadata, [xml_metadata]) if xml_metadata?
 
       # page count
       if pages?
@@ -29,6 +26,22 @@ class PDF::Reader
     end
 
     private
+
+    def xml_metadata
+      return @xml_metadata if defined?(@xml_metadata)
+
+      if root[:Metadata].nil?
+        @xml_metadata = nil
+      else
+        string = ohash.object(root[:Metadata]).unfiltered_data
+        string.force_encoding("utf-8") if string.respond_to?(:force_encoding)
+        @xml_metadata = string
+      end
+    end
+
+    def xml_metadata?
+      xml_metadata ? true : false
+    end
 
     def decoded_info
       @decoded_info ||= decode_strings(info)
