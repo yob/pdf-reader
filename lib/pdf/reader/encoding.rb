@@ -99,7 +99,11 @@ class PDF::Reader
       }.map { |c|
         glyphnames[c] || c
       }.map { |c|
-        c ? c : PDF::Reader::Encoding::UNKNOWN_CHAR 
+        if c.nil? || !c.is_a?(Fixnum)
+          PDF::Reader::Encoding::UNKNOWN_CHAR
+        else
+          c
+        end
       }.pack("U*")
 
       ret.force_encoding("UTF-8") if ret.respond_to?(:force_encoding)
