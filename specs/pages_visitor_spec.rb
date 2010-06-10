@@ -25,7 +25,7 @@ context PDF::Reader::PagesVisitor do
 
     # process the instructions
     content = PDF::Reader::PagesVisitor.new(nil, receiver)
-    content.content_stream(instructions)
+    content.content_stream(instructions, {:F1 => PDF::Reader::Font.new})
   end
 
   specify "should send the correct callbacks when processing instructions containing 2 text blocks" do
@@ -45,7 +45,7 @@ context PDF::Reader::PagesVisitor do
 
     # process the instructions
     content = PDF::Reader::PagesVisitor.new(nil, receiver)
-    content.content_stream(instructions)
+    content.content_stream(instructions, {:F1 => PDF::Reader::Font.new})
   end
 
   specify "should send the correct callbacks when processing instructions containing an inline image" do
@@ -66,7 +66,10 @@ context PDF::Reader::PagesVisitor do
 
     # process the instructions
     content = PDF::Reader::PagesVisitor.new(nil, receiver)
-    content.content_stream(obj)
+    fonts = {:F9 => PDF::Reader::Font.new,
+             :F8 => PDF::Reader::Font.new,
+             :Fb => PDF::Reader::Font.new}
+    content.content_stream(obj, fonts)
   end
 
   # test for a bug reported by Jack Rusher where params at the end of a stream would be
