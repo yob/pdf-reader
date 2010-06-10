@@ -4,6 +4,13 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
 
 require 'pdf/reader'
 require 'timeout'
+require 'singleton'
+
+class Array
+  def to_h
+    Hash[*self.flatten]
+  end
+end
 
 module BufferHelper
   def parse_string (r)
@@ -18,23 +25,37 @@ module ParserHelper
   end
 end
 
-module CallbackHelper
-  def metadata_callbacks(filename, cb_name,  &block)
-    receiver = PDF::Reader::RegisterReceiver.new
-    PDF::Reader.file(filename, receiver, :pages => false)
-    receiver.all(cb_name).each do |cb|
-      yield cb
+class CallbackHelper
+  include Singleton
+
+  def good_receivers
+    @registers ||= {}
+    if @registers.empty?
+      good_files.map { |filename|
+        receiver = PDF::Reader::RegisterReceiver.new
+        PDF::Reader.file(filename, receiver)
+        @registers[filename] = receiver
+      }
     end
+    @registers
   end
 
-  def page_callbacks(filename, cb_name,  &block)
-    receiver = PDF::Reader::RegisterReceiver.new
-    PDF::Reader.file(filename, receiver, :metadata => false)
-    receiver.all(cb_name).each do |cb|
-      yield cb
-    end
+  private
+
+  def good_files
+    @good_files ||= Dir.glob(File.dirname(__FILE__) + "/data/*.pdf").select { |filename|
+      !filename.include?("screwey_xref_offsets") &&
+        !filename.include?("difference_table_encrypted") &&
+        !filename.include?("broken_string.pdf") &&
+        !filename.include?("cross_ref_stream.pdf") &&
+        !filename.include?("zlib_stream_issue.pdf") &&
+        !filename.include?("20070313")
+    }
   end
 
+end
+
+module EncodingHelper
   # On M17N aware VMs, recursively checks strings and containers with strings
   # to ensure everything is UTF-8 encoded
   #
@@ -77,18 +98,5 @@ module CallbackHelper
     else
       return
     end
-  end
-end
-
-def good_files(&block)
-  Dir.glob(File.dirname(__FILE__) + "/data/*.pdf").select { |filename|
-    !filename.include?("screwey_xref_offsets") &&
-      !filename.include?("difference_table_encrypted") &&
-      !filename.include?("broken_string.pdf") &&
-      !filename.include?("cross_ref_stream.pdf") &&
-      !filename.include?("zlib_stream_issue.pdf") &&
-      !filename.include?("20070313")
-  }.each do |filename|
-    yield filename
   end
 end

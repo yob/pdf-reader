@@ -31,6 +31,10 @@ class PDF::Reader
       return ret
     end
 
+    def all_args(methodname)
+      all(methodname).map { |cb| cb[:args] }
+    end
+
     # return the details for the first time the specified callback was fired
     def first_occurance_of(methodname)
       callbacks.each do |cb|
