@@ -146,13 +146,11 @@ context PDF::Reader, "meta specs" do
     receiver.content[0].should eql("HelloWorld")
   end
 
-  specify "should correctly process a PDF with a stream that has its length specified as an indirect reference and uses windows line breaks" do
+  specify "should raise an exception if a content stream refers to a non-existant font" do
     receiver = PageTextReceiver.new
-    PDF::Reader.file(File.dirname(__FILE__) + "/data/content_stream_contains_string_with_bracket.pdf", receiver)
-
-    # confirm the text appears on the correct pages
-    receiver.content.size.should eql(1)
-    receiver.content[0].should eql("[test]")
+    lambda {
+      PDF::Reader.file(File.dirname(__FILE__) + "/data/content_stream_refers_to_invalid_font.pdf", receiver)
+    }.should raise_error(PDF::Reader::MalformedPDFError)
   end
 
   specify "should correctly process a PDF that uses an ASCII85Decode filter" do

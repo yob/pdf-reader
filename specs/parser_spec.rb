@@ -55,6 +55,7 @@ context PDF::Reader::Parser do
     parse_string("(x\n\rx)").parse_token.should eql("x\nx")
     parse_string("(x \\\nx)").parse_token.should eql("x x")
     parse_string("(\\\\f)").parse_token.should eql("\\f")
+    parse_string("([test])").parse_token.should eql("[test]")
   end
 
   specify "should parse a Unicode string correctly" do

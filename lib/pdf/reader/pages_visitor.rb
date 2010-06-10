@@ -334,10 +334,15 @@ class PDF::Reader
 
       while (token = parser.parse_token(OPERATORS))
         if token.kind_of?(Token) and OPERATORS.has_key?(token)
-          current_font = params.first if OPERATORS[token] == :set_text_font_and_size
+           if OPERATORS[token] == :set_text_font_and_size
+            current_font = params.first
+            if fonts[current_font].nil?
+              raise MalformedPDFError, "Unknown font #{current_font}"
+            end
+          end
 
           # handle special cases in response to certain operators
-          if OPERATORS[token].to_s.include?("show_text") && fonts[current_font]
+          if OPERATORS[token].to_s.include?("show_text")
             # convert any text to utf-8
             params = fonts[current_font].to_utf8(params)
           elsif token == "ID"
