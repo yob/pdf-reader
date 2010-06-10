@@ -124,14 +124,7 @@ class PDF::Reader
       data = data.gsub("\r\n","\n").gsub("\n\r","\n").gsub("\r","\n")
       lines = data.split(/\n/).reverse
 
-      eof_index = nil
-
-      lines.each_with_index do |line, index|
-        if line =~ /^%%EOF\r?$/
-          eof_index = index
-          break
-        end
-      end
+      eof_index = lines.index { |l| l.strip == "%%EOF" }
 
       raise MalformedPDFError, "PDF does not contain EOF marker" if eof_index.nil?
       raise MalformedPDFError, "PDF EOF marker does not follow offset" if eof_index >= lines.size-1

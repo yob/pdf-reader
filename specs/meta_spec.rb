@@ -216,4 +216,13 @@ context PDF::Reader, "meta specs" do
     receiver.content[0].include?("My name is").should be_true
     receiver.content[0].include?("James Healy").should be_true
   end
+
+  specify "should correctly process a PDF that has a single space after the EOF marker" do
+    receiver = PageTextReceiver.new
+    PDF::Reader.file(File.dirname(__FILE__) + "/data/space_after_eof.pdf", receiver)
+
+    # confirm there was a single page of text
+    receiver.content.size.should eql(1)
+    receiver.content[0].should eql("HelloWorld")
+  end
 end
