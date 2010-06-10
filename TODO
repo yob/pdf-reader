@@ -13,7 +13,6 @@ v0.8
   from the Original encoding to Unicode.
 - detect when a font's encoding is a CMap (generally used for pre-Unicode, multibyte asian encodings), and display a user friendly error
 - Improve interpretation of non content stream data (ie metadata). recognise dates, etc
-- Support Cross Reference Streams (spec 3.4.7)
 - Fix inheritance of page attributes. Resources has been done, but plenty of other attributes
   are inheritable. See table 3.2.7 in the spec
 
@@ -37,12 +36,9 @@ Sometime
 - Add support for additional filters: ASCIIHexDecode, ASCII85Decode, LZWDecode, RunLengthDecode, CCITTFaxDecode, JBIG2Decode, DCTDecode, JPXDecode, Crypt?
 
 - Add support for additional encodings:
-  - PDFDocEncoding
   - Identity-V(I *think* this relates to vertical text. Not sure how we'd support it sensibly)
 
 - Investigate how R->L text is handled
-
-- Add support for object streams (spec section 3.4.6)
 
 - fix all callbacks to only ever return basic ruby objects (strings, ints,
   attays, symbols, hashes, etc). No PDF::Reader::Reference or
