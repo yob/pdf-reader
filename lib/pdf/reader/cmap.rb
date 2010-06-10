@@ -28,26 +28,27 @@ class PDF::Reader
 
     def initialize(data)
       @map = {}
-      in_char_mode = false
-      in_range_mode = false
+      process_data(data)
+    end
+
+    def process_data(data)
+      mode = nil
       instructions = ""
 
       data.each_line do |l|
         if l.include?("beginbfchar")
-          in_char_mode = true
+          mode = :char
         elsif l.include?("endbfchar")
           process_bfchar_instructions(instructions)
           instructions = ""
-          in_char_mode = false
+          mode = nil
         elsif l.include?("beginbfrange")
-          in_range_mode = true
+          mode = :range
         elsif l.include?("endbfrange")
           process_bfrange_instructions(instructions)
           instructions = ""
-          in_range_mode = false
-        end
-
-        if !l.include?("begin") && (in_char_mode || in_range_mode)
+          mode = nil
+        elsif mode == :char || mode == :range
           instructions << l
         end
       end

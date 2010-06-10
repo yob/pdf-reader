@@ -46,23 +46,22 @@ class PDF::Reader
       token = @buffer.token
 
       case token
-      when PDF::Reader::Reference     then return token
-      when nil                        then return nil
-      when "/"                        then return pdf_name()
-      when "<<"                       then return dictionary()
-      when "["                        then return array()
-      when "("                        then return string()
-      when "<"                        then return hex_string()
-      when "true"                     then return true
-      when "false"                    then return false
-      when "null"                     then return nil
-      when "obj", "endobj"            then return Token.new(token)
-      when "stream", "endstream"      then return Token.new(token)
-      when ">>", "]", ">", ")"        then return Token.new(token)
+      when PDF::Reader::Reference, nil then return token
+      when "/"                         then return pdf_name()
+      when "<<"                        then return dictionary()
+      when "["                         then return array()
+      when "("                         then return string()
+      when "<"                         then return hex_string()
+      when "true"                      then return true
+      when "false"                     then return false
+      when "null"                      then return nil
+      when "obj", "endobj", "stream", "endstream" then return Token.new(token)
+      when "stream", "endstream"       then return Token.new(token)
+      when ">>", "]", ">", ")"         then return Token.new(token)
       else
-        if operators.has_key?(token)  then return Token.new(token)
-        elsif token =~ /\d*\.\d/      then return token.to_f
-        else                          return token.to_i
+        if operators.has_key?(token)   then return Token.new(token)
+        elsif token =~ /\d*\.\d/       then return token.to_f
+        else                           return token.to_i
         end
       end
     end
