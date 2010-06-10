@@ -4,6 +4,7 @@ require File.dirname(__FILE__) + "/spec_helper"
 
 context PDF::Reader::Parser do
   include ParserHelper
+  include EncodingHelper
 
   specify "should parse a name correctly" do
     parse_string("/James").parse_token.should eql(:James)
@@ -81,15 +82,17 @@ context PDF::Reader::Parser do
       :char_contain_29   =>["\x52\x5C\x29",         "\x52\x29"],         # /.)/
     }
     bom = "\xFE\xFF"
-    
+
     seq.each_value do |(src, exp)|
-      parse_string("(#{bom}#{src})").parse_token.should eql("#{bom}#{exp}")
+      src = binary_string("(#{bom}#{src})")
+      exp = binary_string("#{bom}#{exp}")
+      parse_string(src).parse_token.should eql(exp)
     end
-    
+
     mixed = [ seq[:straddle_seq_5c6e], seq[:char_5c08], seq[:char_5c0a], seq[:char_5c02], seq[:char_contain_0a] ]
-    mixed_src = mixed.map {|x| x[0]}.join
-    mixed_exp = mixed.map {|x| x[1]}.join
-    parse_string("(#{bom}#{mixed_src})").parse_token.should eql("#{bom}#{mixed_exp}")
+    mixed_src = binary_string("(" + bom + mixed.map {|x| x[0]}.join + ")")
+    mixed_exp = binary_string(bom + mixed.map {|x| x[1]}.join)
+    parse_string(mixed_src).parse_token.should eql(mixed_exp)
   end
 
   specify "should not leave the closing literal string delimiter in the buffer after parsing a string" do

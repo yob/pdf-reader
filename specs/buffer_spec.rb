@@ -4,6 +4,7 @@ require File.dirname(__FILE__) + "/spec_helper"
 
 context PDF::Reader::Buffer, "token method" do
   include BufferHelper
+  include EncodingHelper
 
   specify "should return nil when there's no IO left" do
     buf = parse_string("aaa")
@@ -272,7 +273,7 @@ context PDF::Reader::Buffer, "token method" do
     buf.pos.should eql(0)
     buf.token.should eql("BT")
     buf.token.should eql("ID")
-    buf.token.should eql("aaa bbb ccc \xF0\xF0\xF0")
+    buf.token.should eql(binary_string("aaa bbb ccc \xF0\xF0\xF0"))
     buf.token.should eql("EI")
   end
 
@@ -286,7 +287,7 @@ context PDF::Reader::Buffer, "token method" do
     buf.token.should eql("aaa")
     buf.token.should eql("bbb")
     buf.token.should eql("ccc")
-    buf.token.should eql("\xF0\xF0\xF0")
+    buf.token.should eql(binary_string("\xF0\xF0\xF0"))
     buf.token.should eql("EI")
   end
 end

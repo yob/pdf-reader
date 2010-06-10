@@ -56,6 +56,11 @@ class CallbackHelper
 end
 
 module EncodingHelper
+  def binary_string(str)
+    str = str.force_encoding("binary") if str.respond_to?(:force_encoding)
+    str
+  end
+
   # On M17N aware VMs, recursively checks strings and containers with strings
   # to ensure everything is UTF-8 encoded
   #

@@ -20,7 +20,7 @@ class PDF::Reader
     def decode_strings(obj)
       case obj
       when String then
-        if obj[0,2] == "\376\377"
+        if obj[0,2].unpack("C*").slice(0,2) == [254,255]
           PDF::Reader::Encoding.new(:UTF16Encoding).to_utf8(obj[2, obj.size])
         else
           PDF::Reader::Encoding.new(:PDFDocEncoding).to_utf8(obj)
