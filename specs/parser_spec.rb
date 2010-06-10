@@ -56,6 +56,42 @@ context PDF::Reader::Parser do
     parse_string("(\\\\f)").parse_token.should eql("\\f")
   end
 
+  specify "should parse a Unicode string correctly" do
+    seq = {
+      # key                 source                  expected               confusing to
+      :straddle_seq_5c6e =>["\x4F\x5C\x5C\x6E\x05", "\x4F\x5C\x6E\x05"], # /.\n./
+      :straddle_seq_5c72 =>["\x4F\x5C\x5C\x72\x06", "\x4F\x5C\x72\x06"], # /.\r./
+      :straddle_seq_5c74 =>["\x4F\x5C\x5C\x74\x06", "\x4F\x5C\x74\x06"], # /.\t./
+      :straddle_seq_5c62 =>["\x4F\x5C\x5C\x62\x10", "\x4F\x5C\x62\x10"], # /.\b./
+      :straddle_seq_5c66 =>["\x4F\x5C\x5C\x66\xFF", "\x4F\x5C\x66\xFF"], # /.\f./
+      :char_5c08         =>["\x5C\x5C\x08",         "\x5C\x08"],         # /\\\b/
+      :char_5c09         =>["\x5C\x5C\x09",         "\x5C\x09"],         # /\\\t/
+      :char_5c0a         =>["\x5C\x5C\x5C\x6E",     "\x5C\x0A"],         # /\\\n/
+      :char_5c0d         =>["\x5C\x5C\x5C\x72",     "\x5C\x0D"],         # /\\\r/
+      :char_5c28         =>["\x5C\x5C\x5C\x28",     "\x5C\x28"],         # /\\(/
+      :char_5c6e         =>["\x5C\x5C\x6E",         "\x5C\x6E"],         # /\\n/
+      :char_5c02         =>["\x5C\x5C\x02",         "\x5C\x02"],         # /\\./
+      :char_5c71         =>["\x5C\x5C\x71",         "\x5C\x71"],         # /\\./
+      :char_contain_08   =>["\x4E\x08",             "\x4E\x08"],         # /.\b/
+      :char_contain_09   =>["\x4E\x09",             "\x4E\x09"],         # /.\t/
+      :char_contain_0a   =>["\x4E\x5C\x6E",         "\x4E\x0A"],         # /.\n/
+      :char_contain_0c   =>["\x54\x0C",             "\x54\x0C"],         # /.\f/
+      :char_contain_0d   =>["\x69\x5C\x72",         "\x69\x0D"],         # /.\r/
+      :char_contain_28   =>["\x75\x5C\x28",         "\x75\x28"],         # /.(/
+      :char_contain_29   =>["\x52\x5C\x29",         "\x52\x29"],         # /.)/
+    }
+    bom = "\xFE\xFF"
+    
+    seq.each_value do |(src, exp)|
+      parse_string("(#{bom}#{src})").parse_token.should eql("#{bom}#{exp}")
+    end
+    
+    mixed = [ seq[:straddle_seq_5c6e], seq[:char_5c08], seq[:char_5c0a], seq[:char_5c02], seq[:char_contain_0a] ]
+    mixed_src = mixed.map {|x| x[0]}.join
+    mixed_exp = mixed.map {|x| x[1]}.join
+    parse_string("(#{bom}#{mixed_src})").parse_token.should eql("#{bom}#{mixed_exp}")
+  end
+
   specify "should not leave the closing literal string delimiter in the buffer after parsing a string" do
     parser = parse_string("(this is a string) /James")
     parser.parse_token.should eql("this is a string")
