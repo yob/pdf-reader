@@ -100,30 +100,6 @@ class PDF::Reader
       bytes
     end
 
-    # return raw bytes from the underlying IO stream. All bytes up to the first
-    # occurrence of needle will be returned. The match (if any) is not returned.
-    # The IO stream cursor is left on the first byte of the match.
-    #
-    #   needle - a string to search the IO stream for
-    #
-    def read_until(needle)
-      reset_pos
-      out = ""
-      size = needle.size
-
-      while out[size * -1, size] != needle && !@io.eof?
-        out << @io.read(1)
-      end
-
-      if out[size * -1, size] == needle
-        out = out[0, out.size - size]
-        @io.seek(size * -1, IO::SEEK_CUR)
-      end
-
-      save_pos
-      out
-    end
-
     # return the next token from the source. Returns a string if a token
     # is found, nil if there are no tokens left.
     #
