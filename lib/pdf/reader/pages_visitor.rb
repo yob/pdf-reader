@@ -250,45 +250,27 @@ class PDF::Reader
     # Begin processing the document
     def process
       callback(:begin_document, [root])
-      walk_pages(@ohash.object(root[:Pages]))
+      raw_pages(pages).each do |page|
+        process_page(page)
+      end
       callback(:end_document)
     end
+
     private
-    ################################################################################
-    # Walk over all pages in the PDF file, calling the appropriate callbacks for each page and all
-    # its content
-    def walk_pages (page)
 
-      # extract page content
-      if page[:Type] == :Pages
-        callback(:begin_page_container, [page])
-        res = @ohash.object(page[:Resources])
-        resources.push res if res
-        @ohash.object(page[:Kids]).each {|child| walk_pages(@ohash.object(child))}
-        resources.pop if res
-        callback(:end_page_container)
-      elsif page[:Type] == :Page
-        callback(:begin_page, [page])
-        res = @ohash.object(page[:Resources])
-        resources.push res if res
-        walk_resources(current_resources)
-
-        if @ohash.object(page[:Contents]).kind_of?(Array)
-          contents = @ohash.object(page[:Contents])
-        else
-          contents = [page[:Contents]]
-        end
-
-        fonts = font_hash_from_resources(current_resources)
-
-        if page.has_key?(:Contents) and page[:Contents]
-          direct_contents = contents.map { |content| @ohash.object(content) }
-          content_stream(direct_contents, fonts)
-        end
-
-        resources.pop if res
-        callback(:end_page)
+    def raw_pages(pdf_page)
+      if pdf_page[:Type] == :Pages
+        @ohash.object(pdf_page[:Kids]).map { |child| raw_pages(@ohash.object(child))}.flatten
+      elsif pdf_page[:Type] == :Page
+        PDF::Reader::Page.new(@ohash, pdf_page)
       end
+    end
+    def process_page(page)
+      #callback(:begin_page, [page])
+      callback(:begin_page)
+      walk_resources(page)
+      content_stream(page.content_streams, page.fonts)
+      callback(:end_page)
     end
     ################################################################################
     # Retreive the XObject for the supplied label and if it's a Form, walk it
@@ -308,16 +290,6 @@ class PDF::Reader
       end
     end
 
-    ################################################################################
-    # Return a merged hash of all resources that are current. Pages, page and xobject
-    #
-    def current_resources
-      hash = {}
-      resources.each do |res|
-        hash.merge!(res)
-      end
-      hash
-    end
     ################################################################################
     # Reads a PDF content stream and calls all the appropriate callback methods for the operators
     # it contains
@@ -359,7 +331,7 @@ class PDF::Reader
           if OPERATORS[token] == :invoke_xobject
             xobject_label = params.first
             params.clear
-            walk_xobject_form(xobject_label)
+            # walk_xobject_form(xobject_label)
           else
             params.clear
           end
@@ -371,10 +343,8 @@ class PDF::Reader
       raise MalformedPDFError, "End Of File while processing a content stream"
     end
     ################################################################################
-    def walk_resources(resources)
-      return unless resources.respond_to?(:[])
-
-      resources = resolve_references(resources)
+    def walk_resources(page)
+      resources = page.resources
 
       # extract any procset information
       if resources[:ProcSet]
@@ -411,56 +381,10 @@ class PDF::Reader
 
       # extract any font information
       if resources[:Font]
-        fonts = font_hash_from_resources(resources)
-        fonts.each do  |label, font|
+        page.fonts.each do |label, font|
           callback(:resource_font, [label, font])
         end
       end
-    end
-    ################################################################################
-    # Convert any PDF::Reader::Resource objects into a real object
-    def resolve_references(obj)
-      case obj
-      when PDF::Reader::Stream then
-        obj.hash = resolve_references(obj.hash)
-        obj
-      when PDF::Reader::Reference then
-        resolve_references(@ohash.object(obj))
-      when Hash                   then obj.each { |key,val| obj[key] = resolve_references(val) }
-      when Array                  then obj.collect { |item| resolve_references(item) }
-      else
-        obj
-      end
-    end
-    ################################################################################
-    ################################################################################
-    def font_hash_from_resources(resources)
-      return {} unless resources.respond_to?(:[])
-
-      fonts = {}
-      resources = @ohash.object(resources[:Font]) || {}
-      resources.each do |label, desc|
-        desc = @ohash.object(desc)
-        fonts[label] = PDF::Reader::Font.new
-        fonts[label].label = label
-        fonts[label].subtype = desc[:Subtype] if desc[:Subtype]
-        fonts[label].basefont = desc[:BaseFont] if desc[:BaseFont]
-        fonts[label].encoding = PDF::Reader::Encoding.new(@ohash.object(desc[:Encoding]))
-        fonts[label].descendantfonts = desc[:DescendantFonts] if desc[:DescendantFonts]
-        if desc[:ToUnicode]
-          # this stream is a cmap
-          begin
-            stream = desc[:ToUnicode]
-            fonts[label].tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
-          rescue
-            # if the CMap fails to parse, don't worry too much. Means we can't translate the text properly
-          end
-        end
-      end
-      fonts
-    end
-    def resources
-      @resources ||= []
     end
   end
   ################################################################################
