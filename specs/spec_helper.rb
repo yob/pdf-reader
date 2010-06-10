@@ -49,7 +49,8 @@ class CallbackHelper
         !filename.include?("broken_string.pdf") &&
         !filename.include?("cross_ref_stream.pdf") &&
         !filename.include?("zlib_stream_issue.pdf") &&
-        !filename.include?("20070313")
+        !filename.include?("20070313") &&
+        !filename.include?("refers_to_invalid_font.pdf")
     }
   end
 
