@@ -8,17 +8,6 @@ The PDF 1.7 specification is a weighty document and not all aspects are
 currently supported. I welcome submission of PDF files that exhibit
 unsupported aspects of the spec to assist with improving out support.
 
-= Development Status
-
-I adopted this library in 2007 when I was learning the fundamentals of the PDF
-spec. I do not currently use it in my day to day work and I just don't have the
-spare time to dedicate to adding new features.
-
-The code as it is works fairly well, and I offer it "as is". All patches, bug
-reports and sample PDFs are welcome - I will work on them when I can. If anyone
-is interested in adding features to PDF::Reader in their own effort to learn
-the PDF file format, I'll happy offer help and support.
-
 = Installation
 
 The recommended installation method is via Rubygems.
