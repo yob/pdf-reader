@@ -448,13 +448,8 @@ class PDF::Reader
         fonts[label].encoding = PDF::Reader::Encoding.new(@ohash.object(desc[:Encoding]))
         fonts[label].descendantfonts = desc[:DescendantFonts] if desc[:DescendantFonts]
         if desc[:ToUnicode]
-          # this stream is a cmap
-          begin
-            stream = desc[:ToUnicode]
-            fonts[label].tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
-          rescue
-            # if the CMap fails to parse, don't worry too much. Means we can't translate the text properly
-          end
+          stream = @ohash.object(desc[:ToUnicode])
+          fonts[label].tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
         end
       end
       fonts
