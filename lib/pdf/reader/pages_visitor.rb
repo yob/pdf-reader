@@ -249,6 +249,8 @@ class PDF::Reader
     ################################################################################
     # Begin processing the document
     def process
+      return false unless options[:pages]
+
       callback(:begin_document, [root])
       walk_pages(@ohash.object(root[:Pages]))
       callback(:end_document)
@@ -343,7 +345,10 @@ class PDF::Reader
 
           # handle special cases in response to certain operators
           if OPERATORS[token].to_s.include?("show_text")
-            # convert any text to utf-8
+            # convert any text to utf-8, but output the raw string if the user wants it
+            if options[:raw_text]
+              callback("#{OPERATORS[token]}_raw".to_sym, params)
+            end
             params = fonts[current_font].to_utf8(params)
           elsif token == "ID"
             # inline image data, first convert the current params into a more familiar hash

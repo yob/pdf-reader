@@ -15,13 +15,25 @@ context PDF::Reader, "file class method" do
     @receiver.count(:metadata).should eql(1)
   end
 
-  specify "should parse not parse metadata if requested" do
+  specify "should not provide raw text callbacks by default" do
+    PDF::Reader.file(@filename, @receiver)
+    @receiver.count(:show_text_with_positioning).should eql(1)
+    @receiver.count(:show_text_with_positioning_raw).should eql(0)
+  end
+
+  specify "should provide raw text callbacks if requested" do
+    PDF::Reader.file(@filename, @receiver, :raw_text => true)
+    @receiver.count(:show_text_with_positioning).should eql(1)
+    @receiver.count(:show_text_with_positioning_raw).should eql(1)
+  end
+
+  specify "should not parse metadata if requested" do
     PDF::Reader.file(@filename, @receiver, :metadata => false)
     @receiver.count(:begin_document).should eql(1)
     @receiver.count(:metadata).should eql(0)
   end
 
-  specify "should parse not parse page content if requested" do
+  specify "should not parse page content if requested" do
     PDF::Reader.file(@filename, @receiver, :pages => false)
     @receiver.count(:begin_document).should eql(0)
     @receiver.count(:metadata).should eql(1)
@@ -51,6 +63,18 @@ context PDF::Reader, "string class method" do
     PDF::Reader.string(@data, @receiver)
     @receiver.count(:begin_document).should eql(1)
     @receiver.count(:metadata).should eql(1)
+  end
+
+  specify "should not provide raw text callbacks by default" do
+    PDF::Reader.string(@data, @receiver)
+    @receiver.count(:show_text_with_positioning).should eql(1)
+    @receiver.count(:show_text_with_positioning_raw).should eql(0)
+  end
+
+  specify "should provide raw text callbacks if requested" do
+    PDF::Reader.string(@data, @receiver, :raw_text => true)
+    @receiver.count(:show_text_with_positioning).should eql(1)
+    @receiver.count(:show_text_with_positioning_raw).should eql(1)
   end
 
   specify "should parse not parse metadata if requested" do

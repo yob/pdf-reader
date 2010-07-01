@@ -4,11 +4,15 @@ class PDF::Reader
 
   class AbstractVisitor
 
-    def initialize(ohash, receiver)
-      @ohash, @receiver = ohash, receiver
+    def initialize(ohash, receiver, options = {})
+      @ohash, @receiver, @options = ohash, receiver, options
     end
 
     private
+
+    def options
+      @options || {}
+    end
 
     # calls the name callback method on the receiver class with params as the arguments
     #

@@ -9,6 +9,8 @@ class PDF::Reader
     end
 
     def process
+      return false unless options[:metadata]
+
       # may be useful to some people
       callback(:pdf_version, ohash.pdf_version)
 

@@ -115,14 +115,12 @@ module PDF
         raise PDF::Reader::UnsupportedFeatureError, 'PDF::Reader cannot read encrypted PDF files'
       end
 
-      options = {:pages => true, :metadata => true}
+      options = {:pages => true, :raw_text => false, :metadata => true}
       options.merge!(opts)
 
-      visitors.select { |v|
-        options[v.to_sym]
-      }.each { |v|
-        v.new(ohash, receiver).process
-      }
+      visitors.each do |v|
+        v.new(ohash, receiver, options).process
+      end
 
       self
     end
