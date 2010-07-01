@@ -57,12 +57,13 @@ module PDF
   #
   # = Parsing parts of a file
   #
-  # Both PDF::Reader#file and PDF::Reader#string accept a 3 argument that specifies which
-  # parts of the file to process. By default, all options are enabled, so this can be useful
-  # to cut down processing time if you're only interested in say, metadata.
+  # Both PDF::Reader#file and PDF::Reader#string accept a third argument that
+  # specifies which parts of the file to process. By default, all options are
+  # enabled, so this can be useful to cut down processing time if you're only
+  # interested in say, metadata.
   #
-  # As an example, the following call will disable parsing the contents of pages in the file,
-  # but explicitly enables processing metadata.
+  # As an example, the following call will disable parsing the contents of
+  # pages in the file, but explicitly enables processing metadata.
   #
   #   PDF::Reader.new("somefile.pdf", receiver, {:metadata => true, :pages => false})
   #
@@ -70,6 +71,8 @@ module PDF
   #
   #   :metadata
   #   :pages
+  #   :raw_text
+  #
   class Reader
 
     # Parse the file with the given name, sending events to the given receiver.

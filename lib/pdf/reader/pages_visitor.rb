@@ -77,6 +77,14 @@ class PDF::Reader
   # - move_to_next_line_and_show_text
   # - set_spacing_next_line_show_text
   #
+  # If the :raw_text option was passed to the PDF::Reader class the following callbacks
+  # may also appear:
+  #
+  # - show_text_raw
+  # - show_text_with_positioning_raw
+  # - move_to_next_line_and_show_text_raw
+  # - set_spacing_next_line_show_text_raw
+  #
   # == Graphics Callbacks
   # - close_fill_stroke
   # - fill_stroke
