@@ -198,7 +198,28 @@ module PDF
       ret
     end
 
+    # returns an array of PDF::Reader::References. Each reference in the
+    # array points a Page object, one for each page in the PDF. The first
+    # reference is page 1, second reference is page 2, etc.
+    #
+    def page_references
+      root  = fetch(trailer[:Root])
+      @page_references ||= get_page_objects(root[:Pages]).flatten
+    end
+
     private
+
+    # returns a nested array of object references for all pages in this object store.
+    #
+    def get_page_objects(ref)
+      obj = fetch(ref)
+
+      if obj[:Type] == :Page
+        ref
+      elsif obj[:Type] == :Pages
+        obj[:Kids].map { |kid| get_page_objects(kid) }
+      end
+    end
 
     def read_version(io)
       io.seek(0)

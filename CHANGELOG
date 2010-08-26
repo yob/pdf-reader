@@ -1,3 +1,8 @@
+v0.8.6 (27th August 2010)
+- new method: hash#page_references
+  - returns references to all page objects, gives rapid access to objects
+    for a given page
+
 v0.8.5 (11th April 2010)
 - fix a regression introduced in 0.8.4.
   - Parameters passed to resource_font callback were inadvertently changed
