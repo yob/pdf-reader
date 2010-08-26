@@ -311,3 +311,15 @@ context PDF::Reader::ObjectHash, "pdf_version method" do
     h.pdf_version.should eql(1.4)
   end
 end
+
+context PDF::Reader::ObjectHash, "page_references method" do
+
+  specify "should return the document PDF version dictionary" do
+    filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
+    h = PDF::Reader::ObjectHash.new(filename)
+
+    arr = h.page_references
+    arr.size.should eql(4)
+    arr.map { |ref| ref.id }.should eql([4, 7, 10, 13])
+  end
+end
