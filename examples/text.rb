@@ -3,6 +3,9 @@
 
 # Extract all text from a single PDF
 
+require 'rubygems'
+require 'pdf/reader'
+
 class PageTextReceiver
   attr_accessor :content
 
