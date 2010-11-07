@@ -23,6 +23,7 @@
 #
 ################################################################################
 require 'zlib'
+require 'pdf/reader/lzw'
 
 class PDF::Reader
   ################################################################################
@@ -49,6 +50,7 @@ class PDF::Reader
       when :DCTDecode      then @filter = nil
       when :FlateDecode    then @filter = :flate
       when :JBIG2Decode    then @filter = nil
+      when :LZWDecode      then @filter = :lzw
       else                 raise UnsupportedFeatureError, "Unknown filter: #{name}"
       end
     end
@@ -192,5 +194,10 @@ class PDF::Reader
     end
   end
   ################################################################################
+  # Decode the specified data with the LZW compression algorithm
+  def lzw(data)
+    raise UnsupportedFeatureError, "LZWDecode options are not supported" unless @options.nil?
+    LZW::decode(data)
+  end
 end
 ################################################################################
