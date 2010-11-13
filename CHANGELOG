@@ -1,4 +1,4 @@
-v0.8.6 (XXX)
+v0.8.7 (XXX)
 - initial support for pdf 1.5+ files that use object and xref streams
 - support streams that use a flate filter with the predictor option
 - ensure all content instructions are parsed when split over multiple stream
@@ -8,6 +8,13 @@ v0.8.6 (XXX)
   - thanks to Andrea Barisani for reporting the issue
 - Fix a bug that prevented PDFs with white space after the EOF marker from loading
   - thanks to Solomon White for reporting the issue
+- Add support for de-filtering some LZW compressed streams
+  - thanks to Jose Ignacio Rubio Iradi for the patch
+
+v0.8.6 (27th August 2010)
+- new method: hash#page_references
+  - returns references to all page objects, gives rapid access to objects
+    for a given page
 
 v0.8.5 (11th April 2010)
 - fix a regression introduced in 0.8.4.
