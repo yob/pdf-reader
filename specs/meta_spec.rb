@@ -223,4 +223,13 @@ context PDF::Reader, "meta specs" do
     receiver.content.size.should eql(1)
     receiver.content[0].should eql("HelloWorld")
   end
+
+  specify "should correctly extract text from a PDF that was generated in open office 3" do
+    receiver = PageTextReceiver.new
+    PDF::Reader.file(File.dirname(__FILE__) + "/data/oo3.pdf", receiver)
+
+    # confirm there was a single page of text
+    receiver.content.size.should eql(1)
+    receiver.content[0].should eql("test")
+  end
 end
