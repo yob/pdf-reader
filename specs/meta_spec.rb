@@ -1,5 +1,6 @@
 # coding: utf-8
 
+$LOAD_PATH << "." unless $LOAD_PATH.include?(".")
 require File.dirname(__FILE__) + "/spec_helper"
 
 # These specs are a kind of "meta spec". They're not unit testing small pieces

@@ -1,5 +1,6 @@
 # coding: utf-8
 
+$LOAD_PATH << "." unless $LOAD_PATH.include?(".")
 require File.dirname(__FILE__) + "/spec_helper"
 
 # expose the xrefs hash inside the XRef class so we can ensure it's built correctly

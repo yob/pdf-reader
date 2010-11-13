@@ -1,5 +1,6 @@
 # coding: utf-8
 
+$LOAD_PATH << "." unless $LOAD_PATH.include?(".")
 require File.dirname(__FILE__) + "/spec_helper"
 
 class PDF::Reader::PagesVisitor
