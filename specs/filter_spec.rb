@@ -18,6 +18,25 @@ context PDF::Reader::Filter do
     filter.filter(deflated_data).should eql(depredicted_data)
   end
 
+  specify "should filter a lzw stream with no predictors correctly" do
+    filter = PDF::Reader::Filter.new(:LZWDecode)
+    if File.respond_to?(:binread)
+      compressed_data   = File.binread(File.dirname(__FILE__) + "/data/lzw_compressed.dat")
+      decompressed_data = File.binread(File.dirname(__FILE__) + "/data/lzw_decompressed.dat")
+    else
+      compressed_data   = File.open(File.dirname(__FILE__) + "/data/lzw_compressed.dat","r") { |f| f.read }
+      decompressed_data = File.open(File.dirname(__FILE__) + "/data/lzw_decompressed.dat","r") { |f| f.read }
+    end
+    filter.filter(compressed_data).should eql(decompressed_data)
+  end
+
+  specify "should raise an exception on LZW compressed streams that use predictors" do
+    filter = PDF::Reader::Filter.new(:LZWDecode, :Predictor => 2)
+    lambda {
+      filter.filter("compresed data")
+    }.should raise_error(PDF::Reader::UnsupportedFeatureError)
+  end
+
   specify "should filter a ASCII85 stream correctly" do
     filter = PDF::Reader::Filter.new(:ASCII85Decode)
     encoded_data = Ascii85::encode("Ruby")
