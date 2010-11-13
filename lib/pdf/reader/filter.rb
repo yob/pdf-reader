@@ -114,6 +114,12 @@ class PDF::Reader
       raise MalformedPDFError, "Error occured while inflating a compressed stream (#{e.class.to_s}: #{e.to_s})"
     end
     ################################################################################
+    # Decode the specified data with the LZW compression algorithm
+    def lzw(data)
+      raise UnsupportedFeatureError, "LZWDecode options are not supported" unless @options.nil?
+      PDF::Reader::LZW.decode(data)
+    end
+    ################################################################################
     def depredict(data, opts = {})
       return data if opts.nil? || opts[:Predictor].to_i < 10
 
@@ -192,12 +198,6 @@ class PDF::Reader
 
       pixels.map { |row| row.flatten.pack("C*") }.join("")
     end
-  end
-  ################################################################################
-  # Decode the specified data with the LZW compression algorithm
-  def lzw(data)
-    raise UnsupportedFeatureError, "LZWDecode options are not supported" unless @options.nil?
-    LZW::decode(data)
   end
 end
 ################################################################################
