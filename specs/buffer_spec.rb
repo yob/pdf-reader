@@ -209,6 +209,24 @@ context PDF::Reader::Buffer, "token method" do
     buf.token.should be_nil
   end
 
+  specify "should correctly return a literal string with escaped slash followed by a closing brace" do
+    buf = parse_string("(aaa\x5C\x5C)")
+
+    buf.token.should eql("(")
+    buf.token.should eql("aaa\x5C\x5C")
+    buf.token.should eql(")")
+    buf.token.should be_nil
+  end
+
+  specify "should correctly return a literal string with three slashes followed by a closing brace" do
+    buf = parse_string("(aaa\x5C\x5C\x5C))")
+
+    buf.token.should eql("(")
+    buf.token.should eql("aaa\x5C\x5C\x5C)")
+    buf.token.should eql(")")
+    buf.token.should be_nil
+  end
+
   specify "should correctly return a dictionary with embedded hex string" do
     buf = parse_string("<< /X <48656C6C6F> >>")
     buf.token.should eql("<<")

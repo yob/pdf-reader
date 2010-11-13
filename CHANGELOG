@@ -10,6 +10,8 @@ v0.8.7 (XXX)
   - thanks to Solomon White for reporting the issue
 - Add support for de-filtering some LZW compressed streams
   - thanks to Jose Ignacio Rubio Iradi for the patch
+- bug fix for string tokenising
+  - thanks to David Westerink for pointing out the issue
 
 v0.8.6 (27th August 2010)
 - new method: hash#page_references
