@@ -115,11 +115,30 @@ class PDF::Reader
     ################################################################################
     # Decode the specified data with the LZW compression algorithm
     def lzw(data)
-      raise UnsupportedFeatureError, "LZWDecode options are not supported" unless @options.nil?
-      PDF::Reader::LZW.decode(data)
+      data = PDF::Reader::LZW.decode(data)
+      depredict(data, @options)
     end
     ################################################################################
     def depredict(data, opts = {})
+      predictor = (opts || {})[:Predictor].to_i
+
+      case predictor
+      when 0, 1 then
+        data
+      when 2    then
+        tiff_depredict(data, opts)
+      when 10, 11, 12, 13, 14, 15 then
+        png_depredict(data, opts)
+      else
+        raise  MalformedPDFError, "Unrecognised predictor value (#{predictor})"
+      end
+    end
+    ################################################################################
+    def tiff_depredict(data, opts = {})
+      raise UnsupportedFeatureError, "TIFF predictor not supported"
+    end
+    ################################################################################
+    def png_depredict(data, opts = {})
       return data if opts.nil? || opts[:Predictor].to_i < 10
 
       data = data.unpack("C*")
