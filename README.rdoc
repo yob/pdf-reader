@@ -39,7 +39,7 @@ Internally, text can be stored inside a PDF in various encodings, including
 zingbats, win-1252, mac roman and a form of Unicode. To avoid confusion, all
 text will be converted to UTF-8 before it is passed back from PDF::Reader.
 
-Strings that containt binary data (like font blobs) will be marked as such on
+Strings that contain binary data (like font blobs) will be marked as such on
 M17N aware VMs.
 
 = Exceptions
