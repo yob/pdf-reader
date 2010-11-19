@@ -3,9 +3,9 @@
 $LOAD_PATH << "." unless $LOAD_PATH.include?(".")
 require File.dirname(__FILE__) + "/spec_helper"
 
-context PDF::Reader::Font do
+describe PDF::Reader::Font do
 
-  specify "should select a sensible encoding when set to a symbol font" do
+  it "should select a sensible encoding when set to a symbol font" do
     f = PDF::Reader::Font.new
     f.basefont = "Arial"
     f.encoding.should be_nil
@@ -17,7 +17,7 @@ context PDF::Reader::Font do
     f.encoding.should be_a_kind_of(PDF::Reader::Encoding)
   end
 
-  specify "should correctly create a mapping of glyph names to unicode code points" do
+  it "should correctly create a mapping of glyph names to unicode code points" do
     map = PDF::Reader::Font.glyphnames
     map.should be_a_kind_of(Hash)
     map[:a].should eql(0x0061)
@@ -27,25 +27,25 @@ context PDF::Reader::Font do
     map[:zukatakana].should eql(0x30BA)
   end
 
-  specify "should correctly attempt to convert various strings to utf-8" do
+  it "should correctly attempt to convert various strings to utf-8" do
     f = PDF::Reader::Font.new
     # TODO: create a mock encoding object and ensure to_utf8 is called on it
   end
 
-  specify "should return the same type when to_utf8 is called" do
+  it "should return the same type when to_utf8 is called" do
     f = PDF::Reader::Font.new
     f.to_utf8("abc").should be_a_kind_of(String)
     f.to_utf8(["abc"]).should be_a_kind_of(Array)
     f.to_utf8(123).should be_a_kind_of(Numeric)
   end
 
-  specify "should use an encoding of StandardEncoding if none has been specified" do
+  it "should use an encoding of StandardEncoding if none has been specified" do
     f = PDF::Reader::Font.new
     str = "abc\xA8"
     f.to_utf8(str).should eql("abc\xC2\xA4")
   end
 
-  specify "should correctly store the font BaseFont" do
+  it "should correctly store the font BaseFont" do
     f = PDF::Reader::Font.new
     f.basefont = :Helvetica
     f.basefont.should eql(:Helvetica)

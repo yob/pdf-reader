@@ -7,9 +7,9 @@ class PDF::Reader::CMap
   attr_reader :map
 end
 
-context "PDF::Reader::CMap with a bfchar cmap" do
+describe "PDF::Reader::CMap with a bfchar cmap" do
 
-  specify "should correctly load a cmap object string" do
+  it "should correctly load a cmap object string" do
     filename = File.dirname(__FILE__) + "/data/cmap_with_bfchar.txt"
     map = PDF::Reader::CMap.new(File.read(filename))
     map.map.should be_a_kind_of(Hash)
@@ -19,7 +19,7 @@ context "PDF::Reader::CMap with a bfchar cmap" do
     map.map[0x9].should eql(0x73)
   end
 
-  specify "should correctly convert a character code into a unicode codepoint" do
+  it "should correctly convert a character code into a unicode codepoint" do
     filename = File.dirname(__FILE__) + "/data/cmap_with_bfchar.txt"
     map = PDF::Reader::CMap.new(File.read(filename))
     map.decode(0x1).should eql(0x48)
@@ -27,7 +27,7 @@ context "PDF::Reader::CMap with a bfchar cmap" do
     map.decode(0x9).should eql(0x73)
   end
 
-  specify "should correctly load a cmap that uses the beginbfrange operator" do
+  it "should correctly load a cmap that uses the beginbfrange operator" do
     filename = File.dirname(__FILE__) + "/data/cmap_with_bfrange.txt"
     map = PDF::Reader::CMap.new(File.read(filename))
     map.decode(0x16C9).should eql(0x4F38) # mapped with the bfchar operator
@@ -36,13 +36,13 @@ context "PDF::Reader::CMap with a bfchar cmap" do
     map.decode(0x0005).should eql(0x0020+2) # mapped with the bfrange operator
   end
 
-  specify "should correctly load a cmap that uses the beginbfrange operator" do
+  it "should correctly load a cmap that uses the beginbfrange operator" do
     filename = File.dirname(__FILE__) + "/data/cmap_with_bfrange_two.txt"
     map = PDF::Reader::CMap.new(File.read(filename))
     map.decode(0x0100).should eql(0x0100) # mapped with the bfrange operator
   end
   
-  specify "should correctly load a cmap that uses the beginbfrange operator with the array syntax" do
+  it "should correctly load a cmap that uses the beginbfrange operator with the array syntax" do
     filename = File.dirname(__FILE__) + "/data/cmap_with_bfrange_three.txt"
     map = PDF::Reader::CMap.new(File.read(filename))
 

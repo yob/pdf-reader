@@ -3,21 +3,21 @@
 $LOAD_PATH << "." unless $LOAD_PATH.include?(".")
 require File.dirname(__FILE__) + "/spec_helper"
 
-context PDF::Reader::Encoding do
+describe PDF::Reader::Encoding do
 
-  specify "should return a new encoding object on request, or raise an error if unrecognised" do
+  it "should return a new encoding object on request, or raise an error if unrecognised" do
     lambda { PDF::Reader::Encoding.new("FakeEncoding")}.should raise_error(PDF::Reader::UnsupportedFeatureError)
     PDF::Reader::Encoding.new(nil).should be_a_kind_of(PDF::Reader::Encoding)
   end
 
-  specify "should return a new encoding object on request, or raise an error if unrecognised" do
+  it "should return a new encoding object on request, or raise an error if unrecognised" do
     win =  {:Encoding => :WinAnsiEncoding}
     fake = {:Encoding => :FakeEncoding}
     PDF::Reader::Encoding.new(win).should be_a_kind_of(PDF::Reader::Encoding)
     lambda { PDF::Reader::Encoding.new(fake)}.should raise_error(PDF::Reader::UnsupportedFeatureError)
   end
 
-  specify "should return a new encoding object with a differences table on request" do
+  it "should return a new encoding object with a differences table on request" do
     win =  {
              :Encoding    => :WinAnsiEncoding,
              :Differences => [25, :A, 26, :B]
@@ -29,7 +29,7 @@ context PDF::Reader::Encoding do
     enc.differences[26].should eql(:B)
   end
 
-  specify "should return a new encoding object with a differences table on request" do
+  it "should return a new encoding object with a differences table on request" do
     win =  {
              :Encoding    => :WinAnsiEncoding,
              :Differences => [25, :A, :B]
@@ -41,7 +41,7 @@ context PDF::Reader::Encoding do
     enc.differences[26].should eql(:B)
   end
 
-  specify "should correctly replace control characters with 'unknown char' when there's no applicable difference table entry" do
+  it "should correctly replace control characters with 'unknown char' when there's no applicable difference table entry" do
     win =  {
              :Encoding    => :WinAnsiEncoding,
              :Differences => [1, :A,]
@@ -51,9 +51,9 @@ context PDF::Reader::Encoding do
   end
 end
 
-context "The PDF::Reader::Encoding::IdentityH class" do
+describe "The PDF::Reader::Encoding::IdentityH class" do
 
-  specify "should return utf-8 squares if to_utf8 is called without a cmap" do
+  it "should return utf-8 squares if to_utf8 is called without a cmap" do
     e = PDF::Reader::Encoding.new("Identity-H")
     [
       {:expert => "\x22",             :utf8 => ""},
@@ -71,7 +71,7 @@ context "The PDF::Reader::Encoding::IdentityH class" do
     end
   end
 
-  specify "should convert an IdentityH encoded string into UTF-8" do
+  it "should convert an IdentityH encoded string into UTF-8" do
     e = PDF::Reader::Encoding.new("Identity-H")
     cmap = PDF::Reader::CMap.new("")
     cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
@@ -86,9 +86,9 @@ context "The PDF::Reader::Encoding::IdentityH class" do
 
 end
 
-context "The PDF::Reader::Encoding::MacExpertEncoding class" do
+describe "The PDF::Reader::Encoding::MacExpertEncoding class" do
 
-  specify "should correctly convert various expert strings to utf-8" do
+  it "should correctly convert various expert strings to utf-8" do
     e = PDF::Reader::Encoding.new(:MacExpertEncoding)
     [
       {:expert => "\x22", :utf8 => [0xF6F8].pack("U*")},
@@ -107,7 +107,7 @@ context "The PDF::Reader::Encoding::MacExpertEncoding class" do
     end
   end
 
-  specify "should correctly convert various mac expert strings when a differences table is specified" do
+  it "should correctly convert various mac expert strings when a differences table is specified" do
     e = PDF::Reader::Encoding.new(:MacExpertEncoding)
     e.differences = [0xEE, :A]
     [
@@ -126,7 +126,7 @@ context "The PDF::Reader::Encoding::MacExpertEncoding class" do
     end
   end
 
-  specify "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
+  it "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
     e = PDF::Reader::Encoding.new(:MacExpertEncoding)
     cmap = PDF::Reader::CMap.new("")
     cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
@@ -141,9 +141,9 @@ context "The PDF::Reader::Encoding::MacExpertEncoding class" do
   end
 end
 
-context "The PDF::Reader::Encoding::MacRomanEncoding class" do
+describe "The PDF::Reader::Encoding::MacRomanEncoding class" do
 
-  specify "should correctly convert various mac roman strings to utf-8" do
+  it "should correctly convert various mac roman strings to utf-8" do
     e = PDF::Reader::Encoding.new(:MacRomanEncoding)
     [
       {:mac => "abc", :utf8 => "abc"},
@@ -164,7 +164,7 @@ context "The PDF::Reader::Encoding::MacRomanEncoding class" do
     end
   end
 
-  specify "should correctly convert various mac roman strings when a differences table is specified" do
+  it "should correctly convert various mac roman strings when a differences table is specified" do
     e = PDF::Reader::Encoding.new(:MacRomanEncoding)
     e.differences = [0xEE, :A]
     [
@@ -183,7 +183,7 @@ context "The PDF::Reader::Encoding::MacRomanEncoding class" do
     end
   end
 
-  specify "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
+  it "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
     e = PDF::Reader::Encoding.new(:MacRomanEncoding)
     cmap = PDF::Reader::CMap.new("")
     cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
@@ -198,9 +198,9 @@ context "The PDF::Reader::Encoding::MacRomanEncoding class" do
   end
 end
 
-context "The PDF::Reader::Encoding::PDFDocEncoding class" do
+describe "The PDF::Reader::Encoding::PDFDocEncoding class" do
 
-  specify "should correctly convert various PDFDoc strings to utf-8" do
+  it "should correctly convert various PDFDoc strings to utf-8" do
     e = PDF::Reader::Encoding.new(:PDFDocEncoding)
     [
       {:pdf => "\x22", :utf8 => [0x22].pack("U*")},
@@ -219,7 +219,7 @@ context "The PDF::Reader::Encoding::PDFDocEncoding class" do
     end
   end
 
-  specify "should correctly convert various pdf doc strings when a differences table is specified" do
+  it "should correctly convert various pdf doc strings when a differences table is specified" do
     e = PDF::Reader::Encoding.new(:PDFDocEncoding)
     e.differences = [0xEE, :A]
     [
@@ -238,7 +238,7 @@ context "The PDF::Reader::Encoding::PDFDocEncoding class" do
     end
   end
 
-  specify "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
+  it "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
     e = PDF::Reader::Encoding.new(:PDFDocEncoding)
     cmap = PDF::Reader::CMap.new("")
     cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
@@ -253,9 +253,9 @@ context "The PDF::Reader::Encoding::PDFDocEncoding class" do
   end
 end
 
-context "The PDF::Reader::Encoding::StandardEncoding class" do
+describe "The PDF::Reader::Encoding::StandardEncoding class" do
 
-  specify "should correctly convert various standard strings to utf-8" do
+  it "should correctly convert various standard strings to utf-8" do
     e = PDF::Reader::Encoding.new(:StandardEncoding)
     [
       {:standard => "abc",  :utf8 => "abc"},
@@ -278,7 +278,7 @@ context "The PDF::Reader::Encoding::StandardEncoding class" do
     end
   end
 
-  specify "should correctly convert various standard strings when a differences table is specified" do
+  it "should correctly convert various standard strings when a differences table is specified" do
     e = PDF::Reader::Encoding.new(:StandardEncoding)
     e.differences = [0xEE, :A]
     [
@@ -297,7 +297,7 @@ context "The PDF::Reader::Encoding::StandardEncoding class" do
     end
   end
 
-  specify "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
+  it "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
     e = PDF::Reader::Encoding.new(:StandardEncoding)
     cmap = PDF::Reader::CMap.new("")
     cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
@@ -312,9 +312,9 @@ context "The PDF::Reader::Encoding::StandardEncoding class" do
   end
 end
 
-context "The PDF::Reader::Encoding::SymbolEncoding class" do
+describe "The PDF::Reader::Encoding::SymbolEncoding class" do
 
-  specify "should correctly convert various symbol strings to utf-8" do
+  it "should correctly convert various symbol strings to utf-8" do
     e = PDF::Reader::Encoding.new(:SymbolEncoding)
     [
       {:symbol => "\x41", :utf8 => [0x0391].pack("U*")}, # alpha
@@ -335,7 +335,7 @@ context "The PDF::Reader::Encoding::SymbolEncoding class" do
     end
   end
 
-  specify "should correctly convert various symbol strings when a differences table is specified" do
+  it "should correctly convert various symbol strings when a differences table is specified" do
     e = PDF::Reader::Encoding.new(:SymbolEncoding)
     e.differences = [0xEE, :A]
     [
@@ -354,7 +354,7 @@ context "The PDF::Reader::Encoding::SymbolEncoding class" do
     end
   end
 
-  specify "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
+  it "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
     e = PDF::Reader::Encoding.new(:SymbolEncoding)
     cmap = PDF::Reader::CMap.new("")
     cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
@@ -369,9 +369,9 @@ context "The PDF::Reader::Encoding::SymbolEncoding class" do
   end
 end
 
-context "The PDF::Reader::Encoding::WinAnsiEncoding class" do
+describe "The PDF::Reader::Encoding::WinAnsiEncoding class" do
 
-  specify "should correctly convert various win-1252 strings to utf-8" do
+  it "should correctly convert various win-1252 strings to utf-8" do
     e = PDF::Reader::Encoding.new(:WinAnsiEncoding)
     [
       {:win => "abc", :utf8 => "abc"},
@@ -392,7 +392,7 @@ context "The PDF::Reader::Encoding::WinAnsiEncoding class" do
     end
   end
   
-  specify "should correctly convert various win-1252 strings when a differences table is specified" do
+  it "should correctly convert various win-1252 strings when a differences table is specified" do
     e = PDF::Reader::Encoding.new(:WinAnsiEncoding)
     e.differences = [0xEE, :A]
     [
@@ -410,7 +410,7 @@ context "The PDF::Reader::Encoding::WinAnsiEncoding class" do
     end
   end
 
-  specify "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
+  it "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
     e = PDF::Reader::Encoding.new(:WinAnsiEncoding)
     cmap = PDF::Reader::CMap.new("")
     cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
@@ -425,9 +425,9 @@ context "The PDF::Reader::Encoding::WinAnsiEncoding class" do
   end
 end
 
-context "The PDF::Reader::Encoding::ZapfDingbatsEncoding class" do
+describe "The PDF::Reader::Encoding::ZapfDingbatsEncoding class" do
 
-  specify "should correctly convert various dingbats strings to utf-8" do
+  it "should correctly convert various dingbats strings to utf-8" do
     e = PDF::Reader::Encoding.new(:ZapfDingbatsEncoding)
     [
       {:dingbats => "\x22", :utf8 => [0x2702].pack("U*")}, # scissors
@@ -447,7 +447,7 @@ context "The PDF::Reader::Encoding::ZapfDingbatsEncoding class" do
     end
   end
 
-  specify "should correctly convert various dingbats strings when a differences table is specified" do
+  it "should correctly convert various dingbats strings when a differences table is specified" do
     e = PDF::Reader::Encoding.new(:ZapfDingbatsEncoding)
     e.differences = [0xEE, :A]
     [
@@ -466,7 +466,7 @@ context "The PDF::Reader::Encoding::ZapfDingbatsEncoding class" do
     end
   end
 
-  specify "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
+  it "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
     e = PDF::Reader::Encoding.new(:ZapfDingbatsEncoding)
     cmap = PDF::Reader::CMap.new("")
     cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
@@ -481,9 +481,9 @@ context "The PDF::Reader::Encoding::ZapfDingbatsEncoding class" do
   end
 end
 
-context "The PDF::Reader::Encoding::UTF16Encoding class" do
+describe "The PDF::Reader::Encoding::UTF16Encoding class" do
 
-  specify "should correctly convert various PDFDoc strings to utf-8" do
+  it "should correctly convert various PDFDoc strings to utf-8" do
     e = PDF::Reader::Encoding.new(:UTF16Encoding)
     [
       {:utf16 => "\x00\x41", :utf8 => [0x41].pack("U*")},

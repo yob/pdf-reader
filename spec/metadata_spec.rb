@@ -3,10 +3,10 @@
 $LOAD_PATH << "." unless $LOAD_PATH.include?(".")
 require File.dirname(__FILE__) + "/spec_helper"
 
-context PDF::Reader::MetadataVisitor do
+describe PDF::Reader::MetadataVisitor do
   include EncodingHelper
 
-  specify "should send the correct metadata callbacks when processing an PrinceXML PDF" do
+  it "should send the correct metadata callbacks when processing an PrinceXML PDF" do
 
     receiver = PDF::Reader::RegisterReceiver.new
 
@@ -20,7 +20,7 @@ context PDF::Reader::MetadataVisitor do
     meta[:Producer].should eql("YesLogic Prince 5.1")
   end
 
-  specify "should send the correct metadata callbacks when processing an openoffice PDF" do
+  it "should send the correct metadata callbacks when processing an openoffice PDF" do
 
     receiver = PDF::Reader::RegisterReceiver.new
 
@@ -36,7 +36,7 @@ context PDF::Reader::MetadataVisitor do
     meta[:CreationDate].should eql("D:20070623021705+10'00'")
   end
 
-  specify "should send the correct xml_metadata callbacks when processing a distiller PDF" do
+  it "should send the correct xml_metadata callbacks when processing a distiller PDF" do
 
     receiver = PDF::Reader::RegisterReceiver.new
 
@@ -50,7 +50,7 @@ context PDF::Reader::MetadataVisitor do
     meta.include?("<pdf:Title>file://C:\\Data\\website\\i18nguy\\unicode-example.html</pdf:Title>").should be_true
   end
 
-  specify "should send the correct page count callback when processing an openoffice PDF" do
+  it "should send the correct page count callback when processing an openoffice PDF" do
 
     receiver = PDF::Reader::RegisterReceiver.new
 
@@ -61,7 +61,7 @@ context PDF::Reader::MetadataVisitor do
     cb[:args].first.should eql(2)
   end
 
-  specify "should send the correct pdf_version callback when processing an openoffice PDF" do
+  it "should send the correct pdf_version callback when processing an openoffice PDF" do
 
     receiver = PDF::Reader::RegisterReceiver.new
 

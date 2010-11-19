@@ -13,14 +13,14 @@ require File.dirname(__FILE__) + "/spec_helper"
 # * All binary strings will be marked as such on M17N aware
 #
 
-context PDF::Reader do
+describe PDF::Reader do
   include EncodingHelper
 
   #############################################################################
   # Metadata Callbacks
   #############################################################################
 
-  context  "pdf_version callback" do
+  describe  "pdf_version callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return a single float argument on #{filename}" do
         receiver.all_args(:pdf_version).each.each do |args|
@@ -31,7 +31,7 @@ context PDF::Reader do
     end
   end
 
-  context  "metadata callback" do
+  describe  "metadata callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return a single hash argument on #{filename}" do
         receiver.all_args(:metadata).each.each do |args|
@@ -43,7 +43,7 @@ context PDF::Reader do
     end
   end
 
-  context  "xml_metadata callback" do
+  describe  "xml_metadata callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return a single UTF-8 string argument on #{filename}" do
 
@@ -57,7 +57,7 @@ context PDF::Reader do
     end
   end
 
-  context  "page_count callback" do
+  describe  "page_count callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return a single Fixnum argument that is > 0 on #{filename}" do
 
@@ -75,7 +75,7 @@ context PDF::Reader do
   # Page Callbacks
   #############################################################################
 
-  context  "begin_inline_image callback" do
+  describe  "begin_inline_image callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:begin_inline_image).each do |args|
@@ -85,7 +85,7 @@ context PDF::Reader do
     end
   end
 
-  context  "begin_inline_image_data callback" do
+  describe  "begin_inline_image_data callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return a Hash and binary string argument on #{filename}" do
         receiver.all_args(:begin_inline_image_data).each do |args|
@@ -116,7 +116,7 @@ context PDF::Reader do
     end
   end
 
-  context  "begin_text_object callback" do
+  describe  "begin_text_object callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:begin_text_object).each do |args|
@@ -126,7 +126,7 @@ context PDF::Reader do
     end
   end
 
-  context  "end_document callback" do
+  describe  "end_document callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:end_document).each do |args|
@@ -136,7 +136,7 @@ context PDF::Reader do
     end
   end
 
-  context  "end_inline_image callback" do
+  describe  "end_inline_image callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
 
@@ -148,7 +148,7 @@ context PDF::Reader do
     end
   end
 
-  context  "end_page callback" do
+  describe  "end_page callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:end_page).each do |args|
@@ -158,7 +158,7 @@ context PDF::Reader do
     end
   end
 
-  context  "end_page_container callback" do
+  describe  "end_page_container callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:end_page_container).each do |args|
@@ -168,7 +168,7 @@ context PDF::Reader do
     end
   end
 
-  context  "end_text_object callback" do
+  describe  "end_text_object callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:end_text_object).each do |args|
@@ -178,7 +178,7 @@ context PDF::Reader do
     end
   end
 
-  context  "move_to_next_line_and_show_text callback" do
+  describe  "move_to_next_line_and_show_text callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return a single UTF-8 strings on #{filename}" do
         receiver.all_args(:move_to_next_line_and_show_text).each do |args|
@@ -190,7 +190,7 @@ context PDF::Reader do
     end
   end
 
-  context  "restore_graphics_state callback" do
+  describe  "restore_graphics_state callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:restore_graphics_state).each do |args|
@@ -200,7 +200,7 @@ context PDF::Reader do
     end
   end
 
-  context  "save_graphics_state callback" do
+  describe  "save_graphics_state callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:save_graphics_state).each do |args|
@@ -210,7 +210,7 @@ context PDF::Reader do
     end
   end
 
-  context  "set_text_font_and_size callback" do
+  describe  "set_text_font_and_size callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:set_text_font_and_size).each do |args|
@@ -222,7 +222,7 @@ context PDF::Reader do
     end
   end
 
-  context  "show_text callback" do
+  describe  "show_text callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return a single UTF-8 string argument on #{filename}" do
         receiver.all_args(:show_text).each do |args|
@@ -234,7 +234,7 @@ context PDF::Reader do
     end
   end
 
-  context  "show_text_with_positioning callback" do
+  describe  "show_text_with_positioning callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return an array of Numbers and UTF-8 strings on #{filename}" do
         receiver.all_args(:show_text_with_positioning).each do |args|
@@ -247,7 +247,7 @@ context PDF::Reader do
     end
   end
 
-  context  "set_spacing_next_line_show_text callback" do
+  describe  "set_spacing_next_line_show_text callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return a single UTF-8 strings on #{filename}" do
         receiver.all_args(:set_spacing_next_line_show_text).each do |args|

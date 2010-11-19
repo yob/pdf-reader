@@ -3,14 +3,14 @@
 $LOAD_PATH << "." unless $LOAD_PATH.include?(".")
 require File.dirname(__FILE__) + "/spec_helper"
 
-context PDF::Reader::ObjectStream, "[] method" do
+describe PDF::Reader::ObjectStream, "[] method" do
 
   before(:each) do
     @hash = {:N=>2, :Type=>:ObjStm, :First=>11}
     @data = "29 0 30 48 <</K 30 0 R/RoleMap 31 0 R/Type/StructTreeRoot>><</P 29 0 R/S/Document>>"
   end
 
-  specify "should provide access to 2 embedded objects" do
+  it "should provide access to 2 embedded objects" do
     stream = PDF::Reader::Stream.new(@hash, @data)
     obj_stream = PDF::Reader::ObjectStream.new(stream)
 
@@ -21,7 +21,7 @@ context PDF::Reader::ObjectStream, "[] method" do
     obj_stream[30][:S].should eql(:Document)
   end
 
-  specify "should return nil for objects it doesn't contain" do
+  it "should return nil for objects it doesn't contain" do
     stream = PDF::Reader::Stream.new(@hash, @data)
     obj_stream = PDF::Reader::ObjectStream.new(stream)
 
@@ -30,14 +30,14 @@ context PDF::Reader::ObjectStream, "[] method" do
 
 end
 
-context PDF::Reader::ObjectStream, "size method" do
+describe PDF::Reader::ObjectStream, "size method" do
 
   before(:each) do
     @hash = {:N=>2, :Type=>:ObjStm, :First=>11}
     @data = "29 0 30 48 <</K 30 0 R/RoleMap 31 0 R/Type/StructTreeRoot>><</P 29 0 R/S/Document>>"
   end
 
-  specify "should return the number of embedded objects" do
+  it "should return the number of embedded objects" do
     stream = PDF::Reader::Stream.new(@hash, @data)
     obj_stream = PDF::Reader::ObjectStream.new(stream)
 

@@ -16,5 +16,10 @@ Gem::Specification.new do |spec|
   spec.author = "James Healy"
   spec.email = "jimmy@deefa.com"
   spec.homepage = "http://github.com/yob/pdf-reader"
+
+  spec.add_development_dependency("rake")
+  spec.add_development_dependency("roodi")
+  spec.add_development_dependency("rspec", "~>2.1")
+
   spec.add_dependency('Ascii85', '>=0.9')
 end

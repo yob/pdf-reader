@@ -3,11 +3,11 @@
 $LOAD_PATH << "." unless $LOAD_PATH.include?(".")
 require File.dirname(__FILE__) + "/spec_helper"
 
-context PDF::Reader::Parser do
+describe PDF::Reader::Parser do
   include ParserHelper
   include EncodingHelper
 
-  specify "should parse a name correctly" do
+  it "should parse a name correctly" do
     parse_string("/James").parse_token.should eql(:James)
     parse_string("/A;Name_With-Various***Characters?").parse_token.should eql(:"A;Name_With-Various***Characters?")
     parse_string("/1.2").parse_token.should eql(:"1.2")
@@ -20,21 +20,21 @@ context PDF::Reader::Parser do
 
   # '/' is a valid PDF name, but :"" is not a valid ruby symbol.
   # How should I handle this?
-  specify "should parse an empty name correctly" #do
+  it "should parse an empty name correctly" #do
     #parse_string("/").parse_token.should eql(:"")
   #end
 
-  specify "should parse booleans correctly" do
+  it "should parse booleans correctly" do
     parse_string("true").parse_token.should be_true
     parse_string("false").parse_token.should be_false
   end
 
-  specify "should parse null and nil correctly" do
+  it "should parse null and nil correctly" do
     parse_string("").parse_token.should be_nil
     parse_string("null").parse_token.should be_nil
   end
 
-  specify "should parse a string correctly" do
+  it "should parse a string correctly" do
     parse_string("()").parse_token.should eql("")
     parse_string("(this is a string)").parse_token.should eql("this is a string")
     parse_string("(this \\n is a string)").parse_token.should eql("this \n is a string")
@@ -59,7 +59,7 @@ context PDF::Reader::Parser do
     parse_string("([test])").parse_token.should eql("[test]")
   end
 
-  specify "should parse a Unicode string correctly" do
+  it "should parse a Unicode string correctly" do
     seq = {
       # key                 source                  expected               confusing to
       :straddle_seq_5c6e =>["\x4F\x5C\x5C\x6E\x05", "\x4F\x5C\x6E\x05"], # /.\n./
@@ -97,27 +97,27 @@ context PDF::Reader::Parser do
     parse_string(mixed_src).parse_token.should eql(mixed_exp)
   end
 
-  specify "should not leave the closing literal string delimiter in the buffer after parsing a string" do
+  it "should not leave the closing literal string delimiter in the buffer after parsing a string" do
     parser = parse_string("(this is a string) /James")
     parser.parse_token.should eql("this is a string")
     parser.parse_token.should eql(:James)
   end
 
-  specify "should parse a hex string correctly" do
+  it "should parse a hex string correctly" do
     parse_string("<48656C6C6F>").parse_token.should eql("Hello")
   end
 
-  specify "should ignore whitespace when parsing a hex string" do
+  it "should ignore whitespace when parsing a hex string" do
     parse_string("<48656C6C6F20\n4A616D6573>").parse_token.should eql("Hello James")
   end
 
-  specify "should parse dictionary with embedded hex string correctly" do
+  it "should parse dictionary with embedded hex string correctly" do
     dict = parse_string("<< /X <48656C6C6F> >>").parse_token
     dict.size.should eql(1)
     dict[:X].should eql("Hello")
   end
 
-  specify "should parse various dictionaries correctly" do
+  it "should parse various dictionaries correctly" do
     str = "<< /Registry (Adobe) /Ordering (Japan1) /Supplement 5 >>"
     dict = parse_string(str).parse_token
 
@@ -127,7 +127,7 @@ context PDF::Reader::Parser do
     dict[:Supplement].should  eql(5)
   end
 
-  specify "should parse an array correctly" do
+  it "should parse an array correctly" do
     parse_string("[ 10 0 R 12 0 R ]").parse_token.size.should eql(2)
   end
 

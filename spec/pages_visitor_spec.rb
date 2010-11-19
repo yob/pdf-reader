@@ -7,9 +7,9 @@ class PDF::Reader::PagesVisitor
   public :content_stream
 end
 
-context PDF::Reader::PagesVisitor do
+describe PDF::Reader::PagesVisitor do
 
-  specify "should send the correct callbacks when processing instructions containing a single text block" do
+  it "should send the correct callbacks when processing instructions containing a single text block" do
 
     # mock up an object that will be called with callbacks. This will test that
     # the content class correctly recognises all instructions
@@ -29,7 +29,7 @@ context PDF::Reader::PagesVisitor do
     content.content_stream(instructions, {:F1 => PDF::Reader::Font.new})
   end
 
-  specify "should send the correct callbacks when processing instructions containing 2 text blocks" do
+  it "should send the correct callbacks when processing instructions containing 2 text blocks" do
 
     # mock up an object that will be called with callbacks. This will test that
     # the content class correctly recognises all instructions
@@ -49,7 +49,7 @@ context PDF::Reader::PagesVisitor do
     content.content_stream(instructions, {:F1 => PDF::Reader::Font.new})
   end
 
-  specify "should send the correct callbacks when processing instructions containing an inline image" do
+  it "should send the correct callbacks when processing instructions containing an inline image" do
 
     # mock up an object that will be called with callbacks. This will test that
     # the content class correctly recognises all instructions
@@ -75,7 +75,7 @@ context PDF::Reader::PagesVisitor do
 
   # test for a bug reported by Jack Rusher where params at the end of a stream would be
   # silently dropped if their matching operator was in the next contream stream in a series
-  specify "should send the correct callbacks when processing a PDF with content over multiple streams" do
+  it "should send the correct callbacks when processing a PDF with content over multiple streams" do
 
     receiver = PDF::Reader::RegisterReceiver.new
 

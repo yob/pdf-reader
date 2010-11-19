@@ -40,9 +40,9 @@ class PageTextReceiver
 end
 
 
-context PDF::Reader, "meta specs" do
+describe PDF::Reader, "meta specs" do
 
-  specify "should interpret unicode strings correctly" do
+  it "should interpret unicode strings correctly" do
     receiver = PageTextReceiver.new
     PDF::Reader.file(File.dirname(__FILE__) + "/data/cairo-unicode-short.pdf", receiver)
 
@@ -51,7 +51,7 @@ context PDF::Reader, "meta specs" do
     receiver.content[0].should eql("Chunky Bacon")
   end
 
-  specify "should process text from a the adobe sample file correctly" do
+  it "should process text from a the adobe sample file correctly" do
     receiver = PageTextReceiver.new
     PDF::Reader.file(File.dirname(__FILE__) + "/data/adobe_sample.pdf", receiver)
 
@@ -60,7 +60,7 @@ context PDF::Reader, "meta specs" do
     receiver.content[0].should eql("This is a sample PDF file.If you can read this,you already have Adobe AcrobatReader installed on your computer.")
   end
 
-  specify "should process text from a dutch PDF correctly" do
+  it "should process text from a dutch PDF correctly" do
     receiver = PageTextReceiver.new
     str1 = "Dit\302\240is\302\240een\302\240pdf\302\240test\302\240van\302\240drie\302\240pagina’s."
     str2 = "Pagina\302\2401"
@@ -72,7 +72,7 @@ context PDF::Reader, "meta specs" do
     receiver.content[0].include?(str2).should be_true
   end
 
-  specify "should process text from a PDF with a difference table correctly" do
+  it "should process text from a PDF with a difference table correctly" do
     receiver = PageTextReceiver.new
     str = "Goiás"
     PDF::Reader.file(File.dirname(__FILE__) + "/data/difference_table.pdf", receiver)
@@ -82,7 +82,7 @@ context PDF::Reader, "meta specs" do
     receiver.content[0].should eql(str)
   end
 
-  specify "should process text from a PDF with a content stream that has trailing whitespace" do
+  it "should process text from a PDF with a content stream that has trailing whitespace" do
     receiver = PageTextReceiver.new
     str = "TaxInvoice"
     PDF::Reader.file(File.dirname(__FILE__) + "/data/content_stream_trailing_whitespace.pdf", receiver)
@@ -92,7 +92,7 @@ context PDF::Reader, "meta specs" do
     receiver.content[0].slice(0,10).should eql(str)
   end
 
-  specify "should correctly process a PDF with a content stream that is missing an operator (has hanging params)" do
+  it "should correctly process a PDF with a content stream that is missing an operator (has hanging params)" do
     receiver = PageTextReceiver.new
     str1 = "Locatrix"
     str2 = "Ubuntu"
@@ -104,7 +104,7 @@ context PDF::Reader, "meta specs" do
     receiver.content[1].slice(0,6).should eql(str2)
   end
 
-  specify "should correctly process a PDF with a string containing a high byte (D1) under MacRomanEncoding" do
+  it "should correctly process a PDF with a string containing a high byte (D1) under MacRomanEncoding" do
     # this spec is to detect an hard lock issue some people were encountering on some OSX
     # systems. Real pain to debug.
     receiver = PageTextReceiver.new
@@ -115,7 +115,7 @@ context PDF::Reader, "meta specs" do
     receiver.content[0].should eql("’")
   end
 
-  specify "should not hang when processing a PDF that has a content stream with a broken string" do
+  it "should not hang when processing a PDF that has a content stream with a broken string" do
     receiver = PageTextReceiver.new
 
     # this file used to get us into a hard, endless loop. Make sure that doesn't still happen
@@ -126,7 +126,7 @@ context PDF::Reader, "meta specs" do
     end
   end
 
-  specify "should correctly process a PDF with a stream that has its length specified as an indirect reference" do
+  it "should correctly process a PDF with a stream that has its length specified as an indirect reference" do
     receiver = PageTextReceiver.new
     PDF::Reader.file(File.dirname(__FILE__) + "/data/content_stream_with_length_as_ref.pdf", receiver)
 
@@ -138,7 +138,7 @@ context PDF::Reader, "meta specs" do
   # PDF::Reader::XRef#object was saving an incorrect position when seeking. We
   # were saving the current pos of the underlying IO stream, then seeking back
   # to it. This was fine, except when there was still content in the buffer.
-  specify "should correctly process a PDF with a stream that has its length specified as an indirect reference and uses windows line breaks" do
+  it "should correctly process a PDF with a stream that has its length specified as an indirect reference and uses windows line breaks" do
     receiver = PageTextReceiver.new
     PDF::Reader.file(File.dirname(__FILE__) + "/data/content_stream_with_length_as_ref_and_windows_breaks.pdf", receiver)
 
@@ -147,14 +147,14 @@ context PDF::Reader, "meta specs" do
     receiver.content[0].should eql("HelloWorld")
   end
 
-  specify "should raise an exception if a content stream refers to a non-existant font" do
+  it "should raise an exception if a content stream refers to a non-existant font" do
     receiver = PageTextReceiver.new
     lambda {
       PDF::Reader.file(File.dirname(__FILE__) + "/data/content_stream_refers_to_invalid_font.pdf", receiver)
     }.should raise_error(PDF::Reader::MalformedPDFError)
   end
 
-  specify "should correctly process a PDF that uses an ASCII85Decode filter" do
+  it "should correctly process a PDF that uses an ASCII85Decode filter" do
     receiver = PageTextReceiver.new
     PDF::Reader.file(File.dirname(__FILE__) + "/data/ascii85_filter.pdf", receiver)
 
@@ -163,7 +163,7 @@ context PDF::Reader, "meta specs" do
     receiver.content[0][0,19].should eql("Et Iunia sexagesimo")
   end
 
-  specify "should correctly process a PDF that has an inline image in a content stream with no line breaks" do
+  it "should correctly process a PDF that has an inline image in a content stream with no line breaks" do
     receiver = PageTextReceiver.new
     PDF::Reader.file(File.dirname(__FILE__) + "/data/inline_image_single_line_content_stream.pdf", receiver)
 
@@ -172,7 +172,7 @@ context PDF::Reader, "meta specs" do
     receiver.content[0][0,7].should eql("WORKING")
   end
 
-  specify "should correctly process a PDF that uses Form XObjects to repeat content" do
+  it "should correctly process a PDF that uses Form XObjects to repeat content" do
     receiver = PageTextReceiver.new
     PDF::Reader.file(File.dirname(__FILE__) + "/data/form_xobject.pdf", receiver)
 
@@ -182,7 +182,7 @@ context PDF::Reader, "meta specs" do
     receiver.content[1].should eql("James Healy")
   end
 
-  specify "should correctly process a PDF that uses Form XObjects to repeat content" do
+  it "should correctly process a PDF that uses Form XObjects to repeat content" do
     receiver = PageTextReceiver.new
     PDF::Reader.file(File.dirname(__FILE__) + "/data/form_xobject_more.pdf", receiver)
 
@@ -198,7 +198,7 @@ context PDF::Reader, "meta specs" do
     receiver.content[1].include?("James Healy").should be_true
   end
 
-  specify "should correctly process a PDF that uses indirect Form XObjects to repeat content" do
+  it "should correctly process a PDF that uses indirect Form XObjects to repeat content" do
     receiver = PageTextReceiver.new
     PDF::Reader.file(File.dirname(__FILE__) + "/data/indirect_xobject.pdf", receiver)
 
@@ -206,7 +206,7 @@ context PDF::Reader, "meta specs" do
     receiver.content.size.should eql(1)
   end
 
-  specify "should correctly process a PDF that uses multiple content streams for a single page" do
+  it "should correctly process a PDF that uses multiple content streams for a single page" do
     receiver = PageTextReceiver.new
     PDF::Reader.file(File.dirname(__FILE__) + "/data/split_params_and_operator.pdf", receiver)
 
@@ -216,7 +216,7 @@ context PDF::Reader, "meta specs" do
     receiver.content[0].include?("James Healy").should be_true
   end
 
-  specify "should correctly process a PDF that has a single space after the EOF marker" do
+  it "should correctly process a PDF that has a single space after the EOF marker" do
     receiver = PageTextReceiver.new
     PDF::Reader.file(File.dirname(__FILE__) + "/data/space_after_eof.pdf", receiver)
 
@@ -225,7 +225,7 @@ context PDF::Reader, "meta specs" do
     receiver.content[0].should eql("HelloWorld")
   end
 
-  specify "should correctly extract text from a PDF that was generated in open office 3" do
+  it "should correctly extract text from a PDF that was generated in open office 3" do
     receiver = PageTextReceiver.new
     PDF::Reader.file(File.dirname(__FILE__) + "/data/oo3.pdf", receiver)
 

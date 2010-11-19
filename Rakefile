@@ -1,10 +1,10 @@
 require "rubygems"
+require "bundler"
+Bundler.setup
+
 require 'rake'
-require 'rake/clean'
 require 'rake/rdoctask'
-require 'rake/testtask'
-require "rake/gempackagetask"
-require 'spec/rake/spectask'
+require 'rspec/core/rake_task'
 require 'roodi'
 require 'roodi_task'
 
@@ -13,28 +13,9 @@ task :default => [ :spec ]
 
 # run all rspecs
 desc "Run all rspec files"
-Spec::Rake::SpecTask.new("spec") do |t|
-  t.spec_files =  FileList['specs/**/*.rb']
-  t.spec_opts  = ["--color", "--format progress"]
-  t.rcov       =  false
-  t.ruby_opts  << "-w"
-end
-
-# generate specdocs
-desc "Generate Specdocs"
-Spec::Rake::SpecTask.new("specdocs") do |t|
-  t.spec_files = FileList['specs/**/*.rb']
-  t.spec_opts = ["--format", "rdoc"]
-  t.out = (ENV['CC_BUILD_ARTIFACTS'] || 'doc') + '/specdoc.rd'
-end
-
-# generate failing spec report
-desc "Generate failing spec report"
-Spec::Rake::SpecTask.new("spec_report") do |t|
-  t.spec_files = FileList['specs/**/*.rb']
-  t.spec_opts = ["--format", "html", "--diff"]
-  t.out = (ENV['CC_BUILD_ARTIFACTS'] || 'doc') + '/spec_report.html'
-  t.fail_on_error = false
+RSpec::Core::RakeTask.new("spec") do |t|
+  t.rspec_opts  = ["--color", "--format progress"]
+  t.ruby_opts = "-w"
 end
 
 # Genereate the RDoc documentation

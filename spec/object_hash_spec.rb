@@ -3,8 +3,8 @@
 $LOAD_PATH << "." unless $LOAD_PATH.include?(".")
 require File.dirname(__FILE__) + "/spec_helper"
 
-context PDF::Reader::ObjectHash do
-  specify "should have enumerable mixed in" do
+describe PDF::Reader::ObjectHash do
+  it "should have enumerable mixed in" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -12,8 +12,8 @@ context PDF::Reader::ObjectHash do
   end
 end
 
-context PDF::Reader::ObjectHash do
-  specify "should correctly load a PDF from a StringIO object" do
+describe PDF::Reader::ObjectHash do
+  it "should correctly load a PDF from a StringIO object" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     io = StringIO.new(File.read(filename))
     h = PDF::Reader::ObjectHash.new(io)
@@ -21,15 +21,15 @@ context PDF::Reader::ObjectHash do
     h.map { |ref, obj| obj.class }.size.should eql(57)
   end
 
-  specify "should raise an ArgumentError if passed a non filename and non IO" do
+  it "should raise an ArgumentError if passed a non filename and non IO" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
      lambda {PDF::Reader::ObjectHash.new(10)}.should raise_error(ArgumentError)
   end
 end
 
-context PDF::Reader::ObjectHash, "[] method" do
+describe PDF::Reader::ObjectHash, "[] method" do
 
-  specify "should return nil for any invalid hash key" do
+  it "should return nil for any invalid hash key" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -38,14 +38,14 @@ context PDF::Reader::ObjectHash, "[] method" do
     h["James"].should be_nil
   end
 
-  specify "should return nil for any hash key that doesn't exist" do
+  it "should return nil for any hash key that doesn't exist" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
     h[10000].should be_nil
   end
 
-  specify "should correctly extract an int object using int or string keys" do
+  it "should correctly extract an int object using int or string keys" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -54,7 +54,7 @@ context PDF::Reader::ObjectHash, "[] method" do
     h["3james"].should eql(3649)
   end
 
-  specify "should correctly extract an int object using PDF::Reference as a key" do
+  it "should correctly extract an int object using PDF::Reference as a key" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
     ref = PDF::Reader::Reference.new(3,0)
@@ -63,9 +63,9 @@ context PDF::Reader::ObjectHash, "[] method" do
   end
 end
 
-context PDF::Reader::ObjectHash, "object method" do
+describe PDF::Reader::ObjectHash, "object method" do
 
-  specify "should return regular objects unchanged" do
+  it "should return regular objects unchanged" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -74,7 +74,7 @@ context PDF::Reader::ObjectHash, "object method" do
     h.object("James").should eql("James")
   end
 
-  specify "should translate reference objects into an extracted PDF object" do
+  it "should translate reference objects into an extracted PDF object" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -82,9 +82,9 @@ context PDF::Reader::ObjectHash, "object method" do
   end
 end
 
-context PDF::Reader::ObjectHash, "fetch method" do
+describe PDF::Reader::ObjectHash, "fetch method" do
 
-  specify "should raise IndexError for any invalid hash key when no default is provided" do
+  it "should raise IndexError for any invalid hash key when no default is provided" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -93,14 +93,14 @@ context PDF::Reader::ObjectHash, "fetch method" do
     lambda { h.fetch("James") }.should raise_error(IndexError)
   end
 
-  specify "should return default for any hash key that doesn't exist when a default is provided" do
+  it "should return default for any hash key that doesn't exist when a default is provided" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
     h.fetch(10000, "default").should eql("default")
   end
 
-  specify "should correctly extract an int object using int or string keys" do
+  it "should correctly extract an int object using int or string keys" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -109,7 +109,7 @@ context PDF::Reader::ObjectHash, "fetch method" do
     h.fetch("3james").should eql(3649)
   end
 
-  specify "should correctly extract an int object using PDF::Reader::Reference keys" do
+  it "should correctly extract an int object using PDF::Reader::Reference keys" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
     ref = PDF::Reader::Reference.new(3,0)
@@ -118,9 +118,9 @@ context PDF::Reader::ObjectHash, "fetch method" do
   end
 end
 
-context PDF::Reader::ObjectHash, "each method" do
+describe PDF::Reader::ObjectHash, "each method" do
 
-  specify "should iterate 57 times when using cairo-unicode PDF" do
+  it "should iterate 57 times when using cairo-unicode PDF" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -131,7 +131,7 @@ context PDF::Reader::ObjectHash, "each method" do
     count.should eql(57)
   end
 
-  specify "should provide a PDF::Reader::Reference to each iteration" do
+  it "should provide a PDF::Reader::Reference to each iteration" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -142,9 +142,9 @@ context PDF::Reader::ObjectHash, "each method" do
   end
 end
 
-context PDF::Reader::ObjectHash, "each_key method" do
+describe PDF::Reader::ObjectHash, "each_key method" do
 
-  specify "should iterate 57 times when using cairo-unicode PDF" do
+  it "should iterate 57 times when using cairo-unicode PDF" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -155,7 +155,7 @@ context PDF::Reader::ObjectHash, "each_key method" do
     count.should eql(57)
   end
 
-  specify "should provide a PDF::Reader::Reference to each iteration" do
+  it "should provide a PDF::Reader::Reference to each iteration" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -165,9 +165,9 @@ context PDF::Reader::ObjectHash, "each_key method" do
   end
 end
 
-context PDF::Reader::ObjectHash, "each_value method" do
+describe PDF::Reader::ObjectHash, "each_value method" do
 
-  specify "should iterate 57 times when using cairo-unicode PDF" do
+  it "should iterate 57 times when using cairo-unicode PDF" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -179,9 +179,9 @@ context PDF::Reader::ObjectHash, "each_value method" do
   end
 end
 
-context PDF::Reader::ObjectHash, "size method" do
+describe PDF::Reader::ObjectHash, "size method" do
 
-  specify "should return 57 when using cairo-unicode PDF" do
+  it "should return 57 when using cairo-unicode PDF" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -189,9 +189,9 @@ context PDF::Reader::ObjectHash, "size method" do
   end
 end
 
-context PDF::Reader::ObjectHash, "empty? method" do
+describe PDF::Reader::ObjectHash, "empty? method" do
 
-  specify "should return false when using cairo-unicode PDF" do
+  it "should return false when using cairo-unicode PDF" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -199,9 +199,9 @@ context PDF::Reader::ObjectHash, "empty? method" do
   end
 end
 
-context PDF::Reader::ObjectHash, "has_key? method" do
+describe PDF::Reader::ObjectHash, "has_key? method" do
 
-  specify "should return true when called with a valid ID" do
+  it "should return true when called with a valid ID" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -209,7 +209,7 @@ context PDF::Reader::ObjectHash, "has_key? method" do
     h.has_key?(PDF::Reader::Reference.new(1,0)).should be_true
   end
 
-  specify "should return false when called with an invalid ID" do
+  it "should return false when called with an invalid ID" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -220,16 +220,16 @@ context PDF::Reader::ObjectHash, "has_key? method" do
   end
 end
 
-context PDF::Reader::ObjectHash, "has_value? method" do
+describe PDF::Reader::ObjectHash, "has_value? method" do
 
-  specify "should return true when called with a valid object" do
+  it "should return true when called with a valid object" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
     h.has_value?(3649).should be_true
   end
 
-  specify "should return false when called with an invalid object" do
+  it "should return false when called with an invalid object" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -239,9 +239,9 @@ context PDF::Reader::ObjectHash, "has_value? method" do
   end
 end
 
-context PDF::Reader::ObjectHash, "keys method" do
+describe PDF::Reader::ObjectHash, "keys method" do
 
-  specify "should return an array of keys" do
+  it "should return an array of keys" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -251,9 +251,9 @@ context PDF::Reader::ObjectHash, "keys method" do
   end
 end
 
-context PDF::Reader::ObjectHash, "values method" do
+describe PDF::Reader::ObjectHash, "values method" do
 
-  specify "should return an array of object" do
+  it "should return an array of object" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -263,9 +263,9 @@ context PDF::Reader::ObjectHash, "values method" do
   end
 end
 
-context PDF::Reader::ObjectHash, "values_at method" do
+describe PDF::Reader::ObjectHash, "values_at method" do
 
-  specify "should return an array of object" do
+  it "should return an array of object" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
     ref3 = PDF::Reader::Reference.new(3,0)
@@ -276,9 +276,9 @@ context PDF::Reader::ObjectHash, "values_at method" do
   end
 end
 
-context PDF::Reader::ObjectHash, "to_a method" do
+describe PDF::Reader::ObjectHash, "to_a method" do
 
-  specify "should return an array of 57 arrays" do
+  it "should return an array of 57 arrays" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -288,9 +288,9 @@ context PDF::Reader::ObjectHash, "to_a method" do
   end
 end
 
-context PDF::Reader::ObjectHash, "trailer method" do
+describe PDF::Reader::ObjectHash, "trailer method" do
 
-  specify "should return the document trailer dictionary" do
+  it "should return the document trailer dictionary" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -303,9 +303,9 @@ context PDF::Reader::ObjectHash, "trailer method" do
   end
 end
 
-context PDF::Reader::ObjectHash, "pdf_version method" do
+describe PDF::Reader::ObjectHash, "pdf_version method" do
 
-  specify "should return the document PDF version dictionary" do
+  it "should return the document PDF version dictionary" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
@@ -313,9 +313,9 @@ context PDF::Reader::ObjectHash, "pdf_version method" do
   end
 end
 
-context PDF::Reader::ObjectHash, "page_references method" do
+describe PDF::Reader::ObjectHash, "page_references method" do
 
-  specify "should return the document PDF version dictionary" do
+  it "should return the document PDF version dictionary" do
     filename = File.dirname(__FILE__) + "/data/cairo-unicode.pdf"
     h = PDF::Reader::ObjectHash.new(filename)
 
