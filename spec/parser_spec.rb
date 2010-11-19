@@ -131,4 +131,13 @@ describe PDF::Reader::Parser do
     parse_string("[ 10 0 R 12 0 R ]").parse_token.size.should eql(2)
   end
 
+  it "should parse numbers correctly" do
+    parser = parse_string("1 2 -3 4.5 -5")
+    parser.parse_token.should == 1
+    parser.parse_token.should == 2
+    parser.parse_token.should == -3
+    parser.parse_token.should == 4.5
+    parser.parse_token.should == -5
+  end
+
 end
