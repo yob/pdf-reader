@@ -154,6 +154,8 @@ class PDF::Reader
       10.times do
         if state == :literal_string
           prepare_literal_token
+        elsif state == :hex_string
+          prepare_hex_token
         elsif state == :regular
           prepare_regular_token
         elsif state == :inline
@@ -170,6 +172,8 @@ class PDF::Reader
     def state
       if @tokens[-1] == "("
         :literal_string
+      elsif @tokens[-1] == "<"
+        :hex_string
       elsif @tokens[-1] == "stream"
         :stream
       elsif in_content_stream? && @tokens[-1] == "ID"
@@ -214,6 +218,31 @@ class PDF::Reader
 
       @tokens << str[0, str.size-2].strip
       @io.seek(-2, IO::SEEK_CUR) unless chr.nil?
+    end
+
+    # if we're currently inside a hex string, read hex nibbles until
+    # we find a closing >
+    #
+    def prepare_hex_token
+      str = ""
+      finished = false
+
+      while !finished
+        chr = @io.read(1)
+        codepoint = chr.to_s.unpack("C*").first
+        if chr.nil?
+          finished = true # unbalanced params
+        elsif (48..57).include?(codepoint) || (65..90).include?(codepoint) || (97..122).include?(codepoint)
+          str << chr
+        elsif codepoint <= 32
+          # ignore it
+        else
+          @tokens << str if str.size > 0
+          @tokens << ">" if chr != ">"
+          @tokens << chr
+          finished = true
+        end
+      end
     end
 
     # if we're currently inside a literal string we more or less just read bytes until

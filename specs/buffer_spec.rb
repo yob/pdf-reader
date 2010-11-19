@@ -40,6 +40,7 @@ context PDF::Reader::Buffer, "token method" do
     buf = parse_string("<[{/(")
 
     buf.token.should eql("<")
+    buf.token.should eql(">") # auto adds closing hex string delim
     buf.token.should eql("[")
     buf.token.should eql("{")
     buf.token.should eql("/")
@@ -117,6 +118,13 @@ context PDF::Reader::Buffer, "token method" do
     buf.token.should eql("(")
     buf.token.should eql("James%Healy")
     buf.token.should eql(")")
+  end
+
+  specify "should tokenise a hex string with a space correctly" do
+    buf = parse_string("<AA BB>")
+    buf.token.should eql("<")
+    buf.token.should eql("AABB")
+    buf.token.should eql(">")
   end
 
   specify "should tokenise a string with comments correctly" do
@@ -237,6 +245,19 @@ context PDF::Reader::Buffer, "token method" do
     buf.token.should eql("48656C6C6F")
     buf.token.should eql(">")
     buf.token.should eql(">>")
+  end
+  specify "should correctly return a dictionary with embedded hex string" do
+    buf = parse_string("/Span<</ActualText<FEFF0009>>> BDC")
+    buf.token.should eql("/")
+    buf.token.should eql("Span")
+    buf.token.should eql("<<")
+    buf.token.should eql("/")
+    buf.token.should eql("ActualText")
+    buf.token.should eql("<")
+    buf.token.should eql("FEFF0009")
+    buf.token.should eql(">")
+    buf.token.should eql(">>")
+    buf.token.should eql("BDC")
   end
 
   specify "should correctly return a dictionary with an indirect reference" do
