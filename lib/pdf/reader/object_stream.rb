@@ -5,7 +5,7 @@ class PDF::Reader
   # provides a wrapper around a PDF stream object that contains other objects in it.
   # This is done for added compression and is described as an "Object Stream" in the spec.
   #
-  class ObjectStream
+  class ObjectStream # :nodoc:
     def initialize(stream)
       @dict = stream.hash
       @data = stream.unfiltered_data

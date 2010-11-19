@@ -24,7 +24,7 @@
 ################################################################################
 
 class PDF::Reader
-  class CMap
+  class CMap # :nodoc:
 
     def initialize(data)
       @map = {}

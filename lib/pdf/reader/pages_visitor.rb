@@ -175,7 +175,7 @@ class PDF::Reader
   # If it gets mapped to the name "IM1", then it can be placed on the page using
   # invoke_xobject "IM1".
   #
-  class PagesVisitor < AbstractVisitor
+  class PagesVisitor < AbstractVisitor # :nodoc:
     OPERATORS = {
       'b'   => :close_fill_stroke,
       'B'   => :fill_stroke,

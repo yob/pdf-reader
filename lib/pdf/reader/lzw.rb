@@ -15,9 +15,9 @@ module PDF
     #
     # The PDF spec also has some data on the algorithm.
     #
-    class LZW
+    class LZW # :nodoc:
 
-      class BitStream # nodoc #
+      class BitStream # :nodoc:
 
         def initialize(data, bits_in_chunk)
           @data = data
@@ -58,7 +58,7 @@ module PDF
       CODE_CLEAR_TABLE = 256 #clear table
 
       # stores de pairs code => string
-      class StringTable < Hash # nodoc #
+      class StringTable < Hash # :nodoc:
         attr_reader :string_table_pos
 
         def initialize

@@ -22,12 +22,11 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-
 class PDF::Reader
   ################################################################################
   # An internal PDF::Reader class that helps to verify various parts of the PDF file
   # are valid
-  class Error
+  class Error # :nodoc:
     ################################################################################
     def self.str_assert (lvalue, rvalue, chars=nil)
       raise MalformedPDFError, "PDF malformed, expected string but found #{lvalue.class} instead" if chars and !lvalue.kind_of?(String)

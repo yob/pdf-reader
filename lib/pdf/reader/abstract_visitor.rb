@@ -2,7 +2,7 @@
 
 class PDF::Reader
 
-  class AbstractVisitor
+  class AbstractVisitor # :nodoc:
 
     def initialize(ohash, receiver, options = {})
       @ohash, @receiver, @options = ohash, receiver, options

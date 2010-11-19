@@ -30,9 +30,7 @@ class PDF::Reader
   # support for features like compression and encryption. This class is for decoding that
   # content.
   #
-  # Currently only 1 filter type is supported. Hopefully support for others will be added
-  # in the future.
-  class Filter
+  class Filter # :nodoc:
     ################################################################################
     # creates a new filter for decoding content.
     #
