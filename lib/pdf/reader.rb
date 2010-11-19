@@ -121,8 +121,8 @@ module PDF
       options = {:pages => true, :raw_text => false, :metadata => true}
       options.merge!(opts)
 
-      visitors.each do |v|
-        v.new(ohash, receiver, options).process
+      strategies.each do |s|
+        s.new(ohash, receiver, options).process
       end
 
       self
@@ -138,17 +138,17 @@ module PDF
 
     private
 
-    def visitors
-      @visitors ||= [
-        PDF::Reader::MetadataVisitor,
-        PDF::Reader::PagesVisitor
+    def strategies
+      @strategies ||= [
+        PDF::Reader::MetadataStrategy,
+        PDF::Reader::PagesStrategy
       ]
     end
   end
 end
 ################################################################################
 
-require 'pdf/reader/abstract_visitor'
+require 'pdf/reader/abstract_strategy'
 require 'pdf/reader/buffer'
 require 'pdf/reader/cmap'
 require 'pdf/reader/encoding'
@@ -156,10 +156,10 @@ require 'pdf/reader/error'
 require 'pdf/reader/filter'
 require 'pdf/reader/font'
 require 'pdf/reader/lzw'
-require 'pdf/reader/metadata_visitor'
+require 'pdf/reader/metadata_strategy'
 require 'pdf/reader/object_hash'
 require 'pdf/reader/object_stream'
-require 'pdf/reader/pages_visitor'
+require 'pdf/reader/pages_strategy'
 require 'pdf/reader/parser'
 require 'pdf/reader/print_receiver'
 require 'pdf/reader/reference'

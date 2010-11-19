@@ -2,7 +2,7 @@
 
 class PDF::Reader
 
-  class MetadataVisitor < AbstractVisitor # :nodoc:
+  class MetadataStrategy < AbstractStrategy # :nodoc:
 
     def self.to_sym
       :metadata

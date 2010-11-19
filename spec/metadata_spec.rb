@@ -3,7 +3,7 @@
 $LOAD_PATH << "." unless $LOAD_PATH.include?(".")
 require File.dirname(__FILE__) + "/spec_helper"
 
-describe PDF::Reader::MetadataVisitor do
+describe PDF::Reader::MetadataStrategy do
   include EncodingHelper
 
   it "should send the correct metadata callbacks when processing an PrinceXML PDF" do

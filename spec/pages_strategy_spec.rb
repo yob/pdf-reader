@@ -3,11 +3,11 @@
 $LOAD_PATH << "." unless $LOAD_PATH.include?(".")
 require File.dirname(__FILE__) + "/spec_helper"
 
-class PDF::Reader::PagesVisitor
+class PDF::Reader::PagesStrategy
   public :content_stream
 end
 
-describe PDF::Reader::PagesVisitor do
+describe PDF::Reader::PagesStrategy do
 
   it "should send the correct callbacks when processing instructions containing a single text block" do
 
@@ -25,7 +25,7 @@ describe PDF::Reader::PagesVisitor do
     instructions = "BT\n 36.000 794.330 Td\n /F1 10.0 Tf\n 0 Tr\n (047174719X) Tj\n ET"
 
     # process the instructions
-    content = PDF::Reader::PagesVisitor.new(nil, receiver)
+    content = PDF::Reader::PagesStrategy.new(nil, receiver)
     content.content_stream(instructions, {:F1 => PDF::Reader::Font.new})
   end
 
@@ -45,7 +45,7 @@ describe PDF::Reader::PagesVisitor do
     instructions = "BT 36.000 794.330 Td /F1 10.0 Tf 0 Tr (047174719X) Tj ET\n BT 36.000 782.770 Td /F1 10.0 Tf 0 Tr (9780300110562) Tj ET"
 
     # process the instructions
-    content = PDF::Reader::PagesVisitor.new(nil, receiver)
+    content = PDF::Reader::PagesStrategy.new(nil, receiver)
     content.content_stream(instructions, {:F1 => PDF::Reader::Font.new})
   end
 
@@ -66,7 +66,7 @@ describe PDF::Reader::PagesVisitor do
     obj      = ohash[ref]
 
     # process the instructions
-    content = PDF::Reader::PagesVisitor.new(nil, receiver)
+    content = PDF::Reader::PagesStrategy.new(nil, receiver)
     fonts = {:F9 => PDF::Reader::Font.new,
              :F8 => PDF::Reader::Font.new,
              :Fb => PDF::Reader::Font.new}
