@@ -1,17 +1,19 @@
-v0.8.7 (XXX)
-- initial support for pdf 1.5+ files that use object and xref streams
+v0.9.0 (XXX)
+- support for pdf 1.5+ files that use object and xref streams
 - support streams that use a flate filter with the predictor option
 - ensure all content instructions are parsed when split over multiple stream
   - thanks to Jack Rusher for reporting
-- Fix a string parsing bug that was causing some character conversions to utf-8
-  to fail
-  - thanks to Andrea Barisani for reporting the issue
+- Various string parsing bug
+  - some character conversions to utf-8 were failing (thanks Andrea Barisani)
+  - hashes with nested hex strings were tokenising wronly (thanks Evan Arnold)
+  - escaping bug in tokenising of literal strings (thanks David Westerink)
 - Fix a bug that prevented PDFs with white space after the EOF marker from loading
   - thanks to Solomon White for reporting the issue
 - Add support for de-filtering some LZW compressed streams
   - thanks to Jose Ignacio Rubio Iradi for the patch
-- bug fix for string tokenising
-  - thanks to David Westerink for pointing out the issue
+- some small speed improvements
+- API CHANGE: PDF::Hash renamed to PDF::Reader::ObjectHash
+  - having a class named Hash was confusing for users
 
 v0.8.6 (27th August 2010)
 - new method: hash#page_references
