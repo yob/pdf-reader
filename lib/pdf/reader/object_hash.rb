@@ -231,6 +231,8 @@ class PDF::Reader
     # array points a Page object, one for each page in the PDF. The first
     # reference is page 1, second reference is page 2, etc.
     #
+    # Useful for apps that want to extract data from specific pages.
+    #
     def page_references
       root  = fetch(trailer[:Root])
       @page_references ||= get_page_objects(root[:Pages]).flatten
