@@ -35,7 +35,7 @@ class PDF::Reader
     # a string containing a PDF file, or an IO object.
     #
     def initialize(input)
-      if input.kind_of?(IO) || input.kind_of?(StringIO)
+      if input.respond_to?(:seek) && input.respond_to?(:read)
         @io = input
       elsif File.file?(input.to_s)
         if File.respond_to?(:binread)
