@@ -32,7 +32,7 @@ module ExtractImages
       when :DCTDecode
         ExtractImages::Jpg.new(stream).save("#{count}-#{name}.jpg")
       else
-        $stderr.puts "#{filename}: unrecognized image filter '#{args.hash[:Filter]}'!"
+        $stderr.puts "unrecognized image filter '#{stream.hash[:Filter]}'!"
       end
     end
 
