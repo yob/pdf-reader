@@ -109,7 +109,7 @@ class PDF::Reader
     # reads a PDF name from the buffer and converts it to a Ruby Symbol
     def pdf_name
       tok = @buffer.token
-      tok.scan(/#(\d\d)/).each do |find|
+      tok.scan(/#([A-Fa-f0-9]{2})/).each do |find|
         replace = find[0].hex.chr
         tok.gsub!("#"+find[0], replace)
       end

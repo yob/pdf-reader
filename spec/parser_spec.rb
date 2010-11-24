@@ -16,6 +16,8 @@ describe PDF::Reader::Parser do
     parse_string("/.notdef").parse_token.should eql(:".notdef")
     parse_string("/James#20Healy").parse_token.should eql(:"James Healy")
     parse_string("/James#23Healy").parse_token.should eql(:"James#Healy")
+    parse_string("/Ja#6des").parse_token.should eql(:"James")
+    parse_string("/Ja#6des").parse_token.should eql(:"James")
   end
 
   # '/' is a valid PDF name, but :"" is not a valid ruby symbol.
