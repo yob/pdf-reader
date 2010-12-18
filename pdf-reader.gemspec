@@ -16,6 +16,7 @@ Gem::Specification.new do |spec|
   spec.author = "James Healy"
   spec.email = "jimmy@deefa.com"
   spec.homepage = "http://github.com/yob/pdf-reader"
+  spec.required_ruby_version = ">=1.8.7"
 
   spec.add_development_dependency("rake")
   spec.add_development_dependency("roodi")
