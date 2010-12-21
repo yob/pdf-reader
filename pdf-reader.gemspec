@@ -13,8 +13,8 @@ Gem::Specification.new do |spec|
   spec.extra_rdoc_files = %w{README.rdoc TODO CHANGELOG MIT-LICENSE }
   spec.rdoc_options << '--title' << 'PDF::Reader Documentation' <<
                        '--main'  << 'README.rdoc' << '-q'
-  spec.author = "James Healy"
-  spec.email = "jimmy@deefa.com"
+  spec.authors = ["James Healy"]
+  spec.email   = ["jimmy@deefa.com"]
   spec.homepage = "http://github.com/yob/pdf-reader"
   spec.required_ruby_version = ">=1.8.7"
 
