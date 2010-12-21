@@ -79,10 +79,10 @@ class PDF::Reader
 
       obj = parse_token
       post_obj = parse_token
-      case post_obj
-      when "endobj"   then return obj
-      when "stream"   then return stream(obj)
-      else            raise MalformedPDFError, "PDF malformed, unexpected token #{post_obj}"
+      if post_obj == "stream"
+        stream(obj)
+      else
+        obj
       end
     end
 
