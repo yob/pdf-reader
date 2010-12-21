@@ -115,7 +115,7 @@ module PDF
       ohash    = ObjectHash.new(io)
 
       if ohash.trailer[:Encrypt]
-        raise PDF::Reader::UnsupportedFeatureError, 'PDF::Reader cannot read encrypted PDF files'
+        raise ::PDF::Reader::UnsupportedFeatureError, 'PDF::Reader cannot read encrypted PDF files'
       end
 
       options = {:pages => true, :raw_text => false, :metadata => true}
@@ -140,8 +140,8 @@ module PDF
 
     def strategies
       @strategies ||= [
-        PDF::Reader::MetadataStrategy,
-        PDF::Reader::PagesStrategy
+        ::PDF::Reader::MetadataStrategy,
+        ::PDF::Reader::PagesStrategy
       ]
     end
   end
