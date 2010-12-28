@@ -310,11 +310,15 @@ class PDF::Reader
 
       if xobject && xobject.hash[:Subtype] == :Form
         callback(:begin_form_xobject)
-        resources = @ohash.object(xobject.hash[:Resources])
-        walk_resources(resources) if resources
-        fonts = font_hash_from_resources(resources)
+        xobj_resources = @ohash.object(xobject.hash[:Resources])
+        if xobj_resources
+          resources.push xobj_resources
+          walk_resources(xobj_resources)
+        end
+        fonts = font_hash_from_resources(xobj_resources)
         content_stream(xobject, fonts)
         callback(:end_form_xobject)
+        resources.pop if xobj_resources
       end
     end
 
