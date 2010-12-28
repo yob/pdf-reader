@@ -1,3 +1,7 @@
+v0.9.2 (XXX)
+- improve robustness of text extraction
+  - thanks to Evan Arnold for reporting
+
 v0.9.1 (21st December 2010)
 - force gem to only install on ruby 1.8.7 or higher
   - maintaining supprot for earlier versions takes more time than I have

@@ -421,7 +421,19 @@ describe "The PDF::Reader::Encoding::WinAnsiEncoding class" do
     if RUBY_VERSION >= "1.9"
       result.encoding.to_s.should eql("UTF-8")
     end
+  end
 
+  it "should correctly convert a string into utf-8 when a ToUnicode CMap is provided for some characters" do
+    e = PDF::Reader::Encoding.new(:WinAnsiEncoding)
+    cmap = PDF::Reader::CMap.new("")
+    cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
+    result = e.to_utf8("\x01\x02.00", cmap)
+
+    result.should eql("€1.00")
+
+    if RUBY_VERSION >= "1.9"
+      result.encoding.to_s.should eql("UTF-8")
+    end
   end
 end
 

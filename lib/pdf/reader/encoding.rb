@@ -116,7 +116,7 @@ class PDF::Reader
     def original_codepoint_to_unicode(cp, tounicode = nil)
       if tounicode && (code = tounicode.decode(cp))
         code
-      elsif tounicode || ( tounicode.nil? && to_unicode_required? )
+      elsif to_unicode_required? && (tounicode.nil? || tounicode.decode(cp).nil?)
         PDF::Reader::Encoding::UNKNOWN_CHAR
       elsif mapping[cp]
         mapping[cp]
