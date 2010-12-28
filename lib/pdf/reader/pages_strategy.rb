@@ -443,8 +443,11 @@ class PDF::Reader
         obj
       when PDF::Reader::Reference then
         resolve_references(@ohash.object(obj))
-      when Hash                   then obj.each { |key,val| obj[key] = resolve_references(val) }
-      when Array                  then obj.collect { |item| resolve_references(item) }
+      when Hash                   then
+        arr = obj.map { |key,val| [key, resolve_references(val)] }.flatten(1)
+        Hash[*arr]
+      when Array                  then
+        obj.collect { |item| resolve_references(item) }
       else
         obj
       end
