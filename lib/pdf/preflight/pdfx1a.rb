@@ -56,7 +56,8 @@ module PDF
 
       def receivers
         [
-          PDF::Preflight::Receivers::MaxVersion.new(1.4)
+          PDF::Preflight::Receivers::MaxVersion.new(1.4),
+          PDF::Preflight::Receivers::PrintBoxes.new
         ]
       end
     end
