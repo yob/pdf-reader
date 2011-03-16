@@ -49,7 +49,8 @@ module PDF
 
       def hash_checks
         [
-          PDF::Preflight::Checks::NoEncryption.new
+          PDF::Preflight::Checks::NoEncryption.new,
+          PDF::Preflight::Checks::CompressionAlgorithms.new(:CCITTFaxDecode, :DCTDecode, :FlateDecode, :RunLengthDecode)
         ]
       end
 
