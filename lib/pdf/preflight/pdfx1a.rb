@@ -29,7 +29,7 @@ module PDF
       end
 
       def check_receivers(io)
-        receivers.select { |rec|
+        receivers.map { |rec|
           begin
             PDF::Reader.new.parse(io, rec)
             rec.message
