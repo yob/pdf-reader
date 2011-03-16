@@ -7,7 +7,7 @@ describe PDF::Preflight::Receivers::MaxVersion do
     receiver = PDF::Preflight::Receivers::MaxVersion.new("1.3")
     PDF::Reader.file(filename, receiver)
 
-    receiver.fail?.should be_true
+    receiver.message.should_not be_nil
   end
 
   it "correctly pass files with an equal version" do
@@ -15,7 +15,7 @@ describe PDF::Preflight::Receivers::MaxVersion do
     receiver = PDF::Preflight::Receivers::MaxVersion.new("1.4")
     PDF::Reader.file(filename, receiver)
 
-    receiver.fail?.should be_false
+    receiver.message.should be_nil
   end
 
   it "correctly pass files with a lower version" do
@@ -23,7 +23,7 @@ describe PDF::Preflight::Receivers::MaxVersion do
     receiver = PDF::Preflight::Receivers::MaxVersion.new("1.5")
     PDF::Reader.file(filename, receiver)
 
-    receiver.fail?.should be_false
+    receiver.message.should be_nil
   end
 
 end

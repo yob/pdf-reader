@@ -32,13 +32,11 @@ module PDF
         receivers.select { |rec|
           begin
             PDF::Reader.new.parse(io, rec)
-            rec.fail?
+            rec.message
           rescue PDF::Reader::UnsupportedFeatureError
-            false
+            nil
           end
-        }.map { |rec|
-          rec.message
-        }
+        }.compact
       end
 
       def check_hash(io)
