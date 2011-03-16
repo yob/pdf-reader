@@ -1,1 +1,1 @@
-require 'pdf/preflight/receivers/min_version'
+require 'pdf/preflight/receivers/max_version'

@@ -3,7 +3,7 @@
 module PDF
   module Preflight
     module Receivers
-      class MinVersion
+      class MaxVersion
         attr_reader :message
 
         def initialize(max_version)
@@ -19,7 +19,7 @@ module PDF
           if arg <= @max_version
             @message = nil
           else
-            @message = "PDF version should be 1.3 or lower (value: #{arg})"
+            @message = "PDF version should be #{@max_version} or lower (value: #{arg})"
           end
         end
       end
