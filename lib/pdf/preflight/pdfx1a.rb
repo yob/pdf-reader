@@ -56,6 +56,7 @@ module PDF
 
       def receivers
         [
+          PDF::Preflight::Receivers::BoxNesting.new,
           PDF::Preflight::Receivers::MaxVersion.new(1.4),
           PDF::Preflight::Receivers::PrintBoxes.new
         ]
