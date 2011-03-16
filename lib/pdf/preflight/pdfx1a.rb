@@ -35,7 +35,7 @@ module PDF
 
       def receivers
         [
-          PDF::Preflight::Receivers::MinVersion.new("1.3")
+          PDF::Preflight::Receivers::MinVersion.new(1.3)
         ]
       end
     end

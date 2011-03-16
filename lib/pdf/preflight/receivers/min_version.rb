@@ -6,8 +6,8 @@ module PDF
       class MinVersion
         attr_reader :message
 
-        def initialize(version)
-          @version = version
+        def initialize(max_version)
+          @max_version = max_version.to_f
           @message = "No version information available"
         end
 
@@ -16,7 +16,7 @@ module PDF
         end
 
         def pdf_version(arg = nil)
-          if arg <= 1.3
+          if arg <= @max_version
             @message = nil
           else
             @message = "PDF version should be 1.3 or lower (value: #{arg})"
