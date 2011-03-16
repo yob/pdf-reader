@@ -21,13 +21,13 @@ module PDF
         end
       end
 
-      # TODO: this is nasty, we parse the full file once for each receiver.
-      #       PDF::Reader needs to be updated to support multiple receivers
-      #
       def check_io(io)
         check_receivers(io) + check_hash(io)
       end
 
+      # TODO: this is nasty, we parse the full file once for each receiver.
+      #       PDF::Reader needs to be updated to support multiple receivers
+      #
       def check_receivers(io)
         receivers.map { |rec|
           begin
