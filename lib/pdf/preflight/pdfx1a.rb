@@ -25,12 +25,34 @@ module PDF
       #       PDF::Reader needs to be updated to support multiple receivers
       #
       def check_io(io)
+        check_receivers(io) + check_hash(io)
+      end
+
+      def check_receivers(io)
         receivers.select { |rec|
-          PDF::Reader.new.parse(io, rec)
-          rec.fail?
+          begin
+            PDF::Reader.new.parse(io, rec)
+            rec.fail?
+          rescue PDF::Reader::UnsupportedFeatureError
+            false
+          end
         }.map { |rec|
           rec.message
         }
+      end
+
+      def check_hash(io)
+        ohash = PDF::Reader::ObjectHash.new(io)
+
+        hash_checks.map { |chk|
+          chk.message(ohash)
+        }.compact
+      end
+
+      def hash_checks
+        [
+          PDF::Preflight::Checks::NoEncryption.new
+        ]
       end
 
       def receivers

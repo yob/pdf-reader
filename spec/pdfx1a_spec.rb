@@ -10,4 +10,12 @@ describe PDF::Preflight::PDFX1A do
     messages.empty?.should_not be_true
   end
 
+  it "correctly detect encrypted files" do
+    filename  = pdf_spec_file("encrypted")
+    preflight = PDF::Preflight::PDFX1A.new
+    messages  = preflight.check(filename)
+
+    messages.empty?.should_not be_true
+  end
+
 end
