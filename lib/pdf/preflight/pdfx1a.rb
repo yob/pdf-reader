@@ -56,7 +56,7 @@ module PDF
 
       def receivers
         [
-          PDF::Preflight::Receivers::MaxVersion.new(1.3)
+          PDF::Preflight::Receivers::MaxVersion.new(1.4)
         ]
       end
     end
