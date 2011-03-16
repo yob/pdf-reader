@@ -44,3 +44,4 @@ This is pure ruby should run on most ruby VMs. I develop on MRI 1.9.2.
 * http://en.wikipedia.org/wiki/PDF/X
 * http://www.planetpdf.com/planetpdf/pdfs/pdfx3_draft4.pdf
 * http://www.gwg.org/doc_pdfxfaq.phtml
+* http://www.pdfxreport.com/lib/exe/fetch.php?id=en%3Adownloads&cache=cache&media=en:technote_pdfx_checks.pdf
