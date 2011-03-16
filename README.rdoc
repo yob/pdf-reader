@@ -1,0 +1,46 @@
+= PDF::Preflight
+
+Check your PDF files meet the standard you require.
+
+The full PDF spec is a beast, but there are several subsets that define
+requirements for certain uses. PDF/A limits the features allowed in a file
+to increase it's longevity for archiving, and PDF/X limits a file to a different
+feature set suitable for digital printing.
+
+There's expensive software around that can do this for you, but it's expensive
+and often difficult to script.
+
+This may not check as comprehensively as the official preflight tools from Adobe
+and friends, but hopefully it'll get you most of the way with less stress.
+
+== Installation
+
+  gem install pdf-preflight
+
+=== Usage
+
+  require "pdf/preflight"
+
+  preflight = PDF::Preflight::PDFX1A.new
+
+  puts preflight.check("somefile.pdf").inspect
+
+  File.open("somefile.pdf", "rb") do |file|
+    puts preflight.check(file).inspect
+  end
+
+== Status
+
+This library is in an early stage of development. Use at your own risk.
+
+== Compatability
+
+This is pure ruby should run on most ruby VMs. I develop on MRI 1.9.2.
+
+== Further Reading
+
+* http://chneukirchen.github.com/rps/
+* http://en.wikipedia.org/wiki/PDF/A
+* http://en.wikipedia.org/wiki/PDF/X
+* http://www.planetpdf.com/planetpdf/pdfs/pdfx3_draft4.pdf
+* http://www.gwg.org/doc_pdfxfaq.phtml
