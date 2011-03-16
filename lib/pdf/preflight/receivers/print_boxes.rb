@@ -15,7 +15,6 @@ module PDF
         end
 
         def begin_page(hash = {})
-          puts hash.inspect
           if hash[:MediaBox].nil?
             @message ||= "every page must have a MediaBox"
           elsif hash[:ArtBox].nil? && hash[:TrimBox].nil?
