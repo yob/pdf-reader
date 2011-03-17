@@ -55,10 +55,12 @@ module PDF
         ]
       end
 
+      # TODO: MinPpi isn't part of the PDFX/1a spec, move it to another profile
       def receivers
         [
           PDF::Preflight::Receivers::BoxNesting.new,
           PDF::Preflight::Receivers::MaxVersion.new(1.4),
+          PDF::Preflight::Receivers::MinPpi.new(298),
           PDF::Preflight::Receivers::PrintBoxes.new
         ]
       end
