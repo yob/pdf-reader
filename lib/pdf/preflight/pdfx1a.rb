@@ -53,6 +53,7 @@ module PDF
           PDF::Preflight::Checks::DocumentId.new,
           PDF::Preflight::Checks::NoEncryption.new,
           PDF::Preflight::Checks::OnlyEmbeddedFonts.new,
+          PDF::Preflight::Checks::NoProprietaryFonts.new,
           PDF::Preflight::Checks::NoFontSubsets.new
         ]
       end
