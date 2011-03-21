@@ -1,12 +1,16 @@
 #!/usr/bin/env ruby
 
+require 'rubygems'
+require 'bundler'
+
+Bundler.setup
+
 begin
   require 'pdf/preflight'
 rescue LoadError
   $LOAD_PATH.unshift File.dirname(__FILE__) + "/../lib/" 
   require 'pdf/preflight'
 end
-
 
 filename  = ARGV.shift
 preflight = PDF::Preflight::PDFX1A.new
