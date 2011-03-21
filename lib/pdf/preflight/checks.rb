@@ -1,3 +1,5 @@
 require 'pdf/preflight/checks/compression_algorithms'
 require 'pdf/preflight/checks/document_id'
 require 'pdf/preflight/checks/no_encryption'
+require 'pdf/preflight/checks/no_font_subsets'
+require 'pdf/preflight/checks/only_embedded_fonts'
