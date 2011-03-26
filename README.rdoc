@@ -2,32 +2,52 @@
 
 Check your PDF files meet the standard you require.
 
-The full PDF spec is a beast, but there are several subsets that define
-requirements for certain uses. PDF/A limits the features allowed in a file
-to increase it's longevity for archiving, and PDF/X limits a file to a different
-feature set suitable for digital printing.
+The full PDF spec is a beast, and there are any number of ways of producing a
+valid PDF.  Receivers of PDF files may need to ensure the files they're sent
+meet a particular set of requirements, be it PDF/X, PDF/A or just "images must
+be 300 dpi or greater". These checks are called preflight.
 
-There's expensive software around that can do this for you, but it's expensive
-and often difficult to script.
+There's expensive software around that can preflight for you, but it's often
+difficult to script and you know, expensive.
 
 This may not check as comprehensively as the official preflight tools from Adobe
 and friends, but hopefully it'll get you most of the way with less stress.
 
 == Installation
 
-  gem install pdf-preflight
+  gem install preflight
 
-=== Usage
+== Usage
 
-  require "pdf/preflight"
+== Standard Profile ( PDFX/1a )
 
-  preflight = PDF::Preflight::PDFX1A.new
+  require "preflight"
+
+  preflight = Preflight::Profiles::PDFX1A.new
 
   puts preflight.check("somefile.pdf").inspect
 
   File.open("somefile.pdf", "rb") do |file|
     puts preflight.check(file).inspect
   end
+
+== Custom Profile
+
+  require "preflight"
+
+  class MyPreflight
+    include Preflight::Profile
+
+    profile_name "simple-pdf"
+
+    error Preflight::Rules::MaxVersion, 1.4
+    error Preflight::Rules::NoEncryption
+    warn  Preflight::Rules::DocumentId
+  end
+
+  preflight = MyPreflight
+
+  puts preflight.check("somefile.pdf").inspect
 
 == Status
 
