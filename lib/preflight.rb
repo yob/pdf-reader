@@ -5,3 +5,7 @@ require 'preflight/profile'
 
 require 'preflight/rules'
 require 'preflight/profiles'
+
+module Preflight
+  VERSION = "0.0.1"
+end
