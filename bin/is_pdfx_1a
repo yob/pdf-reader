@@ -6,14 +6,14 @@ require 'bundler'
 Bundler.setup
 
 begin
-  require 'pdf/preflight'
+  require 'preflight'
 rescue LoadError
   $LOAD_PATH.unshift File.dirname(__FILE__) + "/../lib/" 
-  require 'pdf/preflight'
+  require 'preflight'
 end
 
 filename  = ARGV.shift
-preflight = PDF::Preflight::PDFX1A.new
+preflight = Preflight::Profiles::PDFX1A.new
 messages  = preflight.check(filename)
 
 messages.each do |msg|
