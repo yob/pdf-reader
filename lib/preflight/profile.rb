@@ -65,19 +65,19 @@ module Preflight
         receiver_rules.map { |rec|
           begin
             PDF::Reader.new.parse(io, rec)
-            rec.message
+            rec.messages
           rescue PDF::Reader::UnsupportedFeatureError
             nil
           end
-        }.compact
+        }.flatten.compact
       end
 
       def check_hash(io)
         ohash = PDF::Reader::ObjectHash.new(io)
 
         hash_rules.map { |chk|
-          chk.message(ohash)
-        }.compact
+          chk.messages(ohash)
+        }.flatten.compact
       end
 
       def hash_rules

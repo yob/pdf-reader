@@ -7,10 +7,10 @@ module Preflight
     # TrimBox
     #
     class PrintBoxes
-      attr_reader :message
+      attr_reader :messages
 
       def initialize
-        @message = nil
+        @messages = []
       end
 
       def self.rule_type
@@ -19,11 +19,11 @@ module Preflight
 
       def begin_page(hash = {})
         if hash[:MediaBox].nil?
-          @message ||= "every page must have a MediaBox"
+          @messages << "every page must have a MediaBox"
         elsif hash[:ArtBox].nil? && hash[:TrimBox].nil?
-          @message ||= "every page must have either an ArtBox or a TrimBox"
+          @messages << "every page must have either an ArtBox or a TrimBox"
         elsif hash[:ArtBox] && hash[:TrimBox]
-          @message ||= "no page can have both ArtBox and TrimBox (TrimBox is preferred)"
+          @messages << "no page can have both ArtBox and TrimBox (TrimBox is preferred)"
         end
       end
     end

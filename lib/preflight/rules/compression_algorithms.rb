@@ -15,13 +15,13 @@ module Preflight
         :hash
       end
 
-      def message(ohash)
+      def messages(ohash)
         algorithms = banned_algorithms(ohash)
 
         if algorithms.size > 0
-          "File uses excluded compression algorithm (#{algorithms.join(", ")})"
+          ["File uses excluded compression algorithm (#{algorithms.join(", ")})"]
         else
-          nil
+          []
         end
       end
 
@@ -35,7 +35,7 @@ module Preflight
             array += (filters - @algorithms)
           end
         end
-        array
+        array.uniq
       end
     end
   end

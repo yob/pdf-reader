@@ -8,11 +8,11 @@ module Preflight
         :hash
       end
 
-      def message(ohash)
+      def messages(ohash)
         if ohash.trailer[:Encrypt]
-          "File is encrypted"
+          ["File is encrypted"]
         else
-          nil
+          []
         end
       end
     end

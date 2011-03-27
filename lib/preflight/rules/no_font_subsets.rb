@@ -13,19 +13,7 @@ module Preflight
         :hash
       end
 
-      def message(ohash)
-        messages = get_messages(ohash)
-
-        if messages.size > 0
-          messages.first
-        else
-          nil
-        end
-      end
-
-      private
-
-      def get_messages(ohash)
+      def messages(ohash)
         array = []
         ohash.each do |key, obj|
           next unless obj.is_a?(::Hash) && obj[:Type] == :Font
@@ -35,6 +23,8 @@ module Preflight
         end
         array
       end
+
+      private
 
       def subset?(font)
         font[:BaseFont] && font[:BaseFont].match(/.+\+.+/)

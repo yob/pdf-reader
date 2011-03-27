@@ -8,9 +8,9 @@ module Preflight
         :hash
       end
 
-      def message(ohash)
+      def messages(ohash)
         if ohash.trailer[:ID].nil?
-          "Document ID missing"
+          ["Document ID missing"]
         else
           nil
         end
