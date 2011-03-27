@@ -17,11 +17,9 @@ module Preflight
       def messages(ohash)
         root = ohash.object(ohash.trailer[:Root])
         missing = @keys - root.keys
-        if missing.size > 0
-          ["Root dict missing required keys (#{missing.join(", ")})"]
-        else
-          []
-        end
+        missing.map { |key|
+          "Root dict missing required key #{key}"
+        }
       end
     end
   end
