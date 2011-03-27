@@ -1,13 +1,12 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
-require 'bundler'
-
-Bundler.setup
 
 begin
   require 'preflight'
 rescue LoadError
+  require 'bundler'
+  Bundler.setup
   $LOAD_PATH.unshift File.dirname(__FILE__) + "/../lib/" 
   require 'preflight'
 end
