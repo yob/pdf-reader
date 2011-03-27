@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + "/../spec_helper"
 
-class CustomProfile
+class CustomImportProfile
   include Preflight::Profile
 
   profile_name "custom"
@@ -14,7 +14,7 @@ describe "Customised profile that imports the standard PDF/X-1a profile" do
 
   it "pass a valid PDF/X-1a file" do
     filename  = pdf_spec_file("pdfx-1a-subsetting")
-    preflight = CustomProfile.new
+    preflight = CustomImportProfile.new
     messages  = preflight.check(filename)
 
     messages.empty?.should be_true
@@ -22,7 +22,7 @@ describe "Customised profile that imports the standard PDF/X-1a profile" do
 
   it "fail a file that isn't PDF/X-1a compliant" do
     filename  = pdf_spec_file("encrypted")
-    preflight = CustomProfile.new
+    preflight = CustomImportProfile.new
     messages  = preflight.check(filename)
 
     messages.empty?.should_not be_true
@@ -30,7 +30,7 @@ describe "Customised profile that imports the standard PDF/X-1a profile" do
 
   it "fail a file that has a 72ppi image" do
     filename  = pdf_spec_file("72ppi")
-    preflight = CustomProfile.new
+    preflight = CustomImportProfile.new
     messages  = preflight.check(filename)
 
     messages.empty?.should_not be_true
@@ -38,7 +38,7 @@ describe "Customised profile that imports the standard PDF/X-1a profile" do
 
   it "pass a file that has a 300ppi image" do
     filename  = pdf_spec_file("300ppi")
-    preflight = CustomProfile.new
+    preflight = CustomImportProfile.new
     messages  = preflight.check(filename)
 
     messages.empty?.should_not be_true
