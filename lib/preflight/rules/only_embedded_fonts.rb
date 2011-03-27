@@ -25,10 +25,9 @@ module Preflight
       private
 
       def embedded?(ohash, font)
-        if font[:Subtype] == :Type1 && font.has_key?(:FontDescriptor)
-          true
-        elsif font[:Subtype] == :TrueType && font.has_key?(:FontDescriptor)
-          true
+        if font.has_key?(:FontDescriptor)
+          descriptor = ohash.object(font[:FontDescriptor])
+          descriptor.has_key?(:FontFile) || descriptor.has_key?(:FontFile2) || descriptor.has_key?(:FontFile3)
         elsif font[:Subtype] == :Type0
           descendants = ohash.object(font[:DescendantFonts])
           descendants.all? { |f|
