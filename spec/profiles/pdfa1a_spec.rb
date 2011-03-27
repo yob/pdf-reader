@@ -7,7 +7,6 @@ describe Preflight::Profiles::PDFA1A do
     preflight = Preflight::Profiles::PDFA1A.new
     messages  = preflight.check(filename)
 
-    puts messages.inspect
     messages.empty?.should be_true
   end
 
