@@ -16,12 +16,6 @@ module Preflight
       error Preflight::Rules::MaxVersion, 1.4
       error Preflight::Rules::PrintBoxes
 
-      # these don't contradict the pdfx/1a spec, but they help ensure
-      # quality files for a printer. Consider moving them to a differnt
-      # profile
-      warn Preflight::Rules::NoProprietaryFonts
-      warn Preflight::Rules::NoFontSubsets
-      warn Preflight::Rules::MinPpi, 298
     end
   end
 end
