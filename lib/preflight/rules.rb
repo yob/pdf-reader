@@ -1,6 +1,7 @@
 require 'preflight/rules/box_nesting'
 require 'preflight/rules/compression_algorithms'
 require 'preflight/rules/document_id'
+require 'preflight/rules/info_has_keys'
 require 'preflight/rules/info_specifies_trapping'
 require 'preflight/rules/match_info_entries'
 require 'preflight/rules/max_version'
