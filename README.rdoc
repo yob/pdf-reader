@@ -19,7 +19,7 @@ and friends, but hopefully it'll get you most of the way with less stress.
 
 == Usage
 
-== Standard Profile ( PDFX/1a )
+== Standard Profile ( PDF/X-1a )
 
   require "preflight"
 
