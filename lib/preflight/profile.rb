@@ -18,6 +18,12 @@ module Preflight
         @profile_name = str
       end
 
+      def import(profile)
+        profile.rules.each do |array|
+          rules << array.flatten
+        end
+      end
+
       def rule(*args)
         rules << args.flatten
       end

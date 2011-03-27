@@ -49,6 +49,26 @@ and friends, but hopefully it'll get you most of the way with less stress.
 
   puts preflight.check("somefile.pdf").inspect
 
+== Extend A Profile
+
+  require "preflight"
+
+  class MyPreflight
+    include Preflight::Profile
+
+    profile_name "simple-pdf"
+
+    import Preflight::Profiles::PDFX1A
+
+    rule Preflight::Rules::MaxVersion, 1.4
+    rule Preflight::Rules::NoEncryption
+    rule Preflight::Rules::DocumentId
+  end
+
+  preflight = MyPreflight
+
+  puts preflight.check("somefile.pdf").inspect
+
 == Status
 
 This library is in an early stage of development. Use at your own risk.
