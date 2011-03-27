@@ -12,7 +12,7 @@ module Preflight
         if ohash.trailer[:ID].nil?
           ["Document ID missing"]
         else
-          nil
+          []
         end
       end
     end
