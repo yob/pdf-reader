@@ -11,6 +11,7 @@ module Preflight
 
       def initialize
         @messages = []
+        @page_num = 0
       end
 
       def self.rule_type
@@ -18,21 +19,23 @@ module Preflight
       end
 
       def begin_page(hash = {})
+        @page_num += 1
+
         media  = hash[:MediaBox]
         bleed  = hash[:BleedBox]
         trim   = hash[:TrimBox]
         art    = hash[:ArtBox]
 
         if media && bleed && (bleed[2] > media[2] || bleed[3] > media[3])
-          @messages << "BleedBox must be smaller than MediaBox"
+          @messages << "BleedBox must be smaller than MediaBox (page #{@page_num})"
         elsif trim && bleed && (trim[2] > bleed[2] || trim[3] > bleed[3])
-          @messages << "TrimBox must be smaller than BleedBox"
+          @messages << "TrimBox must be smaller than BleedBox (page #{@page_num})"
         elsif art && bleed && (art[2] > bleed[2] || art[3] > bleed[3])
-          @messages << "ArtBox must be smaller than BleedBox"
+          @messages << "ArtBox must be smaller than BleedBox (page #{@page_num})"
         elsif trim && media && (trim[2] > media[2] || trim[3] > media[3])
-          @messages << "TrimBox must be smaller than MediaBox"
+          @messages << "TrimBox must be smaller than MediaBox (page #{@page_num})"
         elsif art && media && (art[2] > media[2] || art[3] > media[3])
-          @messages << "ArtBox must be smaller than MediaBox"
+          @messages << "ArtBox must be smaller than MediaBox (page #{@page_num})"
         end
       end
     end
