@@ -7,7 +7,8 @@ module Preflight
 
       profile_name "pdfx-1a"
 
-      # hard failures of the pdfx/1a spec
+      rule Preflight::Rules::MatchInfoEntries, {:GTS_PDFXVersion => /\APDF\/X/,
+                                                :GTS_PDFXConformance => /\APDF\/X-1a/}
       rule Preflight::Rules::CompressionAlgorithms, :CCITTFaxDecode, :DCTDecode, :FlateDecode, :RunLengthDecode
       rule Preflight::Rules::DocumentId
       rule Preflight::Rules::NoEncryption
