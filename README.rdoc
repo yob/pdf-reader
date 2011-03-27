@@ -40,9 +40,9 @@ and friends, but hopefully it'll get you most of the way with less stress.
 
     profile_name "simple-pdf"
 
-    error Preflight::Rules::MaxVersion, 1.4
-    error Preflight::Rules::NoEncryption
-    warn  Preflight::Rules::DocumentId
+    rule Preflight::Rules::MaxVersion, 1.4
+    rule Preflight::Rules::NoEncryption
+    rule Preflight::Rules::DocumentId
   end
 
   preflight = MyPreflight

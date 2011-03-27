@@ -18,19 +18,12 @@ module Preflight
         @profile_name = str
       end
 
-      def error(*args)
-        errors << args.flatten
+      def rule(*args)
+        rules << args.flatten
       end
 
-      def warn(*args)
-      end
-
-      def errors
-        @errors ||= []
-      end
-
-      def warnings
-        @warnings ||= []
+      def rules
+        @rules ||= []
       end
 
     end
@@ -81,7 +74,7 @@ module Preflight
       end
 
       def hash_rules
-        (self.class.errors + self.class.warnings).select { |arr|
+        self.class.rules.select { |arr|
           arr.first.rule_type == :hash
         }.map { |arr|
           klass = arr[0]
@@ -90,7 +83,7 @@ module Preflight
       end
 
       def receiver_rules
-        (self.class.errors + self.class.warnings).select { |arr|
+        self.class.rules.select { |arr|
           arr.first.rule_type == :receiver
         }.map { |arr|
           klass = arr[0]
