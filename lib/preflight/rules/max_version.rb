@@ -2,22 +2,23 @@
 
 module Preflight
   module Rules
-    # TODO: convert this to a more efficient ohash check
+    # ensure the PDF version of the file under review is not more recent
+    # than desired
     class MaxVersion
-      attr_reader :messages
 
       def initialize(max_version)
         @max_version = max_version.to_f
-        @messages    = []
       end
 
       def self.rule_type
-        :receiver
+        :hash
       end
 
-      def pdf_version(arg = nil)
-        if arg && arg > @max_version
-          @messages << "PDF version should be #{@max_version} or lower (value: #{arg})"
+      def messages(ohash)
+        if ohash.pdf_version > @max_version
+          ["PDF version should be #{@max_version} or lower (value: #{ohash.pdf_version})"]
+        else
+          []
         end
       end
     end
