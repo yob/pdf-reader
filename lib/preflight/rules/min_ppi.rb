@@ -45,6 +45,8 @@ module Preflight
       # space it's being crammed into and therefore the PPI.
       #
       def invoke_xobject(label)
+        return unless @images[label]
+
         sample_w, sample_h = *@images[label]
         device_w = pt2in(@last_matrix[0])
         device_h = pt2in(@last_matrix[3])

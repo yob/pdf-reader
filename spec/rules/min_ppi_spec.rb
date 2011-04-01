@@ -26,4 +26,12 @@ describe Preflight::Rules::MinPpi do
     receiver.messages.should_not be_empty
   end
 
+  it "pass files with no raster images that use a Form XObject" do
+    filename  = pdf_spec_file("form_xobject")
+    receiver = Preflight::Rules::MinPpi.new(300)
+    PDF::Reader.file(filename, receiver)
+
+    receiver.messages.should be_empty
+  end
+
 end
