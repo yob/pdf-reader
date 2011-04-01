@@ -1,2 +1,5 @@
+v0.0.2 (1st April 2011)
+* fix possible execption in MinPpi rule
+
 v0.0.1 (27th March 2011)
 * initial release
