@@ -20,7 +20,7 @@ module Preflight
       rule Preflight::Rules::MaxVersion, 1.4
       rule Preflight::Rules::PrintBoxes
       rule Preflight::Rules::OutputIntentForPdfx
-      rule Preflight::Rules::PdfxOutputIntentHasOutputConditionIdentifier
+      rule Preflight::Rules::PdfxOutputIntentHasKeys, :OutputConditionIdentifier, :Info
 
     end
   end
