@@ -4,10 +4,6 @@ module Preflight
   module Rules
     class NoEncryption
 
-      def self.rule_type
-        :hash
-      end
-
       def messages(ohash)
         if ohash.trailer[:Encrypt]
           ["File is encrypted"]

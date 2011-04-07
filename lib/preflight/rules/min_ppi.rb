@@ -18,10 +18,6 @@ module Preflight
         @page_num = 0
       end
 
-      def self.rule_type
-        :receiver
-      end
-
       # store sample width and height for each image on the current page
       #
       def resource_xobject(label, stream)

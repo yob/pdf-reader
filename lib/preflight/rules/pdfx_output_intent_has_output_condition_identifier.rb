@@ -11,10 +11,6 @@ module Preflight
     #
     class PdfxOutputIntentHasOutputConditionIdentifier
 
-      def self.rule_type
-        :hash
-      end
-
       def messages(ohash)
         oi = pdfx_output_intent(ohash)
 

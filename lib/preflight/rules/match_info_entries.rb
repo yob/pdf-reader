@@ -8,10 +8,6 @@ module Preflight
         @matches = matches
       end
 
-      def self.rule_type
-        :hash
-      end
-
       def messages(ohash)
         array = []
         info = ohash.object(ohash.trailer[:Info])

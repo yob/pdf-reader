@@ -11,10 +11,6 @@ module Preflight
         @algorithms = algorithms.flatten 
       end
 
-      def self.rule_type
-        :hash
-      end
-
       def messages(ohash)
         algorithms = banned_algorithms(ohash)
 

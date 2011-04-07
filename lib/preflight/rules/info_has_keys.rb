@@ -10,10 +10,6 @@ module Preflight
         @keys = keys.flatten
       end
 
-      def self.rule_type
-        :hash
-      end
-
       def messages(ohash)
         info = ohash.object(ohash.trailer[:Info])
         missing = @keys - info.keys

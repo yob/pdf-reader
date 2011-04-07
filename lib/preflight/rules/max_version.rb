@@ -10,10 +10,6 @@ module Preflight
         @max_version = max_version.to_f
       end
 
-      def self.rule_type
-        :hash
-      end
-
       def messages(ohash)
         if ohash.pdf_version > @max_version
           ["PDF version should be #{@max_version} or lower (value: #{ohash.pdf_version})"]

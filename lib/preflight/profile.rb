@@ -81,7 +81,8 @@ module Preflight
 
       def hash_rules
         self.class.rules.select { |arr|
-          arr.first.rule_type == :hash
+          meth = arr.first.instance_method(:messages)
+          meth && meth.arity == 1
         }.map { |arr|
           klass = arr[0]
           klass.new(*arr[1,10])
@@ -90,7 +91,8 @@ module Preflight
 
       def receiver_rules
         self.class.rules.select { |arr|
-          arr.first.rule_type == :receiver
+          meth = arr.first.instance_method(:messages)
+          meth && meth.arity == 0
         }.map { |arr|
           klass = arr[0]
           klass.new(*arr[1,10])

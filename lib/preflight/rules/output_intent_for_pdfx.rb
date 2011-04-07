@@ -3,14 +3,7 @@
 module Preflight
   module Rules
 
-    # For each page MediaBox must be the biggest box, followed by the
-    # BleedBox or ArtBox, followed by the TrimBox.
-    #
     class OutputIntentForPdfx
-
-      def self.rule_type
-        :hash
-      end
 
       def messages(ohash)
         intents = output_intents(ohash).select { |dict|

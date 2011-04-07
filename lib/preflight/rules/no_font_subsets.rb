@@ -9,10 +9,6 @@ module Preflight
     #
     class NoFontSubsets
 
-      def self.rule_type
-        :hash
-      end
-
       def messages(ohash)
         array = []
         ohash.each do |key, obj|

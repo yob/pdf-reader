@@ -4,10 +4,6 @@ module Preflight
   module Rules
     class InfoSpecifiesTrapping
 
-      def self.rule_type
-        :hash
-      end
-
       def messages(ohash)
         info = ohash.object(ohash.trailer[:Info])
 

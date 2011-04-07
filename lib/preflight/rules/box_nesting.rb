@@ -14,10 +14,6 @@ module Preflight
         @page_num = 0
       end
 
-      def self.rule_type
-        :receiver
-      end
-
       def begin_page(hash = {})
         @page_num += 1
 
