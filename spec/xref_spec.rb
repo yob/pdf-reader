@@ -37,7 +37,7 @@ describe PDF::Reader::XRef, "load_offsets method" do
   it "should load all xrefs corectly from a PDF that has multiple xref sections with subsections and xref streams" do
     @file = File.new(File.dirname(__FILE__) + "/data/xref_subsections.pdf")
     @tbl = PDF::Reader::XRef.new(@file)
-    @tbl.xref.keys.size.should eql(537)
+    @tbl.xref.keys.size.should eql(539)
   end
 end
 
