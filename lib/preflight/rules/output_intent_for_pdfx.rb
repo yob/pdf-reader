@@ -7,7 +7,7 @@ module Preflight
 
       def messages(ohash)
         intents = output_intents(ohash).select { |dict|
-          dict[:S] == :GTS_PDFX
+          ohash.object(dict)[:S] == :GTS_PDFX
         }
 
         if intents.size != 1
