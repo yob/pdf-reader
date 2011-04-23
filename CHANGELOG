@@ -1,8 +1,10 @@
 v0.9.2 (XXX)
+- add basic support for fonts with Identity-V encoding.
 - bug: improve robustness of text extraction
   - thanks to Evan Arnold for reporting
 - bug: fix loading of nested resources on XObjects
   - thanks to Samuel Williams for reporting
+- bug: improve parsing of files with XRef object streams
 
 v0.9.1 (21st December 2010)
 - force gem to only install on ruby 1.8.7 or higher
