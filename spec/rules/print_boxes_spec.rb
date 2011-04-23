@@ -10,6 +10,14 @@ describe Preflight::Rules::PrintBoxes do
     receiver.messages.should be_empty
   end
 
+  it "pass files with required page boxes stored in a parent Pages object" do
+    filename = pdf_spec_file("inherited_page_attributes")
+    receiver = Preflight::Rules::PrintBoxes.new
+    PDF::Reader.file(filename, receiver)
+
+    receiver.messages.should be_empty
+  end
+
   it "fail files with no ArtBox or TrimBox" do
     filename = pdf_spec_file("no_artbox_or_trimbox")
     receiver = Preflight::Rules::PrintBoxes.new

@@ -12,10 +12,16 @@ module Preflight
       def initialize
         @messages = []
         @page_num = 0
+        @parent   = {}
+      end
+
+      def begin_page_container(hash = {})
+        @parent.merge!(hash)
       end
 
       def begin_page(hash = {})
         @page_num += 1
+        hash = @parent.merge(hash)
 
         if hash[:MediaBox].nil?
           @messages << "every page must have a MediaBox (page #{@page_num})"
