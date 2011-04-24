@@ -1,3 +1,7 @@
+v0.0.5 (25th April 2011)
+- bug: improve accuracy of MinPpi rule, it was incorrectly calculating the
+       ppi of many images
+
 v0.0.4 (24th April 2011)
 - bug: fix occasional crash due to not dereferencing an object
 - bug: improve accuracy of rules that check box-related page attributes
