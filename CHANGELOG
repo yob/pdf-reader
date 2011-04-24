@@ -1,3 +1,8 @@
+v0.0.4 (24th April 2011)
+- bug: fix occasional crash due to not dereferencing an object
+- bug: improve accuracy of rules that check box-related page attributes
+  - MediaBox, TrimBox, etc
+
 v0.0.3 (7th April 2011)
 - added some additional rules to the pdfx1a profile
 
