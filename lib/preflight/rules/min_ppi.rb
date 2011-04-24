@@ -1,6 +1,7 @@
 # coding: utf-8
 
 require 'yaml'
+require 'matrix'
 
 module Preflight
   module Rules
@@ -12,7 +13,7 @@ module Preflight
       include Preflight::Measurements
 
       DEFAULT_GRAPHICS_STATE = {
-        :ctm => [1, 0, 0, 1, 0, 0]
+        :ctm => Matrix.identity(3)
       }
 
       attr_reader :messages
@@ -54,10 +55,15 @@ module Preflight
       # with the new matrix to form the updated matrix.
       #
       def concatenate_matrix(*args)
+        transform = Matrix[
+          [args[0], args[1], 0],
+          [args[2], args[3], 0],
+          [args[4], args[5], 1]
+        ]
         if state[:ctm]
-          state[:ctm] = multiply_matrix(state[:ctm], args)
+          state[:ctm] = transform * state[:ctm]
         else
-          state[:ctm] = args
+          state[:ctm] = transform
         end
       end
 
@@ -68,8 +74,8 @@ module Preflight
         return unless @images[label]
 
         sample_w, sample_h = *@images[label]
-        device_w = pt2in(state[:ctm][0])
-        device_h = pt2in(state[:ctm][3])
+        device_w = pt2in(state[:ctm][0,0]).abs
+        device_h = pt2in(state[:ctm][1,1]).abs
 
         horizontal_ppi = (sample_w / device_w).round(3)
         vertical_ppi   = (sample_h / device_h).round(3)
@@ -106,22 +112,6 @@ module Preflight
           yaml_state = YAML.dump(@stack.last)
           YAML.load(yaml_state)
         end
-      end
-
-      # multiplies two transform matrixes together.
-      #
-      def multiply_matrix(current, transform)
-        raise ArgumentError, 'current matrix must have 6 elements' if current.size !=6
-        raise ArgumentError, 'transform matrix must have 6 elements' if transform.size !=6
-
-        [
-          current[0] * transform[0],
-          current[1] * transform[1],
-          current[2] * transform[2],
-          current[3] * transform[3],
-          current[4] * transform[4],
-          current[5] * transform[5]
-        ]
       end
     end
   end
