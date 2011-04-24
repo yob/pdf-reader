@@ -11,6 +11,10 @@ module Preflight
     class MinPpi
       include Preflight::Measurements
 
+      DEFAULT_GRAPHICS_STATE = {
+        :ctm => [1, 0, 0, 1, 0, 0]
+      }
+
       attr_reader :messages
 
       def initialize(min_ppi)
@@ -80,7 +84,7 @@ module Preflight
       def begin_page(hash = {})
         @images = {}
         @page_num += 1
-        @stack = []
+        @stack = [DEFAULT_GRAPHICS_STATE]
       end
 
       private
