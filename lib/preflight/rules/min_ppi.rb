@@ -118,25 +118,36 @@ module Preflight
       # return a height of an image in the current device space. Auto
       # handles the translation from image space to device space.
       #
+      # Calculates the co-ordinates of the four points of the image, then
+      # returns the distance in height between the top right and bottom
+      # left corners.
+      #
       def image_height
-        bl_x, bl_y = transform(0, 0)
-        tl_x, tl_y = transform(0, 1)
+        one   = transform(0, 0)
+        two   = transform(0, 1)
+        three = transform(1, 0)
+        four  = transform(1, 1)
 
-        min = [tl_y, bl_y].min
-        max = [tl_y, bl_y].max
-        max - min
+        bottom_left = [one, two, three, four].sort.first
+        top_right   = [one, two, three, four].sort.last
+        top_right.first - bottom_left.first
       end
 
       # return a width of an image in the current device space. Auto
       # handles the translation from image space to device space.
       #
+      # Calculates the co-ordinates of the four points of the image, then
+      # returns the width between the top right and bottom left corners.
+      #
       def image_width
-        bl_x, bl_y = transform(0, 0)
-        br_x, br_y = transform(1, 0)
+        one   = transform(0, 0)
+        two   = transform(0, 1)
+        three = transform(1, 0)
+        four  = transform(1, 1)
 
-        min = [br_x, bl_x].min
-        max = [br_x, bl_x].max
-        max - min
+        bottom_left = [one, two, three, four].sort.first
+        top_right   = [one, two, three, four].sort.last
+        top_right.last - bottom_left.last
       end
 
       # when save_graphics_state is called, we need to push a new copy of the
