@@ -77,11 +77,15 @@ module Preflight
         device_w = pt2in(image_width)
         device_h = pt2in(image_height)
 
-        horizontal_ppi = (sample_w / device_w).round(3)
-        vertical_ppi   = (sample_h / device_h).round(3)
+        horizontal_ppi = (sample_w / device_w)
+        vertical_ppi   = (sample_h / device_h)
 
-        if horizontal_ppi < @min_ppi || vertical_ppi < @min_ppi
-          @messages << "Image with low PPI/DPI on page #{@page_num} (h:#{horizontal_ppi} v:#{vertical_ppi})"
+        if horizontal_ppi.infinite?
+          @messages << "Divide by zero in horizontal ppi on page #{@page_num}"
+        elsif vertical_ppi.infinite?
+          @messages << "Divide by zero in vertical ppi on page #{@page_num}"
+        elsif horizontal_ppi < @min_ppi || vertical_ppi < @min_ppi
+          @messages << "Image with low PPI/DPI on page #{@page_num} (h:#{horizontal_ppi.round(3)} v:#{vertical_ppi.round(3)})"
         end
       end
 
