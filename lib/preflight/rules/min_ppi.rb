@@ -47,7 +47,7 @@ module Preflight
         ]
       end
 
-      # update the current transform matrix.
+      # update the current transformation matrix.
       #
       # If the CTM is currently undefined, just store the new values.
       #
@@ -74,8 +74,8 @@ module Preflight
         return unless @images[label]
 
         sample_w, sample_h = *@images[label]
-        device_w = pt2in(state[:ctm][0,0]).abs
-        device_h = pt2in(state[:ctm][1,1]).abs
+        device_w = pt2in(image_width)
+        device_h = pt2in(image_height)
 
         horizontal_ppi = (sample_w / device_w).round(3)
         vertical_ppi   = (sample_h / device_h).round(3)
@@ -94,6 +94,46 @@ module Preflight
       end
 
       private
+
+      # return the current transformation matrix
+      #
+      def ctm
+        state[:ctm]
+      end
+
+      # transform x and y co-ordinates from the current user space to the
+      # underlying device space.
+      #
+      def transform(x, y, z = 1)
+        newx = (ctm[0,0] * x) + (ctm[1,0] * y) + (ctm[2,0] * z)
+        newy = (ctm[0,1] * x) + (ctm[1,1] * y) + (ctm[2,1] * z)
+
+        [newx, newy]
+      end
+
+      # return a height of an image in the current device space. Auto
+      # handles the translation from image space to device space.
+      #
+      def image_height
+        bl_x, bl_y = transform(0, 0)
+        tl_x, tl_y = transform(0, 1)
+
+        min = [tl_y, bl_y].min
+        max = [tl_y, bl_y].max
+        max - min
+      end
+
+      # return a width of an image in the current device space. Auto
+      # handles the translation from image space to device space.
+      #
+      def image_width
+        bl_x, bl_y = transform(0, 0)
+        br_x, br_y = transform(1, 0)
+
+        min = [br_x, bl_x].min
+        max = [br_x, bl_x].max
+        max - min
+      end
 
       # when save_graphics_state is called, we need to push a new copy of the
       # current state onto the stack. That way any modifications to the state
