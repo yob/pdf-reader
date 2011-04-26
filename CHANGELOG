@@ -1,10 +1,5 @@
 v0.0.6 (25th April 2011)
-- more improvements to the MinPpi rule. Improves accuracy
-  in some situtations
-
-v0.0.5 (25th April 2011)
-- bug: improve accuracy of MinPpi rule, it was incorrectly calculating the
-       ppi of many images
+- Improved accuracy of MinPpi rule in some situtations
 
 v0.0.4 (24th April 2011)
 - bug: fix occasional crash due to not dereferencing an object
