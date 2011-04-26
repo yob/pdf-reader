@@ -77,15 +77,11 @@ module Preflight
         device_w = pt2in(image_width)
         device_h = pt2in(image_height)
 
-        horizontal_ppi = (sample_w / device_w)
-        vertical_ppi   = (sample_h / device_h)
+        horizontal_ppi = (sample_w / device_w).round(3)
+        vertical_ppi   = (sample_h / device_h).round(3)
 
-        if horizontal_ppi.infinite?
-          @messages << "Divide by zero in horizontal ppi on page #{@page_num}"
-        elsif vertical_ppi.infinite?
-          @messages << "Divide by zero in vertical ppi on page #{@page_num}"
-        elsif horizontal_ppi < @min_ppi || vertical_ppi < @min_ppi
-          @messages << "Image with low PPI/DPI on page #{@page_num} (h:#{horizontal_ppi.round(3)} v:#{vertical_ppi.round(3)})"
+        if horizontal_ppi < @min_ppi || vertical_ppi < @min_ppi
+          @messages << "Image with low PPI/DPI on page #{@page_num} (h:#{horizontal_ppi} v:#{vertical_ppi})"
         end
       end
 
@@ -108,46 +104,31 @@ module Preflight
       # transform x and y co-ordinates from the current user space to the
       # underlying device space.
       #
-      def transform(x, y, z = 1)
-        newx = (ctm[0,0] * x) + (ctm[1,0] * y) + (ctm[2,0] * z)
-        newy = (ctm[0,1] * x) + (ctm[1,1] * y) + (ctm[2,1] * z)
-
-        [newx, newy]
+      def transform(point, z = 1)
+        Point.new(
+          (ctm[0,0] * point.x) + (ctm[1,0] * point.y) + (ctm[2,0] * z),
+          (ctm[0,1] * point.x) + (ctm[1,1] * point.y) + (ctm[2,1] * z)
+        )
       end
 
       # return a height of an image in the current device space. Auto
       # handles the translation from image space to device space.
       #
-      # Calculates the co-ordinates of the four points of the image, then
-      # returns the distance in height between the top right and bottom
-      # left corners.
-      #
       def image_height
-        one   = transform(0, 0)
-        two   = transform(0, 1)
-        three = transform(1, 0)
-        four  = transform(1, 1)
+        bottom_left = transform(Point.new(0, 0))
+        top_left    = transform(Point.new(0, 1))
 
-        bottom_left = [one, two, three, four].sort.first
-        top_right   = [one, two, three, four].sort.last
-        top_right.first - bottom_left.first
+        bottom_left.distance(top_left)
       end
 
       # return a width of an image in the current device space. Auto
       # handles the translation from image space to device space.
       #
-      # Calculates the co-ordinates of the four points of the image, then
-      # returns the width between the top right and bottom left corners.
-      #
       def image_width
-        one   = transform(0, 0)
-        two   = transform(0, 1)
-        three = transform(1, 0)
-        four  = transform(1, 1)
+        bottom_left  = transform(Point.new(0, 0))
+        bottom_right = transform(Point.new(1, 0))
 
-        bottom_left = [one, two, three, four].sort.first
-        top_right   = [one, two, three, four].sort.last
-        top_right.last - bottom_left.last
+        bottom_left.distance(bottom_right)
       end
 
       # when save_graphics_state is called, we need to push a new copy of the
@@ -168,6 +149,22 @@ module Preflight
           YAML.load(yaml_state)
         end
       end
+
+      # private class for representing points on a cartesian plain. Used
+      # to simplify maths in the MinPpi class.
+      #
+      class Point
+        attr_reader :x, :y
+
+        def initialize(x,y)
+          @x, @y = x,y
+        end
+
+        def distance(point)
+          Math.hypot(point.x - x, point.y - y)
+        end
+      end
+
     end
   end
 end
