@@ -471,6 +471,17 @@ class PDF::Reader
           stream = @ohash.object(desc[:ToUnicode])
           fonts[label].tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
         end
+        if desc[:FontDescriptor]
+          fd = resolve_references(desc[:FontDescriptor])
+          fonts[label].ascent = fd[:Ascent] if fd[:Ascent]
+          fonts[label].descent = fd[:Descent] if fd[:Descent]
+          fonts[label].missing_width = fd[:MissingWidth] if fd[:MissingWidth]
+          fonts[label].bbox = resolve_references(fd[:FontBBox]) if fd[:FontBBox]
+        end
+        if desc[:Widths] and desc[:FirstChar]
+          fonts[label].widths = resolve_references(desc[:Widths])
+          fonts[label].first_char = desc[:FirstChar]
+        end
       end
       fonts
     end
@@ -481,3 +492,4 @@ class PDF::Reader
   ################################################################################
 end
 ################################################################################
+

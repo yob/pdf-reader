@@ -26,6 +26,8 @@
 class PDF::Reader
   class Font
     attr_accessor :label, :subtype, :encoding, :descendantfonts, :tounicode
+    attr_accessor :widths, :first_char, :ascent, :descent, :missing_width, :bbox
+    
     attr_reader :basefont
 
     # returns a hash that maps glyph names to unicode codepoints. The mapping is based on
@@ -71,6 +73,15 @@ class PDF::Reader
         params.collect { |param| self.to_utf8(param) }
       else
         params
+      end
+    end
+
+    def glyph_width c
+      @missing_width ||= 0
+      if @widths.nil?
+        0
+      else
+        @widths.fetch(c.codepoints.first - @first_char, @missing_width)
       end
     end
   end
