@@ -31,6 +31,12 @@ module PDF
     #     puts page.text
     #   end
     #
+    # == Extracting all text
+    #
+    #   browser = PDF::Reader::Browser.new("somefile.pdf")
+    #
+    #   browser.pages.map(&:text)
+    #
     # == Extracting content from a single page
     #
     #   browser = PDF::Reader::Browser.new("somefile.pdf")
