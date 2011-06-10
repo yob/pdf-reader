@@ -16,6 +16,10 @@ module PDF
         resources[:XObject] || {}
       end
 
+      def text
+        # TODO
+      end
+
       # returns the raw content stream for this page. This is plumbing, nothing to
       # see unless you're a PDF nerd like me.
       #

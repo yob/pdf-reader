@@ -25,4 +25,6 @@ describe PDF::Reader::BrowserPage, "with cairo-basic.pdf" do
     @page.raw_content.should be_a_kind_of(String)
   end
 
+  it "should return the text content of the page"
+
 end
