@@ -56,10 +56,12 @@ module PDF
     class Browser
 
       attr_reader :page_count
+      attr_reader :pdf_version
 
       def initialize(input)
         @ohash = PDF::Reader::ObjectHash.new(input)
-        @page_count = get_page_count
+        @page_count  = get_page_count
+        @pdf_version = @ohash.pdf_version
       end
 
       def pages
