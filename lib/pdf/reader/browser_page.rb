@@ -20,6 +20,10 @@ module PDF
         # TODO
       end
 
+      def walk(receiver)
+        content_stream(receiver, raw_content)
+      end
+
       # returns the raw content stream for this page. This is plumbing, nothing to
       # see unless you're a PDF nerd like me.
       #
@@ -42,12 +46,36 @@ module PDF
         root ||= ohash.object(@ohash.trailer[:Root])
       end
 
+      def content_stream(receiver, instructions)
+        buffer       = Buffer.new(StringIO.new(instructions), :content_stream => true)
+        parser       = Parser.new(buffer, @ohash)
+        params       = []
+
+        while (token = parser.parse_token(PagesStrategy::OPERATORS))
+          if token.kind_of?(Token) and PagesStrategy::OPERATORS.has_key?(token)
+            callback(receiver, PagesStrategy::OPERATORS[token], params)
+
+            params.clear
+          else
+            params << token
+          end
+        end
+      rescue EOFError => e
+        raise MalformedPDFError, "End Of File while processing a content stream"
+      end
+
       def resources
         hash = {}
         page_with_ancestors.each do |obj|
           hash.merge!(obj[:Resources]) if obj[:Resources]
         end
         hash
+      end
+
+      # calls the name callback method on the receiver class with params as the arguments
+      #
+      def callback (receiver, name, params=[])
+        receiver.send(name, *params) if receiver.respond_to?(name)
       end
 
       def page_with_ancestors(obj = nil)
