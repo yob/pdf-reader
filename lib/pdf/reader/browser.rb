@@ -18,7 +18,7 @@ module PDF
     #
     #   puts browser.pdf_version
     #   puts browser.info
-    #   puts browser.xml_metadata
+    #   puts browser.metadata
     #   puts browser.page_count
     #
     # == Iterating over page content
@@ -55,7 +55,7 @@ module PDF
     #
     class Browser
 
-      attr_reader :page_count, :pdf_version, :info
+      attr_reader :page_count, :pdf_version, :info, :metadata
 
       def initialize(input)
         @ohash = PDF::Reader::ObjectHash.new(input)
