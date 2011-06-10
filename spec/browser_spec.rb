@@ -30,3 +30,30 @@ describe PDF::Reader::Browser, "with cairo-basic.pdf" do
   end
 
 end
+
+describe PDF::Reader::Browser, "with no_text_spaces.pdf" do
+
+  it "should return the correct pdf_version" do
+    browser = PDF::Reader::Browser.new(File.dirname(__FILE__) + "/data/no_text_spaces.pdf")
+    browser.pdf_version.should eql(1.4)
+  end
+
+  it "should return the correct page_count" do
+    browser = PDF::Reader::Browser.new(File.dirname(__FILE__) + "/data/no_text_spaces.pdf")
+    browser.page_count.should eql(6)
+  end
+
+  it "should return the correct info hash" do
+    browser = PDF::Reader::Browser.new(File.dirname(__FILE__) + "/data/no_text_spaces.pdf")
+    info    = browser.info
+
+    info.size.should eql(9)
+  end
+
+  it "should return the nil for metadata" do
+    browser = PDF::Reader::Browser.new(File.dirname(__FILE__) + "/data/no_text_spaces.pdf")
+    browser.metadata.should be_a_kind_of(String)
+    browser.metadata.should include("<x:xmpmeta")
+  end
+
+end

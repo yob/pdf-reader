@@ -62,6 +62,7 @@ module PDF
         @page_count  = get_page_count
         @pdf_version = @ohash.pdf_version
         @info        = @ohash.object(@ohash.trailer[:Info])
+        @metadata    = get_metadata
       end
 
       def pages
@@ -84,6 +85,11 @@ module PDF
 
       def root
         root ||= @ohash.object(@ohash.trailer[:Root])
+      end
+
+      def get_metadata
+        stream = @ohash.object(root[:Metadata])
+        stream ? stream.unfiltered_data : nil
       end
 
       def get_page_count
