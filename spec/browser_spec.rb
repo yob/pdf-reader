@@ -29,6 +29,20 @@ describe PDF::Reader::Browser, "with cairo-basic.pdf" do
     browser.metadata.should be_nil
   end
 
+  it "should return an array of BrowserPages from pages()" do
+    browser = PDF::Reader::Browser.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    browser.pages.should be_a_kind_of(Array)
+    browser.pages.size.should eql(browser.page_count)
+    browser.pages.each do |page|
+      page.should be_a_kind_of(PDF::Reader::BrowserPage)
+    end
+  end
+
+  it "should return a single BrowserPage from page()" do
+    browser = PDF::Reader::Browser.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    browser.page(1).should be_a_kind_of(PDF::Reader::BrowserPage)
+  end
+
 end
 
 describe PDF::Reader::Browser, "with no_text_spaces.pdf" do
@@ -56,4 +70,17 @@ describe PDF::Reader::Browser, "with no_text_spaces.pdf" do
     browser.metadata.should include("<x:xmpmeta")
   end
 
+  it "should return an array of BrowserPages from pages()" do
+    browser = PDF::Reader::Browser.new(File.dirname(__FILE__) + "/data/no_text_spaces.pdf")
+    browser.pages.should be_a_kind_of(Array)
+    browser.pages.size.should eql(browser.page_count)
+    browser.pages.each do |page|
+      page.should be_a_kind_of(PDF::Reader::BrowserPage)
+    end
+  end
+
+  it "should return a single BrowserPage from page()" do
+    browser = PDF::Reader::Browser.new(File.dirname(__FILE__) + "/data/no_text_spaces.pdf")
+    browser.page(1).should be_a_kind_of(PDF::Reader::BrowserPage)
+  end
 end
