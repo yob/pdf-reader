@@ -10,4 +10,9 @@ describe PDF::Reader::Browser, "with cairo-basic.pdf" do
     browser.pdf_version.should eql(1.4)
   end
 
+  it "should return the correct page_count" do
+    browser = PDF::Reader::Browser.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    browser.page_count.should eql(2)
+  end
+
 end
