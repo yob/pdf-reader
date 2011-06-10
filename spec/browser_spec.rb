@@ -15,4 +15,13 @@ describe PDF::Reader::Browser, "with cairo-basic.pdf" do
     browser.page_count.should eql(2)
   end
 
+  it "should return the correct metadata" do
+    browser = PDF::Reader::Browser.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    info    = browser.info
+
+    info.size.should eql(2)
+    info[:Creator].should eql("cairo 1.4.6 (http://cairographics.org)")
+    info[:Producer].should eql("cairo 1.4.6 (http://cairographics.org)")
+  end
+
 end
