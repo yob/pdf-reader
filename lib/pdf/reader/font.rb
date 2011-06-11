@@ -28,6 +28,22 @@ class PDF::Reader
     attr_accessor :label, :subtype, :encoding, :descendantfonts, :tounicode
     attr_reader :basefont
 
+    def initialize(ohash = nil, obj = nil)
+      if ohash.nil? || obj.nil?
+        $stderr.puts "DEPREACTION WARNING - PDF::Reader::Font.new should be called with 2 args"
+      else
+        @ohash = ohash
+        @subtype  = @ohash.object(obj[:Subtype])
+        @basefont = @ohash.object(obj[:BaseFont])
+        @encoding = PDF::Reader::Encoding.new(@ohash.object(obj[:Encoding]))
+        @descendantfonts = @ohash.object(obj[:DescendantFonts])
+        if obj[:ToUnicode]
+          stream = @ohash.object(obj[:ToUnicode])
+          @tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
+        end
+      end
+    end
+
     # returns a hash that maps glyph names to unicode codepoints. The mapping is based on
     # a text file supplied by Adobe at:
     # http://www.adobe.com/devnet/opentype/archives/glyphlist.txt
