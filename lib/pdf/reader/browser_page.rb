@@ -9,7 +9,10 @@ module PDF
       end
 
       def fonts
-        resources[:Font] || {}
+        raw_fonts = resources[:Font] || {}
+        ::Hash[raw_fonts.map { |label, font|
+          [label, PDF::Reader::Font.new(ohash, ohash.object(font))]
+        }]
       end
 
       def xobjects
