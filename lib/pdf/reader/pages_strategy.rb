@@ -460,17 +460,7 @@ class PDF::Reader
       fonts = {}
       resources = @ohash.object(resources[:Font]) || {}
       resources.each do |label, desc|
-        desc = @ohash.object(desc)
-        fonts[label] = PDF::Reader::Font.new
-        fonts[label].label = label
-        fonts[label].subtype = desc[:Subtype] if desc[:Subtype]
-        fonts[label].basefont = desc[:BaseFont] if desc[:BaseFont]
-        fonts[label].encoding = PDF::Reader::Encoding.new(@ohash.object(desc[:Encoding]))
-        fonts[label].descendantfonts = desc[:DescendantFonts] if desc[:DescendantFonts]
-        if desc[:ToUnicode]
-          stream = @ohash.object(desc[:ToUnicode])
-          fonts[label].tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
-        end
+        fonts[label] = PDF::Reader::Font.new(@ohash, @ohash.object(desc))
       end
       fonts
     end
