@@ -15,17 +15,7 @@ describe PDF::Reader::BrowserPage, "fonts()" do
   end
 end
 
-describe PDF::Reader::BrowserPage, "xobjects()" do
-  it "should return a hash with the correct size from cairo-basic.pdf page 1" do
-    @browser = PDF::Reader::Browser.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
-    @page    = @browser.page(1)
-
-    @page.xobjects.should be_a_kind_of(Hash)
-    @page.xobjects.should be_empty
-  end
-end
-
-describe PDF::Reader::BrowserPage, "xobjects()" do
+describe PDF::Reader::BrowserPage, "raw_content()" do
   it "should return a string from raw_content() from cairo-basic.pdf page 1" do
     @browser = PDF::Reader::Browser.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
     @page    = @browser.page(1)
