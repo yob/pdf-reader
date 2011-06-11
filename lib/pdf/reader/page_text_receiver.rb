@@ -11,7 +11,7 @@ module PDF
         :char_spacing => 0,
         :word_spacing => 0,
         :h_scaling    => 100,
-        :leading      => 0,
+        :text_leading => 0,
         :text_font    => nil,
         :text_font_size => nil,
         :text_mode    => 0,
@@ -100,7 +100,7 @@ module PDF
       end
 
       def set_text_leading(leading)
-        state[:leading] = leading
+        state[:text_leading] = leading
       end
 
       def set_text_rendering_mode(mode)
