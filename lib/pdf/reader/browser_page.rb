@@ -20,7 +20,9 @@ module PDF
       end
 
       def text
-        # TODO
+        text_receiver = PageTextReceiver.new(fonts)
+        walk(text_receiver)
+        text_receiver.content
       end
 
       def walk(receiver)
