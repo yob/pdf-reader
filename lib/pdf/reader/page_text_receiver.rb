@@ -167,12 +167,15 @@ module PDF
         }
       end
 
-      def move_to_next_line_and_show_text # '
-
+      def move_to_next_line_and_show_text(str) # '
+        move_to_start_of_next_line
+        show_text(str)
       end
 
-      def set_spacing_next_line_show_text # "
-
+      def set_spacing_next_line_show_text(aw, ac, string) # "
+        set_word_spacing(aw)
+        set_character_spacing(ac)
+        move_to_next_line_and_show_text(string)
       end
 
       private
