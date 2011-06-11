@@ -2,12 +2,35 @@
 
 module PDF
   class Reader
+
+    # high level representation of a single PDF page. Ties together the various
+    # low level classes in PDF::Reader and provides access to the various
+    # components of the page (text, images, fonts, etc) in convenient formats.
+    #
     class BrowserPage
+
+      # creates a new page wrapper.
+      #
+      # * ohash - an ObjectHash instance that wraps a PDF file
+      # * pagenum - an int specifying the page number to expose. 1 indexed.
+      #
       def initialize(ohash, pagenum)
         @ohash, @pagenum = ohash, pagenum
         @page_obj = get_page_obj(pagenum)
       end
 
+      # return a friendly string representation of this page
+      def inspect
+        "<PDF::Reader::BrowserPage page: #{@pagenum}>"
+      end
+
+      # return a hash of fonts used on this page.
+      #
+      # The keys are the font labels used within the page content stream.
+      #
+      # The values are a PDF::Reader::Font instances that provide access
+      # to most available metrics for each font.
+      #
       def fonts
         raw_fonts = resources[:Font] || {}
         ::Hash[raw_fonts.map { |label, font|
@@ -15,22 +38,30 @@ module PDF
         }]
       end
 
-      def xobjects
-        resources[:XObject] || {}
-      end
-
+      # returns the plain text content of this page encoded as UTF-8. Any
+      # characters that can't be translated will be returned as a ▯
+      #
       def text
         text_receiver = PageTextReceiver.new(fonts)
         walk(text_receiver)
         text_receiver.content
       end
+      alias :to_s :text
 
+      # processes the raw content stream for this page in sequential order and
+      # passed callbacks to the receiver object.
+      #
+      # This is mostly low level and you can probably ignore it unless you need
+      # access to soemthing like the raw encoded text. For an example of how
+      # this can be used as a basis for higher level functionality, see the
+      # text() method
+      #
       def walk(receiver)
         content_stream(receiver, raw_content)
       end
 
       # returns the raw content stream for this page. This is plumbing, nothing to
-      # see unless you're a PDF nerd like me.
+      # see here unless you're a PDF nerd like me.
       #
       def raw_content
         contents = ohash.object(@page_obj[:Contents])
@@ -49,6 +80,10 @@ module PDF
 
       def root
         root ||= ohash.object(@ohash.trailer[:Root])
+      end
+
+      def xobjects
+        resources[:XObject] || {}
       end
 
       def content_stream(receiver, instructions)

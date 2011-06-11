@@ -12,6 +12,9 @@ module PDF
     # In most use cases for extracting and examining to contents of a PDF, it
     # makes sense to traverse the information using page based iteration.
     #
+    # In addition to the documentation here, check out the
+    # PDF::Reader::BrowserPage class.
+    #
     # == File Metadata
     #
     #   browser = PDF::Reader::Browser.new("somefile.pdf")
@@ -57,6 +60,17 @@ module PDF
 
       attr_reader :page_count, :pdf_version, :info, :metadata
 
+      # creates a new document browser for the provided PDF.
+      #
+      # input can be an IO-ish object (StringIO, File, etc) containing a PDF
+      # or a filename
+      #
+      #   browser = PDF::Reader::Browser.new("somefile.pdf")
+      #
+      #   File.open("somefile.pdf","r") do |file|
+      #     browser = PDF::Reader::Browser.new(file)
+      #   end
+      #
       def initialize(input)
         @ohash = PDF::Reader::ObjectHash.new(input)
         @page_count  = get_page_count
@@ -65,12 +79,38 @@ module PDF
         @metadata    = get_metadata
       end
 
+      # returns an array of PDF::Reader::BrowserPage objects, one for each
+      # page in the source PDF.
+      #
+      #   browser = PDF::Reader::Browser.new("somefile.pdf")
+      #
+      #   browser.pages.each do |page|
+      #     puts page.fonts
+      #     puts page.images
+      #     puts page.text
+      #   end
+      #
+      # See the docs for PDF::Reader::BrowserPage to read more about the
+      # methods available on each page
+      #
       def pages
         (1..@page_count).map { |num|
           PDF::Reader::BrowserPage.new(@ohash, num)
         }
       end
 
+      # returns a single PDF::Reader::BrowserPage for the specified page.
+      # Use this instead of pages method when you need to access just a single
+      # page
+      #
+      #   browser = PDF::Reader::Browser.new("somefile.pdf")
+      #   page    = browser.page(10)
+      #
+      #   puts page.text
+      #
+      # See the docs for PDF::Reader::BrowserPage to read more about the
+      # methods available on each page
+      #
       def page(num)
         num = num.to_i
         raise ArgumentError, "valid pages are 1 .. #{@page_count}" if num < 1 || num > @page_count
