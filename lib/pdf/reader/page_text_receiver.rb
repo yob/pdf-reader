@@ -1,40 +1,249 @@
 # coding: utf-8
 
+require 'matrix'
+
 module PDF
   class Reader
     class PageTextReceiver
-      attr_accessor :content
+
+      DEFAULT_GRAPHICS_STATE = {
+        :ctm          => Matrix.identity(3),
+        :char_spacing => 0,
+        :word_spacing => 0,
+        :h_scaling    => 100,
+        :leading      => 0,
+        :text_font    => nil,
+        :text_font_size => nil,
+        :text_mode    => 0,
+        :text_rise    => 0,
+        :text_knockout => 0
+      }
 
       def initialize(fonts)
         @fonts   = fonts
-        @current = nil
-        @content = ""
+        @content = ::Hash.new
+        @stack = [DEFAULT_GRAPHICS_STATE]
+      end
+
+      def content
+        keys = @content.keys.sort.reverse
+        keys.map { |key|
+          @content[key]
+        }.join("\n")
+      end
+
+      #####################################################
+      # Graphics State Operators
+      #####################################################
+
+      def save_graphics_state
+        @stack.push clone_state
+      end
+
+      def restore_graphics_state
+        @stack.pop
+      end
+
+      #####################################################
+      # Matrix Operators
+      #####################################################
+
+      # update the current transformation matrix.
+      #
+      # If the CTM is currently undefined, just store the new values.
+      #
+      # If there's an existing CTM, then multiply the existing matrix
+      # with the new matrix to form the updated matrix.
+      #
+      def concatenate_matrix(a, b, c, d, e, f)
+        transform = Matrix[
+          [a, b, 0],
+          [c, d, 0],
+          [e, f, 1]
+        ]
+        if state[:ctm]
+          state[:ctm] = transform * state[:ctm]
+        else
+          state[:ctm] = transform
+        end
+      end
+
+      #####################################################
+      # Text Object Operators
+      #####################################################
+
+      def begin_text_object
+        @text_matrix      = Matrix.identity(3)
+        @text_line_matrix = Matrix.identity(3)
+      end
+
+      def end_text_object
+        @text_matrix      = Matrix.identity(3)
+        @text_line_matrix = Matrix.identity(3)
+      end
+
+      #####################################################
+      # Text State Operators
+      #####################################################
+
+      def set_character_spacing(char_spacing)
+        state[:char_spacing] = char_spacing
+      end
+
+      def set_horizontal_text_scaling(h_scaling)
+        state[:h_scaling] = h_scaling
       end
 
       def set_text_font_and_size(label, size)
-        @current = label
+        state[:text_font]      = label
+        state[:text_font_size] = size
       end
+
+      def set_text_leading(leading)
+        state[:leading] = leading
+      end
+
+      def set_text_rendering_mode(mode)
+        state[:text_mode] = mode
+      end
+
+      def set_text_rise(rise)
+        state[:text_rise] = rise
+      end
+
+      def set_word_spacing(word_spacing)
+        state[:word_spacing] = word_spacing
+      end
+
+      #####################################################
+      # Text Positioning Operators
+      #####################################################
+
+      def move_text_position(x, y) # Td
+        temp_matrix = Matrix[
+                        [1, 0, 0],
+                        [0, 1, 0],
+                        [x, y, 1]
+                      ]
+        @text_matrix = @text_line_matrix = temp_matrix * @text_line_matrix
+      end
+
+      def move_text_position_and_set_leading(x, y) # TD
+        set_text_leading(-1 * y)
+        move_text_position(x, y)
+      end
+
+      def set_text_matrix_and_text_line_matrix(a, b, c, d, e, f) # Tm
+        @text_matrix = @text_line_matrix = Matrix[
+                              [a, b, 0],
+                              [c, d, 0],
+                              [e, f, 1]
+                            ]
+      end
+
+      def move_to_start_of_next_line # T*
+        move_text_position(0, state[:text_leading])
+      end
+
+      #####################################################
+      # Text Showing Operators
+      #####################################################
 
       # record text that is drawn on the page
-      def show_text(string, *params)
-        @content << current_font.to_utf8(string)
+      def show_text(string) # Tj
+        at = transform(Point.new(0,0))
+        @content[at.y] ||= ""
+        @content[at.y] << current_font.to_utf8(string)
       end
 
-      # there's a few text callbacks, so make sure we process them all
-      alias :super_show_text :show_text
-      alias :move_to_next_line_and_show_text :show_text
-      alias :set_spacing_next_line_show_text :show_text
+      def show_text_with_positioning(params) # TJ
+        params.each { |arg|
+          case arg
+          when String
+            show_text(arg)
+          when Fixnum, Float
+            show_text(" ") if arg > 1000
+          end
+        }
+      end
 
-      # this final text callback takes slightly different arguments
-      def show_text_with_positioning(*params)
-        params = params.first
-        params.each { |str| show_text(str) if str.kind_of?(String)}
+      def move_to_next_line_and_show_text # '
+
+      end
+
+      def set_spacing_next_line_show_text # "
+
       end
 
       private
 
+      # transform x and y co-ordinates from the current text space to the
+      # underlying device space.
+      #
+      def transform(point, z = 1)
+        trm = text_rendering_matrix
+        Point.new(
+          (trm[0,0] * point.x) + (trm[1,0] * point.y) + (trm[2,0] * z),
+          (trm[0,1] * point.x) + (trm[1,1] * point.y) + (trm[2,1] * z)
+        )
+      end
+
+      def text_rendering_matrix
+        state_matrix = Matrix[
+                         [state[:text_font_size] * state[:h_scaling], 0, 0],
+                         [0, state[:text_font_size], 0],
+                         [0, state[:text_rise], 1]
+                       ]
+
+        state_matrix * @text_matrix * ctm
+      end
+
+      def state
+        @stack.last
+      end
+
+      # when save_graphics_state is called, we need to push a new copy of the
+      # current state onto the stack. That way any modifications to the state
+      # will be undone once restore_graphics_state is called.
+      #
+      # This returns a deep clone of the current state, ensuring changes are
+      # keep separate from earlier states.
+      #
+      # YAML is used to round-trip the state through a string to easily perform
+      # the deep clone. Kinda hacky, but effective.
+      #
+      def clone_state
+        if @stack.empty?
+          {}
+        else
+          yaml_state = YAML.dump(@stack.last)
+          YAML.load(yaml_state)
+        end
+      end
+
+      # return the current transformation matrix
+      #
+      def ctm
+        state[:ctm]
+      end
+
       def current_font
-        @fonts[@current]
+        @fonts[state[:text_font]]
+      end
+
+      # private class for representing points on a cartesian plain. Used
+      # to simplify maths in the MinPpi class.
+      #
+      class Point
+        attr_reader :x, :y
+
+        def initialize(x,y)
+          @x, @y = x,y
+        end
+
+        def distance(point)
+          Math.hypot(point.x - x, point.y - y)
+        end
       end
     end
   end

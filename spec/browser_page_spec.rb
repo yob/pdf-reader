@@ -31,6 +31,13 @@ describe PDF::Reader::BrowserPage, "text()" do
 
     @page.text.should eql("Hello James")
   end
+
+  it "should return the text content from cairo-multiline.pdf page 1" do
+    @browser = PDF::Reader::Browser.new(File.dirname(__FILE__) + "/data/cairo-multiline.pdf")
+    @page    = @browser.page(1)
+
+    @page.text.should eql("Hello World\nFrom James")
+  end
 end
 
 describe PDF::Reader::BrowserPage, "walk()" do
