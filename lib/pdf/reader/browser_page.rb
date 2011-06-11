@@ -107,7 +107,7 @@ module PDF
       def resources
         hash = {}
         page_with_ancestors.each do |obj|
-          hash.merge!(obj[:Resources]) if obj[:Resources]
+          hash.merge!(@ohash.object(obj[:Resources])) if obj[:Resources]
         end
         hash
       end
