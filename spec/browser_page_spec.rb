@@ -28,17 +28,13 @@ describe PDF::Reader::BrowserPage, "with cairo-basic.pdf" do
   it "should return the text content of the page"
 
   it "should run callbacks while walking a page content stream" do
-    class SpecReceiver
-      def respond_to?(meth)
-        true
-      end
+    receiver = PDF::Reader::RegisterReceiver.new
+    @page.walk(receiver)
 
-      def method_missing(meth, *args)
-        puts "#{meth}: #{args}"
-      end
-    end
-    @page.walk(SpecReceiver.new)
-    puts @page.raw_content
+    callbacks = receiver.callbacks.map { |cb| cb[:name] }
+
+    callbacks.size.should eql(15)
+    callbacks.first.should eql(:save_graphics_state)
   end
 
 end
