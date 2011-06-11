@@ -5,41 +5,11 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + "/../lib")
 
 require 'pdf/reader'
 
-class PageTextReceiver
-  attr_accessor :content
-
-  # Called when page parsing starts
-  def end_page(arg = nil)
-    if @content
-      puts @content
-      @content = nil
-      puts
-    end
-  end
-
-  def show_text(*params)
-    @content = "" if @content.nil?
-    params.each do |str|
-      @content << str.to_s
-    end
-  end
-
-  # there's a few text callbacks, so make sure we process them all
-  alias :super_show_text :show_text
-  alias :move_to_next_line_and_show_text :show_text
-  alias :set_spacing_next_line_show_text :show_text
-
-  def show_text_with_positioning(*params)
-    params = params.first
-    params ||= []
-    params.each { |str| show_text(str) if str.kind_of?(String)}
-  end
-end
-
-receiver = PageTextReceiver.new
-
 if ARGV.empty?
-  PDF::Reader.new.parse($stdin, receiver)
+  browser = PDF::Reader::Browser.new($stdin)
 else
-  PDF::Reader.file(ARGV[0], receiver)
+  browser = PDF::Reader::Browser.new(ARGV[0])
+end
+browser.pages.each do |page|
+  puts page.text
 end
