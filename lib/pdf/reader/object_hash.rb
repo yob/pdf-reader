@@ -192,7 +192,7 @@ class PDF::Reader
     alias :value? :has_key?
 
     def to_s
-      "<PDF::Reader::ObejctHash size: #{self.size}>"
+      "<PDF::Reader::ObjectHash size: #{self.size}>"
     end
 
     # return an array of all keys in the file
