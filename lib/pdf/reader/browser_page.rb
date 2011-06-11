@@ -32,7 +32,7 @@ module PDF
       # to most available metrics for each font.
       #
       def fonts
-        raw_fonts = resources[:Font] || {}
+        raw_fonts = ohash.object(resources[:Font] || {})
         ::Hash[raw_fonts.map { |label, font|
           [label, PDF::Reader::Font.new(ohash, ohash.object(font))]
         }]
