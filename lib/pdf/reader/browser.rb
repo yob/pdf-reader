@@ -6,10 +6,10 @@ module PDF
     # A new way of browsing PDF content.
     #
     # PDF is a page based file format. There is some data associated with the
-    # document (metadata, bookmarks, etc) but all visible content is stored 
+    # document (metadata, bookmarks, etc) but all visible content is stored
     # under a Page object.
     #
-    # In most use cases for extracting and examining to contents of a PDF, it
+    # In most use cases for extracting and examining the contents of a PDF it
     # makes sense to traverse the information using page based iteration.
     #
     # In addition to the documentation here, check out the

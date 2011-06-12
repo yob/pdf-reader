@@ -49,7 +49,7 @@ module PDF
       alias :to_s :text
 
       # processes the raw content stream for this page in sequential order and
-      # passed callbacks to the receiver object.
+      # passes callbacks to the receiver object.
       #
       # This is mostly low level and you can probably ignore it unless you need
       # access to soemthing like the raw encoded text. For an example of how
