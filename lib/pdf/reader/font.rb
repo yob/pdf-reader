@@ -26,22 +26,19 @@
 class PDF::Reader
   class Font
     attr_accessor :label, :subtype, :encoding, :descendantfonts, :tounicode
+    attr_reader :widths, :first_char, :ascent, :descent, :missing_width, :bbox
     attr_reader :basefont
 
     def initialize(ohash = nil, obj = nil)
       if ohash.nil? || obj.nil?
         $stderr.puts "DEPREACTION WARNING - PDF::Reader::Font.new should be called with 2 args"
-      else
-        @ohash = ohash
-        @subtype  = @ohash.object(obj[:Subtype])
-        @basefont = @ohash.object(obj[:BaseFont])
-        @encoding = PDF::Reader::Encoding.new(@ohash.object(obj[:Encoding]))
-        @descendantfonts = @ohash.object(obj[:DescendantFonts])
-        if obj[:ToUnicode]
-          stream = @ohash.object(obj[:ToUnicode])
-          @tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
-        end
+        return
       end
+      @ohash = ohash
+
+      extract_base_info(obj)
+      extract_descriptor(obj)
+      extract_descendants(obj)
     end
 
     # returns a hash that maps glyph names to unicode codepoints. The mapping is based on
@@ -89,5 +86,48 @@ class PDF::Reader
         params
       end
     end
+
+    def glyph_width(c)
+      @missing_width ||= 0
+      if @widths.nil?
+        0
+      else
+        @widths.fetch(c.codepoints.first - @first_char, @missing_width)
+      end
+    end
+
+    private
+
+    def extract_base_info(obj)
+      @subtype  = @ohash.object(obj[:Subtype])
+      @basefont = @ohash.object(obj[:BaseFont])
+      @encoding = PDF::Reader::Encoding.new(@ohash.object(obj[:Encoding]))
+      @widths   = @ohash.object(obj[:Widths])
+      @first_char = @ohash.object(obj[:FirstChar])
+      if obj[:ToUnicode]
+        stream = @ohash.object(obj[:ToUnicode])
+        @tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
+      end
+    end
+
+    def extract_descriptor(obj)
+      return unless obj[:FontDescriptor]
+
+      fd       = @ohash.object(obj[:FontDescriptor])
+      @ascent  = @ohash.object(fd[:Ascent])
+      @descent = @ohash.object(fd[:Descent])
+      @missing_width = @ohash.object(fd[:MissingWidth])
+      @bbox    = @ohash.object(fd[:FontBBox])
+    end
+
+    def extract_descendants(obj)
+      return unless obj[:DescendantFonts]
+
+      descendants = @ohash.object(obj[:DescendantFonts])
+      @descendantfonts = descendants.map { |desc|
+        PDF::Reader::Font.new(@ohash, @ohash.object(desc))
+      }
+    end
+
   end
 end
