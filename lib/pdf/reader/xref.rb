@@ -154,23 +154,26 @@ class PDF::Reader
       trailer[:Info] = stream.hash[:Info] if stream.hash[:Info]
       trailer[:Prev] = stream.hash[:Prev] if stream.hash[:Prev]
 
-      widths = stream.hash[:W]
+      widths       = stream.hash[:W]
       entry_length = widths.inject(0) { |s, w| s + w }
-      raw_data = stream.unfiltered_data
+      raw_data     = StringIO.new(stream.unfiltered_data)
       if stream.hash[:Index]
-        index = stream.hash[:Index][0]
+        index = stream.hash[:Index]
       else
-        index = 0
+        index = [0, stream.hash[:Size]]
       end
-      stream.hash[:Size].times do |i|
-        entry = raw_data[i*entry_length, entry_length] || ""
-        f1    = unpack_bytes(entry[0,widths[0]])
-        f2    = unpack_bytes(entry[widths[0],widths[1]])
-        f3    = unpack_bytes(entry[widths[0]+widths[1],widths[2]])
-        if f1 == 1
-          store(index + i, f3, f2)
-        elsif f1 == 2
-          store(index + i, 0, PDF::Reader::Reference.new(f2, 0))
+      index.each_slice(2) do |start_id, size|
+        obj_ids = (start_id..(start_id+(size-1)))
+        obj_ids.each do |objid|
+          entry = raw_data.read(entry_length) || ""
+          f1    = unpack_bytes(entry[0,widths[0]])
+          f2    = unpack_bytes(entry[widths[0],widths[1]])
+          f3    = unpack_bytes(entry[widths[0]+widths[1],widths[2]])
+          if f1 == 1 && f2 > 0
+            store(objid, f3, f2)
+          elsif f1 == 2 && f2 > 0
+            store(objid, 0, PDF::Reader::Reference.new(f2, 0))
+          end
         end
       end
 

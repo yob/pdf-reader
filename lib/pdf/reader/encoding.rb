@@ -129,7 +129,7 @@ class PDF::Reader
 
     def get_unpack(enc)
       case enc
-      when :"Identity-H", :UTF16Encoding
+      when :"Identity-H", :"Identity-V", :UTF16Encoding
         "n*"
       else
         "C*"
@@ -140,6 +140,7 @@ class PDF::Reader
       return File.dirname(__FILE__) + "/encodings/standard.txt" if enc.nil?
       files = {
         :"Identity-H"      => nil,
+        :"Identity-V"      => nil,
         :MacRomanEncoding  => File.dirname(__FILE__) + "/encodings/mac_roman.txt",
         :MacExpertEncoding => File.dirname(__FILE__) + "/encodings/mac_expert.txt",
         :PDFDocEncoding    => File.dirname(__FILE__) + "/encodings/pdf_doc.txt",
@@ -158,7 +159,7 @@ class PDF::Reader
     end
 
     def unicode_required?(enc)
-      enc == :"Identity-H"
+      enc == :"Identity-H" or enc == :"Identity-V"
     end
 
     def mapping

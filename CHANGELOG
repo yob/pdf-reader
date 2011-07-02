@@ -1,8 +1,14 @@
-v0.9.2 (XXX)
+v0.9.3 (2nd July 2011)
+- add PDF::Reader::Reference#hash method
+  - improves behaviour of Reference objects when tehy're used as Hash keys
+
+v0.9.2 (24th April 2011)
+- add basic support for fonts with Identity-V encoding.
 - bug: improve robustness of text extraction
   - thanks to Evan Arnold for reporting
 - bug: fix loading of nested resources on XObjects
   - thanks to Samuel Williams for reporting
+- bug: improve parsing of files with XRef object streams
 
 v0.9.1 (21st December 2010)
 - force gem to only install on ruby 1.8.7 or higher

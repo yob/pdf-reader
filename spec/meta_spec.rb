@@ -51,6 +51,15 @@ describe PDF::Reader, "meta specs" do
     receiver.content[0].should eql("Chunky Bacon")
   end
 
+  it "should interpret Identity-V encoded strings correctly" do
+    receiver = PageTextReceiver.new
+    PDF::Reader.file(File.dirname(__FILE__) + "/data/vertical-text-in-identity-v.pdf", receiver)
+
+    # confirm the text appears on the correct pages
+    receiver.content.size.should eql(1)
+    receiver.content[0].should eql("VerticalText")
+  end
+
   it "should process text from a the adobe sample file correctly" do
     receiver = PageTextReceiver.new
     PDF::Reader.file(File.dirname(__FILE__) + "/data/adobe_sample.pdf", receiver)
