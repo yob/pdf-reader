@@ -43,13 +43,19 @@ class PDF::Reader
     def to_i
       self.id
     end
+    ################################################################################
+    # returns true if the provided object points to the same PDF Object as the
+    # current object
     def ==(obj)
       return false unless obj.kind_of?(PDF::Reader::Reference)
 
       self.hash == obj.hash
     end
     alias :eql? :==
-
+    ################################################################################
+    # returns a hash based on the PDF::Reference this object points to. Two
+    # different Reference objects that point to the same PDF Object will
+    # return an identical hash
     def hash
       "#{self.id}:#{self.gen}".hash
     end
