@@ -1,3 +1,7 @@
+v0.9.3 (2nd July 2011)
+- add PDF::Reader::Reference#hash method
+  - improves behaviour of Reference objects when tehy're used as Hash keys
+
 v0.9.2 (24th April 2011)
 - add basic support for fonts with Identity-V encoding.
 - bug: improve robustness of text extraction
