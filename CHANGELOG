@@ -3,7 +3,7 @@ v0.1.0 (4th July 2011)
 - Fix typo in measurement conversion code
 
 v0.0.6 (25th April 2011)
-- Improved accuracy of MinPpi rule in some situtations
+- Improved accuracy of MinPpi rule in some situations
 
 v0.0.4 (24th April 2011)
 - bug: fix occasional crash due to not dereferencing an object
@@ -14,7 +14,7 @@ v0.0.3 (7th April 2011)
 - added some additional rules to the pdfx1a profile
 
 v0.0.2 (1st April 2011)
-* fix possible execption in MinPpi rule
+* fix possible exception in MinPpi rule
 
 v0.0.1 (27th March 2011)
 * initial release

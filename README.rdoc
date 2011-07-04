@@ -92,7 +92,7 @@ dynamic conditions.
 
 This library is in an early stage of development. Use at your own risk.
 
-== Compatability
+== Compatibility
 
 This is pure ruby should run on most ruby VMs. I develop on MRI 1.9.2.
 
