@@ -45,6 +45,10 @@ module Preflight
         end
       end
 
+      def rule(*args)
+        instance_rules << args.flatten
+      end
+
       private
 
       def check_filename(filename)
@@ -55,6 +59,14 @@ module Preflight
 
       def check_io(io)
         check_receivers(io) + check_hash(io)
+      end
+
+      def instance_rules
+        @instance_rules ||= []
+      end
+
+      def all_rules
+        self.class.rules + instance_rules
       end
 
       # TODO: this is nasty, we parse the full file once for each receiver.
@@ -80,7 +92,7 @@ module Preflight
       end
 
       def hash_rules
-        self.class.rules.select { |arr|
+        all_rules.select { |arr|
           meth = arr.first.instance_method(:messages)
           meth && meth.arity == 1
         }.map { |arr|
@@ -90,7 +102,7 @@ module Preflight
       end
 
       def receiver_rules
-        self.class.rules.select { |arr|
+        all_rules.select { |arr|
           meth = arr.first.instance_method(:messages)
           meth && meth.arity == 0
         }.map { |arr|

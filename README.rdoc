@@ -19,7 +19,9 @@ and friends, but hopefully it'll get you most of the way with less stress.
 
 == Usage
 
-== Standard Profile ( PDF/X-1a )
+=== Standard Profile ( PDF/X-1a )
+
+To test a PDF file against a well known standard and rule set.
 
   require "preflight"
 
@@ -31,7 +33,9 @@ and friends, but hopefully it'll get you most of the way with less stress.
     puts preflight.check(file).inspect
   end
 
-== Custom Profile
+=== Custom Profile
+
+Create a custom set of rules to check against.
 
   require "preflight"
 
@@ -49,7 +53,9 @@ and friends, but hopefully it'll get you most of the way with less stress.
 
   puts preflight.check("somefile.pdf").inspect
 
-== Extend A Profile
+=== Extend A Profile
+
+Use an existing rule set as the base for a larger set of rules.
 
   require "preflight"
 
@@ -66,6 +72,19 @@ and friends, but hopefully it'll get you most of the way with less stress.
   end
 
   preflight = MyPreflight.new
+
+  puts preflight.check("somefile.pdf").inspect
+
+=== Adding Rules to a Profile Instance
+
+Use an existing rule set as the base for a larger set of rules by adding
+rules to a profile instance. Useful when the required set of rules depends
+dynamic conditions.
+
+  require "preflight"
+
+  preflight = Preflight::Profiles::PDFX1A.new
+  prefight.rule Preflight::Rules::MaxVersion, 1.4
 
   puts preflight.check("somefile.pdf").inspect
 
