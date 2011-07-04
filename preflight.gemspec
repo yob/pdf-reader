@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.executables       << "is_pdfx_1a"
   s.required_rubygems_version = ">=1.3.2"
 
-  s.add_dependency("pdf-reader", ">=0.9")
+  s.add_dependency("pdf-reader", "~>0.9.1")
 
   s.add_development_dependency("rake")
   s.add_development_dependency("roodi")
