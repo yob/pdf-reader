@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">=1.3.2"
 
   s.add_dependency("pdf-reader", "~>0.10.0")
+  s.add_dependency("ttfunk", "~>1.0.1")
 
   s.add_development_dependency("rake")
   s.add_development_dependency("roodi")
