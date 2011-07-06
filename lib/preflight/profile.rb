@@ -69,18 +69,14 @@ module Preflight
         self.class.rules + instance_rules
       end
 
-      # TODO: this is nasty, we parse the full file once for each receiver.
-      #       PDF::Reader needs to be updated to support multiple receivers
-      #
       def check_receivers(io)
-        receiver_rules.map { |rec|
-          begin
-            PDF::Reader.new.parse(io, rec)
-            rec.messages
-          rescue PDF::Reader::UnsupportedFeatureError
-            nil
-          end
-        }.flatten.compact
+        rules_array = receiver_rules
+        begin
+          PDF::Reader.new.parse(io, rules_array)
+        rescue PDF::Reader::UnsupportedFeatureError
+          nil
+        end
+        rules_array.map(&:messages).flatten.compact
       end
 
       def check_hash(io)

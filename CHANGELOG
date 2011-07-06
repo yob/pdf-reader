@@ -1,3 +1,7 @@
+v0.1.0 (6th July 2011)
+- bump required version of PDF::Reader to take advantage of a more
+  efficient API
+
 v0.1.0 (4th July 2011)
 - Added support for loading new rules into a profile instance
 - Fix typo in measurement conversion code
