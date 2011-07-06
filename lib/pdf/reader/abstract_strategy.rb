@@ -4,8 +4,13 @@ class PDF::Reader
 
   class AbstractStrategy # :nodoc:
 
-    def initialize(ohash, receiver, options = {})
-      @ohash, @receiver, @options = ohash, receiver, options
+    def initialize(ohash, receivers, options = {})
+      @ohash, @options = ohash, options
+      if receivers.is_a?(Array)
+        @receivers = receivers
+      else
+        @receivers = [receivers]
+      end
     end
 
     private
@@ -17,7 +22,9 @@ class PDF::Reader
     # calls the name callback method on the receiver class with params as the arguments
     #
     def callback (name, params=[])
-      receiver.send(name, *params) if receiver.respond_to?(name)
+      @receivers.each do |receiver|
+        receiver.send(name, *params) if receiver.respond_to?(name)
+      end
     end
 
     # strings outside of page content should be in either PDFDocEncoding or UTF-16.
@@ -56,10 +63,6 @@ class PDF::Reader
       pages ? true : false
     end
 
-    def receiver
-      @receiver
-    end
-
     def root
       ohash.object(trailer[:Root])
     end
@@ -74,4 +77,3 @@ class PDF::Reader
 
   end
 end
-
