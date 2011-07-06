@@ -73,21 +73,32 @@ module PDF
   #   :pages
   #   :raw_text
   #
+  # = Processing with multiple receivers
+  #
+  # If you wish to parse a PDF file with multiple simultaneous receivers, just
+  # pass an array of receivers as the second argument:
+  #
+  #   pdf = PDF::Reader.new
+  #   pdf.parse(File.new("somefile.pdf"), [receiver_one, receiever_two])
+  #
+  # This saves a significant amount of time by limiting the work to a single pass
+  # over the source file.
+  #
   class Reader
 
     # Parse the file with the given name, sending events to the given receiver.
     #
-    def self.file(name, receiver, opts = {})
+    def self.file(name, receivers, opts = {})
       File.open(name,"rb") do |f|
-        new.parse(f, receiver, opts)
+        new.parse(f, receivers, opts)
       end
     end
 
     # Parse the given string, sending events to the given receiver.
     #
-    def self.string(str, receiver, opts = {})
+    def self.string(str, receivers, opts = {})
       StringIO.open(str) do |s|
-        new.parse(s, receiver, opts)
+        new.parse(s, receivers, opts)
       end
     end
 
@@ -111,7 +122,7 @@ module PDF
 
     # Given an IO object that contains PDF data, parse it.
     #
-    def parse(io, receiver, opts = {})
+    def parse(io, receivers, opts = {})
       ohash    = ObjectHash.new(io)
 
       if ohash.trailer[:Encrypt]
@@ -122,7 +133,7 @@ module PDF
       options.merge!(opts)
 
       strategies.each do |s|
-        s.new(ohash, receiver, options).process
+        s.new(ohash, receivers, options).process
       end
 
       self

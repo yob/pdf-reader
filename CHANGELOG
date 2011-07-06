@@ -1,3 +1,7 @@
+v0.9.4 (XXX)
+- support multiple receivers within a single pass over a source file
+  - massive time saving when dealing with multiple receivers
+
 v0.9.3 (2nd July 2011)
 - add PDF::Reader::Reference#hash method
   - improves behaviour of Reference objects when tehy're used as Hash keys

@@ -87,4 +87,22 @@ describe PDF::Reader::PagesStrategy do
     text_callbacks[0][:args].should eql([["My name is"]])
     text_callbacks[1][:args].should eql([["James Healy"]])
   end
+
+  it "should send the correct callbacks when using more than one receiver" do
+
+    # mock up an object that will be called with callbacks. This will test that
+    # the content class correctly recognises all instructions
+    one = mock("receiver_one")
+    one.should_receive(:move_text_position).once # Td
+
+    two = mock("receiver_two")
+    two.should_receive(:move_text_position).once # Td
+
+    # The instructions to test with
+    instructions = "36.000 794.330 Td"
+
+    # process the instructions
+    content = PDF::Reader::PagesStrategy.new(nil, [one, two])
+    content.content_stream(instructions)
+  end
 end
