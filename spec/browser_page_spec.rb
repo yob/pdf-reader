@@ -55,4 +55,23 @@ describe PDF::Reader::BrowserPage, "walk()" do
     callbacks.first.should eql(:save_graphics_state)
   end
 
+  it "should run callbacks on multiple receivers while walking content stream from cairo-basic.pdf page 1" do
+    @browser = PDF::Reader::Browser.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    @page    = @browser.page(1)
+
+    receiver_one = PDF::Reader::RegisterReceiver.new
+    receiver_two = PDF::Reader::RegisterReceiver.new
+    @page.walk(receiver_one, receiver_two)
+
+    callbacks = receiver_one.callbacks.map { |cb| cb[:name] }
+
+    callbacks.size.should eql(15)
+    callbacks.first.should eql(:save_graphics_state)
+
+    callbacks = receiver_two.callbacks.map { |cb| cb[:name] }
+
+    callbacks.size.should eql(15)
+    callbacks.first.should eql(:save_graphics_state)
+  end
+
 end

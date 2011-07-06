@@ -49,15 +49,15 @@ module PDF
       alias :to_s :text
 
       # processes the raw content stream for this page in sequential order and
-      # passes callbacks to the receiver object.
+      # passes callbacks to the receiver objects.
       #
       # This is mostly low level and you can probably ignore it unless you need
       # access to soemthing like the raw encoded text. For an example of how
       # this can be used as a basis for higher level functionality, see the
       # text() method
       #
-      def walk(receiver)
-        content_stream(receiver, raw_content)
+      def walk(*receivers)
+        content_stream(receivers, raw_content)
       end
 
       # returns the raw content stream for this page. This is plumbing, nothing to
@@ -86,14 +86,16 @@ module PDF
         resources[:XObject] || {}
       end
 
-      def content_stream(receiver, instructions)
+      def content_stream(receivers, instructions)
         buffer       = Buffer.new(StringIO.new(instructions), :content_stream => true)
         parser       = Parser.new(buffer, @ohash)
         params       = []
 
         while (token = parser.parse_token(PagesStrategy::OPERATORS))
           if token.kind_of?(Token) and PagesStrategy::OPERATORS.has_key?(token)
-            callback(receiver, PagesStrategy::OPERATORS[token], params)
+            receivers.each do |receiver|
+              callback(receiver, PagesStrategy::OPERATORS[token], params)
+            end
 
             params.clear
           else
