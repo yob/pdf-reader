@@ -7,7 +7,12 @@ module PDF
     # low level classes in PDF::Reader and provides access to the various
     # components of the page (text, images, fonts, etc) in convenient formats.
     #
+    # If you require access to the raw PDF objects for this page, you can access
+    # the Page dictionary via the page_object accessor.
+    #
     class Page
+
+      attr_reader :page_object
 
       # creates a new page wrapper.
       #
@@ -16,7 +21,7 @@ module PDF
       #
       def initialize(ohash, pagenum)
         @ohash, @pagenum = ohash, pagenum
-        @page_obj = get_page_obj(pagenum)
+        @page_object = get_page_obj(pagenum)
       end
 
       # return a friendly string representation of this page
@@ -64,7 +69,7 @@ module PDF
       # see here unless you're a PDF nerd like me.
       #
       def raw_content
-        contents = ohash.object(@page_obj[:Contents])
+        contents = ohash.object(@page_object[:Contents])
         [contents].flatten.compact.map { |obj|
           ohash.object(obj)
         }.map { |obj|
@@ -123,7 +128,7 @@ module PDF
       def page_with_ancestors(obj = nil)
         obj = ohash.object(obj)
         if obj.nil?
-          [@page_obj] + page_with_ancestors(@page_obj[:Parent])
+          [@page_object] + page_with_ancestors(@page_object[:Parent])
         elsif obj[:Parent]
           [obj] + page_with_ancestors(obj[:Parent])
         else
