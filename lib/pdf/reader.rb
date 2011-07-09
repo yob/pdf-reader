@@ -155,7 +155,7 @@ module PDF
       }
     end
 
-    # returns an array of PDF::Reader::BrowserPage objects, one for each
+    # returns an array of PDF::Reader::Page objects, one for each
     # page in the source PDF.
     #
     #   browser = PDF::Reader.new("somefile.pdf")
@@ -166,16 +166,16 @@ module PDF
     #     puts page.text
     #   end
     #
-    # See the docs for PDF::Reader::BrowserPage to read more about the
+    # See the docs for PDF::Reader::Page to read more about the
     # methods available on each page
     #
     def pages
       (1..@page_count).map { |num|
-        PDF::Reader::BrowserPage.new(@ohash, num)
+        PDF::Reader::Page.new(@ohash, num)
       }
     end
 
-    # returns a single PDF::Reader::BrowserPage for the specified page.
+    # returns a single PDF::Reader::Page for the specified page.
     # Use this instead of pages method when you need to access just a single
     # page
     #
@@ -184,13 +184,13 @@ module PDF
     #
     #   puts page.text
     #
-    # See the docs for PDF::Reader::BrowserPage to read more about the
+    # See the docs for PDF::Reader::Page to read more about the
     # methods available on each page
     #
     def page(num)
       num = num.to_i
       raise ArgumentError, "valid pages are 1 .. #{@page_count}" if num < 1 || num > @page_count
-      PDF::Reader::BrowserPage.new(@ohash, num)
+      PDF::Reader::Page.new(@ohash, num)
     end
 
 
@@ -279,5 +279,5 @@ require 'pdf/reader/text_receiver'
 require 'pdf/reader/page_text_receiver'
 require 'pdf/reader/token'
 require 'pdf/reader/xref'
-require 'pdf/reader/browser_page'
+require 'pdf/reader/page'
 require 'pdf/hash'

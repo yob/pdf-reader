@@ -7,7 +7,7 @@ module PDF
     # low level classes in PDF::Reader and provides access to the various
     # components of the page (text, images, fonts, etc) in convenient formats.
     #
-    class BrowserPage
+    class Page
 
       # creates a new page wrapper.
       #
@@ -21,7 +21,7 @@ module PDF
 
       # return a friendly string representation of this page
       def inspect
-        "<PDF::Reader::BrowserPage page: #{@pagenum}>"
+        "<PDF::Reader::Page page: #{@pagenum}>"
       end
 
       # return a hash of fonts used on this page.
