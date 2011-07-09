@@ -100,6 +100,7 @@ class PDF::Reader
     def object(key)
       key.is_a?(PDF::Reader::Reference) ? self[key] : key
     end
+    alias :deref :object
 
     # Access an object from the PDF. key can be an int or a PDF::Reader::Reference
     # object.
