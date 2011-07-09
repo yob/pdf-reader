@@ -8,7 +8,9 @@ module PDF
     # components of the page (text, images, fonts, etc) in convenient formats.
     #
     # If you require access to the raw PDF objects for this page, you can access
-    # the Page dictionary via the page_object accessor.
+    # the Page dictionary via the page_object accessor. You will need to use the
+    # objects accessor on the PDF::Reader class to help walk the page dictionary
+    # in any useful way.
     #
     class Page
 

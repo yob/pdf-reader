@@ -85,6 +85,7 @@ module PDF
   #
   class Reader
 
+    attr_reader :objects
     attr_reader :page_count, :pdf_version, :info, :metadata
 
     # creates a new document browser for the provided PDF.
@@ -100,10 +101,10 @@ module PDF
     #
     def initialize(input = nil)
       if input # support the deprecated Reader API
-        @ohash = PDF::Reader::ObjectHash.new(input)
+        @objects = PDF::Reader::ObjectHash.new(input)
         @page_count  = get_page_count
-        @pdf_version = @ohash.pdf_version
-        @info        = @ohash.object(@ohash.trailer[:Info])
+        @pdf_version = @objects.pdf_version
+        @info        = @objects.object(@objects.trailer[:Info])
         @metadata    = get_metadata
       end
     end
@@ -171,7 +172,7 @@ module PDF
     #
     def pages
       (1..@page_count).map { |num|
-        PDF::Reader::Page.new(@ohash, num)
+        PDF::Reader::Page.new(@objects, num)
       }
     end
 
@@ -190,7 +191,7 @@ module PDF
     def page(num)
       num = num.to_i
       raise ArgumentError, "valid pages are 1 .. #{@page_count}" if num < 1 || num > @page_count
-      PDF::Reader::Page.new(@ohash, num)
+      PDF::Reader::Page.new(@objects, num)
     end
 
 
@@ -222,9 +223,9 @@ module PDF
     # Given an IO object that contains PDF data, return the contents of a single object
     #
     def object (io, id, gen)
-      @ohash = ObjectHash.new(io)
+      @objects = ObjectHash.new(io)
 
-      @ohash.object(Reference.new(id, gen))
+      @objects.object(Reference.new(id, gen))
     end
 
     private
@@ -237,20 +238,20 @@ module PDF
     end
 
     def ohash
-      @ohash
+      @objects
     end
 
     def root
-      root ||= @ohash.object(@ohash.trailer[:Root])
+      root ||= @objects.object(@objects.trailer[:Root])
     end
 
     def get_metadata
-      stream = @ohash.object(root[:Metadata])
+      stream = @objects.object(root[:Metadata])
       stream ? stream.unfiltered_data : nil
     end
 
     def get_page_count
-      pages = @ohash.object(root[:Pages])
+      pages = @objects.object(root[:Pages])
       pages[:Count]
     end
 
