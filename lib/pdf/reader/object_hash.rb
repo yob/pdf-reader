@@ -5,7 +5,7 @@ class PDF::Reader
   # object.
   #
   # A PDF file can be viewed as a large hash map. It is a series of objects
-  # stored at an exact byte offsets, and a table that maps object IDs to byte
+  # stored at precise byte offsets, and a table that maps object IDs to byte
   # offsets. Given an object ID, looking up an object is an O(1) operation.
   #
   # Each PDF object can be mapped to a ruby object, so by passing an object
