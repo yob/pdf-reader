@@ -104,7 +104,7 @@ module PDF
         @objects = PDF::Reader::ObjectHash.new(input)
         @page_count  = get_page_count
         @pdf_version = @objects.pdf_version
-        @info        = @objects.object(@objects.trailer[:Info])
+        @info        = @objects.deref(@objects.trailer[:Info])
         @metadata    = get_metadata
       end
     end
@@ -225,7 +225,7 @@ module PDF
     def object (io, id, gen)
       @objects = ObjectHash.new(io)
 
-      @objects.object(Reference.new(id, gen))
+      @objects.deref(Reference.new(id, gen))
     end
 
     private
@@ -242,16 +242,16 @@ module PDF
     end
 
     def root
-      root ||= @objects.object(@objects.trailer[:Root])
+      root ||= @objects.deref(@objects.trailer[:Root])
     end
 
     def get_metadata
-      stream = @objects.object(root[:Metadata])
+      stream = @objects.deref(root[:Metadata])
       stream ? stream.unfiltered_data : nil
     end
 
     def get_page_count
-      pages = @objects.object(root[:Pages])
+      pages = @objects.deref(root[:Pages])
       pages[:Count]
     end
 

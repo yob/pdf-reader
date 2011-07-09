@@ -39,9 +39,9 @@ module PDF
       # to most available metrics for each font.
       #
       def fonts
-        raw_fonts = objects.object(resources[:Font] || {})
+        raw_fonts = objects.deref(resources[:Font] || {})
         ::Hash[raw_fonts.map { |label, font|
-          [label, PDF::Reader::Font.new(objects, objects.object(font))]
+          [label, PDF::Reader::Font.new(objects, objects.deref(font))]
         }]
       end
 
@@ -71,9 +71,9 @@ module PDF
       # see here unless you're a PDF nerd like me.
       #
       def raw_content
-        contents = objects.object(@page_object[:Contents])
+        contents = objects.deref(@page_object[:Contents])
         [contents].flatten.compact.map { |obj|
-          objects.object(obj)
+          objects.deref(obj)
         }.map { |obj|
           obj.unfiltered_data
         }.join
@@ -86,7 +86,7 @@ module PDF
       end
 
       def root
-        root ||= objects.object(@objects.trailer[:Root])
+        root ||= objects.deref(@objects.trailer[:Root])
       end
 
       def xobjects
@@ -116,7 +116,7 @@ module PDF
       def resources
         hash = {}
         page_with_ancestors.each do |obj|
-          hash.merge!(@objects.object(obj[:Resources])) if obj[:Resources]
+          hash.merge!(@objects.deref(obj[:Resources])) if obj[:Resources]
         end
         hash
       end
@@ -128,7 +128,7 @@ module PDF
       end
 
       def page_with_ancestors(obj = nil)
-        obj = objects.object(obj)
+        obj = objects.deref(obj)
         if obj.nil?
           [@page_object] + page_with_ancestors(@page_object[:Parent])
         elsif obj[:Parent]
@@ -139,15 +139,15 @@ module PDF
       end
 
       def get_page_obj(page_num)
-        pages = objects.object(root[:Pages])
+        pages = objects.deref(root[:Pages])
         page_array = get_page_objects(pages).flatten
-        objects.object(page_array[page_num - 1])
+        objects.deref(page_array[page_num - 1])
       end
 
       # returns a nested array of objects for all pages in this PDF.
       #
       def get_page_objects(obj)
-        obj = objects.object(obj)
+        obj = objects.deref(obj)
         if obj[:Type] == :Page
           obj
         elsif obj[:Type] == :Pages
