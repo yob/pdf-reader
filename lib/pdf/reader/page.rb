@@ -18,11 +18,11 @@ module PDF
 
       # creates a new page wrapper.
       #
-      # * ohash - an ObjectHash instance that wraps a PDF file
+      # * objects - an ObjectHash instance that wraps a PDF file
       # * pagenum - an int specifying the page number to expose. 1 indexed.
       #
-      def initialize(ohash, pagenum)
-        @ohash, @pagenum = ohash, pagenum
+      def initialize(objects, pagenum)
+        @objects, @pagenum = objects, pagenum
         @page_object = get_page_obj(pagenum)
       end
 
@@ -39,9 +39,9 @@ module PDF
       # to most available metrics for each font.
       #
       def fonts
-        raw_fonts = ohash.object(resources[:Font] || {})
+        raw_fonts = objects.object(resources[:Font] || {})
         ::Hash[raw_fonts.map { |label, font|
-          [label, PDF::Reader::Font.new(ohash, ohash.object(font))]
+          [label, PDF::Reader::Font.new(objects, objects.object(font))]
         }]
       end
 
@@ -71,9 +71,9 @@ module PDF
       # see here unless you're a PDF nerd like me.
       #
       def raw_content
-        contents = ohash.object(@page_object[:Contents])
+        contents = objects.object(@page_object[:Contents])
         [contents].flatten.compact.map { |obj|
-          ohash.object(obj)
+          objects.object(obj)
         }.map { |obj|
           obj.unfiltered_data
         }.join
@@ -81,12 +81,12 @@ module PDF
 
       private
 
-      def ohash
-        @ohash
+      def objects
+        @objects
       end
 
       def root
-        root ||= ohash.object(@ohash.trailer[:Root])
+        root ||= objects.object(@objects.trailer[:Root])
       end
 
       def xobjects
@@ -95,7 +95,7 @@ module PDF
 
       def content_stream(receivers, instructions)
         buffer       = Buffer.new(StringIO.new(instructions), :content_stream => true)
-        parser       = Parser.new(buffer, @ohash)
+        parser       = Parser.new(buffer, @objects)
         params       = []
 
         while (token = parser.parse_token(PagesStrategy::OPERATORS))
@@ -116,7 +116,7 @@ module PDF
       def resources
         hash = {}
         page_with_ancestors.each do |obj|
-          hash.merge!(@ohash.object(obj[:Resources])) if obj[:Resources]
+          hash.merge!(@objects.object(obj[:Resources])) if obj[:Resources]
         end
         hash
       end
@@ -128,7 +128,7 @@ module PDF
       end
 
       def page_with_ancestors(obj = nil)
-        obj = ohash.object(obj)
+        obj = objects.object(obj)
         if obj.nil?
           [@page_object] + page_with_ancestors(@page_object[:Parent])
         elsif obj[:Parent]
@@ -139,15 +139,15 @@ module PDF
       end
 
       def get_page_obj(page_num)
-        pages = ohash.object(root[:Pages])
+        pages = objects.object(root[:Pages])
         page_array = get_page_objects(pages).flatten
-        ohash.object(page_array[page_num - 1])
+        objects.object(page_array[page_num - 1])
       end
 
       # returns a nested array of objects for all pages in this PDF.
       #
       def get_page_objects(obj)
-        obj = ohash.object(obj)
+        obj = objects.object(obj)
         if obj[:Type] == :Page
           obj
         elsif obj[:Type] == :Pages
