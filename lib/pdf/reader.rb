@@ -32,7 +32,81 @@ module PDF
   ################################################################################
   # The Reader class serves as an entry point for parsing a PDF file.
   #
+  # PDF is a page based file format. There is some data associated with the
+  # document (metadata, bookmarks, etc) but all visible content is stored
+  # under a Page object.
+  #
+  # In most use cases for extracting and examining the contents of a PDF it
+  # makes sense to traverse the information using page based iteration.
+  #
+  # In addition to the documentation here, check out the
+  # PDF::Reader::Page class.
+  #
+  # == File Metadata
+  #
+  #   browser = PDF::Reader.new("somefile.pdf")
+  #
+  #   puts browser.pdf_version
+  #   puts browser.info
+  #   puts browser.metadata
+  #   puts browser.page_count
+  #
+  # == Iterating over page content
+  #
+  #   browser = PDF::Reader.new("somefile.pdf")
+  #
+  #   browser.pages.each do |page|
+  #     puts page.fonts
+  #     puts page.images
+  #     puts page.text
+  #   end
+  #
+  # == Extracting all text
+  #
+  #   browser = PDF::Reader.new("somefile.pdf")
+  #
+  #   browser.pages.map(&:text)
+  #
+  # == Extracting content from a single page
+  #
+  #   browser = PDF::Reader.new("somefile.pdf")
+  #
+  #   page = browser.page(1)
+  #   puts page.fonts
+  #   puts page.images
+  #   puts page.text
+  #
+  # == Low level callbacks (ala current version of PDF::Reader)
+  #
+  #   browser = PDF::Reader.new("somefile.pdf")
+  #
+  #   page = browser.page(1)
+  #   page.walk(receiver)
+  #
   class Reader
+
+    attr_reader :page_count, :pdf_version, :info, :metadata
+
+    # creates a new document browser for the provided PDF.
+    #
+    # input can be an IO-ish object (StringIO, File, etc) containing a PDF
+    # or a filename
+    #
+    #   browser = PDF::Reader.new("somefile.pdf")
+    #
+    #   File.open("somefile.pdf","r") do |file|
+    #     browser = PDF::Reader.new(file)
+    #   end
+    #
+    def initialize(input = nil)
+      if input # support the deprecated Reader API
+        @ohash = PDF::Reader::ObjectHash.new(input)
+        @page_count  = get_page_count
+        @pdf_version = @ohash.pdf_version
+        @info        = @ohash.object(@ohash.trailer[:Info])
+        @metadata    = get_metadata
+      end
+    end
 
     # DEPRECATED: this method was deprecated in version 0.11.0 and will
     #             eventually be removed
@@ -81,6 +155,45 @@ module PDF
       }
     end
 
+    # returns an array of PDF::Reader::BrowserPage objects, one for each
+    # page in the source PDF.
+    #
+    #   browser = PDF::Reader.new("somefile.pdf")
+    #
+    #   browser.pages.each do |page|
+    #     puts page.fonts
+    #     puts page.images
+    #     puts page.text
+    #   end
+    #
+    # See the docs for PDF::Reader::BrowserPage to read more about the
+    # methods available on each page
+    #
+    def pages
+      (1..@page_count).map { |num|
+        PDF::Reader::BrowserPage.new(@ohash, num)
+      }
+    end
+
+    # returns a single PDF::Reader::BrowserPage for the specified page.
+    # Use this instead of pages method when you need to access just a single
+    # page
+    #
+    #   browser = PDF::Reader.new("somefile.pdf")
+    #   page    = browser.page(10)
+    #
+    #   puts page.text
+    #
+    # See the docs for PDF::Reader::BrowserPage to read more about the
+    # methods available on each page
+    #
+    def page(num)
+      num = num.to_i
+      raise ArgumentError, "valid pages are 1 .. #{@page_count}" if num < 1 || num > @page_count
+      PDF::Reader::BrowserPage.new(@ohash, num)
+    end
+
+
     # DEPRECATED: this method was deprecated in version 0.11.0 and will
     #             eventually be removed
     #
@@ -122,6 +235,25 @@ module PDF
         ::PDF::Reader::PagesStrategy
       ]
     end
+
+    def ohash
+      @ohash
+    end
+
+    def root
+      root ||= @ohash.object(@ohash.trailer[:Root])
+    end
+
+    def get_metadata
+      stream = @ohash.object(root[:Metadata])
+      stream ? stream.unfiltered_data : nil
+    end
+
+    def get_page_count
+      pages = @ohash.object(root[:Pages])
+      pages[:Count]
+    end
+
   end
 end
 ################################################################################
@@ -147,6 +279,5 @@ require 'pdf/reader/text_receiver'
 require 'pdf/reader/page_text_receiver'
 require 'pdf/reader/token'
 require 'pdf/reader/xref'
-require 'pdf/reader/browser'
 require 'pdf/reader/browser_page'
 require 'pdf/hash'

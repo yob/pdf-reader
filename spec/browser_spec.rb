@@ -3,10 +3,10 @@
 $LOAD_PATH << "." unless $LOAD_PATH.include?(".")
 require File.dirname(__FILE__) + "/spec_helper"
 
-describe PDF::Reader::Browser, "with cairo-basic.pdf" do
+describe PDF::Reader, "with cairo-basic.pdf" do
 
   before(:each) do
-    @browser = PDF::Reader::Browser.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
   end
 
   it "should return the correct pdf_version" do
@@ -43,10 +43,10 @@ describe PDF::Reader::Browser, "with cairo-basic.pdf" do
 
 end
 
-describe PDF::Reader::Browser, "with no_text_spaces.pdf" do
+describe PDF::Reader, "with no_text_spaces.pdf" do
 
   before(:each) do
-    @browser = PDF::Reader::Browser.new(File.dirname(__FILE__) + "/data/no_text_spaces.pdf")
+    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/no_text_spaces.pdf")
   end
 
   it "should return the correct pdf_version" do
