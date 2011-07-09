@@ -30,62 +30,14 @@ require 'ascii85'
 
 module PDF
   ################################################################################
-  # The Reader class serves as an entry point for parsing a PDF file. There are three
-  # ways to kick off processing - which one you pick will be based on personal preference
-  # and the situation.
-  #
-  # For all examples, assume the receiver variable contains an object that will respond
-  # to various callbacks. Refer to the README and PDF::Reader::Content for more information
-  # on receivers.
-  #
-  # = Parsing a file
-  #
-  #   PDF::Reader.file("somefile.pdf", receiver)
-  #
-  # = Parsing a String
-  #
-  # This is useful for processing a PDF that is already in memory
-  #
-  #   PDF::Reader.string(pdf_string, receiver)
-  #
-  # = Parsing an IO object
-  #
-  # This can be a useful alternative to the first 2 options in some situations
-  #
-  #   pdf = PDF::Reader.new
-  #   pdf.parse(File.new("somefile.pdf"), receiver)
-  #
-  # = Parsing parts of a file
-  #
-  # Both PDF::Reader#file and PDF::Reader#string accept a third argument that
-  # specifies which parts of the file to process. By default, all options are
-  # enabled, so this can be useful to cut down processing time if you're only
-  # interested in say, metadata.
-  #
-  # As an example, the following call will disable parsing the contents of
-  # pages in the file, but explicitly enables processing metadata.
-  #
-  #   PDF::Reader.new("somefile.pdf", receiver, {:metadata => true, :pages => false})
-  #
-  # Available options are currently:
-  #
-  #   :metadata
-  #   :pages
-  #   :raw_text
-  #
-  # = Processing with multiple receivers
-  #
-  # If you wish to parse a PDF file with multiple simultaneous receivers, just
-  # pass an array of receivers as the second argument:
-  #
-  #   pdf = PDF::Reader.new
-  #   pdf.parse(File.new("somefile.pdf"), [receiver_one, receiever_two])
-  #
-  # This saves a significant amount of time by limiting the work to a single pass
-  # over the source file.
+  # The Reader class serves as an entry point for parsing a PDF file.
   #
   class Reader
 
+    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    #             eventually be removed
+    #
+    #
     # Parse the file with the given name, sending events to the given receiver.
     #
     def self.file(name, receivers, opts = {})
@@ -94,6 +46,9 @@ module PDF
       end
     end
 
+    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    #             eventually be removed
+    #
     # Parse the given string, sending events to the given receiver.
     #
     def self.string(str, receivers, opts = {})
@@ -102,6 +57,9 @@ module PDF
       end
     end
 
+    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    #             eventually be removed
+    #
     # Parse the file with the given name, returning an unmarshalled ruby version of
     # represents the requested pdf object
     #
@@ -111,6 +69,9 @@ module PDF
       }
     end
 
+    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    #             eventually be removed
+    #
     # Parse the given string, returning an unmarshalled ruby version of represents
     # the requested pdf object
     #
@@ -120,6 +81,9 @@ module PDF
       }
     end
 
+    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    #             eventually be removed
+    #
     # Given an IO object that contains PDF data, parse it.
     #
     def parse(io, receivers, opts = {})
@@ -139,6 +103,9 @@ module PDF
       self
     end
 
+    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    #             eventually be removed
+    #
     # Given an IO object that contains PDF data, return the contents of a single object
     #
     def object (io, id, gen)
