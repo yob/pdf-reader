@@ -98,6 +98,5 @@ little UTF-8 friendly box to indicate an unrecognisable character.
 = Resources
 
 - PDF::Reader Code Repository: http://github.com/yob/pdf-reader
-- PDF::Reader Rubyforge Page: http://rubyforge.org/projects/pdf-reader/
 - PDF Specification: http://www.adobe.com/devnet/pdf/pdf_reference.html
 - PDF Tutorial Slide Presentations: http://home.comcast.net/~jk05/presentations/PDFTutorials.html
