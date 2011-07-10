@@ -7,28 +7,18 @@ module Preflight
     # TrimBox
     #
     class PrintBoxes
-      attr_reader :messages
 
-      def initialize
-        @messages = []
-        @page_num = 0
-        @parent   = {}
-      end
+      def check_page(page)
+        dict = page.attributes
 
-      def begin_page_container(hash = {})
-        @parent.merge!(hash)
-      end
-
-      def begin_page(hash = {})
-        @page_num += 1
-        hash = @parent.merge(hash)
-
-        if hash[:MediaBox].nil?
-          @messages << "every page must have a MediaBox (page #{@page_num})"
-        elsif hash[:ArtBox].nil? && hash[:TrimBox].nil?
-          @messages << "every page must have either an ArtBox or a TrimBox (page #{@page_num})"
-        elsif hash[:ArtBox] && hash[:TrimBox]
-          @messages << "no page can have both ArtBox and TrimBox - TrimBox is preferred (page #{@page_num})"
+        if dict[:MediaBox].nil?
+          ["every page must have a MediaBox (page #{page.number})"]
+        elsif dict[:ArtBox].nil? && dict[:TrimBox].nil?
+          ["every page must have either an ArtBox or a TrimBox (page #{page.number})"]
+        elsif dict[:ArtBox] && dict[:TrimBox]
+          ["no page can have both ArtBox and TrimBox - TrimBox is preferred (page #{page.number})"]
+        else
+          []
         end
       end
     end

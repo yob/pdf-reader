@@ -71,12 +71,16 @@ module Preflight
 
       def check_receivers(io)
         rules_array = receiver_rules
-        begin
-          PDF::Reader.new.parse(io, rules_array)
-        rescue PDF::Reader::UnsupportedFeatureError
-          nil
+        reader = PDF::Reader.new(io)
+        reader.pages.each do |page|
+          rules_array.each do |rule|
+            rule.page = page
+          end
+          page.walk(rules_array)
         end
         rules_array.map(&:messages).flatten.compact
+      rescue PDF::Reader::UnsupportedFeatureError
+        []
       end
 
       def check_hash(io)
