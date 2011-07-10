@@ -75,3 +75,14 @@ describe PDF::Reader::Page, "walk()" do
   end
 
 end
+
+describe PDF::Reader::Page, "number()" do
+
+  it "should return the text content from cairo-basic.pdf page 1" do
+    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    @page    = @browser.page(1)
+
+    @page.number.should eql(1)
+  end
+
+end

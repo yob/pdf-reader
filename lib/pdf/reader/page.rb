@@ -26,6 +26,10 @@ module PDF
         @page_object = get_page_obj(pagenum)
       end
 
+      def number
+        @pagenum
+      end
+
       # return a friendly string representation of this page
       def inspect
         "<PDF::Reader::Page page: #{@pagenum}>"
