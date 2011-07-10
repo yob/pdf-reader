@@ -58,7 +58,7 @@ module Preflight
       end
 
       def check_io(io)
-        check_receivers(io) + check_hash(io)
+        check_receivers(io) + check_pages(io) + check_hash(io)
       end
 
       def instance_rules
@@ -69,32 +69,49 @@ module Preflight
         self.class.rules + instance_rules
       end
 
-      def check_receivers(io)
-        rules_array = receiver_rules
-        reader = PDF::Reader.new(io)
-        reader.pages.each do |page|
-          rules_array.each do |rule|
-            rule.page = page
-          end
-          page.walk(rules_array)
-        end
-        rules_array.map(&:messages).flatten.compact
-      rescue PDF::Reader::UnsupportedFeatureError
-        []
-      end
-
       def check_hash(io)
         ohash = PDF::Reader::ObjectHash.new(io)
 
         hash_rules.map { |chk|
-          chk.messages(ohash)
+          chk.check_hash(ohash)
         }.flatten.compact
+      rescue PDF::Reader::UnsupportedFeatureError
+        []
+      end
+
+      def check_pages(io)
+        reader = PDF::Reader.new(io)
+        rules_array = page_rules
+
+        reader.pages.map { |page|
+          page.walk(rules_array)
+        }.flatten.compact
+      rescue PDF::Reader::UnsupportedFeatureError
+        []
+      end
+
+      def check_receivers(io)
+        rules_array = receiver_rules
+        begin
+          PDF::Reader.new.parse(io, rules_array)
+        rescue PDF::Reader::UnsupportedFeatureError
+          nil
+        end
+        rules_array.map(&:messages).flatten.compact
       end
 
       def hash_rules
         all_rules.select { |arr|
-          meth = arr.first.instance_method(:messages)
-          meth && meth.arity == 1
+          arr.first.instance_methods.include?(:check_hash)
+        }.map { |arr|
+          klass = arr[0]
+          klass.new(*arr[1,10])
+        }
+      end
+
+      def page_rules
+        all_rules.select { |arr|
+          arr.first.instance_methods.include?(:check_page)
         }.map { |arr|
           klass = arr[0]
           klass.new(*arr[1,10])
@@ -103,8 +120,7 @@ module Preflight
 
       def receiver_rules
         all_rules.select { |arr|
-          meth = arr.first.instance_method(:messages)
-          meth && meth.arity == 0
+          arr.first.instance_methods.include?(:messages)
         }.map { |arr|
           klass = arr[0]
           klass.new(*arr[1,10])
