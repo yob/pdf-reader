@@ -86,3 +86,55 @@ describe PDF::Reader::Page, "number()" do
   end
 
 end
+
+describe PDF::Reader::Page, "number()" do
+
+  it "should return the text content from cairo-basic.pdf page 1" do
+    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    @page    = @browser.page(1)
+
+    @page.number.should eql(1)
+  end
+
+end
+
+describe PDF::Reader::Page, "attributes()" do
+
+  it "should contain attributes from the Page object" do
+    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/inherited_page_attributes.pdf")
+    @page    = @browser.page(1)
+
+    attribs = @page.attributes
+    attribs[:Resources].should      be_a_kind_of(Hash)
+    attribs[:Resources].size.should eql(2)
+  end
+
+  it "should contain inherited attributes" do
+    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/inherited_page_attributes.pdf")
+    @page    = @browser.page(1)
+
+    attribs = @page.attributes
+    attribs[:MediaBox].should eql([0.0, 0.0, 595.276, 841.89])
+  end
+
+end
+
+describe PDF::Reader::Page, "resources()" do
+
+  it "should contain resources from the Page object" do
+    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/inherited_page_attributes.pdf")
+    @page    = @browser.page(1)
+
+    @page.resources.should      be_a_kind_of(Hash)
+    @page.resources.size.should eql(2)
+  end
+
+  it "should contain inherited resources" do
+    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    @page    = @browser.page(1)
+
+    @page.resources.should      be_a_kind_of(Hash)
+    @page.resources.size.should eql(2)
+  end
+
+end

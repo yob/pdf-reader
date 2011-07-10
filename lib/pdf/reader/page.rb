@@ -35,6 +35,27 @@ module PDF
         "<PDF::Reader::Page page: #{@pagenum}>"
       end
 
+      # Returns the attributes that accompany this page. Includes
+      # attributes inherited from parents.
+      #
+      # TODO: ensure only attributes marked as 'inheritable' in the
+      #       PDF spec are inherited
+      #
+      def attributes
+        hash = {}
+        page_with_ancestors.each do |obj|
+          hash.merge!(@objects.deref(obj))
+        end
+        hash
+      end
+
+      # Returns the resources that accompany this page. Includes
+      # resources inherited from parents.
+      #
+      def resources
+        @resources ||= @objects.deref(attributes[:Resources]) || {}
+      end
+
       # return a hash of fonts used on this page.
       #
       # The keys are the font labels used within the page content stream.
@@ -115,14 +136,6 @@ module PDF
         end
       rescue EOFError => e
         raise MalformedPDFError, "End Of File while processing a content stream"
-      end
-
-      def resources
-        hash = {}
-        page_with_ancestors.each do |obj|
-          hash.merge!(@objects.deref(obj[:Resources])) if obj[:Resources]
-        end
-        hash
       end
 
       # calls the name callback method on the receiver class with params as the arguments
