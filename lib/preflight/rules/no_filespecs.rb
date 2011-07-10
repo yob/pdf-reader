@@ -8,7 +8,7 @@ module Preflight
     #
     class NoFilespecs
 
-      def messages(ohash)
+      def check_hash(ohash)
         if count_filespec_dicts(ohash) > 0
           ["File uses at least 1 Filespec to refer to an external file"]
         else

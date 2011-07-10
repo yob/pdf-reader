@@ -7,7 +7,7 @@ describe Preflight::Rules::NoEncryption do
     ohash    = PDF::Reader::ObjectHash.new(filename)
     chk      = Preflight::Rules::NoEncryption.new
 
-    chk.messages(ohash).should_not be_empty
+    chk.check_hash(ohash).should_not be_empty
   end
 
   it "correctly pass unencrypted files" do
@@ -15,7 +15,7 @@ describe Preflight::Rules::NoEncryption do
     ohash    = PDF::Reader::ObjectHash.new(filename)
     chk      = Preflight::Rules::NoEncryption.new
 
-    chk.messages(ohash).should be_empty
+    chk.check_hash(ohash).should be_empty
   end
 
 end

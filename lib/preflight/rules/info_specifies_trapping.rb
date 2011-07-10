@@ -4,7 +4,7 @@ module Preflight
   module Rules
     class InfoSpecifiesTrapping
 
-      def messages(ohash)
+      def check_hash(ohash)
         info = ohash.object(ohash.trailer[:Info])
 
         if !info.has_key?(:Trapped)

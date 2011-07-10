@@ -4,7 +4,7 @@ module Preflight
   module Rules
     class DocumentId
 
-      def messages(ohash)
+      def check_hash(ohash)
         if ohash.trailer[:ID].nil?
           ["Document ID missing"]
         else

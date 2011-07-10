@@ -8,10 +8,10 @@ module Preflight
     class CompressionAlgorithms
 
       def initialize(*algorithms)
-        @algorithms = algorithms.flatten 
+        @algorithms = algorithms.flatten
       end
 
-      def messages(ohash)
+      def check_hash(ohash)
         algorithms = banned_algorithms(ohash)
 
         if algorithms.size > 0

@@ -7,7 +7,7 @@ describe Preflight::Rules::OutputIntentForPdfx do
     ohash    = PDF::Reader::ObjectHash.new(filename)
     chk      = Preflight::Rules::OutputIntentForPdfx.new
 
-    chk.messages(ohash).should_not be_empty
+    chk.check_hash(ohash).should_not be_empty
   end
 
   it "pass files with a single OutputIntent for PDF/X" do
@@ -15,7 +15,7 @@ describe Preflight::Rules::OutputIntentForPdfx do
     ohash    = PDF::Reader::ObjectHash.new(filename)
     chk      = Preflight::Rules::DocumentId.new
 
-    chk.messages(ohash).should be_empty
+    chk.check_hash(ohash).should be_empty
   end
 
 end

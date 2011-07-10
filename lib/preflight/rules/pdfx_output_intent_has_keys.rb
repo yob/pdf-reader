@@ -15,7 +15,7 @@ module Preflight
         @keys = keys.flatten
       end
 
-      def messages(ohash)
+      def check_hash(ohash)
         oi = pdfx_output_intent(ohash)
 
         return [] if oi.nil?

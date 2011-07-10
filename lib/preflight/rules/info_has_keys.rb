@@ -10,7 +10,7 @@ module Preflight
         @keys = keys.flatten
       end
 
-      def messages(ohash)
+      def check_hash(ohash)
         info = ohash.object(ohash.trailer[:Info])
         missing = @keys - info.keys
         missing.map { |key|

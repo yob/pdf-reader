@@ -7,7 +7,7 @@ describe Preflight::Rules::OnlyEmbeddedFonts do
     ohash    = PDF::Reader::ObjectHash.new(filename)
     chk      = Preflight::Rules::OnlyEmbeddedFonts.new
 
-    chk.messages(ohash).should be_empty
+    chk.check_hash(ohash).should be_empty
   end
 
   it "pass files with a complete TTF font" do
@@ -15,7 +15,7 @@ describe Preflight::Rules::OnlyEmbeddedFonts do
     ohash    = PDF::Reader::ObjectHash.new(filename)
     chk      = Preflight::Rules::OnlyEmbeddedFonts.new
 
-    chk.messages(ohash).should be_empty
+    chk.check_hash(ohash).should be_empty
   end
 
   it "pass files with a subsetted Type1 font as a descendant of a Type0 font"
@@ -25,8 +25,8 @@ describe Preflight::Rules::OnlyEmbeddedFonts do
     ohash    = PDF::Reader::ObjectHash.new(filename)
     chk      = Preflight::Rules::OnlyEmbeddedFonts.new
 
-    puts chk.messages(ohash)
-    chk.messages(ohash).should be_empty
+    puts chk.check_hash(ohash)
+    chk.check_hash(ohash).should be_empty
   end
 
   it "fail files with a adobe 'standard 14' font" do
@@ -34,7 +34,7 @@ describe Preflight::Rules::OnlyEmbeddedFonts do
     ohash    = PDF::Reader::ObjectHash.new(filename)
     chk      = Preflight::Rules::OnlyEmbeddedFonts.new
 
-    chk.messages(ohash).should_not be_empty
+    chk.check_hash(ohash).should_not be_empty
   end
 
 end

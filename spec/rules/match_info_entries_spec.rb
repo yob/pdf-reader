@@ -7,7 +7,7 @@ describe Preflight::Rules::MatchInfoEntries do
     ohash    = PDF::Reader::ObjectHash.new(filename)
     chk      = Preflight::Rules::MatchInfoEntries.new(:GTS_PDFXVersion => /PDF\/X/)
 
-    chk.messages(ohash).should_not be_empty
+    chk.check_hash(ohash).should_not be_empty
   end
 
   it "pass files with no GTS_PDFXVersion entry in the Info dict" do
@@ -15,7 +15,7 @@ describe Preflight::Rules::MatchInfoEntries do
     ohash    = PDF::Reader::ObjectHash.new(filename)
     chk      = Preflight::Rules::MatchInfoEntries.new(:GTS_PDFXVersion => /PDF\/X/)
 
-    chk.messages(ohash).should be_empty
+    chk.check_hash(ohash).should be_empty
   end
 
 end

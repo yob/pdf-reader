@@ -5,7 +5,7 @@ module Preflight
 
     class OutputIntentForPdfx
 
-      def messages(ohash)
+      def check_hash(ohash)
         intents = output_intents(ohash).select { |dict|
           ohash.object(dict)[:S] == :GTS_PDFX
         }

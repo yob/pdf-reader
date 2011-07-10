@@ -8,7 +8,7 @@ module Preflight
         @matches = matches
       end
 
-      def messages(ohash)
+      def check_hash(ohash)
         array = []
         info = ohash.object(ohash.trailer[:Info])
         @matches.each do |key, regexp|

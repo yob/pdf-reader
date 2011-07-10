@@ -10,7 +10,7 @@ module Preflight
     #
     class NoProprietaryFonts
 
-      def messages(ohash)
+      def check_hash(ohash)
         array = []
         ohash.each do |key, obj|
           next unless obj.is_a?(::Hash) && obj[:Type] == :Font
