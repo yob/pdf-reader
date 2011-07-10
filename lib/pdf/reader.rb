@@ -109,6 +109,17 @@ module PDF
       end
     end
 
+    # syntactic sugar for opening a PDF file. Accepts the same arguments
+    # as new().
+    #
+    #   PDF::Reader.open("somefile.pdf") do |reader|
+    #     puts reader.pdf_version
+    #   end
+    #
+    def self.open(input, &block)
+      yield PDF::Reader.new(input)
+    end
+
     # DEPRECATED: this method was deprecated in version 0.11.0 and will
     #             eventually be removed
     #

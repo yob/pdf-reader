@@ -3,6 +3,16 @@
 $LOAD_PATH << "." unless $LOAD_PATH.include?(".")
 require File.dirname(__FILE__) + "/spec_helper"
 
+describe PDF::Reader, "open()" do
+
+  it "should pass a reader instance to a block" do
+    filename = File.dirname(__FILE__) + "/data/cairo-basic.pdf"
+    PDF::Reader.open(filename) do |reader|
+      reader.pdf_version.should eql(1.4)
+    end
+  end
+end
+
 describe PDF::Reader, "with cairo-basic.pdf" do
 
   before(:each) do
