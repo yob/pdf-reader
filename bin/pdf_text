@@ -6,9 +6,9 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + "/../lib")
 require 'pdf/reader'
 
 if ARGV.empty?
-  browser = PDF::Reader::Browser.new($stdin)
+  browser = PDF::Reader.new($stdin)
 else
-  browser = PDF::Reader::Browser.new(ARGV[0])
+  browser = PDF::Reader.new(ARGV[0])
 end
 browser.pages.each do |page|
   puts page.text
