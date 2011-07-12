@@ -89,6 +89,7 @@ module PDF
       # text() method
       #
       def walk(*receivers)
+        callback(receivers, :page=, [self])
         content_stream(receivers, raw_content)
       end
 
@@ -125,10 +126,7 @@ module PDF
 
         while (token = parser.parse_token(PagesStrategy::OPERATORS))
           if token.kind_of?(Token) and PagesStrategy::OPERATORS.has_key?(token)
-            receivers.each do |receiver|
-              callback(receiver, PagesStrategy::OPERATORS[token], params)
-            end
-
+            callback(receivers, PagesStrategy::OPERATORS[token], params)
             params.clear
           else
             params << token
@@ -140,8 +138,10 @@ module PDF
 
       # calls the name callback method on the receiver class with params as the arguments
       #
-      def callback (receiver, name, params=[])
-        receiver.send(name, *params) if receiver.respond_to?(name)
+      def callback (receivers, name, params=[])
+        receivers.each do |receiver|
+          receiver.send(name, *params) if receiver.respond_to?(name)
+        end
       end
 
       def page_with_ancestors(obj = nil)

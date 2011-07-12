@@ -42,6 +42,18 @@ end
 
 describe PDF::Reader::Page, "walk()" do
 
+  it "should call the special page= callback while walking content stream from cairo-basic.pdf page 1" do
+    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    @page    = @browser.page(1)
+
+    receiver = PDF::Reader::RegisterReceiver.new
+    @page.walk(receiver)
+
+    callbacks = receiver.callbacks.map { |cb| cb[:name] }
+
+    callbacks.first.should eql(:page=)
+  end
+
   it "should run callbacks while walking content stream from cairo-basic.pdf page 1" do
     @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
     @page    = @browser.page(1)
@@ -51,8 +63,9 @@ describe PDF::Reader::Page, "walk()" do
 
     callbacks = receiver.callbacks.map { |cb| cb[:name] }
 
-    callbacks.size.should eql(15)
-    callbacks.first.should eql(:save_graphics_state)
+    callbacks.size.should eql(16)
+    callbacks[0].should eql(:page=)
+    callbacks[1].should eql(:save_graphics_state)
   end
 
   it "should run callbacks on multiple receivers while walking content stream from cairo-basic.pdf page 1" do
@@ -65,13 +78,13 @@ describe PDF::Reader::Page, "walk()" do
 
     callbacks = receiver_one.callbacks.map { |cb| cb[:name] }
 
-    callbacks.size.should eql(15)
-    callbacks.first.should eql(:save_graphics_state)
+    callbacks.size.should eql(16)
+    callbacks.first.should eql(:page=)
 
     callbacks = receiver_two.callbacks.map { |cb| cb[:name] }
 
-    callbacks.size.should eql(15)
-    callbacks.first.should eql(:save_graphics_state)
+    callbacks.size.should eql(16)
+    callbacks.first.should eql(:page=)
   end
 
 end
