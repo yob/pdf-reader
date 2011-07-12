@@ -12,16 +12,24 @@ module Preflight
     class MinPpi
       include Preflight::Measurements
 
+      attr_reader :messages
+
       DEFAULT_GRAPHICS_STATE = {
         :ctm => Matrix.identity(3)
       }
 
-      attr_reader :messages
-
       def initialize(min_ppi)
         @min_ppi = min_ppi.to_i
+      end
+
+      # we're about to start a new page, reset state
+      #
+      def page=(page)
         @messages = []
-        @page_num = 0
+        @page    = page
+        @objects = page.objects
+        @stack   = [DEFAULT_GRAPHICS_STATE]
+        @images  = extract_images
       end
 
       def save_graphics_state
@@ -30,21 +38,6 @@ module Preflight
 
       def restore_graphics_state
         @stack.pop
-      end
-
-      def state
-        @stack.last
-      end
-
-      # store sample width and height for each image on the current page
-      #
-      def resource_xobject(label, stream)
-        return unless stream.hash[:Subtype] == :Image
-
-        @images[label] = [
-          stream.hash[:Width],
-          stream.hash[:Height]
-        ]
       end
 
       # update the current transformation matrix.
@@ -73,7 +66,8 @@ module Preflight
       def invoke_xobject(label)
         return unless @images[label]
 
-        sample_w, sample_h = *@images[label]
+        sample_w = @images[label].hash[:Width]  || 0
+        sample_h = @images[label].hash[:Height] || 0
         device_w = pt2in(image_width)
         device_h = pt2in(image_height)
 
@@ -85,20 +79,36 @@ module Preflight
         end
       end
 
-      # start fresh on every page
-      #
-      def begin_page(hash = {})
-        @images = {}
-        @page_num += 1
-        @stack = [DEFAULT_GRAPHICS_STATE]
+      private
+
+      def extract_images
+        return {} unless @page.is_a?(PDF::Reader::Page)
+
+        resources = deref(@page.attributes[:Resources]) || {}
+        xobjects  = resources[:XObject] || {}
+        images    = {}
+
+        xobjects.select { |key, obj|
+          obj = deref(obj)
+          obj.respond_to?(:hash) && obj.hash[:Subtype] == :Image
+        }.each { |key, obj|
+          images[key] = deref(obj)
+        }
+        images
       end
 
-      private
+      def deref(obj)
+        @objects ? @objects.deref(obj) : obj
+      end
 
       # return the current transformation matrix
       #
       def ctm
         state[:ctm]
+      end
+
+      def state
+        @stack.last
       end
 
       # transform x and y co-ordinates from the current user space to the
@@ -149,22 +159,21 @@ module Preflight
           YAML.load(yaml_state)
         end
       end
+    end
 
-      # private class for representing points on a cartesian plain. Used
-      # to simplify maths in the MinPpi class.
-      #
-      class Point
-        attr_reader :x, :y
+    # private class for representing points on a cartesian plain. Used
+    # to simplify maths in the MinPpi class.
+    #
+    class Point
+      attr_reader :x, :y
 
-        def initialize(x,y)
-          @x, @y = x,y
-        end
-
-        def distance(point)
-          Math.hypot(point.x - x, point.y - y)
-        end
+      def initialize(x,y)
+        @x, @y = x,y
       end
 
+      def distance(point)
+        Math.hypot(point.x - x, point.y - y)
+      end
     end
   end
 end

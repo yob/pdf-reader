@@ -92,12 +92,19 @@ module Preflight
 
       def check_receivers(io)
         rules_array = receiver_rules
+        messages    = []
+
         begin
-          PDF::Reader.new.parse(io, rules_array)
+          PDF::Reader.open(io) do |reader|
+            reader.pages.map { |page|
+              page.walk(rules_array)
+              messages += rules_array.map(&:messages).flatten.compact
+            }
+          end
         rescue PDF::Reader::UnsupportedFeatureError
           nil
         end
-        rules_array.map(&:messages).flatten.compact
+        messages
       end
 
       def hash_rules
