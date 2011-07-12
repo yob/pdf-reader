@@ -58,7 +58,9 @@ module Preflight
       end
 
       def check_io(io)
-        check_receivers(io) + check_pages(io) + check_hash(io)
+        PDF::Reader.open(io) do |reader|
+          check_receivers(reader) + check_pages(reader) + check_hash(reader)
+        end
       end
 
       def instance_rules
@@ -69,18 +71,15 @@ module Preflight
         self.class.rules + instance_rules
       end
 
-      def check_hash(io)
-        ohash = PDF::Reader::ObjectHash.new(io)
-
+      def check_hash(reader)
         hash_rules.map { |chk|
-          chk.check_hash(ohash)
+          chk.check_hash(reader.objects)
         }.flatten.compact
       rescue PDF::Reader::UnsupportedFeatureError
         []
       end
 
-      def check_pages(io)
-        reader = PDF::Reader.new(io)
+      def check_pages(reader)
         rules_array = page_rules
 
         reader.pages.map { |page|
@@ -90,16 +89,14 @@ module Preflight
         []
       end
 
-      def check_receivers(io)
+      def check_receivers(reader)
         rules_array = receiver_rules
         messages    = []
 
         begin
-          PDF::Reader.open(io) do |reader|
-            reader.pages.map { |page|
-              page.walk(rules_array)
-              messages += rules_array.map(&:messages).flatten.compact
-            }
+          reader.pages.each do |page|
+            page.walk(rules_array)
+            messages += rules_array.map(&:messages).flatten.compact
           end
         rescue PDF::Reader::UnsupportedFeatureError
           nil
