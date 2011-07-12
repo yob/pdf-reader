@@ -14,7 +14,7 @@ module PDF
     #
     class Page
 
-      attr_reader :page_object
+      attr_reader :page_object, :objects
 
       # creates a new page wrapper.
       #
@@ -106,10 +106,6 @@ module PDF
       end
 
       private
-
-      def objects
-        @objects
-      end
 
       def root
         root ||= objects.deref(@objects.trailer[:Root])
