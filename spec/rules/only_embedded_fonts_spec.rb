@@ -48,4 +48,15 @@ describe Preflight::Rules::OnlyEmbeddedFonts do
     end
   end
 
+  it "pass files with a non-embedded base-14 font in an AcroForm that has no fields" do
+    filename = pdf_spec_file("acroform")
+    rule     = Preflight::Rules::OnlyEmbeddedFonts.new
+
+    PDF::Reader.open(filename) do |reader|
+      reader.pages.each do |page|
+        rule.check_page(page).should be_empty
+      end
+    end
+  end
+
 end
