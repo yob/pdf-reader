@@ -10,7 +10,7 @@ module Preflight
       def check_page(page)
         array     = []
         resources = page.resources || {}
-        fonts     = resources[:Font] || {}
+        fonts     = page.objects.deref(resources[:Font]) || {}
 
         fonts.each { |key, obj|
           obj = page.objects.deref(obj)
