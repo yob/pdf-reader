@@ -97,7 +97,6 @@ This is pure ruby should run on most ruby VMs. I develop on MRI 1.9.2.
 
 == Further Reading
 
-* http://chneukirchen.github.com/rps/
 * http://en.wikipedia.org/wiki/PDF/A
 * http://en.wikipedia.org/wiki/PDF/X
 * http://www.planetpdf.com/planetpdf/pdfs/pdfx3_draft4.pdf
