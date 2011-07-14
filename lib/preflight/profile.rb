@@ -108,7 +108,7 @@ module Preflight
 
       def hash_rules
         all_rules.select { |arr|
-          arr.first.instance_methods.include?(:check_hash)
+          arr.first.instance_methods.map(&:to_sym).include?(:check_hash)
         }.map { |arr|
           klass = arr[0]
           klass.new(*arr[1,10])
@@ -117,7 +117,7 @@ module Preflight
 
       def page_rules
         all_rules.select { |arr|
-          arr.first.instance_methods.include?(:check_page)
+          arr.first.instance_methods.map(&:to_sym).include?(:check_page)
         }.map { |arr|
           klass = arr[0]
           klass.new(*arr[1,10])
@@ -126,7 +126,7 @@ module Preflight
 
       def receiver_rules
         all_rules.select { |arr|
-          arr.first.instance_methods.include?(:messages)
+          arr.first.instance_methods.map(&:to_sym).include?(:messages)
         }.map { |arr|
           klass = arr[0]
           klass.new(*arr[1,10])
