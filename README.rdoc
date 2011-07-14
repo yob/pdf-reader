@@ -13,6 +13,10 @@ difficult to script and you know, expensive.
 This may not check as comprehensively as the official preflight tools from Adobe
 and friends, but hopefully it'll get you most of the way with less stress.
 
+Unlike some preflight tools, this library doesn't attempt to fix any issues. It
+only reports them. That may change one day, but for now you will need to fix
+any issues that are detected by using some other tool.
+
 == Installation
 
   gem install preflight
