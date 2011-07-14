@@ -49,7 +49,7 @@ module PDF
       #
       def attributes
         hash = {}
-        page_with_ancestors.each do |obj|
+        page_with_ancestors.reverse.each do |obj|
           hash.merge!(@objects.deref(obj))
         end
         hash

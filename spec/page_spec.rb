@@ -130,6 +130,14 @@ describe PDF::Reader::Page, "attributes()" do
     attribs[:MediaBox].should eql([0.0, 0.0, 595.276, 841.89])
   end
 
+  it "should allow Page to override inherited attributes" do
+    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/override_inherited_attributes.pdf")
+    @page    = @browser.page(1)
+
+    attribs = @page.attributes
+    attribs[:MediaBox].should eql([0, 0, 200, 200])
+  end
+
 end
 
 describe PDF::Reader::Page, "resources()" do
