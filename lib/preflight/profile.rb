@@ -83,7 +83,9 @@ module Preflight
         rules_array = page_rules
 
         reader.pages.map { |page|
-          page.walk(rules_array)
+          page_rules.map { |rule|
+            rule.check_page(page)
+          }.flatten.compact
         }.flatten.compact
       rescue PDF::Reader::UnsupportedFeatureError
         []
