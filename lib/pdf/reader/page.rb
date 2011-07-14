@@ -9,12 +9,15 @@ module PDF
     #
     # If you require access to the raw PDF objects for this page, you can access
     # the Page dictionary via the page_object accessor. You will need to use the
-    # objects accessor on the PDF::Reader class to help walk the page dictionary
-    # in any useful way.
+    # objects accessor to help walk the page dictionary in any useful way.
     #
     class Page
 
-      attr_reader :page_object, :objects
+      # lowlevel hash-like access to all objects in the underlying PDF
+      attr_reader :objects
+
+      # the raw PDF object that defines this page
+      attr_reader :page_object
 
       # creates a new page wrapper.
       #
@@ -26,11 +29,14 @@ module PDF
         @page_object = get_page_obj(pagenum)
       end
 
+      # return the number of this page within the full document
+      #
       def number
         @pagenum
       end
 
       # return a friendly string representation of this page
+      #
       def inspect
         "<PDF::Reader::Page page: #{@pagenum}>"
       end
