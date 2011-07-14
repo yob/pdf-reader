@@ -31,6 +31,9 @@ class PDF::Reader
   # Usage:
   #  receiver = PDF::Reader::TextReceiver.new($stdout)
   #  PDF::Reader.file("somefile.pdf", receiver)
+  #
+  # DEPRECATED: this class was deprecated in version 0.11.0 and will
+  #             eventually be removed
   class TextReceiver
     ################################################################################
     # Initialize with the library user's receiver
