@@ -1,6 +1,7 @@
 ################################################################################
 #
 # Copyright (C) 2006 Peter J Jones (pjones@pmade.com)
+# Copyright (C) 2011 James Healy
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -44,18 +45,18 @@ module PDF
   #
   # == File Metadata
   #
-  #   browser = PDF::Reader.new("somefile.pdf")
+  #   reader = PDF::Reader.new("somefile.pdf")
   #
-  #   puts browser.pdf_version
-  #   puts browser.info
-  #   puts browser.metadata
-  #   puts browser.page_count
+  #   puts reader.pdf_version
+  #   puts reader.info
+  #   puts reader.metadata
+  #   puts reader.page_count
   #
   # == Iterating over page content
   #
-  #   browser = PDF::Reader.new("somefile.pdf")
+  #   reader = PDF::Reader.new("somefile.pdf")
   #
-  #   browser.pages.each do |page|
+  #   reader.pages.each do |page|
   #     puts page.fonts
   #     puts page.images
   #     puts page.text
@@ -63,40 +64,42 @@ module PDF
   #
   # == Extracting all text
   #
-  #   browser = PDF::Reader.new("somefile.pdf")
+  #   reader = PDF::Reader.new("somefile.pdf")
   #
-  #   browser.pages.map(&:text)
+  #   reader.pages.map(&:text)
   #
   # == Extracting content from a single page
   #
-  #   browser = PDF::Reader.new("somefile.pdf")
+  #   reader = PDF::Reader.new("somefile.pdf")
   #
-  #   page = browser.page(1)
+  #   page = reader.page(1)
   #   puts page.fonts
   #   puts page.images
   #   puts page.text
   #
   # == Low level callbacks (ala current version of PDF::Reader)
   #
-  #   browser = PDF::Reader.new("somefile.pdf")
+  #   reader = PDF::Reader.new("somefile.pdf")
   #
-  #   page = browser.page(1)
+  #   page = reader.page(1)
   #   page.walk(receiver)
   #
   class Reader
 
+    # lowlevel hash-like access to all objects in the underlying PDF
     attr_reader :objects
+
     attr_reader :page_count, :pdf_version, :info, :metadata
 
-    # creates a new document browser for the provided PDF.
+    # creates a new document reader for the provided PDF.
     #
     # input can be an IO-ish object (StringIO, File, etc) containing a PDF
     # or a filename
     #
-    #   browser = PDF::Reader.new("somefile.pdf")
+    #   reader = PDF::Reader.new("somefile.pdf")
     #
-    #   File.open("somefile.pdf","r") do |file|
-    #     browser = PDF::Reader.new(file)
+    #   File.open("somefile.pdf","rb") do |file|
+    #     reader = PDF::Reader.new(file)
     #   end
     #
     def initialize(input = nil)
@@ -170,9 +173,9 @@ module PDF
     # returns an array of PDF::Reader::Page objects, one for each
     # page in the source PDF.
     #
-    #   browser = PDF::Reader.new("somefile.pdf")
+    #   reader = PDF::Reader.new("somefile.pdf")
     #
-    #   browser.pages.each do |page|
+    #   reader.pages.each do |page|
     #     puts page.fonts
     #     puts page.images
     #     puts page.text
@@ -191,8 +194,8 @@ module PDF
     # Use this instead of pages method when you need to access just a single
     # page
     #
-    #   browser = PDF::Reader.new("somefile.pdf")
-    #   page    = browser.page(10)
+    #   reader = PDF::Reader.new("somefile.pdf")
+    #   page   = reader.page(10)
     #
     #   puts page.text
     #
