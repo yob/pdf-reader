@@ -2,6 +2,8 @@
 
 class PDF::Reader
 
+  # DEPRECATED: this class was deprecated in version 0.11.0 and will
+  #             eventually be removed
   class AbstractStrategy # :nodoc:
 
     def initialize(ohash, receivers, options = {})

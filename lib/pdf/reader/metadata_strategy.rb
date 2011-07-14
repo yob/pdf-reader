@@ -2,6 +2,9 @@
 
 class PDF::Reader
 
+  # DEPRECATED: this class was deprecated in version 0.11.0 and will
+  #             eventually be removed
+  #
   class MetadataStrategy < AbstractStrategy # :nodoc:
 
     def self.to_sym
