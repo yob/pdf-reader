@@ -1,4 +1,4 @@
-v0.1.0 (6th July 2011)
+v0.1.1 (6th July 2011)
 - bump required version of PDF::Reader to take advantage of a more
   efficient API
 
