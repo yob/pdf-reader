@@ -20,26 +20,33 @@ Begin by creating a PDF::Reader instance that points to a PDF file. Document
 level information (metadata, page count, bookmarks, etc) is available via
 this object.
 
-    browser = PDF::Reader.new("somefile.pdf")
+    reader = PDF::Reader.new("somefile.pdf")
 
-    puts browser.pdf_version
-    puts browser.info
-    puts browser.metadata
-    puts browser.page_count
+    puts reader.pdf_version
+    puts reader.info
+    puts reader.metadata
+    puts reader.page_count
 
 PDF is a page based file format, so most visible information is available via
 page-based iteration
 
-    browser = PDF::Reader.new("somefile.pdf")
+    reader = PDF::Reader.new("somefile.pdf")
 
-    browser.pages.each do |page|
+    reader.pages.each do |page|
       puts page.fonts
       puts page.images
       puts page.text
     end
 
-For low level access to the objects in a PDF file, use the ObjectHash class.
-Detailed usage information is available in the class documentation.
+For low level access to the objects in a PDF file, use the ObjectHash class. You can
+build an ObjectHash instance directly:
+
+    puts PDF::Reader::ObjectHash.new("somefile.pdf")
+
+or via a PDF::Reader instance:
+
+    reader  = PDF::Reader.new("somefile.pdf")
+    puts reader.objects
 
 = Text Encoding
 
