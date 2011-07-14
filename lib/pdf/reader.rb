@@ -251,10 +251,6 @@ module PDF
       ]
     end
 
-    def ohash
-      @objects
-    end
-
     def root
       root ||= @objects.deref(@objects.trailer[:Root])
     end
