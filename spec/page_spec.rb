@@ -138,6 +138,31 @@ describe PDF::Reader::Page, "attributes()" do
     attribs[:MediaBox].should eql([0, 0, 200, 200])
   end
 
+  it "should not include attributes from the Pages object that don't belong on a Page" do
+    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/inherited_page_attributes.pdf")
+    @page    = @browser.page(1)
+
+    attribs = @page.attributes
+    attribs[:Kids].should be_nil
+  end
+
+  it "should not include attributes from the Pages object that don't belong on a Page" do
+    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/inherited_trimbox.pdf")
+    @page    = @browser.page(1)
+
+    attribs = @page.attributes
+    attribs[:TrimBox].should be_nil
+  end
+
+  it "should always include Type => Page" do
+    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/inherited_page_attributes.pdf")
+    @page    = @browser.page(1)
+
+    attribs = @page.attributes
+    attribs[:Type].should eql(:Page)
+  end
+
+
 end
 
 describe PDF::Reader::Page, "resources()" do

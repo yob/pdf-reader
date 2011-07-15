@@ -44,9 +44,6 @@ module PDF
       # Returns the attributes that accompany this page. Includes
       # attributes inherited from parents.
       #
-      # TODO: ensure only attributes marked as 'inheritable' in the
-      #       PDF spec are inherited
-      #
       def attributes
         hash = {}
         page_with_ancestors.reverse.each do |obj|
@@ -151,10 +148,19 @@ module PDF
         if obj.nil?
           [@page_object] + page_with_ancestors(@page_object[:Parent])
         elsif obj[:Parent]
-          [obj] + page_with_ancestors(obj[:Parent])
+          [select_inheritable(obj)] + page_with_ancestors(obj[:Parent])
         else
-          [obj]
+          [select_inheritable(obj)]
         end
+      end
+
+      # select the elements from a Pages dictionary that can be inherited by
+      # child Page dictionaries.
+      #
+      def select_inheritable(obj)
+        obj.select { |key, value|
+          [:Resources, :MediaBox, :CropBox, :Rotate, :Parent].include?(key)
+        }
       end
 
       def get_page_obj(page_num)
