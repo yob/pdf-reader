@@ -28,6 +28,9 @@ class PDF::Reader
   class ObjectHash
     include Enumerable
 
+    # These object types use little memory and are accessed a heap of times as
+    # part of random page access, so we'll cache the unmarshalled objects and
+    # avoid lots of repetitive (and expensive) tokenising
     CACHEABLE_TYPES = [:Catalog, :Page, :Pages]
 
     attr_accessor :default
