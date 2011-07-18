@@ -23,4 +23,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency("rspec", "~>2.1")
 
   spec.add_dependency('Ascii85', '~> 1.0.0')
+  spec.add_dependency('rufus-lru', '~> 1.0.0')
 end

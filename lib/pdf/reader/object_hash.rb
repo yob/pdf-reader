@@ -1,5 +1,7 @@
 # coding: utf-8
 
+require 'rufus/lru'
+
 class PDF::Reader
   # Provides low level access to the objects in a PDF file via a hash-like
   # object.
@@ -28,11 +30,6 @@ class PDF::Reader
   class ObjectHash
     include Enumerable
 
-    # These object types use little memory and are accessed a heap of times as
-    # part of random page access, so we'll cache the unmarshalled objects and
-    # avoid lots of repetitive (and expensive) tokenising
-    CACHEABLE_TYPES = [:Catalog, :Page, :Pages]
-
     attr_accessor :default
     attr_reader :trailer, :pdf_version
 
@@ -55,7 +52,8 @@ class PDF::Reader
       @pdf_version = read_version
       @xref        = PDF::Reader::XRef.new(@io)
       @trailer     = @xref.trailer
-      @cache       = {}
+      cache_size   = [100, @xref.size / 10].max
+      @cache       = LruHash.new(cache_size)
 
       if trailer[:Encrypt]
         raise ::PDF::Reader::UnsupportedFeatureError, 'PDF::Reader cannot read encrypted PDF files'
@@ -95,15 +93,11 @@ class PDF::Reader
           @cache[key]
         elsif xref[key].is_a?(Fixnum)
           buf = new_buffer(xref[key])
-          obj = Parser.new(buf, self).object(key.id, key.gen)
-          @cache[key] = obj if cacheable?(obj)
-          obj
+          @cache[key] = Parser.new(buf, self).object(key.id, key.gen)
         elsif xref[key].is_a?(PDF::Reader::Reference)
           container_key = xref[key]
           object_streams[container_key] ||= PDF::Reader::ObjectStream.new(object(container_key))
-          obj = object_streams[container_key][key.id]
-          @cache[key] = obj if cacheable?(obj)
-          obj
+          @cache[key] = object_streams[container_key][key.id]
         end
       rescue InvalidObjectError
         return default
