@@ -24,6 +24,8 @@ module Preflight
       private
 
       def embedded?(objects, font)
+        return true if font[:Subtype] == :Type3
+
         if font.has_key?(:FontDescriptor)
           descriptor = objects.deref(font[:FontDescriptor])
           descriptor.has_key?(:FontFile) || descriptor.has_key?(:FontFile2) || descriptor.has_key?(:FontFile3)

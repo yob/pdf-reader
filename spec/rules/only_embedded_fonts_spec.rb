@@ -59,4 +59,6 @@ describe Preflight::Rules::OnlyEmbeddedFonts do
     end
   end
 
+  it "pass files with a Type3 font"
+
 end
