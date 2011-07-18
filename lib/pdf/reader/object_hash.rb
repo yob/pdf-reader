@@ -53,6 +53,10 @@ class PDF::Reader
       @xref        = PDF::Reader::XRef.new(@io)
       @trailer     = @xref.trailer
       @cache       = {}
+
+      if trailer[:Encrypt]
+        raise ::PDF::Reader::UnsupportedFeatureError, 'PDF::Reader cannot read encrypted PDF files'
+      end
     end
 
     # returns the type of object a ref points to
