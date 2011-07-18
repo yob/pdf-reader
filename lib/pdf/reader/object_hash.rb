@@ -1,7 +1,5 @@
 # coding: utf-8
 
-require 'rufus/lru'
-
 class PDF::Reader
   # Provides low level access to the objects in a PDF file via a hash-like
   # object.
@@ -52,8 +50,7 @@ class PDF::Reader
       @pdf_version = read_version
       @xref        = PDF::Reader::XRef.new(@io)
       @trailer     = @xref.trailer
-      cache_size   = [100, @xref.size / 10].max
-      @cache       = LruHash.new(cache_size)
+      @cache       = PDF::Reader::ObjectCache.new
 
       if trailer[:Encrypt]
         raise ::PDF::Reader::UnsupportedFeatureError, 'PDF::Reader cannot read encrypted PDF files'
@@ -102,10 +99,6 @@ class PDF::Reader
       rescue InvalidObjectError
         return default
       end
-    end
-
-    def cacheable?(obj)
-      obj.is_a?(Hash) && CACHEABLE_TYPES.include?(obj[:Type])
     end
 
     # If key is a PDF::Reader::Reference object, lookup the corresponding
