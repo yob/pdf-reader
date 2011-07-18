@@ -28,6 +28,8 @@ class PDF::Reader
   class ObjectHash
     include Enumerable
 
+    CACHEABLE_TYPES = [:Catalog, :Page, :Pages]
+
     attr_accessor :default
     attr_reader :trailer, :pdf_version
 
@@ -50,6 +52,7 @@ class PDF::Reader
       @pdf_version = read_version
       @xref        = PDF::Reader::XRef.new(@io)
       @trailer     = @xref.trailer
+      @cache       = {}
     end
 
     # returns the type of object a ref points to
@@ -81,17 +84,27 @@ class PDF::Reader
         unless key.kind_of?(PDF::Reader::Reference)
           key = PDF::Reader::Reference.new(key.to_i, 0)
         end
-        if xref[key].is_a?(Fixnum)
+        if @cache.has_key?(key)
+          @cache[key]
+        elsif xref[key].is_a?(Fixnum)
           buf = new_buffer(xref[key])
-          Parser.new(buf, self).object(key.id, key.gen)
+          obj = Parser.new(buf, self).object(key.id, key.gen)
+          @cache[key] = obj if cacheable?(obj)
+          obj
         elsif xref[key].is_a?(PDF::Reader::Reference)
           container_key = xref[key]
           object_streams[container_key] ||= PDF::Reader::ObjectStream.new(object(container_key))
-          object_streams[container_key][key.id]
+          obj = object_streams[container_key][key.id]
+          @cache[key] = obj if cacheable?(obj)
+          obj
         end
       rescue InvalidObjectError
         return default
       end
+    end
+
+    def cacheable?(obj)
+      obj.is_a?(Hash) && CACHEABLE_TYPES.include?(obj[:Type])
     end
 
     # If key is a PDF::Reader::Reference object, lookup the corresponding
