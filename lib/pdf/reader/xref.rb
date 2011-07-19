@@ -149,9 +149,9 @@ class PDF::Reader
       unless stream.hash[:Type] == :XRef
         raise PDF::Reader::MalformedPDFError, "xref stream not found when expected"
       end
-      trailer = stream.hash.select { |key, value|
+      trailer = Hash[stream.hash.select { |key, value|
         [:Size, :Prev, :Root, :Encrypt, :Info, :ID].include?(key)
-      }
+      }]
 
       widths       = stream.hash[:W]
       entry_length = widths.inject(0) { |s, w| s + w }

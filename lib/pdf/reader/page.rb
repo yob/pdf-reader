@@ -162,9 +162,9 @@ module PDF
       # child Page dictionaries.
       #
       def select_inheritable(obj)
-        obj.select { |key, value|
+        ::Hash[obj.select { |key, value|
           [:Resources, :MediaBox, :CropBox, :Rotate, :Parent].include?(key)
-        }
+        }]
       end
 
     end
