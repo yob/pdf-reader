@@ -26,7 +26,11 @@ module PDF
       #
       def initialize(objects, pagenum)
         @objects, @pagenum = objects, pagenum
-        @page_object = get_page_obj(pagenum)
+        @page_object = objects.deref(objects.page_references[pagenum - 1])
+
+        unless @page_object.is_a?(::Hash)
+          raise ArgumentError, "invalid page: #{pagenum}"
+        end
       end
 
       # return the number of this page within the full document
@@ -161,23 +165,6 @@ module PDF
         obj.select { |key, value|
           [:Resources, :MediaBox, :CropBox, :Rotate, :Parent].include?(key)
         }
-      end
-
-      def get_page_obj(page_num)
-        pages = objects.deref(root[:Pages])
-        page_array = get_page_objects(pages).flatten
-        objects.deref(page_array[page_num - 1])
-      end
-
-      # returns a nested array of objects for all pages in this PDF.
-      #
-      def get_page_objects(obj)
-        obj = objects.deref(obj)
-        if obj[:Type] == :Page
-          obj
-        elsif obj[:Type] == :Pages
-          obj[:Kids].map { |kid| get_page_objects(kid) }
-        end
       end
 
     end
