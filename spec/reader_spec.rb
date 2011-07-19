@@ -7,7 +7,7 @@ describe PDF::Reader, "file class method" do
 
   before(:each) do
     @receiver = PDF::Reader::RegisterReceiver.new
-    @filename = File.dirname(__FILE__) + "/data/cairo-unicode-short.pdf"
+    @filename = pdf_spec_file("cairo-unicode-short")
   end
 
   it "should parse all aspects of a PDF file by default" do
@@ -41,7 +41,7 @@ describe PDF::Reader, "file class method" do
   end
 
   it "should raise an exception if an encrypted file is opened" do
-    filename = File.dirname(__FILE__) + "/data/difference_table_encrypted.pdf"
+    filename = pdf_spec_file("difference_table_encrypted")
     lambda {
       PDF::Reader.file(filename, @receiver)
     }.should raise_error(PDF::Reader::UnsupportedFeatureError)
@@ -52,7 +52,7 @@ describe PDF::Reader, "string class method" do
 
   before(:each) do
     @receiver = PDF::Reader::RegisterReceiver.new
-    filename = File.dirname(__FILE__) + "/data/cairo-unicode-short.pdf"
+    filename = pdf_spec_file("cairo-unicode-short")
     if File.respond_to?(:binread)
       @data = File.binread(filename)
     else
@@ -91,7 +91,7 @@ describe PDF::Reader, "string class method" do
   end
 
   it "should raise an exception if an encrypted file is opened" do
-    filename = File.dirname(__FILE__) + "/data/difference_table_encrypted.pdf"
+    filename = pdf_spec_file("difference_table_encrypted")
     if File.respond_to?(:binread)
       @data = File.binread(filename)
     else
@@ -105,7 +105,7 @@ end
 
 describe PDF::Reader, "object_file class method" do
   before(:each) do
-    @filename = File.dirname(__FILE__) + "/data/cairo-unicode-short.pdf"
+    @filename = pdf_spec_file("cairo-unicode-short")
   end
 
   it "should extract an object from string containing a full PDF file" do
@@ -120,7 +120,7 @@ end
 describe PDF::Reader, "object_string class method" do
 
   before(:each) do
-    filename = File.dirname(__FILE__) + "/data/cairo-unicode-short.pdf"
+    filename = pdf_spec_file("cairo-unicode-short")
     if File.respond_to?(:binread)
       @data = File.binread(filename)
     else

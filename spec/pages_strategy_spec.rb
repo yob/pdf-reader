@@ -59,7 +59,7 @@ describe PDF::Reader::PagesStrategy do
     receiver.should_receive(:end_inline_image).once     # EI
 
     # access a content stream with an inline image
-    filename = File.dirname(__FILE__) + "/data/inline_image.pdf"
+    filename = pdf_spec_file("inline_image")
     io       = File.new(filename, "r")
     ohash    = PDF::Reader::ObjectHash.new(io)
     ref      = PDF::Reader::Reference.new(3,0)
@@ -79,7 +79,7 @@ describe PDF::Reader::PagesStrategy do
 
     receiver = PDF::Reader::RegisterReceiver.new
 
-    filename = File.dirname(__FILE__) + "/data/split_params_and_operator.pdf"
+    filename = pdf_spec_file("split_params_and_operator")
     PDF::Reader.file(filename, receiver)
 
     text_callbacks = receiver.all(:show_text_with_positioning)

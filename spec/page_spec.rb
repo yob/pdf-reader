@@ -6,7 +6,7 @@ require File.dirname(__FILE__) + "/spec_helper"
 describe PDF::Reader::Page, "fonts()" do
 
   it "should return a hash with the correct size from cairo-basic.pdf page 1" do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
     @page.fonts.should      be_a_kind_of(Hash)
@@ -17,7 +17,7 @@ end
 
 describe PDF::Reader::Page, "raw_content()" do
   it "should return a string from raw_content() from cairo-basic.pdf page 1" do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
     @page.raw_content.should be_a_kind_of(String)
@@ -26,14 +26,14 @@ end
 
 describe PDF::Reader::Page, "text()" do
   it "should return the text content from cairo-basic.pdf page 1" do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
     @page.text.should eql("Hello James")
   end
 
   it "should return the text content from cairo-multiline.pdf page 1" do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/cairo-multiline.pdf")
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-multiline"))
     @page    = @browser.page(1)
 
     @page.text.should eql("Hello World\nFrom James")
@@ -43,7 +43,7 @@ end
 describe PDF::Reader::Page, "walk()" do
 
   it "should call the special page= callback while walking content stream from cairo-basic.pdf page 1" do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
     receiver = PDF::Reader::RegisterReceiver.new
@@ -55,7 +55,7 @@ describe PDF::Reader::Page, "walk()" do
   end
 
   it "should run callbacks while walking content stream from cairo-basic.pdf page 1" do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
     receiver = PDF::Reader::RegisterReceiver.new
@@ -69,7 +69,7 @@ describe PDF::Reader::Page, "walk()" do
   end
 
   it "should run callbacks on multiple receivers while walking content stream from cairo-basic.pdf page 1" do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
     receiver_one = PDF::Reader::RegisterReceiver.new
@@ -92,7 +92,7 @@ end
 describe PDF::Reader::Page, "number()" do
 
   it "should return the text content from cairo-basic.pdf page 1" do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
     @page.number.should eql(1)
@@ -103,7 +103,7 @@ end
 describe PDF::Reader::Page, "number()" do
 
   it "should return the text content from cairo-basic.pdf page 1" do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
     @page.number.should eql(1)
@@ -114,7 +114,7 @@ end
 describe PDF::Reader::Page, "attributes()" do
 
   it "should contain attributes from the Page object" do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/inherited_page_attributes.pdf")
+    @browser = PDF::Reader.new(pdf_spec_file("inherited_page_attributes"))
     @page    = @browser.page(1)
 
     attribs = @page.attributes
@@ -123,7 +123,7 @@ describe PDF::Reader::Page, "attributes()" do
   end
 
   it "should contain inherited attributes" do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/inherited_page_attributes.pdf")
+    @browser = PDF::Reader.new(pdf_spec_file("inherited_page_attributes"))
     @page    = @browser.page(1)
 
     attribs = @page.attributes
@@ -131,7 +131,7 @@ describe PDF::Reader::Page, "attributes()" do
   end
 
   it "should allow Page to override inherited attributes" do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/override_inherited_attributes.pdf")
+    @browser = PDF::Reader.new(pdf_spec_file("override_inherited_attributes"))
     @page    = @browser.page(1)
 
     attribs = @page.attributes
@@ -139,7 +139,7 @@ describe PDF::Reader::Page, "attributes()" do
   end
 
   it "should not include attributes from the Pages object that don't belong on a Page" do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/inherited_page_attributes.pdf")
+    @browser = PDF::Reader.new(pdf_spec_file("inherited_page_attributes"))
     @page    = @browser.page(1)
 
     attribs = @page.attributes
@@ -147,7 +147,7 @@ describe PDF::Reader::Page, "attributes()" do
   end
 
   it "should not include attributes from the Pages object that don't belong on a Page" do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/inherited_trimbox.pdf")
+    @browser = PDF::Reader.new(pdf_spec_file("inherited_trimbox"))
     @page    = @browser.page(1)
 
     attribs = @page.attributes
@@ -155,7 +155,7 @@ describe PDF::Reader::Page, "attributes()" do
   end
 
   it "should always include Type => Page" do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/inherited_page_attributes.pdf")
+    @browser = PDF::Reader.new(pdf_spec_file("inherited_page_attributes"))
     @page    = @browser.page(1)
 
     attribs = @page.attributes
@@ -168,7 +168,7 @@ end
 describe PDF::Reader::Page, "resources()" do
 
   it "should contain resources from the Page object" do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/inherited_page_attributes.pdf")
+    @browser = PDF::Reader.new(pdf_spec_file("inherited_page_attributes"))
     @page    = @browser.page(1)
 
     @page.resources.should      be_a_kind_of(Hash)
@@ -176,7 +176,7 @@ describe PDF::Reader::Page, "resources()" do
   end
 
   it "should contain inherited resources" do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
     @page.resources.should      be_a_kind_of(Hash)

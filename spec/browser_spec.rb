@@ -6,7 +6,7 @@ require File.dirname(__FILE__) + "/spec_helper"
 describe PDF::Reader, "open()" do
 
   it "should pass a reader instance to a block" do
-    filename = File.dirname(__FILE__) + "/data/cairo-basic.pdf"
+    filename = pdf_spec_file("cairo-basic")
     PDF::Reader.open(filename) do |reader|
       reader.pdf_version.should eql(1.4)
     end
@@ -16,7 +16,8 @@ end
 describe PDF::Reader, "with cairo-basic.pdf" do
 
   before(:each) do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/cairo-basic.pdf")
+    filename = pdf_spec_file("cairo-basic")
+    @browser = PDF::Reader.new(filename)
   end
 
   it "should return the correct pdf_version" do
@@ -56,7 +57,8 @@ end
 describe PDF::Reader, "with no_text_spaces.pdf" do
 
   before(:each) do
-    @browser = PDF::Reader.new(File.dirname(__FILE__) + "/data/no_text_spaces.pdf")
+    filename = pdf_spec_file("no_text_spaces")
+    @browser = PDF::Reader.new(filename)
   end
 
   it "should return the correct pdf_version" do

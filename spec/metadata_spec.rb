@@ -11,7 +11,7 @@ describe PDF::Reader::MetadataStrategy do
     receiver = PDF::Reader::RegisterReceiver.new
 
     # process the instructions
-    filename = File.dirname(__FILE__) + "/data/prince1.pdf"
+    filename = pdf_spec_file("prince1")
     PDF::Reader.file(filename, receiver)
     cb = receiver.first_occurance_of(:metadata)
     meta = cb[:args].first
@@ -25,7 +25,7 @@ describe PDF::Reader::MetadataStrategy do
     receiver = PDF::Reader::RegisterReceiver.new
 
     # process the instructions
-    filename = File.dirname(__FILE__) + "/data/openoffice-2.2.pdf"
+    filename = pdf_spec_file("openoffice-2.2")
     PDF::Reader.file(filename, receiver, :pages => false)
     cb = receiver.first_occurance_of(:metadata)
     meta = cb[:args].first
@@ -41,7 +41,7 @@ describe PDF::Reader::MetadataStrategy do
     receiver = PDF::Reader::RegisterReceiver.new
 
     # process the instructions
-    filename = File.dirname(__FILE__) + "/data/distiller_unicode.pdf"
+    filename = pdf_spec_file("distiller_unicode")
     PDF::Reader.file(filename, receiver, :pages => false)
     cb = receiver.first_occurance_of(:xml_metadata)
     meta = cb[:args].first
@@ -55,7 +55,7 @@ describe PDF::Reader::MetadataStrategy do
     receiver = PDF::Reader::RegisterReceiver.new
 
     # process the instructions
-    filename = File.dirname(__FILE__) + "/data/openoffice-2.2.pdf"
+    filename = pdf_spec_file("openoffice-2.2")
     PDF::Reader.file(filename, receiver, :pages => false)
     cb = receiver.first_occurance_of(:page_count)
     cb[:args].first.should eql(2)
@@ -66,7 +66,7 @@ describe PDF::Reader::MetadataStrategy do
     receiver = PDF::Reader::RegisterReceiver.new
 
     # process the instructions
-    filename = File.dirname(__FILE__) + "/data/openoffice-2.2.pdf"
+    filename = pdf_spec_file("openoffice-2.2")
     PDF::Reader.file(filename, receiver, :pages => false)
     cb = receiver.first_occurance_of(:pdf_version)
     cb[:args].first.should eql(1.4)
