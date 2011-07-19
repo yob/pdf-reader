@@ -6,7 +6,7 @@ require File.dirname(__FILE__) + "/spec_helper"
 # These specs are a kind of "meta spec". They're not unit testing small pieces
 # of code, it's just parsing a range of PDF files and ensuring the result is
 # consistant. An extra check to make sure parsing these files will continue
-# to work for our users. 
+# to work for our users.
 #
 # Where possible, specs that unit test correctly should be written in prefernce to
 # these
@@ -241,5 +241,11 @@ describe PDF::Reader, "meta specs" do
     # confirm there was a single page of text
     receiver.content.size.should eql(1)
     receiver.content[0].should eql("test")
+  end
+
+  it "should correctly extract text from a PDF has newlines at the start of a content stream" do
+    PDF::Reader.open(File.dirname(__FILE__) + "/data/content_stream_begins_with_newline.pdf") do |reader|
+      reader.page(1).text.should eql("This file has a content stream that begins with \\n\\n")
+    end
   end
 end
