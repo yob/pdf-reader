@@ -435,9 +435,30 @@ describe PDF::Reader::Buffer, "read method" do
   end
 
   it "should return raw data from the underlying IO and skip LF/CR bytes" do
-    buf = parse_string("stream\n\nbbb")
+    buf = parse_string("stream\nbbb")
 
     buf.token.should eql("stream")
     buf.read(3, :skip_eol => true).should eql("bbb")
+  end
+
+  it "should return raw data from the underlying IO and skip LF/CR bytes" do
+    buf = parse_string("stream\r\nbbb")
+
+    buf.token.should eql("stream")
+    buf.read(3, :skip_eol => true).should eql("bbb")
+  end
+
+  it "should return raw data from the underlying IO and skip LF/CR bytes" do
+    buf = parse_string("stream\n\nbbb")
+
+    buf.token.should eql("stream")
+    buf.read(4, :skip_eol => true).should eql("\nbbb")
+  end
+
+  it "should return raw data from the underlying IO and skip LF/CR bytes" do
+    buf = parse_string("stream\n\n\nbbb")
+
+    buf.token.should eql("stream")
+    buf.read(5, :skip_eol => true).should eql("\n\nbbb")
   end
 end
