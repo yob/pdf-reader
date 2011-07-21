@@ -1,6 +1,7 @@
 # coding: utf-8
 
 require 'matrix'
+require 'yaml'
 
 module PDF
   class Reader
