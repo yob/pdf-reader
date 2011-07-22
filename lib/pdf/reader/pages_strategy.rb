@@ -316,11 +316,12 @@ class PDF::Reader
         if xobj_resources
           resources.push xobj_resources
           walk_resources(xobj_resources)
+
+          fonts = font_hash_from_resources(xobj_resources)
+          content_stream(xobject, fonts)
+          callback(:end_form_xobject)
+          resources.pop if xobj_resources
         end
-        fonts = font_hash_from_resources(xobj_resources)
-        content_stream(xobject, fonts)
-        callback(:end_form_xobject)
-        resources.pop if xobj_resources
       end
     end
 
