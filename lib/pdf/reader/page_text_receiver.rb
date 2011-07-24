@@ -179,6 +179,19 @@ module PDF
         move_to_next_line_and_show_text(string)
       end
 
+      #####################################################
+      # XObjects
+      #####################################################
+      def invoke_xobject(label)
+        puts label.inspect
+
+
+        save_graphics_state
+        # concatenate form matrix
+        # render content
+        restore_graphics_state
+      end
+
       private
 
       # transform x and y co-ordinates from the current text space to the

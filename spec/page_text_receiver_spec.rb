@@ -23,4 +23,14 @@ describe PDF::Reader::PageTextReceiver do
 
     @receiver.content.should eql("Hello World\nFrom James")
   end
+
+  it "should return the text content from Form XObjects" do
+    @reader   = PDF::Reader.new(pdf_spec_file("form_xobject"))
+    @page     = @reader.page(1)
+    @receiver = PDF::Reader::PageTextReceiver.new(@page.fonts)
+
+    @page.walk(@receiver)
+
+    @receiver.content.should eql("James Healy")
+  end
 end
