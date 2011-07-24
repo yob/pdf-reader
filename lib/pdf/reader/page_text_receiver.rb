@@ -22,9 +22,12 @@ module PDF
 
       # starting a new page
       def page=(page)
+        @page    = page
+        @objects = page.objects
         @fonts   = page.fonts
+        @form_fonts = {}
         @content = ::Hash.new
-        @stack = [DEFAULT_GRAPHICS_STATE]
+        @stack   = [DEFAULT_GRAPHICS_STATE]
       end
 
       def content
@@ -185,8 +188,17 @@ module PDF
       #####################################################
       def invoke_xobject(label)
         save_graphics_state
-        # concatenate form matrix
-        # render content
+        xobject = @objects.deref(@page.xobjects[label])
+
+        # TODO concatenate form matrix
+
+        if xobject.hash[:Subtype] == :Form
+          form = PDF::Reader::FormXObject.new(@page, xobject)
+          @form_fonts = form.fonts
+          form.walk(self)
+        end
+        @form_fonts = {}
+
         restore_graphics_state
       end
 
@@ -243,7 +255,7 @@ module PDF
       end
 
       def current_font
-        @fonts[state[:text_font]]
+        @form_fonts[state[:text_font]] || @fonts[state[:text_font]]
       end
 
       # private class for representing points on a cartesian plain. Used
