@@ -190,7 +190,8 @@ module PDF
         save_graphics_state
         xobject = @objects.deref(@page.xobjects[label])
 
-        # TODO concatenate form matrix
+        matrix = xobject.hash[:Matrix]
+        concatenate_matrix(*matrix) if matrix
 
         if xobject.hash[:Subtype] == :Form
           form = PDF::Reader::FormXObject.new(@page, xobject)
