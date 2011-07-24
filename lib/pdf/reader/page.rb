@@ -63,6 +63,12 @@ module PDF
         @resources ||= @objects.deref(attributes[:Resources]) || {}
       end
 
+      # Returns the XObjects that are available to this page
+      #
+      def xobjects
+        resources[:XObject] || {}
+      end
+
       # return a hash of fonts used on this page.
       #
       # The keys are the font labels used within the page content stream.
@@ -127,10 +133,6 @@ module PDF
 
       def root
         root ||= objects.deref(@objects.trailer[:Root])
-      end
-
-      def xobjects
-        resources[:XObject] || {}
       end
 
       def content_stream(receivers, instructions)
