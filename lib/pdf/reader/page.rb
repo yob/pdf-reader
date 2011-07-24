@@ -95,6 +95,17 @@ module PDF
       # this can be used as a basis for higher level functionality, see the
       # text() method
       #
+      # If someone was motivated enough, this method is intended to provide all
+      # the data required to faithfully render the entire page. If you find
+      # some required data isn't available it's a bug - let me know.
+      #
+      # Many operators that generate callbacks will reference resources stored
+      # in the page header - think images, fonts, etc. To facilitate these
+      # operators, the first available callback is page=. If your receiver
+      # accepts that callback it will be passed the current
+      # PDF::Reader::Page object. Use the Page#resources method to grab any
+      # required resources.
+      #
       def walk(*receivers)
         callback(receivers, :page=, [self])
         content_stream(receivers, raw_content)
