@@ -33,4 +33,14 @@ describe PDF::Reader::PageTextReceiver do
 
     @receiver.content.should eql("James Healy")
   end
+
+  it "should return merged text content from the regular page and a Form XObjects" do
+    @reader   = PDF::Reader.new(pdf_spec_file("form_xobject_more"))
+    @page     = @reader.page(1)
+    @receiver = PDF::Reader::PageTextReceiver.new
+
+    @page.walk(@receiver)
+
+    @receiver.content.should eql("James Healy\nSome regular content")
+  end
 end
