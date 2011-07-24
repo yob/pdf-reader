@@ -20,8 +20,9 @@ module PDF
         :text_knockout => 0
       }
 
-      def initialize(fonts)
-        @fonts   = fonts
+      # starting a new page
+      def page=(page)
+        @fonts   = page.fonts
         @content = ::Hash.new
         @stack = [DEFAULT_GRAPHICS_STATE]
       end
@@ -183,9 +184,6 @@ module PDF
       # XObjects
       #####################################################
       def invoke_xobject(label)
-        puts label.inspect
-
-
         save_graphics_state
         # concatenate form matrix
         # render content

@@ -81,9 +81,9 @@ module PDF
       # characters that can't be translated will be returned as a ▯
       #
       def text
-        text_receiver = PageTextReceiver.new(fonts)
-        walk(text_receiver)
-        text_receiver.content
+        receiver = PageTextReceiver.new
+        walk(receiver)
+        receiver.content
       end
       alias :to_s :text
 
