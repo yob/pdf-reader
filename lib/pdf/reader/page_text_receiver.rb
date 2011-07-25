@@ -20,10 +20,14 @@ module PDF
         :text_knockout => 0
       }
 
-      def initialize(fonts)
-        @fonts   = fonts
+      # starting a new page
+      def page=(page)
+        @page    = page
+        @objects = page.objects
+        @fonts   = page.fonts
+        @form_fonts = {}
         @content = ::Hash.new
-        @stack = [DEFAULT_GRAPHICS_STATE]
+        @stack   = [DEFAULT_GRAPHICS_STATE]
       end
 
       def content
@@ -179,6 +183,26 @@ module PDF
         move_to_next_line_and_show_text(string)
       end
 
+      #####################################################
+      # XObjects
+      #####################################################
+      def invoke_xobject(label)
+        save_graphics_state
+        xobject = @objects.deref(@page.xobjects[label])
+
+        matrix = xobject.hash[:Matrix]
+        concatenate_matrix(*matrix) if matrix
+
+        if xobject.hash[:Subtype] == :Form
+          form = PDF::Reader::FormXObject.new(@page, xobject)
+          @form_fonts = form.fonts
+          form.walk(self)
+        end
+        @form_fonts = {}
+
+        restore_graphics_state
+      end
+
       private
 
       # transform x and y co-ordinates from the current text space to the
@@ -232,7 +256,7 @@ module PDF
       end
 
       def current_font
-        @fonts[state[:text_font]]
+        @form_fonts[state[:text_font]] || @fonts[state[:text_font]]
       end
 
       # private class for representing points on a cartesian plain. Used

@@ -24,6 +24,8 @@ describe PDF::Reader::Page, "raw_content()" do
 end
 
 describe PDF::Reader::Page, "text()" do
+  # only do a very basc test here. Detailed testing of text extraction is
+  # done by testing the PageTextReceiver class
   it "should return the text content from cairo-basic.pdf page 1" do
     @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
@@ -31,12 +33,6 @@ describe PDF::Reader::Page, "text()" do
     @page.text.should eql("Hello James")
   end
 
-  it "should return the text content from cairo-multiline.pdf page 1" do
-    @browser = PDF::Reader.new(pdf_spec_file("cairo-multiline"))
-    @page    = @browser.page(1)
-
-    @page.text.should eql("Hello World\nFrom James")
-  end
 end
 
 describe PDF::Reader::Page, "walk()" do

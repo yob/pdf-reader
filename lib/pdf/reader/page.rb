@@ -63,6 +63,12 @@ module PDF
         @resources ||= @objects.deref(attributes[:Resources]) || {}
       end
 
+      # Returns the XObjects that are available to this page
+      #
+      def xobjects
+        resources[:XObject] || {}
+      end
+
       # return a hash of fonts used on this page.
       #
       # The keys are the font labels used within the page content stream.
@@ -81,9 +87,9 @@ module PDF
       # characters that can't be translated will be returned as a ▯
       #
       def text
-        text_receiver = PageTextReceiver.new(fonts)
-        walk(text_receiver)
-        text_receiver.content
+        receiver = PageTextReceiver.new
+        walk(receiver)
+        receiver.content
       end
       alias :to_s :text
 
@@ -94,6 +100,17 @@ module PDF
       # access to soemthing like the raw encoded text. For an example of how
       # this can be used as a basis for higher level functionality, see the
       # text() method
+      #
+      # If someone was motivated enough, this method is intended to provide all
+      # the data required to faithfully render the entire page. If you find
+      # some required data isn't available it's a bug - let me know.
+      #
+      # Many operators that generate callbacks will reference resources stored
+      # in the page header - think images, fonts, etc. To facilitate these
+      # operators, the first available callback is page=. If your receiver
+      # accepts that callback it will be passed the current
+      # PDF::Reader::Page object. Use the Page#resources method to grab any
+      # required resources.
       #
       def walk(*receivers)
         callback(receivers, :page=, [self])
@@ -116,10 +133,6 @@ module PDF
 
       def root
         root ||= objects.deref(@objects.trailer[:Root])
-      end
-
-      def xobjects
-        resources[:XObject] || {}
       end
 
       def content_stream(receivers, instructions)
