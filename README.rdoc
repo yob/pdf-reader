@@ -27,6 +27,15 @@ this object.
     puts reader.metadata
     puts reader.page_count
 
+PDF::Reader.new can accept an IO stream or a filename. Here's an example with
+an IO stream:
+
+    require 'open-uri'
+
+    io     = open('http://example.com/somefile.pdf')
+    reader = PDF::Reader.new(io)
+    puts reader.info
+
 PDF is a page based file format, so most visible information is available via
 page-based iteration
 
@@ -34,9 +43,23 @@ page-based iteration
 
     reader.pages.each do |page|
       puts page.fonts
-      puts page.images
       puts page.text
+      puts page.raw_content
     end
+
+If you need to access the full program for rendering a page, use the walk() method
+of PDF::Reader::Page.
+
+    class RedGreenBlue
+      def set_rgb_color_for_nonstroking(r, g, b)
+        puts "R: #{r}, G: #{g}, B: #{b}"
+      end
+    end
+
+    reader   = PDF::Reader.new("somefile.pdf")
+    page     = reader.page(1)
+    receiver = RedGreenBlue.new
+    page.walk(receiver)
 
 For low level access to the objects in a PDF file, use the ObjectHash class. You can
 build an ObjectHash instance directly:
@@ -47,6 +70,8 @@ or via a PDF::Reader instance:
 
     reader  = PDF::Reader.new("somefile.pdf")
     puts reader.objects
+
+The second method is preferred to increase the effectiveness of internal caching.
 
 = Text Encoding
 
