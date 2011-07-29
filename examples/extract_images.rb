@@ -6,40 +6,32 @@
 # as a good guide.
 #
 # Thanks to Jack Rusher for the initial version of this example.
-#
-# USAGE:
-#
-#   ruby extract_images.rb somefile.pdf
 
 require 'pdf/reader'
 
 module ExtractImages
 
-  class Receiver
-    attr_reader :count
+  class Extractor
 
-    def initialize
-      @count = 0
-    end
+    def page(page)
+      count = 0
+      page.xobjects.each do |name, stream|
+        stream = page.objects.deref(stream)
 
-    def resource_xobject(name, stream)
-      return unless stream.hash[:Subtype] == :Image
-      increment_count
+        next unless stream.hash[:Subtype] == :Image
 
-      case stream.hash[:Filter]
-      when :CCITTFaxDecode
-        ExtractImages::Tiff.new(stream).save("#{count}-#{name}.tif")
-      when :DCTDecode
-        ExtractImages::Jpg.new(stream).save("#{count}-#{name}.jpg")
-      else
-        $stderr.puts "unrecognized image filter '#{stream.hash[:Filter]}'!"
+        count += 1
+
+        case stream.hash[:Filter]
+        when :CCITTFaxDecode
+          ExtractImages::Tiff.new(stream).save("#{page.number}-#{count}-#{name}.tif")
+        when :DCTDecode
+          ExtractImages::Jpg.new(stream).save("#{page.number}-#{count}-#{name}.jpg")
+        else
+          $stderr.puts "unrecognized image filter '#{stream.hash[:Filter]}'!"
+        end
       end
     end
-
-    def increment_count
-      @count += 1
-    end
-    private :increment_count
 
   end
 
@@ -104,5 +96,10 @@ module ExtractImages
   end
 end
 
-receiver = ExtractImages::Receiver.new
-PDF::Reader.file(ARGV[0], receiver)
+filename = File.expand_path(File.dirname(__FILE__)) + "/../spec/data/adobe_sample.pdf"
+extractor = ExtractImages::Extractor.new
+
+PDF::Reader.open(filename) do |reader|
+  page = reader.page(1)
+  extractor.page(page)
+end

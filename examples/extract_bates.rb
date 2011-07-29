@@ -35,13 +35,14 @@ class BatesReceiver
 
 end
 
+filename = File.expand_path(File.dirname(__FILE__)) + "/../spec/data/cairo-basic.pdf"
 
-PDF::Reader.open("bates.pdf") do |reader|
+PDF::Reader.open(filename) do |reader|
   reader.pages.each do |page|
     receiver = BatesReceiver.new
     page.walk(receiver)
     if receiver.numbers.empty?
-      puts page.scan(/CC.+/)
+      puts page.text.scan(/CC.+/)
     else
       puts receiver.numbers.inspect
     end

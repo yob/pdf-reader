@@ -6,20 +6,8 @@
 require 'rubygems'
 require 'pdf/reader'
 
-class VersionReceiver
-  attr_accessor :version
+filename = File.expand_path(File.dirname(__FILE__)) + "/../spec/data/cairo-basic.pdf"
 
-  def initialize
-    @version = nil
-  end
-
-  # Called when document parsing starts
-  def pdf_version(arg = nil)
-    @version = arg
-  end
-
+PDF::Reader.open(filename) do |reader|
+  puts reader.pdf_version
 end
-
-receiver = VersionReceiver.new
-pdf = PDF::Reader.file(ARGV.shift, receiver)
-puts receiver.version
