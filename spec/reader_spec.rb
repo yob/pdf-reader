@@ -43,7 +43,7 @@ describe PDF::Reader, "file class method" do
     filename = pdf_spec_file("difference_table_encrypted")
     lambda {
       PDF::Reader.file(filename, @receiver)
-    }.should raise_error(PDF::Reader::UnsupportedFeatureError)
+    }.should raise_error(PDF::Reader::EncryptedPDFError)
   end
 end
 
@@ -98,7 +98,7 @@ describe PDF::Reader, "string class method" do
     end
     lambda {
       PDF::Reader.string(@data, @receiver)
-    }.should raise_error(PDF::Reader::UnsupportedFeatureError)
+    }.should raise_error(PDF::Reader::EncryptedPDFError)
   end
 end
 

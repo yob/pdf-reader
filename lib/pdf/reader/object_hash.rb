@@ -53,7 +53,7 @@ class PDF::Reader
       @cache       = PDF::Reader::ObjectCache.new
 
       if trailer[:Encrypt]
-        raise ::PDF::Reader::UnsupportedFeatureError, 'PDF::Reader cannot read encrypted PDF files'
+        raise ::PDF::Reader::EncryptedPDFError, 'PDF::Reader cannot read encrypted PDF files'
       end
     end
 
