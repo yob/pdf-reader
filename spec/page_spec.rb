@@ -2,18 +2,6 @@
 
 require File.dirname(__FILE__) + "/spec_helper"
 
-describe PDF::Reader::Page, "fonts()" do
-
-  it "should return a hash with the correct size from cairo-basic.pdf page 1" do
-    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
-    @page    = @browser.page(1)
-
-    @page.fonts.should      be_a_kind_of(Hash)
-    @page.fonts.size.should eql(1)
-    @page.fonts.keys.should eql([:"CairoFont-0-0"])
-  end
-end
-
 describe PDF::Reader::Page, "raw_content()" do
   it "should return a string from raw_content() from cairo-basic.pdf page 1" do
     @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
@@ -178,4 +166,93 @@ describe PDF::Reader::Page, "resources()" do
     @page.resources.size.should eql(2)
   end
 
+end
+
+describe PDF::Reader::Page, "fonts()" do
+
+  it "should return a hash with the correct size from cairo-basic.pdf page 1" do
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
+    @page    = @browser.page(1)
+
+    @page.fonts.should      be_a_kind_of(Hash)
+    @page.fonts.size.should eql(1)
+    @page.fonts.keys.should eql([:"CairoFont-0-0"])
+  end
+end
+
+describe PDF::Reader::Page, "color_spaces()" do
+
+  it "should return an empty hash from cairo-basic.pdf page 1" do
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
+    @page    = @browser.page(1)
+
+    @page.color_spaces.should      be_a_kind_of(Hash)
+    @page.color_spaces.size.should eql(0)
+  end
+end
+
+describe PDF::Reader::Page, "graphic_states()" do
+
+  it "should return an hash with 1 entry from cairo-basic.pdf page 1" do
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
+    @page    = @browser.page(1)
+
+    @page.graphic_states.should      be_a_kind_of(Hash)
+    @page.graphic_states.size.should eql(1)
+  end
+end
+
+describe PDF::Reader::Page, "patterns()" do
+
+  it "should return an empty hash from cairo-basic.pdf page 1" do
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
+    @page    = @browser.page(1)
+
+    @page.patterns.should      be_a_kind_of(Hash)
+    @page.patterns.size.should eql(0)
+  end
+end
+
+describe PDF::Reader::Page, "procedure_sets()" do
+
+  it "should return an empty array from cairo-basic.pdf page 1" do
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
+    @page    = @browser.page(1)
+
+    @page.procedure_sets.should      be_a_kind_of(Array)
+    @page.procedure_sets.size.should eql(0)
+  end
+end
+
+describe PDF::Reader::Page, "properties()" do
+
+  it "should return an empty hash from cairo-basic.pdf page 1" do
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
+    @page    = @browser.page(1)
+
+    @page.properties.should      be_a_kind_of(Hash)
+    @page.properties.size.should eql(0)
+  end
+end
+
+describe PDF::Reader::Page, "shadings()" do
+
+  it "should return an empty hash from cairo-basic.pdf page 1" do
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
+    @page    = @browser.page(1)
+
+    @page.shadings.should      be_a_kind_of(Hash)
+    @page.shadings.size.should eql(0)
+  end
+end
+
+describe PDF::Reader::Page, "xobjects()" do
+
+  it "should return an empty hash from cairo-basic.pdf page 1" do
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
+    @page    = @browser.page(1)
+
+    @page.xobjects.should      be_a_kind_of(Hash)
+    @page.xobjects.size.should eql(0)
+  end
 end

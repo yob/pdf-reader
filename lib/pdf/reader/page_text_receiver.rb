@@ -24,7 +24,7 @@ module PDF
       def page=(page)
         @page    = page
         @objects = page.objects
-        @fonts   = page.fonts
+        @fonts   = build_fonts(page.fonts)
         @form_fonts = {}
         @content = ::Hash.new
         @stack   = [DEFAULT_GRAPHICS_STATE]
@@ -204,6 +204,14 @@ module PDF
       end
 
       private
+
+      # wrap the raw PDF Font objects in handy ruby Font objects.
+      #
+      def build_fonts(raw_fonts)
+        ::Hash[raw_fonts.map { |label, font|
+          [label, PDF::Reader::Font.new(@objects, @objects.deref(font))]
+        }]
+      end
 
       # transform x and y co-ordinates from the current text space to the
       # underlying device space.

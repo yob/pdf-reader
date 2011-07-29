@@ -63,24 +63,53 @@ module PDF
         @resources ||= @objects.deref(attributes[:Resources]) || {}
       end
 
-      # Returns the XObjects that are available to this page
+      # Returns a Hash of color spaces that are available to this page
       #
-      def xobjects
-        resources[:XObject] || {}
+      def color_spaces
+        @objects.deref(resources[:ColorSpace]) || {}
       end
 
-      # return a hash of fonts used on this page.
-      #
-      # The keys are the font labels used within the page content stream.
-      #
-      # The values are a PDF::Reader::Font instances that provide access
-      # to most available metrics for each font.
+      # Returns a Hash of fonts that are available to this page
       #
       def fonts
-        raw_fonts = objects.deref(resources[:Font] || {})
-        ::Hash[raw_fonts.map { |label, font|
-          [label, PDF::Reader::Font.new(objects, objects.deref(font))]
-        }]
+        @objects.deref(resources[:Font]) || {}
+      end
+
+      # Returns a Hash of external graphic states that are available to this
+      # page
+      #
+      def graphic_states
+        @objects.deref(resources[:ExtGState]) || {}
+      end
+
+      # Returns a Hash of patterns that are available to this page
+      #
+      def patterns
+        @objects.deref(resources[:Pattern]) || {}
+      end
+
+      # Returns an Array of procedure sets that are available to this page
+      #
+      def procedure_sets
+        @objects.deref(resources[:ProcSet]) || []
+      end
+
+      # Returns a Hash of properties sets that are available to this page
+      #
+      def properties
+        @objects.deref(resources[:Properties]) || {}
+      end
+
+      # Returns a Hash of shadings that are available to this page
+      #
+      def shadings
+        @objects.deref(resources[:Shading]) || {}
+      end
+
+      # Returns a Hash of XObjects that are available to this page
+      #
+      def xobjects
+        @objects.deref(resources[:XObject]) || {}
       end
 
       # returns the plain text content of this page encoded as UTF-8. Any
@@ -97,7 +126,7 @@ module PDF
       # passes callbacks to the receiver objects.
       #
       # This is mostly low level and you can probably ignore it unless you need
-      # access to soemthing like the raw encoded text. For an example of how
+      # access to something like the raw encoded text. For an example of how
       # this can be used as a basis for higher level functionality, see the
       # text() method
       #
