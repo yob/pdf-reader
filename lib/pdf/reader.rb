@@ -89,8 +89,6 @@ module PDF
     # lowlevel hash-like access to all objects in the underlying PDF
     attr_reader :objects
 
-    attr_reader :page_count, :pdf_version, :info, :metadata
-
     # creates a new document reader for the provided PDF.
     #
     # input can be an IO-ish object (StringIO, File, etc) containing a PDF
@@ -105,11 +103,25 @@ module PDF
     def initialize(input = nil)
       if input # support the deprecated Reader API
         @objects = PDF::Reader::ObjectHash.new(input)
-        @page_count  = get_page_count
-        @pdf_version = @objects.pdf_version
-        @info        = @objects.deref(@objects.trailer[:Info])
-        @metadata    = get_metadata
       end
+    end
+
+    def info
+      @objects.deref(@objects.trailer[:Info])
+    end
+
+    def metadata
+      stream = @objects.deref(root[:Metadata])
+      stream ? stream.unfiltered_data : nil
+    end
+
+    def page_count
+      pages = @objects.deref(root[:Pages])
+      @page_count ||= pages[:Count]
+    end
+
+    def pdf_version
+      @objects.pdf_version
     end
 
     # syntactic sugar for opening a PDF file. Accepts the same arguments
@@ -185,7 +197,7 @@ module PDF
     # methods available on each page
     #
     def pages
-      (1..@page_count).map { |num|
+      (1..self.page_count).map { |num|
         PDF::Reader::Page.new(@objects, num)
       }
     end
@@ -204,7 +216,7 @@ module PDF
     #
     def page(num)
       num = num.to_i
-      raise ArgumentError, "valid pages are 1 .. #{@page_count}" if num < 1 || num > @page_count
+      raise ArgumentError, "valid pages are 1 .. #{self.page_count}" if num < 1 || num > self.page_count
       PDF::Reader::Page.new(@objects, num)
     end
 
@@ -252,17 +264,7 @@ module PDF
     end
 
     def root
-      root ||= @objects.deref(@objects.trailer[:Root])
-    end
-
-    def get_metadata
-      stream = @objects.deref(root[:Metadata])
-      stream ? stream.unfiltered_data : nil
-    end
-
-    def get_page_count
-      pages = @objects.deref(root[:Pages])
-      pages[:Count]
+      @root ||= @objects.deref(@objects.trailer[:Root])
     end
 
   end
