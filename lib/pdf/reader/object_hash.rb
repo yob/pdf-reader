@@ -28,8 +28,6 @@ class PDF::Reader
   class ObjectHash
     include Enumerable
 
-    CACHEABLE_TYPES = [:Catalog, :Page, :Pages]
-
     attr_accessor :default
     attr_reader :trailer, :pdf_version
 
@@ -101,10 +99,6 @@ class PDF::Reader
       rescue InvalidObjectError
         return default
       end
-    end
-
-    def cacheable?(obj)
-      obj.is_a?(Hash) && CACHEABLE_TYPES.include?(obj[:Type])
     end
 
     # If key is a PDF::Reader::Reference object, lookup the corresponding
