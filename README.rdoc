@@ -8,6 +8,11 @@ The PDF 1.7 specification is a weighty document and not all aspects are
 currently supported. I welcome submission of PDF files that exhibit
 unsupported aspects of the spec to assist with improving our support.
 
+This is primarily a low-level library that should be used as the foundation for
+higher level functionality - it's not going to render a PDF for you. There are
+a few exceptions to support very common use cases like extracting text from a
+page.
+
 = Installation
 
 The recommended installation method is via Rubygems.
