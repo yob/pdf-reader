@@ -80,7 +80,7 @@ class PDF::Reader
       obj = parse_token
       post_obj = parse_token
       if post_obj == "stream"
-        stream(obj)
+        stream(obj, id, gen)
       else
         obj
       end
@@ -204,7 +204,7 @@ class PDF::Reader
     end
     ################################################################################
     # Decodes the contents of a PDF Stream and returns it as a Ruby String.
-    def stream (dict)
+    def stream (dict, *idgen)
       raise MalformedPDFError, "PDF malformed, missing stream length" unless dict.has_key?(:Length)
       if @ohash
         length = @ohash.object(dict[:Length])
@@ -215,6 +215,10 @@ class PDF::Reader
 
       Error.str_assert(parse_token, "endstream")
       Error.str_assert(parse_token, "endobj")
+
+      #Add decryption TODO possibility of Metadata encrypted past encVersion 3
+      #NOTE: currently metadata is processed before the secHandler is even built.
+      data = (!@ohash.nil? && @ohash.encrypted? && dict[:Type].to_s!="Metadata") ? Decrypt::stream(data, @ohash.secHandler, idgen) : data
 
       PDF::Reader::Stream.new(dict, data)
     end
