@@ -114,10 +114,6 @@ module PDF
     def parse(io, receiver, opts = {})
       ohash    = ObjectHash.new(io)
 
-      if ohash.trailer[:Encrypt]
-        raise ::PDF::Reader::UnsupportedFeatureError, 'PDF::Reader cannot read encrypted PDF files'
-      end
-
       options = {:pages => true, :raw_text => false, :metadata => true}
       options.merge!(opts)
 
@@ -148,6 +144,9 @@ module PDF
 end
 ################################################################################
 
+require 'pdf/reader/security_handler'
+require 'pdf/reader/standard_security_handler'
+require 'pdf/reader/decrypt'
 require 'pdf/reader/abstract_strategy'
 require 'pdf/reader/buffer'
 require 'pdf/reader/cmap'
