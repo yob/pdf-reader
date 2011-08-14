@@ -263,10 +263,20 @@ class PDF::Reader
       return obj if @sec_handler.nil?
 
       #Add decryption TODO possibility of Metadata encrypted past encVersion 3
-      if obj.is_a?(PDF::Reader::Stream)
+      case obj
+      when PDF::Reader::Stream then
         obj.data = Decrypt.stream(obj.data, @sec_handler, [ref.id, ref.gen])
+        obj
+      when Hash                then
+        arr = obj.map { |key,val| [key, decrypt(ref, val)] }.flatten(1)
+        Hash[*arr]
+      when Array               then
+        obj.collect { |item| decrypt(ref, item) }
+      when String
+        Decrypt.stream(obj, @sec_handler, [ref.id, ref.gen])
+      else
+        obj
       end
-      obj
     end
 
     def new_buffer(offset = 0)
