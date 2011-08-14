@@ -247,17 +247,17 @@ class PDF::Reader
       @page_references ||= get_page_objects(root[:Pages]).flatten
     end
 
-    def build_security_handler
-      #TODO - adapt this for a wider variety of handlers
-      puts deref(trailer[:Encrypt]).inspect
-      StandardSecurityHandler.new(deref(trailer[:Encrypt]), deref(trailer[:ID]) )
-    end
-
     def encrypted?
       trailer.has_key?(:Encrypt)
     end
 
     private
+
+    def build_security_handler
+      #TODO - adapt this for a wider variety of handlers
+      puts deref(trailer[:Encrypt]).inspect
+      StandardSecurityHandler.new(deref(trailer[:Encrypt]), deref(trailer[:ID]) )
+    end
 
     def decrypt(ref, obj)
       return obj if @sec_handler.nil?
