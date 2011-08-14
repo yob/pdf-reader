@@ -91,7 +91,7 @@ class PDF::Reader
           @cache[key]
         elsif xref[key].is_a?(Fixnum)
           buf = new_buffer(xref[key])
-          @cache[key] = Parser.new(buf, self).object(key.id, key.gen)
+          @cache[key] = decrypt(key, Parser.new(buf, self).object(key.id, key.gen))
         elsif xref[key].is_a?(PDF::Reader::Reference)
           container_key = xref[key]
           object_streams[container_key] ||= PDF::Reader::ObjectStream.new(object(container_key))
@@ -249,6 +249,7 @@ class PDF::Reader
 
     def build_security_handler
       #TODO - adapt this for a wider variety of handlers
+      puts deref(trailer[:Encrypt]).inspect
       StandardSecurityHandler.new(deref(trailer[:Encrypt]), deref(trailer[:ID]) )
     end
 
@@ -257,6 +258,16 @@ class PDF::Reader
     end
 
     private
+
+    def decrypt(ref, obj)
+      return obj if @sec_handler.nil?
+
+      #Add decryption TODO possibility of Metadata encrypted past encVersion 3
+      if obj.is_a?(PDF::Reader::Stream)
+        obj.data = Decrypt.stream(obj.data, @sec_handler, [ref.id, ref.gen])
+      end
+      obj
+    end
 
     def new_buffer(offset = 0)
       PDF::Reader::Buffer.new(@io, :seek => offset)

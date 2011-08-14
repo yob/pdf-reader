@@ -216,12 +216,6 @@ class PDF::Reader
       Error.str_assert(parse_token, "endstream")
       Error.str_assert(parse_token, "endobj")
 
-      #Add decryption TODO possibility of Metadata encrypted past encVersion 3
-      #NOTE: currently metadata is processed before the secHandler is even built.
-      if @ohash.encrypted? && dict[:Type].to_s != "Metadata"
-        data = Decrypt::stream(data, @ohash.sec_handler, idgen)
-      end
-
       PDF::Reader::Stream.new(dict, data)
     end
     ################################################################################
