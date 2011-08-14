@@ -29,7 +29,7 @@ class PDF::Reader
     include Enumerable
 
     attr_accessor :default
-    attr_reader :trailer, :pdf_version, :secHandler
+    attr_reader :trailer, :pdf_version, :sec_handler
 
     # Creates a new ObjectHash object. input can be a string with a valid filename,
     # a string containing a PDF file, or an IO object.
@@ -53,7 +53,8 @@ class PDF::Reader
       @cache       = PDF::Reader::ObjectCache.new
 
       if trailer[:Encrypt]
-        raise ::PDF::Reader::EncryptedPDFError, 'PDF::Reader cannot read encrypted PDF files'
+        @sec_handler = build_security_handler
+        @sec_handler.checkEncryption
       end
     end
 
@@ -246,18 +247,13 @@ class PDF::Reader
       @page_references ||= get_page_objects(root[:Pages]).flatten
     end
 
-    def get_encrypt_dict
-      trailer[:Encrypt]
-    end
-    alias :encrypted? :get_encrypt_dict
-
-    def get_file_id
-      trailer[:ID]
-    end
-
-    def build_security_handler(encryptDict)
+    def build_security_handler
       #TODO - adapt this for a wider variety of handlers
-      @secHandler = StandardSecurityHandler.new( encryptDict, get_file_id )
+      StandardSecurityHandler.new(deref(trailer[:Encrypt]), deref(trailer[:ID]) )
+    end
+
+    def encrypted?
+      trailer.has_key?(:Encrypt)
     end
 
     private
