@@ -218,7 +218,7 @@ class PDF::Reader
 
       #Add decryption TODO possibility of Metadata encrypted past encVersion 3
       #NOTE: currently metadata is processed before the secHandler is even built.
-      data = (!@ohash.nil? && @ohash.encrypted? && dict[:Type].to_s!="Metadata") ? Decrypt::stream(data, @ohash.secHandler, idgen) : data
+      data = (!@ohash.nil? && @ohash.encrypted? && dict[:Type].to_s!="Metadata") ? Decrypt::stream(data, @ohash.sec_handler, idgen) : data
 
       PDF::Reader::Stream.new(dict, data)
     end
