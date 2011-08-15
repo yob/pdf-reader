@@ -16,16 +16,6 @@ describe PDF::Reader::Font do
     f.encoding.should be_a_kind_of(PDF::Reader::Encoding)
   end
 
-  it "should correctly create a mapping of glyph names to unicode code points" do
-    map = PDF::Reader::Font.glyphnames
-    map.should be_a_kind_of(Hash)
-    map[:a].should eql(0x0061)
-    map[:e].should eql(0x0065)
-    map[:A].should eql(0x0041)
-    map[:holam].should eql(0x05B9)
-    map[:zukatakana].should eql(0x30BA)
-  end
-
   it "should correctly attempt to convert various strings to utf-8" do
     f = PDF::Reader::Font.new
     # TODO: create a mock encoding object and ensure to_utf8 is called on it

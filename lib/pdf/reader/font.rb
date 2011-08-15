@@ -41,23 +41,6 @@ class PDF::Reader
       extract_descendants(obj)
     end
 
-    # returns a hash that maps glyph names to unicode codepoints. The mapping is based on
-    # a text file supplied by Adobe at:
-    # http://www.adobe.com/devnet/opentype/archives/glyphlist.txt
-    def self.glyphnames
-      glyphs = {}
-
-      RUBY_VERSION >= "1.9" ? mode = "r:BINARY" : mode = "r"
-      File.open(File.dirname(__FILE__) + "/glyphlist.txt",mode) do |f|
-        f.each do |l|
-          m, name, code = *l.match(/([0-9A-Za-z]+);([0-9A-F]{4})/)
-          glyphs[name.to_sym] = "0x#{code}".hex if name
-        end
-      end
-
-      glyphs
-    end
-
     def basefont=(font)
       # setup a default encoding for the selected font. It can always be overridden
       # with encoding= if required
