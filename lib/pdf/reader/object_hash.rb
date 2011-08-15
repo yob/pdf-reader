@@ -254,9 +254,13 @@ class PDF::Reader
     private
 
     def build_security_handler
-      #TODO - adapt this for a wider variety of handlers
-      puts deref(trailer[:Encrypt]).inspect
-      StandardSecurityHandler.new(deref(trailer[:Encrypt]), deref(trailer[:ID]) )
+      enc = deref(trailer[:Encrypt])
+      case enc[:Filter]
+      when :Standard
+        StandardSecurityHandler.new(enc, deref(trailer[:ID]) )
+      else
+        raise PDF::Reader::EncryptedPDFError, "Unsupported encryption method (#{enc[:Filter]})"
+      end
     end
 
     def decrypt(ref, obj)
