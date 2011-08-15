@@ -34,7 +34,11 @@ class PDF::Reader
     # Creates a new ObjectHash object. input can be a string with a valid filename,
     # a string containing a PDF file, or an IO object.
     #
-    def initialize(input)
+    # valid options
+    #
+    #   :userpass - he user password to decrypt the source PDF
+    #
+    def initialize(input, opts = {})
       if input.respond_to?(:seek) && input.respond_to?(:read)
         @io = input
       elsif File.file?(input.to_s)
@@ -53,7 +57,7 @@ class PDF::Reader
       @cache       = PDF::Reader::ObjectCache.new
 
       if trailer[:Encrypt]
-        @sec_handler = build_security_handler
+        @sec_handler = build_security_handler(opts)
         @sec_handler.checkEncryption
       end
     end
@@ -253,11 +257,11 @@ class PDF::Reader
 
     private
 
-    def build_security_handler
+    def build_security_handler(opts = {})
       enc = deref(trailer[:Encrypt])
       case enc[:Filter]
       when :Standard
-        StandardSecurityHandler.new(enc, deref(trailer[:ID]) )
+        StandardSecurityHandler.new(enc, deref(trailer[:ID]), opts[:userpass])
       else
         raise PDF::Reader::EncryptedPDFError, "Unsupported encryption method (#{enc[:Filter]})"
       end
