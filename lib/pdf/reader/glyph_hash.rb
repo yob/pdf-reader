@@ -56,10 +56,10 @@ class PDF::Reader
         "0x#{str[3,4]}".hex
       elsif str.match(/\Au[A-F\d]{4,6}\Z/)
         "0x#{str[1,6]}".hex
-      elsif str.match(/\A[A-Za-z]\h\h\Z/)
-        str[1,2].to_i
-      elsif str.match(/\A[A-Za-z]{2}\h\h\Z/)
-        str[2,2].to_i
+      elsif str.match(/\A[A-Za-z]\d{2,4}\Z/)
+        str[1,4].to_i
+      elsif str.match(/\A[A-Za-z]{2}\d{2,4}\Z/)
+        str[2,4].to_i
       else
         nil
       end

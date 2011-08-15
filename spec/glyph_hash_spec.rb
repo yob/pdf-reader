@@ -29,16 +29,20 @@ describe PDF::Reader::GlyphHash do
 
   it "should correctly map a Ann glyph to unicode" do
     map = PDF::Reader::GlyphHash.new
-    map[:A65].should   eql(65)
-    map[:g65].should   eql(65)
-    map[:G65].should   eql(65)
+    map[:A65].should     eql(65)
+    map[:g65].should     eql(65)
+    map[:G65].should     eql(65)
+    map[:G655].should    eql(655)
+    map[:G6555].should   eql(6555)
   end
 
   it "should correctly map a AAnn glyph to unicode" do
     map = PDF::Reader::GlyphHash.new
-    map[:AA65].should   eql(65)
-    map[:gg65].should   eql(65)
-    map[:GG65].should   eql(65)
+    map[:AA65].should     eql(65)
+    map[:gg65].should     eql(65)
+    map[:GG65].should     eql(65)
+    map[:GG655].should    eql(655)
+    map[:GG6555].should   eql(6555)
   end
 
 end
