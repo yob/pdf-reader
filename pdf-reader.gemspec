@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency("ZenTest", "~>4.4.2")
 
   spec.add_dependency('Ascii85', '~> 1.0.0')
+  spec.add_dependency('ruby-rc4')
 
   spec.post_install_message = <<END_DESC
 
