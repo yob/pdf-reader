@@ -97,7 +97,7 @@ class PDF::Reader
       }.map { |num|
         original_codepoint_to_unicode(num, tounicode)
       }.map { |c|
-        glyphnames[c] || c
+        names_to_unicode[c] || c
       }.map { |c|
         if c.nil? || !c.is_a?(Fixnum)
           PDF::Reader::Encoding::UNKNOWN_CHAR
@@ -170,8 +170,8 @@ class PDF::Reader
       mapping.size > 0
     end
 
-    def glyphnames
-      @glyphnames ||= PDF::Reader::Font.glyphnames
+    def names_to_unicode
+      @names_to_unicode ||= PDF::Reader::GlyphHash.new
     end
 
     def load_mapping(file)
