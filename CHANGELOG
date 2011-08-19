@@ -1,4 +1,12 @@
-v0.9.4 (XXX)
+vXXX (XXX)
+- small breaking changes to the page-based API - it's alpha for a reason
+
+v0.11.0.alpha (19th July 2011)
+- introduce experimental new page-based API
+  - old API is deprecated but will continue to work with no warnings
+- add transparent caching of common objects to ObjectHash
+
+v0.10.0 (6th July 2011)
 - support multiple receivers within a single pass over a source file
   - massive time saving when dealing with multiple receivers
 
