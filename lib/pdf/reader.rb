@@ -84,6 +84,13 @@ module PDF
   #   page = reader.page(1)
   #   page.walk(receiver)
   #
+  # == Encrypted Files
+  #
+  # Depending on the algorithm it may be possible to parse an encrypted file.
+  # For standard PDF encryption you'll need the :userpass option
+  #
+  #   reader = PDF::Reader.new("somefile.pdf", :userpass => "apples")
+  #
   class Reader
 
     # lowlevel hash-like access to all objects in the underlying PDF
@@ -100,9 +107,13 @@ module PDF
     #     reader = PDF::Reader.new(file)
     #   end
     #
-    def initialize(input = nil)
+    # If the source file is encrypted you can provide a password for decrypting
+    #
+    #   reader = PDF::Reader.new("somefile.pdf", :userpass => "apples")
+    #
+    def initialize(input = nil, opts = {})
       if input # support the deprecated Reader API
-        @objects = PDF::Reader::ObjectHash.new(input)
+        @objects = PDF::Reader::ObjectHash.new(input, opts)
       end
     end
 
@@ -131,8 +142,14 @@ module PDF
     #     puts reader.pdf_version
     #   end
     #
-    def self.open(input, &block)
-      yield PDF::Reader.new(input)
+    # or
+    #
+    #   PDF::Reader.open("somefile.pdf", :userpass => "apples") do |reader|
+    #     puts reader.pdf_version
+    #   end
+    #
+    def self.open(input, opts = {}, &block)
+      yield PDF::Reader.new(input, opts)
     end
 
     # DEPRECATED: this method was deprecated in version 0.11.0 and will
