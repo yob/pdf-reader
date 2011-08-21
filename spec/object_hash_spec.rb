@@ -326,11 +326,13 @@ end
 
 describe PDF::Reader::ObjectHash, "to_xml method" do
 
-  it "should return the document tree structure as an XML document" do
+  it "should return the document tree as an XML document" do
     filename = pdf_spec_file("cairo-unicode")
-    h = PDF::Reader::ObjectHash.new(filename)
+    xml = PDF::Reader::ObjectHash.new(filename).to_xml
 
-    puts h.to_xml
+    h.include?("<?xml")
+    h.include?('encoding=utf-8"')
+    h.include?('<PDF>')
   end
 end
 
@@ -355,5 +357,19 @@ describe PDF::Reader::ObjectHash, "path method" do
     h = PDF::Reader::ObjectHash.new(filename)
 
     h.path("/Info").should eql([PDF::Reader::Reference.new(56, 0)])
+  end
+
+  it "should return the document info dict" do
+    filename = pdf_spec_file("cairo-unicode")
+    h = PDF::Reader::ObjectHash.new(filename)
+
+    h.path("/Info").should eql([PDF::Reader::Reference.new(56, 0)])
+  end
+
+  it "should return the document creator" do
+    filename = pdf_spec_file("cairo-unicode")
+    h = PDF::Reader::ObjectHash.new(filename)
+
+    h.path("/Info/Creator").should eql(["cairo 1.4.6 (http://cairographics.org)"])
   end
 end

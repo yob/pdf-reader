@@ -246,26 +246,80 @@ class PDF::Reader
       @page_references ||= get_page_objects(root[:Pages]).flatten
     end
 
-    def to_xml
-      root  = trailer[:Root]
-      size  = trailer[:Size]
-      info  = trailer[:Info]
-      str = "<PDF>\n"
-      str << "  <Root id=\"#{root.id}\" gen=\"#{root.gen}\"></Root>\n" if root
-      str << "  <Size type=\"integer\">#{size}</Size>\n" if size
-      str << "  <Info id=\"#{info.id}\" gen=\"#{info.gen}\"></Info>\n" if info
-      str << "</PDF>"
-      str
+    # convert the document tree to an XML string. Not really designed for
+    # end users, it's a foundation for the path() method. I should probably
+    # make this a private method.
+    #
+    def to_xml(obj = nil)
+      case obj
+      when nil then
+        @checked_refs = {}
+        "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<PDF>\n" +  to_xml(trailer) + "</PDF>"
+      when Hash then
+        obj.map { |key, value|
+          if value.is_a?(PDF::Reader::Reference)
+            attrs = " id=\"#{value.id}\" gen=\"#{value.gen}\""
+          else
+            attrs = " type=\"#{value.class}\""
+          end
+          "<#{key}#{attrs}>" + to_xml(value) + "</#{key}>"
+        }.join("\n") + "\n"
+      when Array then
+        ret = ""
+        obj.each_with_index do |item|
+          if item.is_a?(PDF::Reader::Reference)
+            attrs = " id=\"#{item.id}\" gen=\"#{item.gen}\""
+          elsif !item.is_a?(Hash) && !item.is_a?(Array)
+            attrs = " type=\"#{item.class}\""
+          end
+          ret << "<Item#{attrs}>" + to_xml(item) + "</Item>"
+        end
+        ret + "\n"
+      when PDF::Reader::Reference then
+        if @checked_refs[obj]
+          "foo"
+        else
+          @checked_refs[obj] = true
+          to_xml(deref(obj))
+        end
+      when PDF::Reader::Stream then
+        to_xml(obj.hash)
+      else
+        obj.to_s
+      end
     end
 
+    # An alternative method for retrieving objects from the PDF document. Based
+    # on XPath queries.
+    #
+    #     h = PDF::Reader::ObjectHash.new("somefile.pdf")
+    #
+    #     h.path("/Root")
+    #     =>  { :Pages => [...]}
+    #
+    #     h.path("/Info")
+    #     =>  { :Creator => "...", :Producer => "..."}
+    #
+    #     h.path("/Info/Creator")
+    #     =>  "..."
+    #
+    #     h.path("/Root/Pages")
+    #     =>  [.., .. , ..]
+    #
     def path(str)
       require 'nokogiri'
       doc = Nokogiri::XML.parse(to_xml)
       doc.xpath("/PDF" + str).map { |node|
         if node.attribute("id") && node.attribute("gen")
           PDF::Reader::Reference.new(node.attribute("id").value.to_i, node.attribute("gen").value.to_i)
-        elsif node.attribute("type") && node.attribute("type").value == "integer"
+        elsif node.attribute("type") && node.attribute("type").value == "Fixnum"
           node.content.to_i
+        elsif node.attribute("type") && node.attribute("type").value == "Float"
+          node.content.to_f
+        elsif node.attribute("type") && node.attribute("type").value == "Symbol"
+          node.content.to_sym
+        elsif node.attribute("type") && node.attribute("type").value == "String"
+          node.content
         else
           nil
         end
