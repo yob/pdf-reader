@@ -32,27 +32,6 @@ class PDF::Reader
   #
   class Filter # :nodoc:
 
-    @@filters = {
-      :ASCII85Decode   => :ascii85,
-      :ASCIIHexDecode  => :asciihex,
-      :CCITTFaxDecode  => nil,
-      :DCTDecode       => nil,
-      :FlateDecode     => :flate,
-      :JBIG2Decode     => nil,
-      :LZWDecode       => :lzw,
-      :RunLengthDecode => :runlength
-    }
-
-    class << self
-
-      ##############################################################################
-      # Return the Hash of supported filters.
-      #
-      def filters
-        @@filters
-      end
-    end
-
     ################################################################################
     # creates a new filter for decoding content.
     #
@@ -62,7 +41,16 @@ class PDF::Reader
     def initialize (name, options = nil)
       @options = options
 
-      @filter = @@filters.fetch(name) do
+      case name.to_sym
+      when :ASCII85Decode   then @filter = :ascii85
+      when :ASCIIHexDecode  then @filter = :asciihex
+      when :CCITTFaxDecode  then @filter = nil
+      when :DCTDecode       then @filter = nil
+      when :FlateDecode     then @filter = :flate
+      when :JBIG2Decode     then @filter = nil
+      when :LZWDecode       then @filter = :lzw
+      when :RunLengthDecode then @filter = :runlength
+      else
         raise UnsupportedFeatureError, "Unknown filter: #{name}"
       end
     end
