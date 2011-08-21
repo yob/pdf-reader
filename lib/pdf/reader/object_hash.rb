@@ -246,6 +246,32 @@ class PDF::Reader
       @page_references ||= get_page_objects(root[:Pages]).flatten
     end
 
+    def to_xml
+      root  = trailer[:Root]
+      size  = trailer[:Size]
+      info  = trailer[:Info]
+      str = "<PDF>\n"
+      str << "  <Root id=\"#{root.id}\" gen=\"#{root.gen}\"></Root>\n" if root
+      str << "  <Size type=\"integer\">#{size}</Size>\n" if size
+      str << "  <Info id=\"#{info.id}\" gen=\"#{info.gen}\"></Info>\n" if info
+      str << "</PDF>"
+      str
+    end
+
+    def path(str)
+      require 'nokogiri'
+      doc = Nokogiri::XML.parse(to_xml)
+      doc.xpath("/PDF" + str).map { |node|
+        if node.attribute("id") && node.attribute("gen")
+          PDF::Reader::Reference.new(node.attribute("id").value.to_i, node.attribute("gen").value.to_i)
+        elsif node.attribute("type") && node.attribute("type").value == "integer"
+          node.content.to_i
+        else
+          nil
+        end
+      }.compact
+    end
+
     private
 
     def new_buffer(offset = 0)

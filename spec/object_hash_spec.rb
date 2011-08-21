@@ -323,3 +323,37 @@ describe PDF::Reader::ObjectHash, "page_references method" do
     arr.map { |ref| ref.id }.should eql([4, 7, 10, 13])
   end
 end
+
+describe PDF::Reader::ObjectHash, "to_xml method" do
+
+  it "should return the document tree structure as an XML document" do
+    filename = pdf_spec_file("cairo-unicode")
+    h = PDF::Reader::ObjectHash.new(filename)
+
+    puts h.to_xml
+  end
+end
+
+describe PDF::Reader::ObjectHash, "path method" do
+
+  it "should return the document catalog" do
+    filename = pdf_spec_file("cairo-unicode")
+    h = PDF::Reader::ObjectHash.new(filename)
+
+    h.path("/Root").should eql([PDF::Reader::Reference.new(57, 0)])
+  end
+
+  it "should return the document size" do
+    filename = pdf_spec_file("cairo-unicode")
+    h = PDF::Reader::ObjectHash.new(filename)
+
+    h.path("/Size").should eql([58])
+  end
+
+  it "should return the document info dict" do
+    filename = pdf_spec_file("cairo-unicode")
+    h = PDF::Reader::ObjectHash.new(filename)
+
+    h.path("/Info").should eql([PDF::Reader::Reference.new(56, 0)])
+  end
+end
