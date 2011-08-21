@@ -259,10 +259,6 @@ class PDF::Reader
     ################################################################################
     # Begin processing the document
     def process
-      if @ohash.encrypted?
-        @ohash.build_security_handler( resolve_references(@ohash.get_encrypt_dict) )
-        @ohash.secHandler.checkEncryption()
-      end
       return false unless options[:pages]
 
       callback(:begin_document, [root])

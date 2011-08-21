@@ -26,18 +26,20 @@ class PDF::Reader
 
   class SecurityHandler
 
-     attr_accessor :encVer, :encRev, :fileKeyLength, :ownerKey, :userKey, :permFlags, :fileID, :pass
+     attr_reader :encVersion, :encRevision, :keyLength, :ownerKey, 
+                 :userKey, :permissions, :fileID, :pass, :key
 
-    def initialize( eDH, idH, *pass )
-      @encVer = eDH[:V].to_i
-      @encRev = eDH[:R].to_i
-      @fileKeyLength = eDH[:Length].to_i/8
+    def initialize( eDH, idH, pass="" )
+      @encVersion = eDH[:V].to_i
+      @encRevision = eDH[:R].to_i
+      @keyLength = eDH[:Length].to_i/8
       @ownerKey = eDH[:O]
       @userKey = eDH[:U]
-      @permFlags = eDH[:P].to_i
+      @permissions = eDH[:P].to_i
       @fileID = idH[0]
       @encryptMeta = eDH.has_key?(:EncryptMetadata)? eDH[:EncryptMetadata].to_s == "true" : false;
-      @pass = pass.empty? ? [""] : pass;
+      @pass = pass;
+      build_key
     end
   end
 end
