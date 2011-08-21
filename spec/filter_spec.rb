@@ -73,4 +73,10 @@ describe PDF::Reader::Filter do
     filter.filter(encoded_data).should eql("Rubp")
   end
 
+  it "should filter a RunLengthDecode stream correctly" do
+    filter = PDF::Reader::Filter.new(:RunLengthDecode)
+    encoded_data = [2, "\x00"*3, 255, "\x01", 128].pack('Ca*Ca*C')
+    filter.filter(encoded_data).should eql("\x00\x00\x00\x01\x01")
+  end
+
 end

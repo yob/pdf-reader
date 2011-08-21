@@ -31,6 +31,28 @@ class PDF::Reader
   # content.
   #
   class Filter # :nodoc:
+
+    @@filters = {
+      :ASCII85Decode   => :ascii85,
+      :ASCIIHexDecode  => :asciihex,
+      :CCITTFaxDecode  => nil,
+      :DCTDecode       => nil,
+      :FlateDecode     => :flate,
+      :JBIG2Decode     => nil,
+      :LZWDecode       => :lzw,
+      :RunLengthDecode => :runlength
+    }
+
+    class << self
+
+      ##############################################################################
+      # Return the Hash of supported filters.
+      #
+      def filters
+        @@filters
+      end
+    end
+
     ################################################################################
     # creates a new filter for decoding content.
     #
@@ -40,15 +62,8 @@ class PDF::Reader
     def initialize (name, options = nil)
       @options = options
 
-      case name.to_sym
-      when :ASCII85Decode  then @filter = :ascii85
-      when :ASCIIHexDecode then @filter = :asciihex
-      when :CCITTFaxDecode then @filter = nil
-      when :DCTDecode      then @filter = nil
-      when :FlateDecode    then @filter = :flate
-      when :JBIG2Decode    then @filter = nil
-      when :LZWDecode      then @filter = :lzw
-      else                 raise UnsupportedFeatureError, "Unknown filter: #{name}"
+      @filter = @@filters.fetch(name) do
+        raise UnsupportedFeatureError, "Unknown filter: #{name}"
       end
     end
     ################################################################################
@@ -115,6 +130,36 @@ class PDF::Reader
     def lzw(data)
       data = PDF::Reader::LZW.decode(data)
       depredict(data, @options)
+    end
+    ################################################################################
+    # Decode the specified data with the RunLengthDecode compression algorithm
+    def runlength(data)
+      pos = 0
+      out = ""
+
+      while pos < data.length
+        length = data.getbyte(pos)
+        pos += 1
+
+        case
+        when length == 128
+          break
+        when length < 128
+          # When the length is < 128, we copy the following length+1 bytes
+          # literally.
+          out << data[pos, length + 1]
+          pos += length
+        else
+          # When the length is > 128, we copy the next byte (257 - length)
+          # times; i.e., "\xFA\x00" ([250, 0]) will expand to
+          # "\x00\x00\x00\x00\x00\x00\x00".
+          out << data[pos, 1] * (257 - length)
+        end
+
+        pos += 1
+      end
+
+      out
     end
     ################################################################################
     def depredict(data, opts = {})
