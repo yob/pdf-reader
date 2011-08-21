@@ -27,22 +27,26 @@ class PDF::Reader
   class StandardSecurityHandler < SecurityHandler
 
     def build_key
-      authorize(@pass)
+      if !(@key = Decrypt::authOwnerPass(@pass, self)) then
+        if !(@key = Decrypt::authUserPass(@pass, self)) then
+          raise PDF::Reader::EncryptedPDFError, "Invalid password (#{@pass})"
+        end
+      end 
     end
+# 
+    # #TODO build authdata from provded password(s)
+    # def makeAuthData
+    # end
+# 
+    # #TODO implement fetch password from user
+    # def getAuthData
+      # @pass = []
+    # end
 
-    #TODO build authdata from provded password(s)
-    def makeAuthData
-    end
-
-    #TODO implement fetch password from user
-    def getAuthData
-      @pass = []
-    end
-
-    def authorize(pass)
-      @key = Decrypt::makeFileKey( @encVer, @encRev, @fileKeyLength,
-                                   @ownerKey, @userKey, @permFlags, @fileID,
-                                   pass, @encryptMeta )
-    end
+    # def authorize(pass)
+      # @key = Decrypt::makeFileKey( @encVersion, @encRevision, @keyLength,
+                                   # @ownerKey, @userKey, @permFlags, @fileID,
+                                   # pass, @encryptMeta )
+    # end
   end
 end
