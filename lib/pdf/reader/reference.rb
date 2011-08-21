@@ -55,6 +55,10 @@ class PDF::Reader
     end
     alias :eql? :==
     ################################################################################
+    def <=>(other_ref)
+      [self.id, self.gen] <=> [other_ref.id, other_ref.gen]
+    end
+    ################################################################################
     # returns a hash based on the PDF::Reference this object points to. Two
     # different Reference objects that point to the same PDF Object will
     # return an identical hash
