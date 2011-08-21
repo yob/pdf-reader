@@ -217,8 +217,16 @@ describe PDF::Reader, "meta specs" do
   it "should correctly extract text from an encrypted PDF with a user password" do
     filename = pdf_spec_file("encrypted_with_user_pass_apples")
 
-    PDF::Reader.open(filename, :userpass => "apples") do |reader|
-      reader.page(1).text.should eql("This sample file is encrypted with a user password")
+    PDF::Reader.open(filename, :password => "apples") do |reader|
+      reader.page(1).text.should eql("This sample file is encrypted with a user password.\nUser password: apples\nOwner password: password")
+    end
+  end
+
+  it "should correctly extract text from an encrypted PDF with an owner password" do
+    filename = pdf_spec_file("encrypted_with_user_pass_apples")
+
+    PDF::Reader.open(filename, :password => "password") do |reader|
+      reader.page(1).text.should eql("This sample file is encrypted with a user password.\nUser password: apples\nOwner password: password")
     end
   end
 
