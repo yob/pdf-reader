@@ -26,11 +26,8 @@ class PDF::Reader
 
   class StandardSecurityHandler < SecurityHandler
 
-    attr_accessor :key
-
-    def checkEncryption
-      #if(@pass.empty?) then getAuthData() end
-      @pass.each {|p| authorize(p) }
+    def build_key
+      authorize(@pass)
     end
 
     #TODO build authdata from provded password(s)

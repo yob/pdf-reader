@@ -37,7 +37,8 @@ class PDF::Reader
                           pass, encryptMetadata )
 
       #if there's a password, pad it to 32 bytes, else, just use the padding.
-      @buf  = pass.nil? || pass.empty?? PassPadBytes.pack('C'*32) : pass[0] + PassPadBytes[0..(32-pass[0].length)].pack('C'*32-pass[0].length) 
+      @buf  = padPass(pass)
+      printBuf(@buf, "pass->\"#{pass}\"")
       #add owner key
       @buf << ownerKey
       #add permissions 1 byte at a time, in little-endian order
@@ -66,6 +67,20 @@ class PDF::Reader
       (0..1).each { |e| objKey << (gen >> e*8 & 0xFF ) }
       rc4 = RC4.new( Digest::MD5.digest(objKey) )
       rc4.decrypt(buf)
+    end
+
+    def self.padPass(p="")
+        if p.nil? || p.empty?
+          PassPadBytes.pack('C*')
+        else
+          p[(0...32)] + PassPadBytes[0...(32-p.length)].pack('C*')
+        end
+    end
+
+    def self.printBuf(buf,name)
+      print "#{name}"
+      buf.to_s.each_byte{ |b| print(":%02X"%b) }
+      print "\n"
     end
   end
 end

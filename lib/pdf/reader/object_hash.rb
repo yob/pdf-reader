@@ -58,7 +58,6 @@ class PDF::Reader
 
       if trailer[:Encrypt]
         @sec_handler = build_security_handler(opts)
-        @sec_handler.checkEncryption
       end
     end
 
@@ -261,7 +260,7 @@ class PDF::Reader
       enc = deref(trailer[:Encrypt])
       case enc[:Filter]
       when :Standard
-        StandardSecurityHandler.new(enc, deref(trailer[:ID]), opts[:userpass])
+        StandardSecurityHandler.new(enc, deref(trailer[:ID]), opts[:password])
       else
         raise PDF::Reader::EncryptedPDFError, "Unsupported encryption method (#{enc[:Filter]})"
       end
