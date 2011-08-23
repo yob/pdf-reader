@@ -36,7 +36,7 @@ class PDF::Reader
     #
     # valid options
     #
-    #   :userpass - he user password to decrypt the source PDF
+    #   :password - the user password to decrypt the source PDF
     #
     def initialize(input, opts = {})
       if input.respond_to?(:seek) && input.respond_to?(:read)
@@ -57,7 +57,7 @@ class PDF::Reader
       @cache       = PDF::Reader::ObjectCache.new
 
       if trailer[:Encrypt]
-        @sec_handler = build_security_handler(opts)
+        @sec_handler = SecurityHandler.new(self, opts)
       end
     end
 
@@ -255,16 +255,6 @@ class PDF::Reader
     end
 
     private
-
-    def build_security_handler(opts = {})
-      enc = deref(trailer[:Encrypt])
-      case enc[:Filter]
-      when :Standard
-        StandardSecurityHandler.new(enc, deref(trailer[:ID]), opts[:password])
-      else
-        raise PDF::Reader::EncryptedPDFError, "Unsupported encryption method (#{enc[:Filter]})"
-      end
-    end
 
     def decrypt(ref, obj)
       return obj if @sec_handler.nil?

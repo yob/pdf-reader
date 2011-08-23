@@ -24,23 +24,58 @@
 ################################################################################
 class PDF::Reader
 
-  class SecurityHandler
+  # class creates interface to encrypt dictionary for use in Decrypt
+  class SecurityHandler 
 
-     attr_reader :encVersion, :encRevision, :keyLength, :ownerKey, 
-                 :userKey, :permissions, :fileID, :pass, :key
+     attr_reader :filter, :subFilter, :version, :key_length,
+                 :crypt_filter, :stream_filter, :string_filter, :embedded_file_filter,
+                 :encrypt_key 
 
-    def initialize( eDH, idH, pass="" )
-      @encVersion = eDH[:V].to_i
-      @encRevision = eDH[:R].to_i
-      @keyLength = eDH[:Length].to_i/8
-      @ownerKey = eDH[:O]
-      @userKey = eDH[:U]
-      @permissions = eDH[:P].to_i
-      @fileID = idH[0]
-      @encryptMeta = eDH.has_key?(:EncryptMetadata)? eDH[:EncryptMetadata].to_s == "true" : false;
-      @pass = pass;
-      build_key
+    def initialize( ohash, opts )
+      enc = ohash.deref(ohash.trailer[:Encrypt])
+      @filter = enc[:Filter]
+      @subFilter = enc[:SubFilter]
+      @version = enc[:V].to_i
+      @key_length = enc[:Length].to_i/8
+      @crypt_filter = enc[:CF]
+      @stream_filter = enc[:StmF]
+      @string_filter = enc[:StrF]
+      @embedded_file_filter = enc[:EFF]
+
+      #build security handler as according to :Filter
+      case @filter
+      when :Standard
+        @sec_handler = SecurityHandler::Standard.new(ohash, opts)
+        @encrypt_key = Decrypt::build_standard_key(@sec_handler.pass, self)
+      else
+        raise PDF::Reader::EncryptedPDFError, "Unsupported encryption method (#{enc[:Filter]})"
+      end
+    end #initialize
+    
+    # This will pickup atributes that are missing from SecurityHandler 
+    # but defined in @sec_handler
+    def method_missing(id, *args)
+      @sec_handler.send(id.to_sym) if @sec_handler.respond_to?(id.to_sym)
     end
-  end
-end
 
+    # :Standard is a type of security handler that defines additional entries in the 
+    # encryption dictionary.
+    class Standard
+
+      attr_reader :revision, :owner_key, :user_key, :permissions, :file_id, :pass
+
+      def initialize( ohash, opts )
+        enc = ohash.deref(ohash.trailer[:Encrypt])
+        @revision = enc[:R].to_i 
+        @owner_key = enc[:O] 
+        @user_key = enc[:U] 
+        @permissions = enc[:P].to_i #)) then
+        # defaults to true if not present
+        @encryptMeta = enc.has_key?(:EncryptMetadata)? enc[:EncryptMetadata].to_s == "true" : true;
+
+        @file_id = ohash.deref(ohash.trailer[:ID])[0]
+        @pass = opts[:password];
+      end #initialize
+    end #standardSecurityHandler
+  end #securityHandler
+end
