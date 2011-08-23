@@ -284,11 +284,10 @@ module PDF
 end
 ################################################################################
 
-require 'pdf/reader/security_handler'
-require 'pdf/reader/decrypt'
 require 'pdf/reader/abstract_strategy'
 require 'pdf/reader/buffer'
 require 'pdf/reader/cmap'
+require 'pdf/reader/decrypt'
 require 'pdf/reader/encoding'
 require 'pdf/reader/error'
 require 'pdf/reader/filter'
@@ -305,6 +304,7 @@ require 'pdf/reader/parser'
 require 'pdf/reader/print_receiver'
 require 'pdf/reader/reference'
 require 'pdf/reader/register_receiver'
+require 'pdf/reader/standard_security_handler'
 require 'pdf/reader/stream'
 require 'pdf/reader/text_receiver'
 require 'pdf/reader/page_text_receiver'
