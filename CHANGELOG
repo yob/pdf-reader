@@ -1,6 +1,7 @@
 vXXX (XXX)
 - small breaking changes to the page-based API - it's alpha for a reason
 - add support for RunLengthDecode filters (thanks Bernerd Schaefer)
+- add support for standard PDF encryption (thanks Evan Brunner)
 
 v0.11.0.alpha (19th July 2011)
 - introduce experimental new page-based API
