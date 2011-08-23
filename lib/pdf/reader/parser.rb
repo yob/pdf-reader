@@ -80,7 +80,7 @@ class PDF::Reader
       obj = parse_token
       post_obj = parse_token
       if post_obj == "stream"
-        stream(obj)
+        stream(obj, id, gen)
       else
         obj
       end
@@ -204,7 +204,7 @@ class PDF::Reader
     end
     ################################################################################
     # Decodes the contents of a PDF Stream and returns it as a Ruby String.
-    def stream (dict)
+    def stream (dict, *idgen)
       raise MalformedPDFError, "PDF malformed, missing stream length" unless dict.has_key?(:Length)
       if @ohash
         length = @ohash.object(dict[:Length])

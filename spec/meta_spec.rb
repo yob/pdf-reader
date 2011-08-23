@@ -205,4 +205,38 @@ describe PDF::Reader, "meta specs" do
       reader.page(1).text.should eql("This file has a content stream that begins with \\n\\n")
     end
   end
+
+  it "should correctly extract text from an encrypted PDF with no user password" do
+    filename = pdf_spec_file("encrypted_no_user_pass")
+
+    PDF::Reader.open(filename) do |reader|
+      reader.page(1).text.should eql("This sample file is encrypted with no user password")
+    end
+  end
+
+  it "should correctly extract text from an encrypted PDF with a user password" do
+    filename = pdf_spec_file("encrypted_with_user_pass_apples")
+
+    PDF::Reader.open(filename, :password => "apples") do |reader|
+      reader.page(1).text.should eql("This sample file is encrypted with a user password.\nUser password: apples\nOwner password: password")
+    end
+  end
+
+  it "should correctly extract text from an encrypted PDF with an owner password" do
+    filename = pdf_spec_file("encrypted_with_user_pass_apples")
+
+    PDF::Reader.open(filename, :password => "password") do |reader|
+      reader.page(1).text.should eql("This sample file is encrypted with a user password.\nUser password: apples\nOwner password: password")
+    end
+  end
+
+  it "should raise an exception from an encrypted PDF that requires a user password and none is provided" do
+    filename = pdf_spec_file("encrypted_with_user_pass_apples")
+
+    lambda {
+      PDF::Reader.open(filename) do |reader|
+        reader.page(1).text
+      end
+    }.should raise_error(PDF::Reader::EncryptedPDFError)
+  end
 end
