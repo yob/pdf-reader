@@ -87,9 +87,9 @@ module PDF
   # == Encrypted Files
   #
   # Depending on the algorithm it may be possible to parse an encrypted file.
-  # For standard PDF encryption you'll need the :userpass option
+  # For standard PDF encryption you'll need the :password option
   #
-  #   reader = PDF::Reader.new("somefile.pdf", :userpass => "apples")
+  #   reader = PDF::Reader.new("somefile.pdf", :password => "apples")
   #
   class Reader
 
@@ -109,7 +109,7 @@ module PDF
     #
     # If the source file is encrypted you can provide a password for decrypting
     #
-    #   reader = PDF::Reader.new("somefile.pdf", :userpass => "apples")
+    #   reader = PDF::Reader.new("somefile.pdf", :password => "apples")
     #
     def initialize(input = nil, opts = {})
       if input # support the deprecated Reader API
@@ -144,7 +144,7 @@ module PDF
     #
     # or
     #
-    #   PDF::Reader.open("somefile.pdf", :userpass => "apples") do |reader|
+    #   PDF::Reader.open("somefile.pdf", :password => "apples") do |reader|
     #     puts reader.pdf_version
     #   end
     #
