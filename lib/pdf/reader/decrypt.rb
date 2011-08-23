@@ -152,12 +152,11 @@ class PDF::Reader
 
     #Builds a key using this decrypt lib
     def self.build_standard_key(pass, sec_handler)
-        if !(encrypt_key = authOwnerPass(pass, sec_handler)) then
-          if !(encrypt_key = authUserPass(pass, sec_handler)) then
-            raise PDF::Reader::EncryptedPDFError, "Invalid password (#{pass})"
-          end
-        end
-        encrypt_key
-      end #build_key
+      encrypt_key   = authOwnerPass(pass, sec_handler)
+      encrypt_key ||= authUserPass(pass, sec_handler)
+
+      raise PDF::Reader::EncryptedPDFError, "Invalid password (#{pass})" if encrypt_key.nil?
+      encrypt_key
+    end #build_key
   end
 end
