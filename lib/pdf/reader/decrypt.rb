@@ -25,9 +25,9 @@
 class PDF::Reader
 ################################################################################
 #
-# The algorithms in this file were developed from descriptions found in 
+# The algorithms in this file were developed from descriptions found in
 # the PDF 32000-1:2008 specification section 7.6.3.  All included page
-# and section numbers are references to the appropriate section in this document. 
+# and section numbers are references to the appropriate section in this document.
 #
 ################################################################################
   class Decrypt
@@ -53,7 +53,7 @@ class PDF::Reader
       (0..24).step(8){|e| @buf << (sec_handler.permissions >> e & 0xFF)}
       # e) add the file ID
       @buf << sec_handler.file_id
-      # f) if revision > 4 then if encryptMetadata add 4 bytes of 0x00 else add 4 bytes of 0xFF 
+      # f) if revision > 4 then if encryptMetadata add 4 bytes of 0x00 else add 4 bytes of 0xFF
       if (sec_handler.revision > 4)
         @buf << [ sec_handler.encryptMetadata ? 0x00 : 0xFF ].pack('C')*4
       end
@@ -75,7 +75,7 @@ class PDF::Reader
     #
     # Used to test Owner passwords
     #
-    # if the string is a valid owner password this will return the user 
+    # if the string is a valid owner password this will return the user
     # password that should be used to decrypt the document.
     #
     # if the supplied password is not a valid owner password for this document
@@ -101,7 +101,7 @@ class PDF::Reader
     #
     # Used to test User passwords
     #
-    # if the string is a valid user password this will return the user 
+    # if the string is a valid user password this will return the user
     # password that should be used to decrypt the document.
     #
     # if the supplied password is not a valid user password for this document
@@ -119,7 +119,7 @@ class PDF::Reader
       end
       sec_handler.user_key[(0...16)] == out ? keyBegins : nil
     end
-    
+
     ##7.6.2 General Encryption Algorithm
     #
     # Algorithm 1: Encryption of data using the RC4 or AES algorithms
@@ -157,7 +157,7 @@ class PDF::Reader
             raise PDF::Reader::EncryptedPDFError, "Invalid password (#{pass})"
           end
         end
-        encrypt_key 
+        encrypt_key
       end #build_key
   end
 end

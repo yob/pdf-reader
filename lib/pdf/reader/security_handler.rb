@@ -25,11 +25,11 @@
 class PDF::Reader
 
   # class creates interface to encrypt dictionary for use in Decrypt
-  class SecurityHandler 
+  class SecurityHandler
 
      attr_reader :filter, :subFilter, :version, :key_length,
                  :crypt_filter, :stream_filter, :string_filter, :embedded_file_filter,
-                 :encrypt_key 
+                 :encrypt_key
 
     def initialize( ohash, opts )
       enc = ohash.deref(ohash.trailer[:Encrypt])
@@ -51,14 +51,14 @@ class PDF::Reader
         raise PDF::Reader::EncryptedPDFError, "Unsupported encryption method (#{enc[:Filter]})"
       end
     end #initialize
-    
-    # This will pickup atributes that are missing from SecurityHandler 
+
+    # This will pickup atributes that are missing from SecurityHandler
     # but defined in @sec_handler
     def method_missing(id, *args)
       @sec_handler.send(id.to_sym) if @sec_handler.respond_to?(id.to_sym)
     end
 
-    # :Standard is a type of security handler that defines additional entries in the 
+    # :Standard is a type of security handler that defines additional entries in the
     # encryption dictionary.
     class Standard
 
@@ -66,9 +66,9 @@ class PDF::Reader
 
       def initialize( ohash, opts )
         enc = ohash.deref(ohash.trailer[:Encrypt])
-        @revision = enc[:R].to_i 
-        @owner_key = enc[:O] 
-        @user_key = enc[:U] 
+        @revision = enc[:R].to_i
+        @owner_key = enc[:O]
+        @user_key = enc[:U]
         @permissions = enc[:P].to_i #)) then
         # defaults to true if not present
         @encryptMeta = enc.has_key?(:EncryptMetadata)? enc[:EncryptMetadata].to_s == "true" : true;
