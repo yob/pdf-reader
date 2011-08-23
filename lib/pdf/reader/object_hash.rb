@@ -29,7 +29,7 @@ class PDF::Reader
     include Enumerable
 
     attr_accessor :default
-    attr_reader :trailer, :pdf_version, :sec_handler
+    attr_reader :trailer, :pdf_version
 
     # Creates a new ObjectHash object. input can be a string with a valid filename,
     # a string containing a PDF file, or an IO object.
