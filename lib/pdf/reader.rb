@@ -285,7 +285,6 @@ end
 ################################################################################
 
 require 'pdf/reader/security_handler'
-require 'pdf/reader/standard_security_handler'
 require 'pdf/reader/decrypt'
 require 'pdf/reader/abstract_strategy'
 require 'pdf/reader/buffer'
