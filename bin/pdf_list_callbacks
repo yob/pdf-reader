@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# this executable is deprecated, use pdf_callbacks instead
+
 require 'rubygems'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__) + "/../lib")
