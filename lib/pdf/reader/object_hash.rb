@@ -55,10 +55,7 @@ class PDF::Reader
       @xref        = PDF::Reader::XRef.new(@io)
       @trailer     = @xref.trailer
       @cache       = PDF::Reader::ObjectCache.new
-
-      if trailer[:Encrypt]
-        @sec_handler = SecurityHandler.new(self, opts)
-      end
+      @sec_handler = build_security_handler(opts)
     end
 
     # returns the type of object a ref points to
@@ -255,6 +252,18 @@ class PDF::Reader
     end
 
     private
+
+    def build_security_handler(opts = {})
+      return nil if trailer[:Encrypt].nil?
+
+      enc = deref(trailer[:Encrypt])
+      case enc[:Filter]
+      when :Standard
+        StandardSecurityHandler.new(enc, deref(trailer[:ID]), opts[:password])
+      else
+        raise PDF::Reader::EncryptedPDFError, "Unsupported encryption method (#{enc[:Filter]})"
+      end
+    end
 
     def decrypt(ref, obj)
       return obj if @sec_handler.nil?

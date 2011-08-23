@@ -25,57 +25,33 @@
 class PDF::Reader
 
   # class creates interface to encrypt dictionary for use in Decrypt
-  class SecurityHandler
+  class StandardSecurityHandler
 
      attr_reader :filter, :subFilter, :version, :key_length,
                  :crypt_filter, :stream_filter, :string_filter, :embedded_file_filter,
                  :encrypt_key
+     attr_reader :revision, :owner_key, :user_key, :permissions, :file_id, :password
 
-    def initialize( ohash, opts )
-      enc = ohash.deref(ohash.trailer[:Encrypt])
-      @filter = enc[:Filter]
-      @subFilter = enc[:SubFilter]
-      @version = enc[:V].to_i
-      @key_length = enc[:Length].to_i/8
-      @crypt_filter = enc[:CF]
+    def initialize( enc, file_id, password )
+      @filter        = enc[:Filter]
+      @subFilter     = enc[:SubFilter]
+      @version       = enc[:V].to_i
+      @key_length    = enc[:Length].to_i/8
+      @crypt_filter  = enc[:CF]
       @stream_filter = enc[:StmF]
       @string_filter = enc[:StrF]
+      @revision      = enc[:R].to_i
+      @owner_key     = enc[:O]
+      @user_key      = enc[:U]
+      @permissions   = enc[:P].to_i
       @embedded_file_filter = enc[:EFF]
 
-      #build security handler as according to :Filter
-      case @filter
-      when :Standard
-        @sec_handler = SecurityHandler::Standard.new(ohash, opts)
-        @encrypt_key = Decrypt::build_standard_key(@sec_handler.pass, self)
-      else
-        raise PDF::Reader::EncryptedPDFError, "Unsupported encryption method (#{enc[:Filter]})"
-      end
-    end #initialize
+      @encryptMeta = enc.has_key?(:EncryptMetadata)? enc[:EncryptMetadata].to_s == "true" : true;
 
-    # This will pickup atributes that are missing from SecurityHandler
-    # but defined in @sec_handler
-    def method_missing(id, *args)
-      @sec_handler.send(id.to_sym) if @sec_handler.respond_to?(id.to_sym)
+      @file_id       = file_id.first
+      @password      = password
+
+      @encrypt_key = Decrypt::build_standard_key(@password, self)
     end
-
-    # :Standard is a type of security handler that defines additional entries in the
-    # encryption dictionary.
-    class Standard
-
-      attr_reader :revision, :owner_key, :user_key, :permissions, :file_id, :pass
-
-      def initialize( ohash, opts )
-        enc = ohash.deref(ohash.trailer[:Encrypt])
-        @revision = enc[:R].to_i
-        @owner_key = enc[:O]
-        @user_key = enc[:U]
-        @permissions = enc[:P].to_i #)) then
-        # defaults to true if not present
-        @encryptMeta = enc.has_key?(:EncryptMetadata)? enc[:EncryptMetadata].to_s == "true" : true;
-
-        @file_id = ohash.deref(ohash.trailer[:ID])[0]
-        @pass = opts[:password];
-      end #initialize
-    end #standardSecurityHandler
-  end #securityHandler
+  end
 end
