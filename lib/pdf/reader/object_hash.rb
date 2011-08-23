@@ -259,7 +259,6 @@ class PDF::Reader
     def decrypt(ref, obj)
       return obj if @sec_handler.nil?
 
-      #Add decryption TODO possibility of Metadata encrypted past encVersion 3
       case obj
       when PDF::Reader::Stream then
         obj.data = Decrypt.stream(obj.data, @sec_handler, [ref.id, ref.gen])
