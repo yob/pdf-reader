@@ -34,7 +34,11 @@ class PDF::Reader
     # Creates a new ObjectHash object. input can be a string with a valid filename,
     # a string containing a PDF file, or an IO object.
     #
-    def initialize(input)
+    # valid options
+    #
+    #   :password - the user password to decrypt the source PDF
+    #
+    def initialize(input, opts = {})
       if input.respond_to?(:seek) && input.respond_to?(:read)
         @io = input
       elsif File.file?(input.to_s)
@@ -51,10 +55,7 @@ class PDF::Reader
       @xref        = PDF::Reader::XRef.new(@io)
       @trailer     = @xref.trailer
       @cache       = PDF::Reader::ObjectCache.new
-
-      if trailer[:Encrypt]
-        raise ::PDF::Reader::EncryptedPDFError, 'PDF::Reader cannot read encrypted PDF files'
-      end
+      @sec_handler = build_security_handler(opts)
     end
 
     # returns the type of object a ref points to
@@ -90,7 +91,7 @@ class PDF::Reader
           @cache[key]
         elsif xref[key].is_a?(Fixnum)
           buf = new_buffer(xref[key])
-          @cache[key] = Parser.new(buf, self).object(key.id, key.gen)
+          @cache[key] = decrypt(key, Parser.new(buf, self).object(key.id, key.gen))
         elsif xref[key].is_a?(PDF::Reader::Reference)
           container_key = xref[key]
           object_streams[container_key] ||= PDF::Reader::ObjectStream.new(object(container_key))
@@ -246,7 +247,42 @@ class PDF::Reader
       @page_references ||= get_page_objects(root[:Pages]).flatten
     end
 
+    def encrypted?
+      trailer.has_key?(:Encrypt)
+    end
+
     private
+
+    def build_security_handler(opts = {})
+      return nil if trailer[:Encrypt].nil?
+
+      enc = deref(trailer[:Encrypt])
+      case enc[:Filter]
+      when :Standard
+        StandardSecurityHandler.new(enc, deref(trailer[:ID]), opts[:password])
+      else
+        raise PDF::Reader::EncryptedPDFError, "Unsupported encryption method (#{enc[:Filter]})"
+      end
+    end
+
+    def decrypt(ref, obj)
+      return obj if @sec_handler.nil?
+
+      case obj
+      when PDF::Reader::Stream then
+        obj.data = @sec_handler.decrypt(obj.data, ref)
+        obj
+      when Hash                then
+        arr = obj.map { |key,val| [key, decrypt(ref, val)] }.flatten(1)
+        Hash[*arr]
+      when Array               then
+        obj.collect { |item| decrypt(ref, item) }
+      when String
+        @sec_handler.decrypt(obj, ref)
+      else
+        obj
+      end
+    end
 
     def new_buffer(offset = 0)
       PDF::Reader::Buffer.new(@io, :seek => offset)

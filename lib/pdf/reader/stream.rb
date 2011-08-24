@@ -30,8 +30,8 @@ class PDF::Reader
   # compression, etc) and a stream of bytes.
   #
   class Stream
-    attr_accessor :hash
-    attr_reader :data
+    attr_accessor :hash, :data
+
     ################################################################################
     # Creates a new stream with the specified dictionary and data. The dictionary
     # should be a standard ruby hash, the data should be a standard ruby string.

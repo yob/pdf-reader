@@ -84,6 +84,13 @@ module PDF
   #   page = reader.page(1)
   #   page.walk(receiver)
   #
+  # == Encrypted Files
+  #
+  # Depending on the algorithm it may be possible to parse an encrypted file.
+  # For standard PDF encryption you'll need the :password option
+  #
+  #   reader = PDF::Reader.new("somefile.pdf", :password => "apples")
+  #
   class Reader
 
     # lowlevel hash-like access to all objects in the underlying PDF
@@ -100,9 +107,13 @@ module PDF
     #     reader = PDF::Reader.new(file)
     #   end
     #
-    def initialize(input = nil)
+    # If the source file is encrypted you can provide a password for decrypting
+    #
+    #   reader = PDF::Reader.new("somefile.pdf", :password => "apples")
+    #
+    def initialize(input = nil, opts = {})
       if input # support the deprecated Reader API
-        @objects = PDF::Reader::ObjectHash.new(input)
+        @objects = PDF::Reader::ObjectHash.new(input, opts)
       end
     end
 
@@ -131,8 +142,14 @@ module PDF
     #     puts reader.pdf_version
     #   end
     #
-    def self.open(input, &block)
-      yield PDF::Reader.new(input)
+    # or
+    #
+    #   PDF::Reader.open("somefile.pdf", :password => "apples") do |reader|
+    #     puts reader.pdf_version
+    #   end
+    #
+    def self.open(input, opts = {}, &block)
+      yield PDF::Reader.new(input, opts)
     end
 
     # DEPRECATED: this method was deprecated in version 0.11.0 and will
@@ -229,10 +246,6 @@ module PDF
     def parse(io, receivers, opts = {})
       ohash    = ObjectHash.new(io)
 
-      if ohash.trailer[:Encrypt]
-        raise ::PDF::Reader::UnsupportedFeatureError, 'PDF::Reader cannot read encrypted PDF files'
-      end
-
       options = {:pages => true, :raw_text => false, :metadata => true}
       options.merge!(opts)
 
@@ -290,6 +303,7 @@ require 'pdf/reader/parser'
 require 'pdf/reader/print_receiver'
 require 'pdf/reader/reference'
 require 'pdf/reader/register_receiver'
+require 'pdf/reader/standard_security_handler'
 require 'pdf/reader/stream'
 require 'pdf/reader/text_receiver'
 require 'pdf/reader/page_text_receiver'
