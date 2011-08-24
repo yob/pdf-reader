@@ -270,7 +270,7 @@ class PDF::Reader
 
       case obj
       when PDF::Reader::Stream then
-        obj.data = Decrypt.stream(obj.data, @sec_handler, [ref.id, ref.gen])
+        obj.data = @sec_handler.decrypt(obj.data, ref)
         obj
       when Hash                then
         arr = obj.map { |key,val| [key, decrypt(ref, val)] }.flatten(1)
@@ -278,7 +278,7 @@ class PDF::Reader
       when Array               then
         obj.collect { |item| decrypt(ref, item) }
       when String
-        Decrypt.stream(obj, @sec_handler, [ref.id, ref.gen])
+        @sec_handler.decrypt(obj, ref)
       else
         obj
       end

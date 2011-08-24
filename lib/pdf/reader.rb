@@ -287,7 +287,6 @@ end
 require 'pdf/reader/abstract_strategy'
 require 'pdf/reader/buffer'
 require 'pdf/reader/cmap'
-require 'pdf/reader/decrypt'
 require 'pdf/reader/encoding'
 require 'pdf/reader/error'
 require 'pdf/reader/filter'
