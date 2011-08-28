@@ -96,7 +96,7 @@ describe PDF::Reader, "integration specs" do
     Timeout::timeout(3) do
       lambda {
         reader = PDF::Reader.new(filename)
-        reader.page(1).text
+        reader.info
       }.should raise_error(PDF::Reader::MalformedPDFError)
     end
   end
