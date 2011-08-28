@@ -1,8 +1,13 @@
-vXXX (XXX)
+v0.12.0.alpha (28th August 2011)
 - small breaking changes to the page-based API - it's alpha for a reason
+  - resource related methods on Page object return raw PDF objects
+  - if the caller wants the resources wrapped in a more convenient
+    Ruby object (like PDF::Reader::Font or PDF::Reader::FormXObject) will
+    need to do so themselves
 - add support for RunLengthDecode filters (thanks Bernerd Schaefer)
 - add support for standard PDF encryption (thanks Evan Brunner)
 - add support for decoding stream wityh TIFF prediction
+- new PDF::Reader::FormXObject class to simplify working with form XObjects
 
 v0.11.0.alpha (19th July 2011)
 - introduce experimental new page-based API
