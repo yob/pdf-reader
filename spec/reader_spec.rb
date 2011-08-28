@@ -2,120 +2,99 @@
 
 require File.dirname(__FILE__) + "/spec_helper"
 
-describe PDF::Reader, "file class method" do
+describe PDF::Reader do
+  let(:cairo_basic)   { pdf_spec_file("cairo-basic")}
+  let(:no_text_spaces) { pdf_spec_file("no_text_spaces")}
 
-  before(:each) do
-    @receiver = PDF::Reader::RegisterReceiver.new
-    @filename = pdf_spec_file("cairo-unicode-short")
-  end
+  describe "open() class method" do
 
-  it "should parse all aspects of a PDF file by default" do
-    PDF::Reader.file(@filename, @receiver)
-    @receiver.count(:begin_document).should eql(1)
-    @receiver.count(:metadata).should eql(1)
-  end
-
-  it "should not provide raw text callbacks by default" do
-    PDF::Reader.file(@filename, @receiver)
-    @receiver.count(:show_text_with_positioning).should eql(1)
-    @receiver.count(:show_text_with_positioning_raw).should eql(0)
-  end
-
-  it "should provide raw text callbacks if requested" do
-    PDF::Reader.file(@filename, @receiver, :raw_text => true)
-    @receiver.count(:show_text_with_positioning).should eql(1)
-    @receiver.count(:show_text_with_positioning_raw).should eql(1)
-  end
-
-  it "should not parse metadata if requested" do
-    PDF::Reader.file(@filename, @receiver, :metadata => false)
-    @receiver.count(:begin_document).should eql(1)
-    @receiver.count(:metadata).should eql(0)
-  end
-
-  it "should not parse page content if requested" do
-    PDF::Reader.file(@filename, @receiver, :pages => false)
-    @receiver.count(:begin_document).should eql(0)
-    @receiver.count(:metadata).should eql(1)
-  end
-
-end
-
-describe PDF::Reader, "string class method" do
-
-  before(:each) do
-    @receiver = PDF::Reader::RegisterReceiver.new
-    filename = pdf_spec_file("cairo-unicode-short")
-    if File.respond_to?(:binread)
-      @data = File.binread(filename)
-    else
-      @data = File.open(filename, "r") { |f| f.read }
+    it "should pass a reader instance to a block" do
+      PDF::Reader.open(cairo_basic) do |reader|
+        reader.pdf_version.should eql(1.4)
+      end
     end
   end
 
-  it "should parse all aspects of a PDF file by default" do
-    PDF::Reader.string(@data, @receiver)
-    @receiver.count(:begin_document).should eql(1)
-    @receiver.count(:metadata).should eql(1)
-  end
+  describe "pdf_version()" do
+    it "should return the correct pdf_version" do
+      PDF::Reader.new(cairo_basic).pdf_version.should eql(1.4)
+    end
 
-  it "should not provide raw text callbacks by default" do
-    PDF::Reader.string(@data, @receiver)
-    @receiver.count(:show_text_with_positioning).should eql(1)
-    @receiver.count(:show_text_with_positioning_raw).should eql(0)
-  end
-
-  it "should provide raw text callbacks if requested" do
-    PDF::Reader.string(@data, @receiver, :raw_text => true)
-    @receiver.count(:show_text_with_positioning).should eql(1)
-    @receiver.count(:show_text_with_positioning_raw).should eql(1)
-  end
-
-  it "should parse not parse metadata if requested" do
-    PDF::Reader.string(@data, @receiver, :metadata => false)
-    @receiver.count(:begin_document).should eql(1)
-    @receiver.count(:metadata).should eql(0)
-  end
-
-  it "should parse not parse page content if requested" do
-    PDF::Reader.string(@data, @receiver, :pages => false)
-    @receiver.count(:begin_document).should eql(0)
-    @receiver.count(:metadata).should eql(1)
-  end
-
-end
-
-describe PDF::Reader, "object_file class method" do
-  before(:each) do
-    @filename = pdf_spec_file("cairo-unicode-short")
-  end
-
-  it "should extract an object from string containing a full PDF file" do
-    PDF::Reader.object_file(@filename, 7, 0).should eql(515)
-  end
-
-  it "should extract an object from string containing a full PDF file" do
-    PDF::Reader.object_file(@filename, 7).should eql(515)
-  end
-end
-
-describe PDF::Reader, "object_string class method" do
-
-  before(:each) do
-    filename = pdf_spec_file("cairo-unicode-short")
-    if File.respond_to?(:binread)
-      @data = File.binread(filename)
-    else
-      @data = File.open(filename, "r") { |f| f.read }
+    it "should return the correct pdf_version" do
+      PDF::Reader.new(no_text_spaces).pdf_version.should eql(1.4)
     end
   end
 
-  it "should extract an object from string containing a full PDF file" do
-    PDF::Reader.object_string(@data, 7, 0).should eql(515)
+  describe "page_count()" do
+    it "should return the correct page_count" do
+      PDF::Reader.new(cairo_basic).page_count.should eql(2)
+    end
+
+    it "should return the correct page_count" do
+      PDF::Reader.new(no_text_spaces).page_count.should eql(6)
+    end
   end
 
-  it "should extract an object from string containing a full PDF file" do
-    PDF::Reader.object_string(@data, 7).should eql(515)
+  describe "info()" do
+    it "should return the correct info hash from cairo-basic" do
+      info = PDF::Reader.new(cairo_basic).info
+
+      info.size.should eql(2)
+      info[:Creator].should eql("cairo 1.4.6 (http://cairographics.org)")
+      info[:Creator].should eql("cairo 1.4.6 (http://cairographics.org)")
+    end
+
+    it "should return the correct info hash from no_text_spaces" do
+      info = PDF::Reader.new(no_text_spaces).info
+
+      info.size.should eql(9)
+    end
+  end
+
+  describe "metadata()" do
+    it "should return nil metadata from cairo-basic" do
+      PDF::Reader.new(cairo_basic).metadata.should be_nil
+    end
+
+    it "should return the correct metadata from no_text_spaces" do
+      metadata = PDF::Reader.new(no_text_spaces).metadata
+
+      metadata.should be_a_kind_of(String)
+      metadata.should include("<x:xmpmeta")
+    end
+
+  end
+
+  describe "pages()" do
+    it "should return an array of pages from cairo-basic" do
+      pages = PDF::Reader.new(cairo_basic).pages
+
+      pages.should be_a_kind_of(Array)
+      pages.size.should eql(2)
+      pages.each do |page|
+        page.should be_a_kind_of(PDF::Reader::Page)
+      end
+    end
+
+    it "should return an array of pages from no_text_spaces" do
+      pages = PDF::Reader.new(no_text_spaces).pages
+
+      pages.should be_a_kind_of(Array)
+      pages.size.should eql(6)
+      pages.each do |page|
+        page.should be_a_kind_of(PDF::Reader::Page)
+      end
+    end
+  end
+
+  describe "page()" do
+    it "should return a single page from cairo-basic" do
+      PDF::Reader.new(cairo_basic).page(1).should be_a_kind_of(PDF::Reader::Page)
+    end
+
+    it "should return a single page from no_text_spaces" do
+      PDF::Reader.new(no_text_spaces).page(1).should be_a_kind_of(PDF::Reader::Page)
+    end
   end
 
 end
