@@ -141,7 +141,7 @@ module PDF
       # PDF::Reader::Page object. Use the Page#resources method to grab any
       # required resources.
       #
-      # I may help to think of each page as a self contained program made up of
+      # It may help to think of each page as a self contained program made up of
       # a set of instructions and associated resources. Calling walk() executes
       # the program in the correct order and calls out to your implementation.
       #
