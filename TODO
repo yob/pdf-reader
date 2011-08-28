@@ -1,5 +1,4 @@
 v0.8
-- correctly convert text to unicode when a CharSet entry is defined
 - add extra callbacks
   - list implemented features
     - encrypted? tagged? bookmarks? annotated? optimised?
