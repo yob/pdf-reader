@@ -39,12 +39,6 @@ describe PDF::Reader, "file class method" do
     @receiver.count(:metadata).should eql(1)
   end
 
-  it "should raise an exception if an encrypted file is opened" do
-    filename = pdf_spec_file("difference_table_encrypted")
-    lambda {
-      PDF::Reader.file(filename, @receiver)
-    }.should raise_error(PDF::Reader::EncryptedPDFError)
-  end
 end
 
 describe PDF::Reader, "string class method" do
@@ -89,17 +83,6 @@ describe PDF::Reader, "string class method" do
     @receiver.count(:metadata).should eql(1)
   end
 
-  it "should raise an exception if an encrypted file is opened" do
-    filename = pdf_spec_file("difference_table_encrypted")
-    if File.respond_to?(:binread)
-      @data = File.binread(filename)
-    else
-      @data = File.open(filename, "r") { |f| f.read }
-    end
-    lambda {
-      PDF::Reader.string(@data, @receiver)
-    }.should raise_error(PDF::Reader::EncryptedPDFError)
-  end
 end
 
 describe PDF::Reader, "object_file class method" do
