@@ -22,7 +22,7 @@
 # damages, whether based on tort (including without limitation negligence
 # or strict liability), contract or other legal or equitable grounds even
 # if Adobe has been advised or had reason to know of the possibility of
-# such damages.Ê The Adobe materials are provided on an "AS IS" basis.Ê
+# such damages. The Adobe materials are provided on an "AS IS" basis.
 # Adobe specifically disclaims all express, statutory, or implied
 # warranties relating to the Adobe materials, including but not limited to
 # those concerning merchantability or fitness for a particular purpose or
