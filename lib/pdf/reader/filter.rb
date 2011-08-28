@@ -166,7 +166,29 @@ class PDF::Reader
     end
     ################################################################################
     def tiff_depredict(data, opts = {})
-      raise UnsupportedFeatureError, "TIFF predictor not supported"
+      data        = data.unpack("C*")
+      unfiltered  = []
+      bpc         = opts[:BitsPerComponent] || 8
+      pixel_bits  = bpc * opts[:Colors]
+      pixel_bytes = pixel_bits / 8
+      line_len    = (pixel_bytes * opts[:Columns])
+      pos         = 0
+
+      if bpc != 8
+        raise UnsupportedFeatureError, "TIFF predictor onlys supports 8 Bits Per Component"
+      end
+
+      until pos > data.size
+        row_data = data[pos, line_len]
+        row_data.each_with_index do |byte, index|
+          left = index < pixel_bytes ? 0 : row_data[index - pixel_bytes]
+          row_data[index] = (byte + left) % 256
+        end
+        unfiltered += row_data
+        pos += line_len
+      end
+
+      unfiltered.pack("C*")
     end
     ################################################################################
     def png_depredict(data, opts = {})
