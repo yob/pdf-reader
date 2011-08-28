@@ -2,7 +2,7 @@
 
 require File.dirname(__FILE__) + "/spec_helper"
 
-# These specs are a kind of "integration spec". They're not unit testing small pieces
+# These specs are a kind of integration spec. They're not unit testing small pieces
 # of code, it's just parsing a range of PDF files and ensuring the result is
 # consistent. An extra check to make sure parsing these files will continue
 # to work for our users.
@@ -10,7 +10,7 @@ require File.dirname(__FILE__) + "/spec_helper"
 # Where possible, specs that unit test correctly should be written in addition to
 # these
 
-describe PDF::Reader, "meta specs" do
+describe PDF::Reader, "integration specs" do
 
   it "should interpret unicode strings correctly" do
     filename = pdf_spec_file("cairo-unicode-short")
