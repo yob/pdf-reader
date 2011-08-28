@@ -11,7 +11,6 @@ require 'pdf/reader'
 
 receiver = PDF::Reader::RegisterReceiver.new
 filename = File.expand_path(File.dirname(__FILE__)) + "/../spec/data/cairo-basic.pdf"
-puts filename
 
 PDF::Reader.open(filename) do |reader|
   reader.pages.each do |page|
