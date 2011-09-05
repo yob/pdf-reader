@@ -201,7 +201,7 @@ class PDF::Reader
 
       data = data.unpack("C*")
 
-      pixel_bytes     = 1 #pixel_bitlength / 8
+      pixel_bytes     = opts[:Colors] || 1
       scanline_length = (pixel_bytes * opts[:Columns]) + 1
       row = 0
       pixels = []
