@@ -110,6 +110,10 @@ module PDF
         state[:text_font_size] = size
       end
 
+      def font_size
+        state[:text_font_size] * @text_matrix[0,0]
+      end
+
       def set_text_leading(leading)
         state[:text_leading] = leading
       end
@@ -236,10 +240,10 @@ module PDF
 
       def text_rendering_matrix
         state_matrix = Matrix[
-                         [state[:text_font_size] * state[:h_scaling], 0, 0],
-                         [0, state[:text_font_size], 0],
-                         [0, state[:text_rise], 1]
-                       ]
+          [font_size * state[:h_scaling], 0, 0],
+          [0, font_size, 0],
+          [0, state[:text_rise], 1]
+        ]
 
         state_matrix * @text_matrix * ctm
       end
