@@ -102,10 +102,12 @@ module PDF
               old_code = code
             end
             #increase de size of the codes when limit reached
-            case string_table.string_table_pos
-            when 511 then stream.set_bits_in_chunk(10)
-            when 1023 then stream.set_bits_in_chunk(11)
-            when 2047 then stream.set_bits_in_chunk(12)
+            if string_table.string_table_pos == 511
+              stream.set_bits_in_chunk(10)
+            elsif string_table.string_table_pos == 1023
+              stream.set_bits_in_chunk(11)
+            elsif string_table.string_table_pos == 2047
+              stream.set_bits_in_chunk(12)
             end
           end
         end
