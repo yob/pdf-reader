@@ -87,7 +87,7 @@ class PDF::Reader
 
     # Pads supplied password to 32bytes using PassPadBytes as specified on
     # pp61 of spec
-    def padPass(p="")
+    def pad_pass(p="")
       if p.nil? || p.empty?
         PassPadBytes.pack('C*')
       else
@@ -95,7 +95,7 @@ class PDF::Reader
       end
     end
 
-    def xorEachByte(buf, int)
+    def xor_each_byte(buf, int)
       buf.each_byte.map{ |b| b^int}.pack("C*")
     end
 
@@ -111,20 +111,20 @@ class PDF::Reader
     # if the supplied password is not a valid owner password for this document
     # then it returns nil
     #
-    def authOwnerPass(pass)
-      md5 = Digest::MD5.digest(padPass(pass))
+    def auth_owner_pass(pass)
+      md5 = Digest::MD5.digest(pad_pass(pass))
       if @revision > 2 then
         50.times { md5 = Digest::MD5.digest(md5) }
         keyBegins = md5[(0...@key_length)]
         #first itteration decrypt owner_key
         out = @owner_key
         #RC4 keyed with (keyBegins XOR with itteration #) to decrypt previous out
-        19.downto(0).each { |i| out=RC4.new(xorEachByte(keyBegins,i)).decrypt(out) }
+        19.downto(0).each { |i| out=RC4.new(xor_each_byte(keyBegins,i)).decrypt(out) }
       else
         out = RC4.new( md5[(0...5)] ).decrypt( @owner_key )
       end
       # c) check output as user password
-      authUserPass( out )
+      auth_user_pass( out )
     end
 
     # Algorithm 6 - Authenticating the User Password
@@ -137,22 +137,22 @@ class PDF::Reader
     # if the supplied password is not a valid user password for this document
     # then it returns nil
     #
-    def authUserPass(pass)
-      keyBegins = makeFileKey(pass)
+    def auth_user_pass(pass)
+      keyBegins = make_file_key(pass)
       if @revision > 2
         #initialize out for first iteration
         out = Digest::MD5.digest(PassPadBytes.pack("C*") + @file_id)
         #zero doesn't matter -> so from 0-19
-        20.times{ |i| out=RC4.new(xorEachByte(keyBegins, i)).decrypt(out) }
+        20.times{ |i| out=RC4.new(xor_each_byte(keyBegins, i)).decrypt(out) }
       else
         out = RC4.new(keyBegins).encrypt(PassPadBytes.pack("C*"))
       end
       @user_key[(0...16)] == out ? keyBegins : nil
     end
 
-    def makeFileKey( user_pass )
+    def make_file_key( user_pass )
       # a) if there's a password, pad it to 32 bytes, else, just use the padding.
-      @buf  = padPass(user_pass)
+      @buf  = pad_pass(user_pass)
       # c) add owner key
       @buf << @owner_key
       # d) add permissions 1 byte at a time, in little-endian order
@@ -176,8 +176,8 @@ class PDF::Reader
     end
 
     def build_standard_key(pass)
-      encrypt_key   = authOwnerPass(pass)
-      encrypt_key ||= authUserPass(pass)
+      encrypt_key   = auth_owner_pass(pass)
+      encrypt_key ||= auth_user_pass(pass)
 
       raise PDF::Reader::EncryptedPDFError, "Invalid password (#{pass})" if encrypt_key.nil?
       encrypt_key
