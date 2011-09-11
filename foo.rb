@@ -11,7 +11,9 @@ module PDF
 
     class HexString < Treetop::Runtime::SyntaxNode
       def to_ary
-        [elements[1].text_value]
+        [
+          elements[1].text_value.scan(/../).map { |i| i.hex.chr }.join
+        ]
       end
     end
 
@@ -71,19 +73,19 @@ describe Parser do
 
   it "should parse a hex string without captials" do
     str    = "<00ffab>"
-    tokens = %w{ 00ffab }
+    tokens = [ "\x00\xff\xab" ]
     Parser.parse(str).should == tokens
   end
 
   it "should parse a hex string with captials" do
     str    = " <00FFAB> "
-    tokens = %w{ 00FFAB }
+    tokens = [ "\x00\xFF\xAB" ]
     Parser.parse(str).should == tokens
   end
 
   it "should parse two hex strings" do
     str    = " <00FF> <2030>"
-    tokens = %w{ 00FF 2030 }
+    tokens = [ "\x00\xFF", "\x20\x30" ]
     Parser.parse(str).should == tokens
   end
 end
