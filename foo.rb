@@ -8,6 +8,18 @@ module PDF
         [self.text_value]
       end
     end
+
+    class HexString < Treetop::Runtime::SyntaxNode
+      def to_ary
+        [elements[1].text_value]
+      end
+    end
+
+    class LiteralString < Treetop::Runtime::SyntaxNode
+      def to_ary
+        [elements[1].text_value]
+      end
+    end
   end
 end
 
@@ -25,15 +37,9 @@ class Parser
       raise Exception, "Parse error at offset: #{@@parser.index}"
     end
 
-    self.clean_tree(tree).elements.flatten
-  end
-
-  def self.clean_tree(root_node)
-    return if root_node.elements.nil?
-
-    root_node.elements.delete_if {|node| node.class.name == "Treetop::Runtime::SyntaxNode" }
-    root_node.elements.each {|node| self.clean_tree(node) }
-    root_node
+    tree.elements.flatten.select { |obj|
+      !obj.is_a?(Treetop::Runtime::SyntaxNode)
+    }
   end
 
 end
@@ -41,31 +47,37 @@ end
 describe Parser do
   it "should parse a literal string" do
     str    = "(abc)"
-    tokens = %w{ ( abc ) }
+    tokens = %w{ abc }
+    Parser.parse(str).should == tokens
+  end
+
+  it "should parse two literal strings" do
+    str    = "(abc) (def)"
+    tokens = %w{ abc def }
     Parser.parse(str).should == tokens
   end
 
   it "should parse a literal string with capitals" do
     str    = "(ABC)"
-    tokens = %w{ ( ABC ) }
+    tokens = %w{ ABC }
     Parser.parse(str).should == tokens
   end
 
   it "should parse a literal string with spaces" do
     str    = " (abc) "
-    tokens = %w{ ( abc ) }
+    tokens = %w{ abc }
     Parser.parse(str).should == tokens
   end
 
   it "should parse a hex string without captials" do
     str    = "<00ffab>"
-    tokens = %w{ < 00ffab > }
+    tokens = %w{ 00ffab }
     Parser.parse(str).should == tokens
   end
 
   it "should parse a hex string with captials" do
     str    = " <00FFAB> "
-    tokens = %w{ < 00FFAB > }
+    tokens = %w{ 00FFAB }
     Parser.parse(str).should == tokens
   end
 end

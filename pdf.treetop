@@ -1,14 +1,14 @@
 grammar Pdf
   rule doc
-    string_literal / string_hex
+   ( string_literal / space / string_hex)*
   end
 
   rule string_literal
-    space? string_literal_start string_literal_body string_literal_end space?
+    string_literal_start string_literal_body string_literal_end <PDF::Reader::LiteralString>
   end
 
   rule string_hex
-    space? string_hex_start string_hex_body string_hex_end space?
+    string_hex_start string_hex_body string_hex_end <PDF::Reader::HexString>
   end
 
   rule string_hex_start
