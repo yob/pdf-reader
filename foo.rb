@@ -1,4 +1,5 @@
 require 'treetop'
+require 'rspec'
 
 module PDF
   class Reader
@@ -37,7 +38,16 @@ class Parser
 
 end
 
-str = "(abc)"
-result = Parser.parse(str)
+describe Parser do
+  it "should parse a literal string" do
+    str    = "(abc)"
+    tokens = %w{ ( abc ) }
+    Parser.parse(str).should == tokens
+  end
 
-p result
+  it "should parse a literal string with spaces" do
+    str    = " (abc) "
+    tokens = %w{ ( abc ) }
+    Parser.parse(str).should == tokens
+  end
+end

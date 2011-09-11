@@ -1,17 +1,17 @@
 grammar Pdf
-  rule document
-    (string_start / string_body / string_end)*
+  rule string_literal
+    space? string_literal_start string_literal_body string_literal_end space?
   end
 
-  rule string_start
+  rule string_literal_start
     "(" <PDF::Reader::Token>
   end
 
-  rule string_end
+  rule string_literal_end
     ")" <PDF::Reader::Token>
   end
 
-  rule string_body
+  rule string_literal_body
     [a-z]+ <PDF::Reader::Token>
   end
 
