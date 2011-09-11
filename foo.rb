@@ -80,4 +80,10 @@ describe Parser do
     tokens = %w{ 00FFAB }
     Parser.parse(str).should == tokens
   end
+
+  it "should parse two hex strings" do
+    str    = " <00FF> <2030>"
+    tokens = %w{ 00FF 2030 }
+    Parser.parse(str).should == tokens
+  end
 end
