@@ -1,0 +1,21 @@
+grammar Pdf
+  rule document
+    (string_start / string_body / string_end)*
+  end
+
+  rule string_start
+    "(" <PDF::Reader::Token>
+  end
+
+  rule string_end
+    ")" <PDF::Reader::Token>
+  end
+
+  rule string_body
+    [a-z]+ <PDF::Reader::Token>
+  end
+
+  rule space
+    [\s]+
+  end
+end
