@@ -4,35 +4,11 @@ grammar Pdf
   end
 
   rule string_literal
-    string_literal_start string_literal_body string_literal_end <PDF::Reader::LiteralString>
+    "(" [^()]+ ")" <PDF::Reader::LiteralString>
   end
 
   rule string_hex
-    string_hex_start string_hex_body string_hex_end <PDF::Reader::HexString>
-  end
-
-  rule string_hex_start
-    "<" <PDF::Reader::Token>
-  end
-
-  rule string_hex_end
-    ">" <PDF::Reader::Token>
-  end
-
-  rule string_hex_body
-    [0-9A-Fa-f]+ <PDF::Reader::Token>
-  end
-
-  rule string_literal_start
-    "(" <PDF::Reader::Token>
-  end
-
-  rule string_literal_end
-    ")" <PDF::Reader::Token>
-  end
-
-  rule string_literal_body
-    [^()]+ <PDF::Reader::Token>
+    "<" [0-9A-Fa-f]+ ">" <PDF::Reader::HexString>
   end
 
   rule space
