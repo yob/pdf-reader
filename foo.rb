@@ -9,6 +9,18 @@ module PDF
       end
     end
 
+    class Integer < Treetop::Runtime::SyntaxNode
+      def to_ary
+        [ text_value.to_i ]
+      end
+    end
+
+    class Float < Treetop::Runtime::SyntaxNode
+      def to_ary
+        [ text_value.to_f ]
+      end
+    end
+
     class HexString < Treetop::Runtime::SyntaxNode
       def to_ary
         [
@@ -86,6 +98,30 @@ describe Parser do
   it "should parse two hex strings" do
     str    = " <00FF> <2030>"
     tokens = [ "\x00\xFF", "\x20\x30" ]
+    Parser.parse(str).should == tokens
+  end
+
+  it "should parse an integer" do
+    str    = "9"
+    tokens = [ 9 ]
+    Parser.parse(str).should == tokens
+  end
+
+  it "should parse an integer with spaces" do
+    str    = " 19 "
+    tokens = [ 19 ]
+    Parser.parse(str).should == tokens
+  end
+
+  it "should parse a float" do
+    str    = "1.1"
+    tokens = [ 1.1 ]
+    Parser.parse(str).should == tokens
+  end
+
+  it "should parse a float with spaces" do
+    str    = " 19.9 "
+    tokens = [ 19.9 ]
     Parser.parse(str).should == tokens
   end
 end

@@ -1,6 +1,6 @@
 grammar Pdf
   rule doc
-   ( string_literal / space / string_hex)*
+    ( string_literal / space / string_hex / float / integer )*
   end
 
   rule string_literal
@@ -9,6 +9,14 @@ grammar Pdf
 
   rule string_hex
     "<" [0-9A-Fa-f]+ ">" <PDF::Reader::HexString>
+  end
+
+  rule float
+    [0-9]+ "." [0-9]+ <PDF::Reader::Float>
+  end
+
+  rule integer
+    [0-9]+ <PDF::Reader::Integer>
   end
 
   rule space
