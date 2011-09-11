@@ -45,9 +45,27 @@ describe Parser do
     Parser.parse(str).should == tokens
   end
 
+  it "should parse a literal string with capitals" do
+    str    = "(ABC)"
+    tokens = %w{ ( ABC ) }
+    Parser.parse(str).should == tokens
+  end
+
   it "should parse a literal string with spaces" do
     str    = " (abc) "
     tokens = %w{ ( abc ) }
+    Parser.parse(str).should == tokens
+  end
+
+  it "should parse a hex string without captials" do
+    str    = "<00ffab>"
+    tokens = %w{ < 00ffab > }
+    Parser.parse(str).should == tokens
+  end
+
+  it "should parse a hex string with captials" do
+    str    = " <00FFAB> "
+    tokens = %w{ < 00FFAB > }
     Parser.parse(str).should == tokens
   end
 end
