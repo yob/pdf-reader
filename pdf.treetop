@@ -1,6 +1,6 @@
 grammar Pdf
   rule doc
-    ( string_literal / space / string_hex / float / integer )*
+    ( string_literal / space / string_hex / float / integer / name)*
   end
 
   rule string_literal
@@ -17,6 +17,10 @@ grammar Pdf
 
   rule integer
     [0-9]+ <PDF::Reader::Integer>
+  end
+
+  rule name
+    "/" [A-Za-z0-9]+ <PDF::Reader::Name>
   end
 
   rule space

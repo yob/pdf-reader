@@ -21,6 +21,12 @@ module PDF
       end
     end
 
+    class Name < Treetop::Runtime::SyntaxNode
+      def to_ary
+        [ elements[1].text_value.to_sym ]
+      end
+    end
+
     class HexString < Treetop::Runtime::SyntaxNode
       def to_ary
         [
@@ -122,6 +128,18 @@ describe Parser do
   it "should parse a float with spaces" do
     str    = " 19.9 "
     tokens = [ 19.9 ]
+    Parser.parse(str).should == tokens
+  end
+
+  it "should parse a pdf name" do
+    str    = "/James"
+    tokens = [ :James ]
+    Parser.parse(str).should == tokens
+  end
+
+  it "should parse a pdf name with spaces" do
+    str    = " /James "
+    tokens = [ :James ]
     Parser.parse(str).should == tokens
   end
 end
