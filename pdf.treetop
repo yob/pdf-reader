@@ -1,6 +1,6 @@
 grammar Pdf
   rule doc
-    ( string_literal / space / string_hex / float / integer / name / boolean_true / boolean_false )*
+    ( string_literal / space / string_hex / float / integer / name / boolean_true / boolean_false / null )*
   end
 
   rule string_literal
@@ -29,6 +29,10 @@ grammar Pdf
 
   rule boolean_false
     "false"  <PDF::Reader::BooleanFalse>
+  end
+
+  rule null
+    "null" <PDF::Reader::NullNode>
   end
 
   rule space

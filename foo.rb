@@ -39,6 +39,12 @@ module PDF
       end
     end
 
+    class NullNode < Treetop::Runtime::SyntaxNode
+      def to_ary
+        [ nil ]
+      end
+    end
+
     class HexString < Treetop::Runtime::SyntaxNode
       def to_ary
         [
@@ -164,6 +170,12 @@ describe Parser do
   it "should parse a false boolean" do
     str    = "false"
     tokens = [ false ]
+    Parser.parse(str).should == tokens
+  end
+
+  it "should parse a null" do
+    str    = "null"
+    tokens = [ nil ]
     Parser.parse(str).should == tokens
   end
 end
