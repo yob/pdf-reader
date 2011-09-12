@@ -1,6 +1,6 @@
 grammar Pdf
   rule doc
-    ( string_literal / space / string_hex / float / integer / name / boolean_true / boolean_false / null )*
+    ( string_literal / space / string_hex / array / float / integer / name / boolean_true / boolean_false / null )*
   end
 
   rule string_literal
@@ -33,6 +33,10 @@ grammar Pdf
 
   rule null
     "null" <PDF::Reader::NullNode>
+  end
+
+  rule array
+    "[" doc "]" <PDF::Reader::ArrayNode>
   end
 
   rule space

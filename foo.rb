@@ -9,6 +9,14 @@ module PDF
       end
     end
 
+    class ArrayNode < Treetop::Runtime::SyntaxNode
+      def to_ary
+        elements[1].elements.flatten.select { |obj|
+          !obj.is_a?(Treetop::Runtime::SyntaxNode)
+        }
+      end
+    end
+
     class Integer < Treetop::Runtime::SyntaxNode
       def to_ary
         [ text_value.to_i ]
@@ -176,6 +184,12 @@ describe Parser do
   it "should parse a null" do
     str    = "null"
     tokens = [ nil ]
+    Parser.parse(str).should == tokens
+  end
+
+  it "should parse an array of ints" do
+    str    = "[ 1 2 3 4 ]"
+    tokens = [ 1, 2, 3, 4 ]
     Parser.parse(str).should == tokens
   end
 end
