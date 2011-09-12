@@ -17,6 +17,15 @@ module PDF
       end
     end
 
+    class DictNode < Treetop::Runtime::SyntaxNode
+      def to_ary
+        ret = elements[1].elements.flatten.select { |obj|
+          !obj.is_a?(Treetop::Runtime::SyntaxNode)
+        }
+        [ Hash[*ret] ]
+      end
+    end
+
     class Integer < Treetop::Runtime::SyntaxNode
       def to_ary
         [ text_value.to_i ]
@@ -190,6 +199,12 @@ describe Parser do
   it "should parse an array of ints" do
     str    = "[ 1 2 3 4 ]"
     tokens = [ 1, 2, 3, 4 ]
+    Parser.parse(str).should == tokens
+  end
+
+  it "should parse a simple dictionary" do
+    str    = "<</One 1 /Two 2>>"
+    tokens = [ {:One => 1, :Two => 2} ]
     Parser.parse(str).should == tokens
   end
 end
