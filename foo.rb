@@ -27,6 +27,18 @@ module PDF
       end
     end
 
+    class BooleanTrue < Treetop::Runtime::SyntaxNode
+      def to_ary
+        [ true ]
+      end
+    end
+
+    class BooleanFalse < Treetop::Runtime::SyntaxNode
+      def to_ary
+        [ false ]
+      end
+    end
+
     class HexString < Treetop::Runtime::SyntaxNode
       def to_ary
         [
@@ -140,6 +152,18 @@ describe Parser do
   it "should parse a pdf name with spaces" do
     str    = " /James "
     tokens = [ :James ]
+    Parser.parse(str).should == tokens
+  end
+
+  it "should parse a true boolean" do
+    str    = "true"
+    tokens = [ true ]
+    Parser.parse(str).should == tokens
+  end
+
+  it "should parse a false boolean" do
+    str    = "false"
+    tokens = [ false ]
     Parser.parse(str).should == tokens
   end
 end

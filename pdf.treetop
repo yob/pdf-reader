@@ -1,6 +1,6 @@
 grammar Pdf
   rule doc
-    ( string_literal / space / string_hex / float / integer / name)*
+    ( string_literal / space / string_hex / float / integer / name / boolean_true / boolean_false )*
   end
 
   rule string_literal
@@ -21,6 +21,14 @@ grammar Pdf
 
   rule name
     "/" [A-Za-z0-9]+ <PDF::Reader::Name>
+  end
+
+  rule boolean_true
+    "true"  <PDF::Reader::BooleanTrue>
+  end
+
+  rule boolean_false
+    "false"  <PDF::Reader::BooleanFalse>
   end
 
   rule space
