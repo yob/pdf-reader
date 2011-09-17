@@ -209,13 +209,13 @@ class PDF::Reader
     def prepare_inline_token
       str = ""
 
-      while str[-2,2] != "EI"
+      while str !~ /\sEI$/
         chr = @io.read(1)
         break if chr.nil?
         str << chr
       end
 
-      @tokens << str[0, str.size-2].strip
+      @tokens << str[0..-2].strip
       @io.seek(-2, IO::SEEK_CUR) unless chr.nil?
     end
 
