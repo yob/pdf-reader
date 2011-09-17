@@ -3,6 +3,11 @@
 require 'matrix'
 require 'yaml'
 
+begin
+  require 'psych'
+rescue LoadError
+end
+
 module PDF
   class Reader
     class PageTextReceiver
@@ -253,8 +258,12 @@ module PDF
         if @stack.empty?
           {}
         else
-          yaml_state = YAML.dump(@stack.last)
-          YAML.load(yaml_state)
+          if Kernel.const_defined?("Psych")
+            Psych.load Psych.dump(@stack.last)
+          else
+            yaml_state = YAML.dump(@stack.last)
+            YAML.load(yaml_state)
+          end
         end
       end
 
