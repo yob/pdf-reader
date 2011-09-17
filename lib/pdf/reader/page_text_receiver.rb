@@ -152,7 +152,7 @@ module PDF
       end
 
       def move_to_start_of_next_line # T*
-        move_text_position(0, state[:text_leading])
+        move_text_position(0, -state[:text_leading])
       end
 
       #####################################################
