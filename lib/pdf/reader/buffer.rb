@@ -215,8 +215,8 @@ class PDF::Reader
         str << chr
       end
 
-      @tokens << str[0..-2].strip
-      @io.seek(-2, IO::SEEK_CUR) unless chr.nil?
+      @tokens << str[0..-3].strip
+      @io.seek(-3, IO::SEEK_CUR) unless chr.nil?
     end
 
     # if we're currently inside a hex string, read hex nibbles until
