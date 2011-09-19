@@ -49,11 +49,11 @@ module PDF
       # attributes inherited from parents.
       #
       def attributes
-        hash = {}
-        page_with_ancestors.reverse.each do |obj|
-          hash.merge!(@objects.deref(obj))
-        end
-        hash
+        {}.tap { |hash|
+          page_with_ancestors.reverse.each do |obj|
+            hash.merge!(@objects.deref(obj))
+          end
+        }
       end
 
       # Returns the resources that accompany this page. Includes
