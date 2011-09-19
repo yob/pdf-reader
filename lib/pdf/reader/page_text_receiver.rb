@@ -280,8 +280,8 @@ module PDF
       class Point < Struct.new(:x, :y)
         def transform(trm, z)
           Point.new(
-            (trm[0,0] * @x) + (trm[1,0] * @y) + (trm[2,0] * z),
-            (trm[0,1] * @x) + (trm[1,1] * @y) + (trm[2,1] * z)
+            (trm[0,0] * x) + (trm[1,0] * y) + (trm[2,0] * z),
+            (trm[0,1] * x) + (trm[1,1] * y) + (trm[2,1] * z)
           )
         end
 
