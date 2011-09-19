@@ -126,7 +126,11 @@ class PDF::Reader
       out = ""
 
       while pos < data.length
-        length = data.getbyte(pos)
+        if data.respond_to?(:getbyte)
+          length = data.getbyte(pos)
+        else
+          length = data[pos]
+        end
         pos += 1
 
         case
