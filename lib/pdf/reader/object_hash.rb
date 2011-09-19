@@ -70,23 +70,23 @@ class PDF::Reader
     #
     def [](key)
       return default if key.to_i <= 0
-      begin
-        unless key.kind_of?(PDF::Reader::Reference)
-          key = PDF::Reader::Reference.new(key.to_i, 0)
-        end
-        if @cache.has_key?(key)
-          @cache[key]
-        elsif xref[key].is_a?(Fixnum)
-          buf = new_buffer(xref[key])
-          @cache[key] = decrypt(key, Parser.new(buf, self).object(key.id, key.gen))
-        elsif xref[key].is_a?(PDF::Reader::Reference)
-          container_key = xref[key]
-          object_streams[container_key] ||= PDF::Reader::ObjectStream.new(object(container_key))
-          @cache[key] = object_streams[container_key][key.id]
-        end
-      rescue InvalidObjectError
-        return default
+
+      unless key.is_a?(PDF::Reader::Reference)
+        key = PDF::Reader::Reference.new(key.to_i, 0)
       end
+
+      if @cache.has_key?(key)
+        @cache[key]
+      elsif xref[key].is_a?(Fixnum)
+        buf = new_buffer(xref[key])
+        @cache[key] = decrypt(key, Parser.new(buf, self).object(key.id, key.gen))
+      elsif xref[key].is_a?(PDF::Reader::Reference)
+        container_key = xref[key]
+        object_streams[container_key] ||= PDF::Reader::ObjectStream.new(object(container_key))
+        @cache[key] = object_streams[container_key][key.id]
+      end
+    rescue InvalidObjectError
+      return default
     end
 
     # If key is a PDF::Reader::Reference object, lookup the corresponding
