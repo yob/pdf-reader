@@ -3,7 +3,7 @@ require "bundler"
 Bundler.setup
 
 require 'rake'
-require 'rdoc/task'
+require 'rake/rdoctask'
 require 'rspec/core/rake_task'
 require 'roodi'
 require 'roodi_task'
