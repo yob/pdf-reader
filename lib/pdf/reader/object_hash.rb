@@ -31,26 +31,15 @@ class PDF::Reader
     attr_accessor :default
     attr_reader :trailer, :pdf_version
 
-    # Creates a new ObjectHash object. input can be a string with a valid filename,
-    # a string containing a PDF file, or an IO object.
+    # Creates a new ObjectHash object. Input can be a string with a valid filename
+    # or an IO-like object.
     #
-    # valid options
+    # Valid options:
     #
     #   :password - the user password to decrypt the source PDF
     #
     def initialize(input, opts = {})
-      if input.respond_to?(:seek) && input.respond_to?(:read)
-        @io = input
-      elsif File.file?(input.to_s)
-        if File.respond_to?(:binread)
-          input = File.binread(input.to_s)
-        else
-          input = File.read(input.to_s)
-        end
-        @io = StringIO.new(input)
-      else
-        raise ArgumentError, "input must be an IO-like object or a filename"
-      end
+      @io          = extract_io_from(input)
       @pdf_version = read_version
       @xref        = PDF::Reader::XRef.new(@io)
       @trailer     = @xref.trailer
@@ -313,6 +302,24 @@ class PDF::Reader
       m, version = *@io.read(10).match(/PDF-(\d.\d)/)
       @io.seek(0)
       version.to_f
+    end
+
+    def extract_io_from(input)
+      if input.respond_to?(:seek) && input.respond_to?(:read)
+        input
+      elsif File.file?(input.to_s)
+        StringIO.new read_as_binary(input)
+      else
+        raise ArgumentError, "input must be an IO-like object or a filename"
+      end
+    end
+
+    def read_as_binary(input)
+      if File.respond_to?(:binread)
+        File.binread(input.to_s)
+      else
+        File.read(input.to_s)
+      end
     end
 
   end
