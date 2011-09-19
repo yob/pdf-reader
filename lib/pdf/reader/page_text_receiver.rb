@@ -214,9 +214,11 @@ module PDF
       # wrap the raw PDF Font objects in handy ruby Font objects.
       #
       def build_fonts(raw_fonts)
-        ::Hash[raw_fonts.map { |label, font|
+        wrapped_fonts = raw_fonts.map { |label, font|
           [label, PDF::Reader::Font.new(@objects, @objects.deref(font))]
-        }]
+        }
+
+        ::Hash[wrapped_fonts]
       end
 
       # transform x and y co-ordinates from the current text space to the
