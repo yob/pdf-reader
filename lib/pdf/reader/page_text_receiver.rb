@@ -256,13 +256,12 @@ module PDF
         if @stack.empty?
           {}
         else
-          if Kernel.const_defined?("Psych")
-            Psych.load Psych.dump(@stack.last)
-          else
-            yaml_state = YAML.dump(@stack.last)
-            YAML.load(yaml_state)
-          end
+          yaml_lib.load yaml_lib.dump(@stack.last)
         end
+      end
+
+      def yaml_lib
+        Kernel.const_defined?("Psych") ? Psych : YAML
       end
 
       # return the current transformation matrix
