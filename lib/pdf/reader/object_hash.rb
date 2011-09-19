@@ -56,9 +56,7 @@ class PDF::Reader
 
     # returns true if the supplied references points to an object with a stream
     def stream?(ref)
-      self[ref].class == PDF::Reader::Stream
-    rescue
-      false
+      self.has_key?(ref) && self[ref].is_a?(PDF::Reader::Stream)
     end
 
     # Access an object from the PDF. key can be an int or a PDF::Reader::Reference
