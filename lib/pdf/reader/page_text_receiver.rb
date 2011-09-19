@@ -31,7 +31,7 @@ module PDF
         @objects = page.objects
         @fonts   = build_fonts(page.fonts)
         @form_fonts = {}
-        @content = ::Hash.new
+        @content = {}
         @stack   = [DEFAULT_GRAPHICS_STATE]
       end
 
@@ -131,10 +131,10 @@ module PDF
 
       def move_text_position(x, y) # Td
         temp_matrix = Matrix[
-                        [1, 0, 0],
-                        [0, 1, 0],
-                        [x, y, 1]
-                      ]
+          [1, 0, 0],
+          [0, 1, 0],
+          [x, y, 1]
+        ]
         @text_matrix = @text_line_matrix = temp_matrix * @text_line_matrix
       end
 
@@ -145,10 +145,10 @@ module PDF
 
       def set_text_matrix_and_text_line_matrix(a, b, c, d, e, f) # Tm
         @text_matrix = @text_line_matrix = Matrix[
-                              [a, b, 0],
-                              [c, d, 0],
-                              [e, f, 1]
-                            ]
+          [a, b, 0],
+          [c, d, 0],
+          [e, f, 1]
+        ]
       end
 
       def move_to_start_of_next_line # T*
