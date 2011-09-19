@@ -193,14 +193,16 @@ module PDF
         end
       end
 
-      def page_with_ancestors(obj = nil)
-        obj = objects.deref(obj)
-        if obj.nil?
-          [@page_object] + page_with_ancestors(@page_object[:Parent])
-        elsif obj[:Parent]
-          [select_inheritable(obj)] + page_with_ancestors(obj[:Parent])
+      def page_with_ancestors
+        [ @page_object ] + ancestors
+      end
+
+      def ancestors(origin = @page_object[:Parent])
+        if origin.nil?
+          []
         else
-          [select_inheritable(obj)]
+          obj = objects.deref(origin)
+          [ select_inheritable(obj) ] + ancestors(obj[:Parent])
         end
       end
 
