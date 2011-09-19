@@ -224,10 +224,8 @@ module PDF
       #
       def transform(point, z = 1)
         trm = text_rendering_matrix
-        Point.new(
-          (trm[0,0] * point.x) + (trm[1,0] * point.y) + (trm[2,0] * z),
-          (trm[0,1] * point.x) + (trm[1,1] * point.y) + (trm[2,1] * z)
-        )
+
+        point.transform(text_rendering_matrix, z)
       end
 
       def text_rendering_matrix
@@ -280,15 +278,16 @@ module PDF
       # private class for representing points on a cartesian plain. Used
       # to simplify maths in the MinPpi class.
       #
-      class Point
-        attr_reader :x, :y
-
-        def initialize(x,y)
-          @x, @y = x,y
+      class Point < Struct.new(:x, :y)
+        def transform(trm, z)
+          Point.new(
+            (trm[0,0] * @x) + (trm[1,0] * @y) + (trm[2,0] * z),
+            (trm[0,1] * @x) + (trm[1,1] * @y) + (trm[2,1] * z)
+          )
         end
 
         def distance(point)
-          Math.hypot(point.x - x, point.y - y)
+          Math.hypot(point.x - @x, point.y - @y)
         end
       end
     end
