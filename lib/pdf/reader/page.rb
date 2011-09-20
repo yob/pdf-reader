@@ -185,7 +185,7 @@ module PDF
         raise MalformedPDFError, "End Of File while processing a content stream"
       end
 
-      # calls the name callback method on the receiver class with params as the arguments
+      # calls the name callback method on each receiver object with params as the arguments
       #
       def callback (receivers, name, params=[])
         receivers.each do |receiver|
