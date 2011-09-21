@@ -4,6 +4,13 @@ require File.dirname(__FILE__) + "/spec_helper"
 
 describe PDF::Reader::Filter do
 
+  context "JPXDecode" do
+    it "returns the data unchanged" do
+      filter = PDF::Reader::Filter.new(:JPXDecode)
+      filter.filter("\x00").should eql("\x00")
+    end
+  end
+
   it "should inflate a RFC1950 (zlib) deflated stream correctly"
   it "should inflate a raw RFC1951 deflated stream correctly"
   it "should inflate a deflated stream with PNG predictors correctly" do

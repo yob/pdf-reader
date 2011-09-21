@@ -48,6 +48,7 @@ class PDF::Reader
       when :DCTDecode       then @filter = nil
       when :FlateDecode     then @filter = :flate
       when :JBIG2Decode     then @filter = nil
+      when :JPXDecode       then @filter = nil
       when :LZWDecode       then @filter = :lzw
       when :RunLengthDecode then @filter = :runlength
       else
