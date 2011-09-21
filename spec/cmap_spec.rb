@@ -2,10 +2,6 @@
 
 require File.dirname(__FILE__) + "/spec_helper"
 
-class PDF::Reader::CMap
-  attr_reader :map
-end
-
 describe "PDF::Reader::CMap with a bfchar cmap" do
 
   it "should correctly load a cmap object string" do
