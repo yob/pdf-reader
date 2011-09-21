@@ -30,6 +30,7 @@ describe PDF::Reader::GlyphHash do
   it "should correctly map a Ann glyph to unicode" do
     map = PDF::Reader::GlyphHash.new
     map[:A65].should     eql(65)
+    map[:g3].should      eql(3)
     map[:g65].should     eql(65)
     map[:G65].should     eql(65)
     map[:G655].should    eql(655)
