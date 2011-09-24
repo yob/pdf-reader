@@ -6,8 +6,9 @@ class PdfParser < Parslet::Parser
   rule(:space)      { (str("\x00") | str("\x09") | str("\x0A") | str("\x0C") | str("\x0D") | str("\x20")).repeat(1) }
   rule(:space?)     { space.maybe }
 
-  # match any single character that isn't a delimiter
-  rule(:nondelim)   { match('[^\(\)<>\[\]{}/%\x00\x09\x0A\x0C\x0D\x20]')}
+  # match any regular byte, basically anything that isn't whitespace or a 
+  # delimiter
+  rule(:regular)   { match('[^\(\)<>\[\]{}/%\x00\x09\x0A\x0C\x0D\x20]')}
 
   rule(:doc) { ( string_literal | string_hex | array | dict | name | boolean | null | keyword | indirect | float | integer | space ).repeat }
 
@@ -19,7 +20,7 @@ class PdfParser < Parslet::Parser
 
   rule(:dict)           { str("<<") >> doc.as(:dict) >> str(">>") }
 
-  rule(:name)           { str('/') >> nondelim.repeat(1).as(:name) }
+  rule(:name)           { str('/') >> regular.repeat(1).as(:name) }
 
   rule(:float)          { (match('[0-9]').repeat(1) >> str('.') >> match('[0-9]').repeat(1) ).as(:float) }
 
