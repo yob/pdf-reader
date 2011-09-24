@@ -82,7 +82,7 @@ end
 
 class PdfParser < Parslet::Parser
 
-  rule(:space)      { match('\s').repeat(1) }
+  rule(:space)      { (str("\x00") | str("\x09") | str("\x0A") | str("\x0C") | str("\x0D") | str("\x20")).repeat(1) }
   rule(:space?)     { space.maybe }
 
   rule(:doc) { ( string_literal | string_hex | array | dict | name | boolean | null | keyword | indirect | float | integer | space ).repeat }
