@@ -488,6 +488,18 @@ describe PdfParser do
     parser.parse(str).should == ast
   end
 
+  it "should parse a dictionary with an embedded hex string" do
+    str = "<</X <48656C6C6F> >>"
+    ast = [
+      { :dict => [
+        {:name => "X"},
+        {:string_hex => "48656C6C6F"}
+        ]
+      }
+    ]
+    parser.parse(str).should == ast
+  end
+
   it "parses an indirect reference" do
     str = "1 0 R"
     ast = [ {:indirect => "1 0 R"} ]
