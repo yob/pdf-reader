@@ -22,7 +22,7 @@ class PdfParser < Parslet::Parser
 
   rule(:name)           { str('/') >> regular.repeat(1).as(:name) }
 
-  rule(:float)          { (match('[0-9]').repeat(1) >> str('.') >> match('[0-9]').repeat(1) ).as(:float) }
+  rule(:float)          { (match('[\+\-]').maybe >> match('[0-9]').repeat(1) >> str('.') >> match('[0-9]').repeat(1) ).as(:float) }
 
   rule(:integer)        { (match('[\+\-]').maybe >> match('[0-9]').repeat(1)).as(:integer) }
 
@@ -244,6 +244,18 @@ describe PdfParser do
   it "should parse a float" do
     str = "1.1"
     ast = [ { :float => "1.1" } ]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a float with a + sign" do
+    str = "+19.1"
+    ast = [ { :float => "+19.1" } ]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a float with a - sign" do
+    str = "-73.2"
+    ast = [ { :float => "-73.2" } ]
     parser.parse(str).should == ast
   end
 
