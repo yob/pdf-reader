@@ -474,6 +474,18 @@ describe PdfParser do
     parser.parse(str).should == ast
   end
 
+  it "should parse an array of indirect objects" do
+    str = "[ 10 0 R 12 0 R ]"
+    ast = [
+      { :array => [
+        {:indirect => "10 0 R"},
+        {:indirect => "12 0 R"}
+        ]
+      }
+    ]
+    parser.parse(str).should == ast
+  end
+
   it "should parse a simple dictionary" do
     str = "<</One 1 /Two 2>>"
     ast = [
