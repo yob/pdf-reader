@@ -85,7 +85,7 @@ class PdfParser < Parslet::Parser
   rule(:space)      { match('\s').repeat(1) }
   rule(:space?)     { space.maybe }
 
-  rule(:doc) { ( string_literal | string_hex | array | dict | name | boolean | null | indirect | float | integer | space ).repeat }
+  rule(:doc) { ( string_literal | string_hex | array | dict | name | boolean | null | keyword | indirect | float | integer | space ).repeat }
 
   rule(:string_literal) { str("(") >> match('[^\(\)]').repeat.as(:string_literal) >> str(")") }
 
@@ -106,6 +106,8 @@ class PdfParser < Parslet::Parser
   rule(:boolean)        { (str("true") | str("false")).as(:boolean)}
 
   rule(:null)           { str('null').as(:null) }
+
+  rule(:keyword)        { (str('obj') | str('endobj') | str('stream') | str('endstream')).as(:keyword)}
 
   root(:doc)
 end
@@ -356,6 +358,30 @@ describe PdfParser do
   it "parses an indirect reference" do
     str = "1 0 R"
     ast = [ {:indirect => "1 0 R"} ]
+    parser.parse(str).should == ast
+  end
+
+  it "parses the 'obj' keyword" do
+    str = "obj"
+    ast = [ {:keyword => "obj"} ]
+    parser.parse(str).should == ast
+  end
+
+  it "parses the 'endobj' keyword" do
+    str = "endobj"
+    ast = [ {:keyword => "endobj"} ]
+    parser.parse(str).should == ast
+  end
+
+  it "parses the 'stream' keyword" do
+    str = "stream"
+    ast = [ {:keyword => "stream"} ]
+    parser.parse(str).should == ast
+  end
+
+  it "parses the 'endstream' keyword" do
+    str = "endstream"
+    ast = [ {:keyword => "endstream"} ]
     parser.parse(str).should == ast
   end
 end
