@@ -85,7 +85,7 @@ class PdfParser < Parslet::Parser
   rule(:space)      { match('\s').repeat(1) }
   rule(:space?)     { space.maybe }
 
-  rule(:doc) { ( string_literal | string_hex | array | dict | name | boolean | null | float | integer | space ).repeat }
+  rule(:doc) { ( string_literal | string_hex | array | dict | name | boolean | null | indirect | float | integer | space ).repeat }
 
   rule(:string_literal) { str("(") >> match('[^\(\)]').repeat.as(:string_literal) >> str(")") }
 
@@ -100,6 +100,8 @@ class PdfParser < Parslet::Parser
   rule(:float)          { (match('[0-9]').repeat(1) >> str('.') >> match('[0-9]').repeat(1) ).as(:float) }
 
   rule(:integer)        { match('[0-9]').repeat(1).as(:integer) }
+
+  rule(:indirect)       { (match('[0-9]').repeat(1) >> space >> match('[0-9]').repeat(1) >> space >> str("R")).as(:indirect) }
 
   rule(:boolean)        { (str("true") | str("false")).as(:boolean)}
 
@@ -127,9 +129,11 @@ class PdfTransform < Parslet::Transform
 
   rule(:array => subtree(:contents)) { PdfTransform.new.apply(contents) }
 
-  rule(:dict => subtree(:contents)) { 
+  rule(:dict => subtree(:contents)) {
     Hash[*PdfTransform.new.apply(contents)]
   }
+
+  rule(:indirect => simple(:value)) { value }
 end
 
 
@@ -200,6 +204,13 @@ describe PdfTransform do
       }
     ]
     transform.apply(ast).should == [ {:One => 1, :Two => 2} ]
+  end
+
+  it "transforms an indirect reference" do
+    # TODO this should actually transform the reference into a
+    #      PDF::Reader::Reference object
+    ast = [ {:indirect => "1 0 R"} ]
+    transform.apply(ast).should == [ "1 0 R" ]
   end
 end
 
@@ -339,6 +350,12 @@ describe PdfParser do
         ]
       }
     ]
+    parser.parse(str).should == ast
+  end
+
+  it "parses an indirect reference" do
+    str = "1 0 R"
+    ast = [ {:indirect => "1 0 R"} ]
     parser.parse(str).should == ast
   end
 end
