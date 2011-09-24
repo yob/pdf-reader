@@ -136,6 +136,8 @@ class PdfTransform < Parslet::Transform
   }
 
   rule(:indirect => simple(:value)) { value }
+
+  rule(:keyword => simple(:value)) { value}
 end
 
 
@@ -213,6 +215,11 @@ describe PdfTransform do
     #      PDF::Reader::Reference object
     ast = [ {:indirect => "1 0 R"} ]
     transform.apply(ast).should == [ "1 0 R" ]
+  end
+
+  it "transforms a PDF keyword" do
+    ast = [ {:keyword => "endstream"} ]
+    transform.apply(ast).should == [ "endstream" ]
   end
 end
 
