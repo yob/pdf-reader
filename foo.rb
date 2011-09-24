@@ -111,11 +111,13 @@ class PdfParser < Parslet::Parser
   rule(:space)      { match('\s').repeat(1) }
   rule(:space?)     { space.maybe }
 
-  rule(:doc) { ( string_literal | string_hex | name | boolean | null | float | integer | space ).repeat }
+  rule(:doc) { ( string_literal | string_hex | array | name | boolean | null | float | integer | space ).repeat }
 
   rule(:string_literal) { lparen >> match('[^\(\)]').repeat.as(:string_literal) >> rparen }
 
   rule(:string_hex)     { lthan >> match('[A-Fa-f0-9]').repeat.as(:string_hex) >> gthan }
+
+  rule(:array)          { str("[") >> doc.as(:array) >> str("]") }
 
   rule(:name)           { str('/') >> match('[A-Za-z]').repeat.as(:name) }
 
@@ -271,8 +273,16 @@ describe PdfParser do
 
   it "should parse an array of ints" do
     str = "[ 1 2 3 4 ]"
-    ast = [ 1, 2, 3, 4 ]
-    parser.parse(str).should == tokens
+    ast = [
+      { :array => [
+        {:integer => "1"},
+        {:integer => "2"},
+        {:integer => "3"},
+        {:integer => "4"}
+        ]
+      }
+    ]
+    parser.parse(str).should == ast
   end
 
   it "should parse a simple dictionary" do
