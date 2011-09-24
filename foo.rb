@@ -24,7 +24,7 @@ class PdfParser < Parslet::Parser
 
   rule(:float)          { (match('[0-9]').repeat(1) >> str('.') >> match('[0-9]').repeat(1) ).as(:float) }
 
-  rule(:integer)        { match('[0-9]').repeat(1).as(:integer) }
+  rule(:integer)        { (match('[\+\-]').maybe >> match('[0-9]').repeat(1)).as(:integer) }
 
   rule(:indirect)       { (match('[0-9]').repeat(1) >> space >> match('[0-9]').repeat(1) >> space >> str("R")).as(:indirect) }
 
@@ -226,6 +226,18 @@ describe PdfParser do
   it "should parse an integer with spaces" do
     str = " 19 "
     ast = [ { :integer => "19" } ]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse an integer with a + sign" do
+    str = "+15"
+    ast = [ { :integer => "+15" } ]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse an integer with a - sign" do
+    str = "-34"
+    ast = [ { :integer => "-34" } ]
     parser.parse(str).should == ast
   end
 
