@@ -59,7 +59,13 @@ class PdfTransform < Parslet::Transform
     value.gsub(/[^A-F0-9]/i,"").scan(/../).map { |i| i.hex.chr }.join
   }
 
-  rule(:name => simple(:value)) { value.to_sym }
+  rule(:name => simple(:value)) {
+    value.scan(/#([A-Fa-f0-9]{2})/).each do |find|
+      replace = find[0].hex.chr
+      value.gsub!("#"+find[0], replace)
+    end
+    value.to_sym
+  }
 
   rule(:float => simple(:value)) { value.to_f }
 
@@ -124,6 +130,21 @@ describe PdfTransform do
   it "transforms a PDF Name to a ruby symbol" do
     str = [{ :name => "James"}]
     transform.apply(str).should == [ :James ]
+  end
+
+  it "transforms a PDF Name with encoded bytes to a ruby symbol" do
+    str = [{ :name => "James#20Healy"}]
+    transform.apply(str).should == [ :"James Healy" ]
+  end
+
+  it "transforms a PDF Name with encoded bytes to a ruby symbol" do
+    str = [{ :name => "James#23Healy"}]
+    transform.apply(str).should == [ :"James#Healy" ]
+  end
+
+  it "transforms a PDF Name with encoded bytes to a ruby symbol" do
+    str = [{ :name => "Ja#6des"}]
+    transform.apply(str).should == [ :"James" ]
   end
 
   it "transforms a float" do
