@@ -111,13 +111,15 @@ class PdfParser < Parslet::Parser
   rule(:space)      { match('\s').repeat(1) }
   rule(:space?)     { space.maybe }
 
-  rule(:doc) { ( string_literal | string_hex | array | name | boolean | null | float | integer | space ).repeat }
+  rule(:doc) { ( string_literal | string_hex | array | dict | name | boolean | null | float | integer | space ).repeat }
 
   rule(:string_literal) { lparen >> match('[^\(\)]').repeat.as(:string_literal) >> rparen }
 
   rule(:string_hex)     { lthan >> match('[A-Fa-f0-9]').repeat.as(:string_hex) >> gthan }
 
   rule(:array)          { str("[") >> doc.as(:array) >> str("]") }
+
+  rule(:dict)           { str("<<") >> doc.as(:dict) >> str(">>") }
 
   rule(:name)           { str('/') >> match('[A-Za-z]').repeat.as(:name) }
 
@@ -286,8 +288,16 @@ describe PdfParser do
   end
 
   it "should parse a simple dictionary" do
-    str    = "<</One 1 /Two 2>>"
-    tokens = [ {:One => 1, :Two => 2} ]
-    Parser.parse(str).should == tokens
+    str = "<</One 1 /Two 2>>"
+    ast = [
+      { :dict => [
+        {:name => "One"},
+        {:integer => "1"},
+        {:name => "Two"},
+        {:integer => "2"}
+        ]
+      }
+    ]
+    parser.parse(str).should == ast
   end
 end
