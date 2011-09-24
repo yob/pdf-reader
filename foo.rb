@@ -78,44 +78,18 @@ module PDF
   end
 end
 
-class Parser
-  Treetop.load(File.join(File.dirname(__FILE__), 'pdf.treetop'))
-  @@parser = PdfParser.new
-
-  def self.parse(data)
-    # Pass the data over to the parser instance
-    tree = @@parser.parse(data)
-
-    # If the AST is nil then there was an error during parsing
-    # we need to report a simple error message to help the user
-    if tree.nil?
-      raise Exception, "Parse error at offset: #{@@parser.index}"
-    end
-
-    tree.elements.flatten.select { |obj|
-      !obj.is_a?(Treetop::Runtime::SyntaxNode)
-    }
-  end
-
-end
 =end
 
 class PdfParser < Parslet::Parser
-  # Single character rules
-  rule(:lparen)     { str('(') }
-  rule(:rparen)     { str(')') }
-  rule(:lthan)      { str('<') }
-  rule(:gthan)      { str('>') }
-  rule(:comma)      { str(',') >> space? }
 
   rule(:space)      { match('\s').repeat(1) }
   rule(:space?)     { space.maybe }
 
   rule(:doc) { ( string_literal | string_hex | array | dict | name | boolean | null | float | integer | space ).repeat }
 
-  rule(:string_literal) { lparen >> match('[^\(\)]').repeat.as(:string_literal) >> rparen }
+  rule(:string_literal) { str("(") >> match('[^\(\)]').repeat.as(:string_literal) >> str(")") }
 
-  rule(:string_hex)     { lthan >> match('[A-Fa-f0-9]').repeat.as(:string_hex) >> gthan }
+  rule(:string_hex)     { str("<") >> match('[A-Fa-f0-9]').repeat.as(:string_hex) >> str(">") }
 
   rule(:array)          { str("[") >> doc.as(:array) >> str("]") }
 
@@ -127,7 +101,7 @@ class PdfParser < Parslet::Parser
 
   rule(:integer)        { match('[0-9]').repeat(1).as(:integer) }
 
-  rule(:boolean)        { str("true").as(:boolean_true) | str("false").as(:boolean_false)}
+  rule(:boolean)        { (str("true") | str("false")).as(:boolean)}
 
   rule(:null)           { str('null').as(:null) }
 
@@ -136,29 +110,64 @@ end
 
 class PdfTransform < Parslet::Transform
   rule(:string_literal => simple(:value)) { value }
+
   rule(:string_hex => simple(:value)) {
     value.scan(/../).map { |i| i.hex.chr }.join
   }
+
   rule(:name => simple(:value)) { value.to_sym }
+
+  rule(:float => simple(:value)) { value.to_f }
+
+  rule(:integer => simple(:value)) { value.to_i }
+
+  rule(:boolean => simple(:value)) { value == "true" }
+
+  rule(:null => simple(:value)) { nil }
 end
 
 
 describe PdfTransform do
   let(:transform) { PdfTransform.new }
 
-  it "should tokenise a literal string" do
+  it "transforms a literal string" do
     str = [{ :string_literal => "abc"}]
     transform.apply(str).should == %w{ abc }
   end
 
-  it "should parse a hex string without captials" do
+  it "transforms a hex string without captials" do
     str = [{ :string_hex => "00ffab"}]
     transform.apply(str).should == [ "\x00\xff\xab" ]
   end
 
-  it "should transform a PDF Name to a ruby symbol" do
+  it "transforms a PDF Name to a ruby symbol" do
     str = [{ :name => "James"}]
     transform.apply(str).should == [ :James ]
+  end
+
+  it "transforms a float" do
+    str = [{ :float => "1.9"}]
+    transform.apply(str).should == [ 1.9 ]
+  end
+
+  it "transforms an int" do
+    str = [{ :float => "10"}]
+    transform.apply(str).should == [ 10 ]
+  end
+
+  it "transforms a true boolean" do
+    str = [{ :boolean => "true"}]
+    transform.apply(str).should == [ true ]
+  end
+
+  it "transforms a false boolean" do
+    str = [{ :boolean => "false"}]
+    transform.apply(str).should == [ false ]
+  end
+
+  it "transforms a null" do
+    str = [{ :null => "null"}]
+    transform.apply(str).should == [ nil ]
   end
 end
 
@@ -257,13 +266,13 @@ describe PdfParser do
 
   it "should parse a true boolean" do
     str = "true"
-    ast = [ {:boolean_true => "true" } ]
+    ast = [ {:boolean => "true" } ]
     parser.parse(str).should == ast
   end
 
   it "should parse a false boolean" do
     str = "false"
-    ast = [ { :boolean_false => "false" } ]
+    ast = [ { :boolean => "false" } ]
     parser.parse(str).should == ast
   end
 
