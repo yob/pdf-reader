@@ -6,17 +6,20 @@ class PdfParser < Parslet::Parser
   rule(:space)      { (str("\x00") | str("\x09") | str("\x0A") | str("\x0C") | str("\x0D") | str("\x20")).repeat(1) }
   rule(:space?)     { space.maybe }
 
+  # match any single character that isn't a delimiter
+  rule(:nondelim)   { match('[^\(\)<>\[\]{}/%\x00\x09\x0A\x0C\x0D\x20]')}
+
   rule(:doc) { ( string_literal | string_hex | array | dict | name | boolean | null | keyword | indirect | float | integer | space ).repeat }
 
-  rule(:string_literal) { str("(") >> match('[^\(\)]').repeat.as(:string_literal) >> str(")") }
+  rule(:string_literal) { str("(") >> match('[^\(\)]').repeat(1).as(:string_literal) >> str(")") }
 
-  rule(:string_hex)     { str("<") >> match('[A-Fa-f0-9]').repeat.as(:string_hex) >> str(">") }
+  rule(:string_hex)     { str("<") >> match('[A-Fa-f0-9]').repeat(2).as(:string_hex) >> str(">") }
 
   rule(:array)          { str("[") >> doc.as(:array) >> str("]") }
 
   rule(:dict)           { str("<<") >> doc.as(:dict) >> str(">>") }
 
-  rule(:name)           { str('/') >> match('[A-Za-z]').repeat.as(:name) }
+  rule(:name)           { str('/') >> nondelim.repeat(1).as(:name) }
 
   rule(:float)          { (match('[0-9]').repeat(1) >> str('.') >> match('[0-9]').repeat(1) ).as(:float) }
 
@@ -233,7 +236,55 @@ describe PdfParser do
 
   it "should parse a pdf name with spaces" do
     str = " /James "
-    ast = [ { :name => :James } ]
+    ast = [ { :name => "James" } ]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a name with odd but legal characters" do
+    str = "/A;Name_With-Various***Characters?"
+    ast = [ { :name => "A;Name_With-Various***Characters?" } ]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a name that looks like a float" do
+    str = "/1.2"
+    ast = [ { :name => "1.2" } ]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a name with dollar signs" do
+    str = "/$$"
+    ast = [ { :name => "$$" } ]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a name with an @ sign" do
+    str = "/@pattern"
+    ast = [ { :name => "@pattern" } ]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a name with an decimal point" do
+    str = "/.notdef"
+    ast = [ { :name => ".notdef" } ]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a name with an encoded space" do
+    str = "/James#20Healy"
+    ast = [ { :name => "James#20Healy" } ]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a name with an encoded #" do
+    str = "/James#23Healy"
+    ast = [ { :name => "James#23Healy" } ]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a name with an encoded m" do
+    str = "/Ja#6des"
+    ast = [ { :name => "Ja#6des" } ]
     parser.parse(str).should == ast
   end
 
