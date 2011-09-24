@@ -124,6 +124,12 @@ class PdfTransform < Parslet::Transform
   rule(:boolean => simple(:value)) { value == "true" }
 
   rule(:null => simple(:value)) { nil }
+
+  rule(:array => subtree(:contents)) { PdfTransform.new.apply(contents) }
+
+  rule(:dict => subtree(:contents)) { 
+    Hash[*PdfTransform.new.apply(contents)]
+  }
 end
 
 
@@ -168,6 +174,32 @@ describe PdfTransform do
   it "transforms a null" do
     str = [{ :null => "null"}]
     transform.apply(str).should == [ nil ]
+  end
+
+  it "transforms an array" do
+    ast = [
+      { :array => [
+        {:integer => "1"},
+        {:integer => "2"},
+        {:integer => "3"},
+        {:integer => "4"}
+        ]
+      }
+    ]
+    transform.apply(ast).should == [ [1, 2, 3, 4] ]
+  end
+
+  it "transforms a dict" do
+    ast = [
+      { :dict => [
+        {:name => "One"},
+        {:integer => "1"},
+        {:name => "Two"},
+        {:integer => "2"}
+        ]
+      }
+    ]
+    transform.apply(ast).should == [ {:One => 1, :Two => 2} ]
   end
 end
 
