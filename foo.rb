@@ -6,13 +6,18 @@ class PdfParser < Parslet::Parser
   rule(:space)      { (str("\x00") | str("\x09") | str("\x0A") | str("\x0C") | str("\x0D") | str("\x20")).repeat(1) }
   rule(:space?)     { space.maybe }
 
-  # match any regular byte, basically anything that isn't whitespace or a 
+  # match any regular byte, basically anything that isn't whitespace or a
   # delimiter
   rule(:regular)   { match('[^\(\)<>\[\]{}/%\x00\x09\x0A\x0C\x0D\x20]')}
 
   rule(:doc) { ( string_literal | string_hex | array | dict | name | boolean | null | keyword | indirect | float | integer | space ).repeat }
 
-  rule(:string_literal) { str("(") >> match('[^\(\)]').repeat(1).as(:string_literal) >> str(")") }
+  rule(:string_literal) {
+    str("(") >> (
+      (str('\\') >> any) |
+      (str(')').absent? >> any)
+    ).repeat.as(:string_literal) >> str(")")
+  }
 
   rule(:string_hex)     { str("<") >> match('[A-Fa-f0-9]').repeat(2).as(:string_hex) >> str(">") }
 
@@ -39,6 +44,15 @@ end
 
 class PdfTransform < Parslet::Transform
   rule(:string_literal => simple(:value)) { value }
+  rule(:string_literal => subtree(:value)) {
+    if value.is_a?(String)
+      value
+    elsif value.is_a?(Array) && value.empty?
+      ""
+    else
+      PdfTransform.new.apply(value)
+    end
+  }
 
   rule(:string_hex => simple(:value)) {
     value.scan(/../).map { |i| i.hex.chr }.join
@@ -84,6 +98,11 @@ describe PdfTransform do
   it "transforms a literal string" do
     str = [{ :string_literal => "abc"}]
     transform.apply(str).should == %w{ abc }
+  end
+
+  it "transforms a an empty literal string" do
+    ast = [{ :string_literal => [] }]
+    transform.apply(ast).should == [ "" ]
   end
 
   it "transforms a hex string without captials" do
@@ -186,6 +205,66 @@ describe PdfParser do
     ast = [{ :string_literal => "abc" }]
     parser.parse(str).should == ast
   end
+
+  it "should parse an empty string" do
+    str    = "()"
+    ast = [{ :string_literal => [] }]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a string containing spaces" do
+    str    = "(this is a string)"
+    ast = [{ :string_literal => "this is a string" }]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a string containing an escaped newline" do
+    str    = "(this \\n is a string)"
+    ast = [{ :string_literal => "this \\n is a string" }]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a string containing an escaped tab" do
+    str    = "(x \\t x)"
+    ast = [{ :string_literal => "x \\t x" }]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a string containing an escaped octal" do
+    str    = "(x \\101 x)"
+    ast = [{ :string_literal => "x \\101 x" }]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a string containing an escaped octal" do
+    str    = "(x \\61 x)"
+    ast = [{ :string_literal => "x \\61 x" }]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a string containing an escaped digit" do
+    str    = "(x \\1 x)"
+    ast = [{ :string_literal => "x \\1 x" }]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a string containing an escaped left paren" do
+    str    = "(x \\( x)"
+    ast = [{ :string_literal => "x \\( x" }]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a string containing an escaped right paren" do
+    str    = "(x \\) x)"
+    ast = [{ :string_literal => "x \\) x" }]
+    parser.parse(str).should == ast
+  end
+
+  #it "should parse a string containing an balanced nested parens" do
+  #  str    = "((x))"
+  #  ast = [{ :string_literal => "(x)" }]
+  #  parser.parse(str).should == ast
+  #end
 
   it "should parse a hex string without captials" do
     str = "<00ffab>"
