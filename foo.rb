@@ -19,7 +19,7 @@ class PdfParser < Parslet::Parser
     ).repeat.as(:string_literal) >> str(")")
   }
 
-  rule(:string_hex)     { str("<") >> match('[A-Fa-f0-9]').repeat(2).as(:string_hex) >> str(">") }
+  rule(:string_hex)     { str("<") >> (match('[A-Fa-f0-9]') | space).repeat(1).as(:string_hex) >> str(">") }
 
   rule(:array)          { str("[") >> doc.as(:array) >> str("]") }
 
@@ -55,7 +55,8 @@ class PdfTransform < Parslet::Transform
   }
 
   rule(:string_hex => simple(:value)) {
-    value.scan(/../).map { |i| i.hex.chr }.join
+    value << "0" unless value.size % 2 == 0
+    value.gsub(/[^A-F0-9]/i,"").scan(/../).map { |i| i.hex.chr }.join
   }
 
   rule(:name => simple(:value)) { value.to_sym }
@@ -108,6 +109,16 @@ describe PdfTransform do
   it "transforms a hex string without captials" do
     str = [{ :string_hex => "00ffab"}]
     transform.apply(str).should == [ "\x00\xff\xab" ]
+  end
+
+  it "transforms a hex string with spaces" do
+    str = [{ :string_hex => "00ff ab"}]
+    transform.apply(str).should == [ "\x00\xff\xab" ]
+  end
+
+  it "transforms a hex string with an odd number of characters" do
+    str = [{ :string_hex => "00ffa"}]
+    transform.apply(str).should == [ "\x00\xff\xa0" ]
   end
 
   it "transforms a PDF Name to a ruby symbol" do
@@ -281,6 +292,12 @@ describe PdfParser do
   it "should parse two hex strings" do
     str = " <00FF> <2030>"
     ast = [ { :string_hex => "00FF"}, {:string_hex => "2030"} ]
+    parser.parse(str).should == ast
+  end
+
+  it "should parse a hex string with whitespace" do
+    str = " <00FF\n2030>"
+    ast = [ { :string_hex => "00FF\n2030"} ]
     parser.parse(str).should == ast
   end
 
