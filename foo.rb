@@ -64,6 +64,18 @@ class PdfTransform < Parslet::Transform
   rule(:keyword => simple(:value)) { value}
 end
 
+class Parser
+
+  def initialize (str, objects=nil)
+    ast     = PdfParser.new.parse(str)
+    @tokens  = PdfTransform.new.apply(ast)
+    @objects = objects
+  end
+
+  def parse_token
+    @tokens.shift
+  end
+end
 
 describe PdfTransform do
   let(:transform) { PdfTransform.new }
