@@ -255,19 +255,15 @@ module PDF
       # This returns a deep clone of the current state, ensuring changes are
       # keep separate from earlier states.
       #
-      # YAML is used to round-trip the state through a string to easily perform
-      # the deep clone. Kinda hacky, but effective.
+      # Marshal is used to round-trip the state through a string to easily
+      # perform the deep clone. Kinda hacky, but effective.
       #
       def clone_state
         if @stack.empty?
           {}
         else
-          yaml_lib.load yaml_lib.dump(@stack.last)
+          Marshal.load Marshal.dump(@stack.last)
         end
-      end
-
-      def yaml_lib
-        Kernel.const_defined?("Psych") ? Psych : YAML
       end
 
       # return the current transformation matrix
