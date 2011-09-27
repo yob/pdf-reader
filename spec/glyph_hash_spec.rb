@@ -13,6 +13,11 @@ describe PDF::Reader::GlyphHash do
     map[:zukatakana].should eql(0x30BA)
   end
 
+  it "should correctly map a glyph name with underscores to unicode" do
+    map = PDF::Reader::GlyphHash.new
+    map[:f_i].should eql(map[:fi])
+  end
+
   it "should correctly map a uniHHHH glyph to unicode" do
     map = PDF::Reader::GlyphHash.new
     map[:uni0032].should eql(0x0032)

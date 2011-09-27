@@ -48,6 +48,7 @@ class PDF::Reader
     def [](name)
       return nil unless name.is_a?(Symbol)
 
+      name = name.to_s.gsub('_', '').intern
       str = name.to_s
 
       if @adobe.has_key?(name)
