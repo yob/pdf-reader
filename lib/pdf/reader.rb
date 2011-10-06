@@ -128,7 +128,7 @@ module PDF
         nil
       else
         xml = stream.unfiltered_data
-        xml.force_encoding("utf-8")
+        xml.force_encoding("utf-8") if xml.respond_to?(:force_encoding)
         xml
       end
     end
