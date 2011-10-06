@@ -2,7 +2,7 @@
 # which will make the gem filesize irritatingly large
 Gem::Specification.new do |spec|
   spec.name = "pdf-reader"
-  spec.version = "0.12.0.alpha"
+  spec.version = "1.0.0.beta1"
   spec.summary = "A library for accessing the content of PDF files"
   spec.description = "The PDF::Reader library implements a PDF parser conforming as much as possible to the PDF specification from Adobe"
   spec.files =  Dir.glob("{examples,lib}/**/**/*") + ["Rakefile"]
@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
 
   ********************************************
 
-  This is an alpha release of PDF::Reader to gather feedback on the proposed
+  This is a beta release of PDF::Reader to gather feedback on the proposed
   API changes.
 
   The old API is marked as deprecated but will continue to work with no

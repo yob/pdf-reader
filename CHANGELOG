@@ -1,4 +1,4 @@
-v0.13.0.alpha (XXX)
+v1.0.0.beta1 (6th October 2011)
 - ensure inline images that contain "EI" are correctly parsed
   (thanks Bernard Schaefer)
 - fix parsing of inline image data
@@ -11,7 +11,7 @@ v0.12.0.alpha (28th August 2011)
     need to do so themselves
 - add support for RunLengthDecode filters (thanks Bernerd Schaefer)
 - add support for standard PDF encryption (thanks Evan Brunner)
-- add support for decoding stream wityh TIFF prediction
+- add support for decoding stream with TIFF prediction
 - new PDF::Reader::FormXObject class to simplify working with form XObjects
 
 v0.11.0.alpha (19th July 2011)
