@@ -215,7 +215,7 @@ class PDF::Reader
         str << chr
       end
 
-      @tokens << str[0..-3].strip
+      @tokens << string_token(str[0..-3].strip)
       @io.seek(-3, IO::SEEK_CUR) unless chr.nil?
     end
 
@@ -341,6 +341,17 @@ class PDF::Reader
       chr = @io.read(1)
       @io.seek(-1, IO::SEEK_CUR) unless chr.nil?
       chr
+    end
+
+    # for a handful of tokens we want to tell the parser how to convert them
+    # into higher level tokens. This methods adds a to_token() method
+    # to tokens that should remain as strings.
+    #
+    def string_token(token)
+      def token.to_token
+        to_s
+      end
+      token
     end
   end
 end

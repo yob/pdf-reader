@@ -243,4 +243,29 @@ describe PDF::Reader, "integration specs" do
       end
     }.should raise_error(PDF::Reader::EncryptedPDFError)
   end
+
+  it "should extract inline images correctly" do
+    @browser = PDF::Reader.new(pdf_spec_file("inline_image"))
+    @page    = @browser.page(1)
+
+    receiver = PDF::Reader::RegisterReceiver.new
+    @page.walk(receiver)
+
+    callbacks = receiver.series(:begin_inline_image, :begin_inline_image_data, :end_inline_image)
+
+    # inline images should trigger 3 callbacks. The first with no args.
+    callbacks[0].should == {:name => :begin_inline_image, :args => []}
+
+    # the second with the image header (colorspace, etc)
+    callbacks[1].should == {:name => :begin_inline_image_data, :args => [:CS, :RGB, :I, true, :W, 234, :H, 70, :BPC, 8]}
+
+    # the last with the image data
+    callbacks[2][:name].should == :end_inline_image
+    image_data =  callbacks[2][:args].first
+
+    image_data.should be_a(String)
+    image_data.size.should  == 49140
+    image_data[0,3].unpack("C*").should   == [255,255,255]
+    image_data[-3,3].unpack("C*").should  == [255,255,255]
+  end
 end

@@ -59,7 +59,8 @@ class PDF::Reader
       when "stream", "endstream"       then return Token.new(token)
       when ">>", "]", ">", ")"         then return Token.new(token)
       else
-        if operators.has_key?(token)   then return Token.new(token)
+        if token.respond_to?(:to_token) then return token.to_token
+        elsif operators.has_key?(token)   then return Token.new(token)
         elsif token =~ /\d*\.\d/       then return token.to_f
         else                           return token.to_i
         end
