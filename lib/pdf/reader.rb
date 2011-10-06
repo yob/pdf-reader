@@ -118,7 +118,8 @@ module PDF
     end
 
     def info
-      @objects.deref(@objects.trailer[:Info])
+      dict = @objects.deref(@objects.trailer[:Info])
+      doc_strings_to_utf8(dict)
     end
 
     def metadata
@@ -268,6 +269,43 @@ module PDF
     end
 
     private
+
+    # recursively convert strings from outside a content stream intop UTF-8
+    #
+    def doc_strings_to_utf8(obj)
+      case obj
+      when ::Hash then
+        {}.tap { |new_hash|
+          obj.each do |key, value|
+            new_hash[key] = doc_strings_to_utf8(value)
+          end
+        }
+      when Array then
+        obj.map { |item| doc_strings_to_utf8(item) }
+      when String then
+        if obj[0,2].unpack("C*") == [254, 255]
+          utf16_to_utf8(obj)
+        else
+          pdfdoc_to_utf8(obj)
+        end
+      else
+        obj
+      end
+    end
+
+    # TODO find a PDF I can use to spec this behaviour
+    #
+    def pdfdoc_to_utf8(obj)
+      obj
+    end
+
+    # one day we'll all run on a 1.9 compatible VM and I can just do this with
+    # String#encode
+    #
+    def utf16_to_utf8(obj)
+      str = obj[2, obj.size]
+      str.unpack("n*").pack("U*")
+    end
 
     def strategies
       @strategies ||= [
