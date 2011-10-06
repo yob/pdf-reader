@@ -124,7 +124,13 @@ module PDF
 
     def metadata
       stream = @objects.deref(root[:Metadata])
-      stream ? stream.unfiltered_data : nil
+      if stream.nil?
+        nil
+      else
+        xml = stream.unfiltered_data
+        xml.force_encoding("utf-8")
+        xml
+      end
     end
 
     def page_count

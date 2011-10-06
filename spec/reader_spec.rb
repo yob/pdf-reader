@@ -83,6 +83,13 @@ describe PDF::Reader do
       metadata.should include("<x:xmpmeta")
     end
 
+    if RUBY_VERSION >= "1.9.2"
+      it "should return the metadata string marked as UTF-8" do
+        metadata = PDF::Reader.new(no_text_spaces).metadata
+
+        metadata.encoding.should == Encoding::UTF_8
+      end
+    end
   end
 
   describe "pages()" do
