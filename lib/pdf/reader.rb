@@ -296,6 +296,7 @@ module PDF
     # TODO find a PDF I can use to spec this behaviour
     #
     def pdfdoc_to_utf8(obj)
+      obj.force_encoding("utf-8") if obj.respond_to?(:force_encoding)
       obj
     end
 
@@ -305,6 +306,8 @@ module PDF
     def utf16_to_utf8(obj)
       str = obj[2, obj.size]
       str.unpack("n*").pack("U*")
+      str.force_encoding("utf-8") if str.respond_to?(:force_encoding)
+      str
     end
 
     def strategies

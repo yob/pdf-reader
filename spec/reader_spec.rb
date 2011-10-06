@@ -59,6 +59,16 @@ describe PDF::Reader do
       info[:Producer].should == "OpenOffice.org 3.2"
       info[:CreationDate].should == "D:20101113071546-06'00'"
     end
+
+    if RUBY_VERSION >= "1.9.2"
+      it "should return an info hash with strings marked as UTF-8" do
+        info = PDF::Reader.new(oo3).info
+
+        info[:Creator].encoding.should      == Encoding::UTF_8
+        info[:Producer].encoding.should     == Encoding::UTF_8
+        info[:CreationDate].encoding.should == Encoding::UTF_8
+      end
+    end
   end
 
   describe "metadata()" do
