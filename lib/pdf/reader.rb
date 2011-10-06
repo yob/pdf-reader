@@ -305,7 +305,7 @@ module PDF
     #
     def utf16_to_utf8(obj)
       str = obj[2, obj.size]
-      str.unpack("n*").pack("U*")
+      str = str.unpack("n*").pack("U*")
       str.force_encoding("utf-8") if str.respond_to?(:force_encoding)
       str
     end
