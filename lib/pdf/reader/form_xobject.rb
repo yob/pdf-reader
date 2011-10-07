@@ -24,6 +24,12 @@ module PDF
         @resources ||= @objects.deref(@xobject.hash[:Resources]) || {}
       end
 
+      # Returns a Hash of XObjects that are available to this page
+      #
+      def xobjects
+        @objects.deref(@resources[:XObject]) || {}
+      end
+
       # return a hash of fonts used on this form.
       #
       # The keys are the font labels used within the form content stream.

@@ -31,6 +31,7 @@ module PDF
         @objects = page.objects
         @fonts   = build_fonts(page.fonts)
         @form_fonts = {}
+        @form_xobjects = {}
         @content = {}
         @stack   = [DEFAULT_GRAPHICS_STATE]
       end
@@ -194,17 +195,20 @@ module PDF
       #####################################################
       def invoke_xobject(label)
         save_graphics_state
-        xobject = @objects.deref(@page.xobjects[label])
+        xobject   = @objects.deref(@form_xobjects[label])
+        xobject ||= @objects.deref(@page.xobjects[label])
 
         matrix = xobject.hash[:Matrix]
         concatenate_matrix(*matrix) if matrix
 
         if xobject.hash[:Subtype] == :Form
           form = PDF::Reader::FormXObject.new(@page, xobject)
-          @form_fonts = form.fonts
+          @form_fonts    = form.fonts
+          @form_xobjects = form.xobjects
           form.walk(self)
         end
         @form_fonts = {}
+        @form_xobjects = {}
 
         restore_graphics_state
       end
