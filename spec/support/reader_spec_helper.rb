@@ -12,7 +12,7 @@ module ReaderSpecHelper
     elsif File.file?(invalid_filename)
       return invalid_filename
     else
-      raise ArgumentError, "#{filename} not found"
+      raise ArgumentError, "#{valid_filename} not found"
     end
   end
 
