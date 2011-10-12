@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # coding: utf-8
 
 # This demonstrates a way to extract some images (those based on the JPG or

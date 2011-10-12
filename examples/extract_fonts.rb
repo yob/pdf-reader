@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # coding: utf-8
 
 # This demonstrates a way to extract TTF fonts from a PDF. It could be expanded
