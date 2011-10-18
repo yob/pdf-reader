@@ -97,6 +97,30 @@ class PDF::Reader
     end
     alias :deref :object
 
+    # Recursively dereferences the object refered to be +key+. If +key+ is not
+    # a PDF::Reader::Reference, the key is returned unchanged.
+    #
+    def deref!(key)
+      case object = deref(key)
+
+        when Hash
+          object.each do |key, value|
+            object[key] = deref! value
+          end
+
+        when PDF::Reader::Stream
+          deref! object.hash
+
+        when Array
+          object.each_with_index do |value, index|
+            object[index] = deref! value
+          end
+
+      end
+
+      object
+    end
+
     # Access an object from the PDF. key can be an int or a PDF::Reader::Reference
     # object.
     #

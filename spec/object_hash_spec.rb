@@ -81,6 +81,40 @@ describe PDF::Reader::ObjectHash, "object method" do
   end
 end
 
+describe PDF::Reader::ObjectHash, "deref! method" do
+
+  let(:hash) do
+    PDF::Reader::ObjectHash.new pdf_spec_file("cairo-unicode")
+  end
+
+  it "should return regular objects unchanged" do
+    hash.deref!(-1).should      eql(-1)
+    hash.deref!(nil).should     be_nil
+    hash.deref!("James").should eql("James")
+  end
+
+  it "should translate reference objects into an extracted PDF object" do
+    hash.deref!(PDF::Reader::Reference.new(3,0)).should eq 3649
+  end
+
+  it "should recursively dereference references within hashes" do
+    font_descriptor = hash.deref! PDF::Reader::Reference.new(17, 0)
+    font_descriptor[:FontFile3].should be_an_instance_of \
+      PDF::Reader::Stream
+  end
+
+  it "should recursively dereference references within stream hashes" do
+    font_file = hash.deref! PDF::Reader::Reference.new(15, 0)
+    font_file.hash[:Length].should eq 2103
+  end
+
+  it "should recursively dereference references within arrays" do
+    font = hash.deref! PDF::Reader::Reference.new(19, 0)
+    font[:DescendantFonts][0][:Subtype].should eq :CIDFontType0
+  end
+
+end
+
 describe PDF::Reader::ObjectHash, "fetch method" do
 
   it "should raise IndexError for any invalid hash key when no default is provided" do
