@@ -145,28 +145,8 @@ describe PDF::Reader::Page, "attributes()" do
     attribs[:Type].should eql(:Page)
   end
 
-
 end
 
-describe PDF::Reader::Page, "resources()" do
-
-  it "should contain resources from the Page object" do
-    @browser = PDF::Reader.new(pdf_spec_file("inherited_page_attributes"))
-    @page    = @browser.page(1)
-
-    @page.resources.should      be_a_kind_of(Hash)
-    @page.resources.size.should eql(2)
-  end
-
-  it "should contain inherited resources" do
-    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
-    @page    = @browser.page(1)
-
-    @page.resources.should      be_a_kind_of(Hash)
-    @page.resources.size.should eql(2)
-  end
-
-end
 
 describe PDF::Reader::Page, "fonts()" do
 
@@ -178,6 +158,16 @@ describe PDF::Reader::Page, "fonts()" do
     @page.fonts.size.should eql(1)
     @page.fonts.keys.should eql([:"CairoFont-0-0"])
   end
+
+  it "should contain inherited resources" do
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
+    @page    = @browser.page(1)
+
+    @page.fonts.should      be_a_kind_of(Hash)
+    @page.fonts.size.should eql(1)
+    @page.fonts.keys.should eql([:"CairoFont-0-0"])
+  end
+
 end
 
 describe PDF::Reader::Page, "color_spaces()" do

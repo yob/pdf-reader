@@ -203,7 +203,7 @@ module PDF
 
         if xobject.hash[:Subtype] == :Form
           form = PDF::Reader::FormXObject.new(@page, xobject)
-          @form_fonts    = form.fonts
+          @form_fonts    = form.font_objects
           @form_xobjects = form.xobjects
           form.walk(self)
         end
