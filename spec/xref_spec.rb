@@ -81,3 +81,18 @@ describe PDF::Reader::XRef, "when operating on a pdf that uses an XRef Stream" d
   end
 
 end
+
+describe PDF::Reader::XRef, "when operating on a pdf with an invalid XRef Stream" do
+
+  let(:table) do
+    file = File.new(pdf_spec_file("cross_ref_stream"))
+    PDF::Reader::XRef.new(file)
+  end
+
+  it "should raise an error when attempting to load the xref stream" do
+    lambda do
+      table.send(:load_xref_stream, {:Subject=>"\xFE\xFF"})
+    end.should raise_exception(PDF::Reader::MalformedPDFError)
+  end
+
+end
