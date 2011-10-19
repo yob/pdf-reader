@@ -151,14 +151,11 @@ class PDF::Reader
     #
     def prepare_tokens
       10.times do
-        if state == :literal_string
-          prepare_literal_token
-        elsif state == :hex_string
-          prepare_hex_token
-        elsif state == :regular
-          prepare_regular_token
-        elsif state == :inline
-          prepare_inline_token
+        case state
+        when :literal_string then prepare_literal_token
+        when :hex_string     then prepare_hex_token
+        when :regular        then prepare_regular_token
+        when :inline         then prepare_inline_token
         end
       end
 
