@@ -331,6 +331,7 @@ module PDF
 end
 ################################################################################
 
+require 'pdf/reader/resource_methods'
 require 'pdf/reader/abstract_strategy'
 require 'pdf/reader/buffer'
 require 'pdf/reader/cmap'
