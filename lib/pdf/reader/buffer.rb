@@ -166,14 +166,12 @@ class PDF::Reader
     # Determine the current context/state by examining the last token we found
     #
     def state
-      if @tokens[-1] == "("
-        :literal_string
-      elsif @tokens[-1] == "<"
-        :hex_string
-      elsif @tokens[-1] == "stream"
-        :stream
-      elsif in_content_stream? && @tokens[-1] == "ID"
-        :inline
+      case @tokens.last
+      when "(" then :literal_string
+      when "<" then :hex_string
+      when "stream" then :stream
+      when "ID"
+        in_content_stream? ? :inline : :regular
       else
         :regular
       end
