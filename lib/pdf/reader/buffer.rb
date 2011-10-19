@@ -204,13 +204,18 @@ class PDF::Reader
     def prepare_inline_token
       str = ""
 
-      while str !~ /\sEI$/
+      buffer = []
+
+      until buffer[0] =~ /\s/ && buffer[1, 2] == ["E", "I"]
         chr = @io.read(1)
-        break if chr.nil?
-        str << chr
+        buffer << chr
+
+        if buffer.length > 3
+          str << buffer.shift
+        end
       end
 
-      @tokens << string_token(str[0..-3].strip)
+      @tokens << string_token(str.strip)
       @io.seek(-3, IO::SEEK_CUR) unless chr.nil?
     end
 
