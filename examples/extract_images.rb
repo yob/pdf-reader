@@ -29,9 +29,6 @@ module ExtractImages
       return count if xobjects.empty?
 
       xobjects.each do |name, stream|
-        #next if complete_refs[stream]
-        #complete_refs[stream] = true
-
         case stream.hash[:Subtype]
         when :Image then
           count += 1
