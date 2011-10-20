@@ -28,6 +28,31 @@ class PDF::Reader
   # An internal PDF::Reader class that reads objects from the PDF file and converts
   # them into useable ruby objects (hash's, arrays, true, false, etc)
   class Parser
+
+    TOKEN_STRATEGY = proc { |parser, token| Token.new(token) }
+
+    STRATEGIES = {
+      "/"  => proc { |parser, token| parser.send(:pdf_name) },
+      "<<" => proc { |parser, token| parser.send(:dictionary) },
+      "["  => proc { |parser, token| parser.send(:array) },
+      "("  => proc { |parser, token| parser.send(:string) },
+      "<"  => proc { |parser, token| parser.send(:hex_string) },
+
+      nil     => proc { nil },
+      "true"  => proc { true },
+      "false" => proc { false },
+      "null"  => proc { nil },
+
+      "obj"       => TOKEN_STRATEGY,
+      "endobj"    => TOKEN_STRATEGY,
+      "stream"    => TOKEN_STRATEGY,
+      "endstream" => TOKEN_STRATEGY,
+      ">>"        => TOKEN_STRATEGY,
+      "]"         => TOKEN_STRATEGY,
+      ">"         => TOKEN_STRATEGY,
+      ")"         => TOKEN_STRATEGY
+    }
+
     ################################################################################
     # Create a new parser around a PDF::Reader::Buffer object
     #
@@ -45,25 +70,20 @@ class PDF::Reader
     def parse_token (operators={})
       token = @buffer.token
 
-      case token
-      when PDF::Reader::Reference, nil then return token
-      when "/"                         then return pdf_name()
-      when "<<"                        then return dictionary()
-      when "["                         then return array()
-      when "("                         then return string()
-      when "<"                         then return hex_string()
-      when "true"                      then return true
-      when "false"                     then return false
-      when "null"                      then return nil
-      when "obj", "endobj", "stream", "endstream" then return Token.new(token)
-      when "stream", "endstream"       then return Token.new(token)
-      when ">>", "]", ">", ")"         then return Token.new(token)
+      if STRATEGIES.has_key? token
+        strategy = STRATEGIES[token]
+
+        strategy.call(self, token)
+      elsif token.is_a? PDF::Reader::Reference
+        token
+      elsif token.is_a? Token
+        token
+      elsif operators.has_key? token
+        Token.new(token)
+      elsif token =~ /\d*\.\d/
+        token.to_f
       else
-        if token.respond_to?(:to_token) then return token.to_token
-        elsif operators.has_key?(token)   then return Token.new(token)
-        elsif token =~ /\d*\.\d/       then return token.to_f
-        else                           return token.to_i
-        end
+        token.to_i
       end
     end
     ################################################################################
