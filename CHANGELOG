@@ -1,4 +1,7 @@
-v0.9.4 (XXX)
+v0.10.1 (20th October 2011)
+- simple license change to glyph data file, no code changes
+
+v0.10.0 (6th July 2011)
 - support multiple receivers within a single pass over a source file
   - massive time saving when dealing with multiple receivers
 
