@@ -18,8 +18,19 @@ describe PDF::Reader::Font do
     font.encoding.should be_a_kind_of(PDF::Reader::Encoding)
   end
 
-  it "should correctly attempt to convert various strings to utf-8" do
-    # TODO: create a mock encoding object and ensure to_utf8 is called on it
+  it "should correctly attempt to convert strings to utf-8" do
+    encoding = stub
+    font.encoding = encoding
+    encoding.should_receive(:to_utf8).with("hello", font.tounicode)
+    font.to_utf8("hello")
+  end
+
+  it "should correctly attempt to convert strings in arrays to utf-8" do
+    encoding = stub
+    font.encoding = encoding
+    encoding.should_receive(:to_utf8).with("hello", font.tounicode)
+    encoding.should_receive(:to_utf8).with("howdy", font.tounicode)
+    font.to_utf8(["hello", 1, "howdy"])
   end
 
   it "should return the same type when to_utf8 is called" do
