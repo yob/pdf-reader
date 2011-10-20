@@ -130,7 +130,7 @@ class PDF::Reader
     # reads a PDF name from the buffer and converts it to a Ruby Symbol
     def pdf_name
       tok = @buffer.token
-      tok.gsub! /#([A-Fa-f0-9]{2})/ do
+      tok.gsub!(/#([A-Fa-f0-9]{2})/) do
         $1.hex.chr
       end
       tok.to_sym
