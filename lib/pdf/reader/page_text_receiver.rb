@@ -202,6 +202,7 @@ module PDF
         xobject   = @objects.deref(@form_xobjects[label])
         xobject ||= @objects.deref(@page.xobjects[label])
 
+        raise MalformedPDFError, "XObject #{label} not found" if xobject.nil?
         matrix = xobject.hash[:Matrix]
         concatenate_matrix(*matrix) if matrix
 
