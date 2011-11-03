@@ -30,6 +30,7 @@ class PDF::Reader
 
     attr_accessor :default
     attr_reader :trailer, :pdf_version
+    attr_reader :sec_handler
 
     # Creates a new ObjectHash object. Input can be a string with a valid filename
     # or an IO-like object.
@@ -104,8 +105,8 @@ class PDF::Reader
       case object = deref(key)
 
         when Hash
-          object.each do |key, value|
-            object[key] = deref! value
+          object.each do |k, value|
+            object[k] = deref! value
           end
 
         when PDF::Reader::Stream
@@ -262,6 +263,10 @@ class PDF::Reader
       trailer.has_key?(:Encrypt)
     end
 
+    def sec_handler?
+      !!sec_handler
+    end
+
     private
 
     def build_security_handler(opts = {})
@@ -277,11 +282,11 @@ class PDF::Reader
     end
 
     def decrypt(ref, obj)
-      return obj if @sec_handler.nil?
+      return obj unless sec_handler?
 
       case obj
       when PDF::Reader::Stream then
-        obj.data = @sec_handler.decrypt(obj.data, ref)
+        obj.data = sec_handler.decrypt(obj.data, ref)
         obj
       when Hash                then
         arr = obj.map { |key,val| [key, decrypt(ref, val)] }.flatten(1)
@@ -289,7 +294,7 @@ class PDF::Reader
       when Array               then
         obj.collect { |item| decrypt(ref, item) }
       when String
-        @sec_handler.decrypt(obj, ref)
+        sec_handler.decrypt(obj, ref)
       else
         obj
       end

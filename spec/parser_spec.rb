@@ -134,11 +134,11 @@ describe PDF::Reader::Parser do
 
   it "should parse numbers correctly" do
     parser = parse_string("1 2 -3 4.5 -5")
-    parser.parse_token.should == 1
-    parser.parse_token.should == 2
-    parser.parse_token.should == -3
-    parser.parse_token.should == 4.5
-    parser.parse_token.should == -5
+    parser.parse_token.should eql 1
+    parser.parse_token.should eql 2
+    parser.parse_token.should eql -3
+    parser.parse_token.should eql 4.5
+    parser.parse_token.should eql -5
   end
 
 end

@@ -37,7 +37,7 @@ module PDF
           while bits_left_in_chunk > 0 and @current_pos < @data.size
             chunk = 0 if chunk.nil?
             codepoint = @data[@current_pos, 1].unpack("C*")[0]
-            current_byte = codepoint & (2**@bits_left_in_byte -1) #clear consumed bits
+            current_byte = codepoint & (2**@bits_left_in_byte - 1) #clear consumed bits
             dif = bits_left_in_chunk - @bits_left_in_byte
             if dif > 0 then  current_byte <<= dif
             elsif dif < 0 then  current_byte >>= dif.abs
@@ -82,7 +82,7 @@ module PDF
       def self.decode(data)
         stream = BitStream.new data.to_s, 9 # size of codes between 9 and 12 bits
         result = ''
-        while not (code = stream.read) == CODE_EOD
+        until (code = stream.read) == CODE_EOD
           if code == CODE_CLEAR_TABLE
             string_table = StringTable.new
             code = stream.read
