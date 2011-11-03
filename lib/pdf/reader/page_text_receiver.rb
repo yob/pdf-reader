@@ -29,9 +29,8 @@ module PDF
       def page=(page)
         @page    = page
         @objects = page.objects
-        @fonts   = build_fonts(page.fonts)
-        @form_fonts = {}
-        @form_xobjects = {}
+        @font_stack    = [build_fonts(page.fonts)]
+        @xobject_stack = [page.xobjects]
         @content = {}
         @stack   = [DEFAULT_GRAPHICS_STATE]
       end
@@ -199,8 +198,10 @@ module PDF
       #####################################################
       def invoke_xobject(label)
         save_graphics_state
-        xobject   = @objects.deref(@form_xobjects[label])
-        xobject ||= @objects.deref(@page.xobjects[label])
+        dict = @xobject_stack.detect { |xobjects|
+          xobjects.has_key?(label)
+        }
+        xobject = dict ? dict[label] : nil
 
         raise MalformedPDFError, "XObject #{label} not found" if xobject.nil?
         matrix = xobject.hash[:Matrix]
@@ -208,12 +209,12 @@ module PDF
 
         if xobject.hash[:Subtype] == :Form
           form = PDF::Reader::FormXObject.new(@page, xobject)
-          @form_fonts    = form.font_objects
-          @form_xobjects = form.xobjects
+          @font_stack.unshift(form.font_objects)
+          @xobject_stack.unshift(form.xobjects)
           form.walk(self)
+          @font_stack.shift
+          @xobject_stack.shift
         end
-        @form_fonts = {}
-        @form_xobjects = {}
 
         restore_graphics_state
       end
@@ -278,7 +279,10 @@ module PDF
       end
 
       def current_font
-        @form_fonts[state[:text_font]] || @fonts[state[:text_font]]
+        dict = @font_stack.detect { |fonts|
+          fonts.has_key?(state[:text_font])
+        }
+        dict ? dict[state[:text_font]] : nil
       end
 
       # private class for representing points on a cartesian plain. Used
