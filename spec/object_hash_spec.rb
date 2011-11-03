@@ -113,6 +113,20 @@ describe PDF::Reader::ObjectHash, "deref! method" do
     font[:DescendantFonts][0][:Subtype].should eq :CIDFontType0
   end
 
+  it "should return a new Hash, not mutate the provided Hash" do
+    orig_collection = {}
+    new_collection  = hash.deref!(orig_collection)
+
+    orig_collection.object_id.should_not == new_collection.object_id
+  end
+
+  it "should return a new Array, not mutate the provided Array" do
+    orig_collection = []
+    new_collection  = hash.deref!(orig_collection)
+
+    orig_collection.object_id.should_not == new_collection.object_id
+  end
+
 end
 
 describe PDF::Reader::ObjectHash, "fetch method" do

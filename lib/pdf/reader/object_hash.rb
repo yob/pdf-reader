@@ -103,23 +103,20 @@ class PDF::Reader
     #
     def deref!(key)
       case object = deref(key)
-
-        when Hash
+      when Hash
+        {}.tap { |hash|
           object.each do |k, value|
-            object[k] = deref! value
+            hash[k] = deref!(value)
           end
-
-        when PDF::Reader::Stream
-          deref! object.hash
-
-        when Array
-          object.each_with_index do |value, index|
-            object[index] = deref! value
-          end
-
+        }
+      when PDF::Reader::Stream
+        object.hash = deref!(object.hash)
+        object
+      when Array
+        object.map { |value| deref!(value) }
+      else
+        object
       end
-
-      object
     end
 
     # Access an object from the PDF. key can be an int or a PDF::Reader::Reference
