@@ -71,15 +71,15 @@ class PDF::Reader
       token = @buffer.token
 
       if STRATEGIES.has_key? token
-        strategy = STRATEGIES[token]
-
-        strategy.call(self, token)
+        STRATEGIES[token].call(self, token)
       elsif token.is_a? PDF::Reader::Reference
         token
       elsif token.is_a? Token
         token
       elsif operators.has_key? token
         Token.new(token)
+      elsif token.respond_to?(:to_token)
+        token.to_token
       elsif token =~ /\d*\.\d/
         token.to_f
       else
