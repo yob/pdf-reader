@@ -108,7 +108,8 @@ describe PDF::Reader do
           else
             bytes_per_pixel = bits / 8.0
           end
-          assert_equal (width * height * bytes_per_pixel).to_i, args[1].size
+          length = (width * height * bytes_per_pixel).to_i
+          assert_equal length, args[1].size
         end
 
       end
@@ -238,7 +239,7 @@ describe PDF::Reader do
       it "should return an array of Numbers and UTF-8 strings on #{filename}" do
         receiver.all_args(:show_text_with_positioning).each do |args|
           args[0].each do |arg|
-            assert (arg.class == String || arg.class == Fixnum || arg.class == Float)
+            assert arg.class == String || arg.class == Fixnum || arg.class == Float
           end
           check_utf8(args)
         end
