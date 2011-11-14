@@ -46,7 +46,7 @@ module PDF
         "<PDF::Reader::Page page: #{@pagenum}>"
       end
 
-      # Returns the attributes that accompany this page. Includes
+      # Returns the attributes that accompany this page, including
       # attributes inherited from parents.
       #
       def attributes
