@@ -50,7 +50,7 @@ module PDF
       # attributes inherited from parents.
       #
       def attributes
-        {}.tap { |hash|
+        @attributes ||= {}.tap { |hash|
           page_with_ancestors.reverse.each do |obj|
             hash.merge!(@objects.deref(obj))
           end
