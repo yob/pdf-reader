@@ -32,7 +32,7 @@ this object.
     puts reader.metadata
     puts reader.page_count
 
-PDF::Reader.new can accept an IO stream or a filename. Here's an example with
+PDF::Reader.new accepts an IO stream or a filename. Here's an example with
 an IO stream:
 
     require 'open-uri'
