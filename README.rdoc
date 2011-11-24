@@ -1,10 +1,17 @@
-= PLEASE NOTE!
+= !PLEASE NOTE!
 
 All the examples below are for the latest (pre-release) version of the gem (0.11)
 
-If you have installed the gem via the 'gem install pdf-reader' command the 
-examples below *will not work* for you. Please check the examples that come with 
-previous version of the gem (0.10).
+If you have installed the gem via the rubygems with the command:
+
+    $ gem install pdf-reader
+
+Then the examples below *will not work* for you. Please check the examples that 
+come with previous version of the gem (0.10).
+
+If you want to install the latest version of this gem use the command:
+
+    $ gem install pdf-reader --prerelease
 
 = Release Notes
 
