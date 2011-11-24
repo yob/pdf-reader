@@ -1,3 +1,11 @@
+= PLEASE NOTE
+All the examples below are for the latest (pre-release) version of the gem.
+
+If you have installed the gem via the 'gem install pdf-reader' command the 
+examples below *will not work* for you. Please check the examples that come with 
+previous version of the gem.
+= PLEASE NOTE
+
 The PDF::Reader library implements a PDF parser conforming as much as possible
 to the PDF specification from Adobe.
 
