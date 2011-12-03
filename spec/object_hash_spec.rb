@@ -14,7 +14,7 @@ end
 describe PDF::Reader::ObjectHash do
   it "should correctly load a PDF from a StringIO object" do
     filename = pdf_spec_file("cairo-unicode")
-    io = StringIO.new(File.read(filename))
+    io = StringIO.new(binread(filename))
     h = PDF::Reader::ObjectHash.new(io)
 
     h.map { |ref, obj| obj.class }.size.should eql(57)
