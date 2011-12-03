@@ -15,7 +15,7 @@ describe PDF::Reader::XRef, "initilisation" do
       tbl.xref.keys.size.should eql(15) # 1 xref table with 16 items (ignore the first)
     end
     it "should load all xrefs corectly from a StringIO" do
-      data = StringIO.new(File.read(pdf_spec_file("cairo-basic")))
+      data = StringIO.new(binread(pdf_spec_file("cairo-basic")))
       tbl      = PDF::Reader::XRef.new(data)
       tbl.xref.keys.size.should eql(15) # 1 xref table with 16 items (ignore the first)
     end
@@ -27,7 +27,7 @@ describe PDF::Reader::XRef, "initilisation" do
       tbl.xref.keys.size.should eql(57) # 1 xref table with 58 items (ignore the first)
     end
     it "should load all xrefs corectly from a StringIO" do
-      data = StringIO.new(File.read(pdf_spec_file("cairo-unicode")))
+      data = StringIO.new(binread(pdf_spec_file("cairo-unicode")))
       tbl  = PDF::Reader::XRef.new(data)
       tbl.xref.keys.size.should eql(57) # 1 xref table with 58 items (ignore the first)
     end

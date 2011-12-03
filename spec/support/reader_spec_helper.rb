@@ -16,4 +16,15 @@ module ReaderSpecHelper
     end
   end
 
+  # a safe method for opening a file and loading the contents as 
+  # a binary string.
+  #
+  def binread(filename)
+    if File.respond_to?(:binread)
+      File.binread(filename)
+    else
+      File.open(filename, "rb") { |f| f.read }
+    end
+  end
+
 end

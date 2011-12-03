@@ -86,7 +86,7 @@ end
 end
 EOF
 
-    File.open(pdf_spec_file("zlib_stream_issue")) do |io|
+    File.open(pdf_spec_file("zlib_stream_issue"), "rb") do |io|
       ohash = PDF::Reader::ObjectHash.new(io)
       ref   = PDF::Reader::Reference.new(30,0)
       obj   = ohash.object(ref)
