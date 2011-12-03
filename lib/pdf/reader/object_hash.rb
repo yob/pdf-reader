@@ -342,7 +342,7 @@ class PDF::Reader
       if File.respond_to?(:binread)
         File.binread(input.to_s)
       else
-        File.read(input.to_s)
+        File.open(input.to_s,"rb") { |f| f.read }
       end
     end
 
