@@ -9,17 +9,27 @@ end
 
 describe PDF::Reader::XRef, "initilisation" do
   context "with cairo-basic.pdf" do
-    it "should load all xrefs corectly" do
+    it "should load all xrefs corectly from a File" do
       filename = File.new(pdf_spec_file("cairo-basic"))
       tbl      = PDF::Reader::XRef.new(filename)
+      tbl.xref.keys.size.should eql(15) # 1 xref table with 16 items (ignore the first)
+    end
+    it "should load all xrefs corectly from a StringIO" do
+      data = StringIO.new(File.read(pdf_spec_file("cairo-basic")))
+      tbl      = PDF::Reader::XRef.new(data)
       tbl.xref.keys.size.should eql(15) # 1 xref table with 16 items (ignore the first)
     end
   end
   context "with cairo-unicode.pdf" do
     it "should load all xrefs corectly" do
-      @file = File.new(pdf_spec_file("cairo-unicode"))
-      @tbl  = PDF::Reader::XRef.new(@file)
-      @tbl.xref.keys.size.should eql(57) # 1 xref table with 58 items (ignore the first)
+      file = File.new(pdf_spec_file("cairo-unicode"))
+      tbl  = PDF::Reader::XRef.new(file)
+      tbl.xref.keys.size.should eql(57) # 1 xref table with 58 items (ignore the first)
+    end
+    it "should load all xrefs corectly from a StringIO" do
+      data = StringIO.new(File.read(pdf_spec_file("cairo-unicode")))
+      tbl  = PDF::Reader::XRef.new(data)
+      tbl.xref.keys.size.should eql(57) # 1 xref table with 58 items (ignore the first)
     end
   end
 
