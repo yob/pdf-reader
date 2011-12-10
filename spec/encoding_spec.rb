@@ -5,15 +5,15 @@ require File.dirname(__FILE__) + "/spec_helper"
 describe PDF::Reader::Encoding do
 
   it "should return a new encoding object on request, or raise an error if unrecognised" do
-    lambda { PDF::Reader::Encoding.new("FakeEncoding")}.should raise_error(PDF::Reader::UnsupportedFeatureError)
+    PDF::Reader::Encoding.new("FakeEncoding").should be_a_kind_of(PDF::Reader::Encoding)
     PDF::Reader::Encoding.new(nil).should be_a_kind_of(PDF::Reader::Encoding)
   end
 
   it "should return a new encoding object on request, or raise an error if unrecognised" do
     win =  {:Encoding => :WinAnsiEncoding}
     fake = {:Encoding => :FakeEncoding}
-    PDF::Reader::Encoding.new(win).should be_a_kind_of(PDF::Reader::Encoding)
-    lambda { PDF::Reader::Encoding.new(fake)}.should raise_error(PDF::Reader::UnsupportedFeatureError)
+    PDF::Reader::Encoding.new(win).should  be_a_kind_of(PDF::Reader::Encoding)
+    PDF::Reader::Encoding.new(fake).should be_a_kind_of(PDF::Reader::Encoding)
   end
 
   it "should return a new encoding object with a differences table on request" do

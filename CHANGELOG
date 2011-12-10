@@ -1,6 +1,7 @@
 v1.0.0.beta2 (XXX)
 - performance optimisations (all by Bernerd Schaefer)
 - some improvements to text extraction from form xobjects
+- assume invalid font encodings are StandardEncoding
 
 v1.0.0.beta1 (6th October 2011)
 - ensure inline images that contain "EI" are correctly parsed

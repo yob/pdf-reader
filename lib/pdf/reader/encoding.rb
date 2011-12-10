@@ -137,24 +137,23 @@ class PDF::Reader
     end
 
     def get_mapping_file(enc)
-      return File.dirname(__FILE__) + "/encodings/standard.txt" if enc.nil?
-      files = {
-        :"Identity-H"      => nil,
-        :"Identity-V"      => nil,
-        :MacRomanEncoding  => File.dirname(__FILE__) + "/encodings/mac_roman.txt",
-        :MacExpertEncoding => File.dirname(__FILE__) + "/encodings/mac_expert.txt",
-        :PDFDocEncoding    => File.dirname(__FILE__) + "/encodings/pdf_doc.txt",
-        :StandardEncoding  => File.dirname(__FILE__) + "/encodings/standard.txt",
-        :SymbolEncoding    => File.dirname(__FILE__) + "/encodings/symbol.txt",
-        :UTF16Encoding     => nil,
-        :WinAnsiEncoding   => File.dirname(__FILE__) + "/encodings/win_ansi.txt",
-        :ZapfDingbatsEncoding => File.dirname(__FILE__) + "/encodings/zapf_dingbats.txt"
-      }
-
-      if files.has_key?(enc)
-        files[enc]
+      case enc
+      when :"Identity-H", :"Identity-V", :UTF16Encoding then
+        nil
+      when :MacRomanEncoding then
+        File.dirname(__FILE__) + "/encodings/mac_roman.txt"
+      when :MacExpertEncoding then
+        File.dirname(__FILE__) + "/encodings/mac_expert.txt"
+      when :PDFDocEncoding then
+        File.dirname(__FILE__) + "/encodings/pdf_doc.txt"
+      when :SymbolEncoding then
+        File.dirname(__FILE__) + "/encodings/symbol.txt"
+      when :WinAnsiEncoding then
+        File.dirname(__FILE__) + "/encodings/win_ansi.txt"
+      when :ZapfDingbatsEncoding then
+        File.dirname(__FILE__) + "/encodings/zapf_dingbats.txt"
       else
-        raise UnsupportedFeatureError, "#{enc} is not currently a supported encoding"
+        File.dirname(__FILE__) + "/encodings/standard.txt"
       end
     end
 

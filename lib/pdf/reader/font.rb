@@ -39,6 +39,8 @@ class PDF::Reader
       extract_base_info(obj)
       extract_descriptor(obj)
       extract_descendants(obj)
+
+      @encoding ||= PDF::Reader::Encoding.new(:StandardEncoding)
     end
 
     def basefont=(font)
@@ -59,10 +61,7 @@ class PDF::Reader
       raise UnsupportedFeatureError, "font encoding '#{encoding}' currently unsupported" if encoding.kind_of?(String)
 
       if params.class == String
-        # translate the bytestram into a UTF-8 string.
-        # If an encoding hasn't been specified, assume the text using this
-        # font is in Adobe Standard Encoding.
-        (encoding || PDF::Reader::Encoding.new(:StandardEncoding)).to_utf8(params, tounicode)
+        encoding.to_utf8(params, tounicode)
       elsif params.class == Array
         params.collect { |param| self.to_utf8(param) }
       else
