@@ -7,6 +7,7 @@ Bundler.setup
 require 'pdf/reader'
 require 'timeout'
 require 'singleton'
+require 'digest/md5'
 
 
 # Requires supporting ruby files with custom matchers and macros, etc,

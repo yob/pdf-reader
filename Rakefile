@@ -32,3 +32,16 @@ Rake::RDocTask.new("doc") do |rdoc|
 end
 
 RoodiTask.new 'roodi', ['lib/**/*.rb']
+
+desc "create a YAML file of integrity info for PDFs in the spec suite"
+task :integrity_yaml do
+  data = {}
+  Dir.glob("spec/data/**/*.*").each do |path|
+    path_without_spec = path.gsub("spec/","")
+    data[path_without_spec] = {
+      :bytes => File.size(path),
+      :md5   => `md5sum "#{path}"`.split.first
+    } if File.file?(path)
+  end
+  File.open("spec/integrity.yml","wb") { |f| f.write YAML.dump(data)}
+end
