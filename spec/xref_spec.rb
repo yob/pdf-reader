@@ -16,7 +16,7 @@ describe PDF::Reader::XRef, "initilisation" do
     end
     it "should load all xrefs corectly from a StringIO" do
       data = StringIO.new(binread(pdf_spec_file("cairo-basic")))
-      tbl      = PDF::Reader::XRef.new(data)
+      tbl  = PDF::Reader::XRef.new(data)
       tbl.xref.keys.size.should eql(15) # 1 xref table with 16 items (ignore the first)
     end
   end
