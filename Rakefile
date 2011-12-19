@@ -18,7 +18,7 @@ RSpec::Core::RakeTask.new("spec") do |t|
   t.ruby_opts = "-w"
 end
 
-# Genereate the RDoc documentation
+# Generate the RDoc documentation
 desc "Create documentation"
 Rake::RDocTask.new("doc") do |rdoc|
   rdoc.title = "pdf-reader"
@@ -33,7 +33,7 @@ end
 
 RoodiTask.new 'roodi', ['lib/**/*.rb']
 
-desc "create a YAML file of integrity info for PDFs in the spec suite"
+desc "Create a YAML file of integrity info for PDFs in the spec suite"
 task :integrity_yaml do
   data = {}
   Dir.glob("spec/data/**/*.*").each do |path|
@@ -44,4 +44,35 @@ task :integrity_yaml do
     } if File.file?(path)
   end
   File.open("spec/integrity.yml","wb") { |f| f.write YAML.dump(data)}
+end
+
+desc "Remove any CRLF characters added by Git"
+task :fix_integrity do
+  yaml_path = File.expand_path("spec/integrity.yml",File.dirname(__FILE__))
+  integrity = YAML.load_file(yaml_path)
+
+  Dir.glob("spec/data/**/*.pdf").each do |path|
+    path_relative_to_spec_folder = path[/.+(data\/.+)/,1]
+    item = integrity[path_relative_to_spec_folder]
+
+    if File.file?(path)
+      file_contents = File.open(path, "rb") { |f| f.read }
+      md5 = Digest::MD5.hexdigest(file_contents)
+
+      unless md5 == item[:md5]
+        #file md5 does not match what was checked into Git
+
+        if Digest::MD5.hexdigest(file_contents.gsub(/\r\n/, "\n")) == item[:md5]
+          #pdf file is fixable by swapping CRLF characters
+
+          File.open(path, "wb") do |f|
+            f.write(file_contents.gsub(/\r\n/, "\n"))
+          end
+          puts "Replaced CRLF characters in: #{path}"
+        else
+          puts "Failed to fix: #{path}"
+        end
+      end
+    end
+  end
 end
