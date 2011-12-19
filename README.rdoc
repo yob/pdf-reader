@@ -126,7 +126,7 @@ report it!).
 
 = PDF Integrity
 
-*Windows developers* may run into problems when running specs due to MalformedPDFError's
+Windows developers may run into problems when running specs due to MalformedPDFError's
 This is usually because CRLF characters are automatically added to some of the PDF's in
 the spec folder when you checkout a branch from Git.
 
