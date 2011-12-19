@@ -6,7 +6,7 @@ If you have installed the gem via the rubygems with the command:
 
     $ gem install pdf-reader
 
-Then the examples below *will not work* for you. Please check the examples that 
+Then the examples below *will not work* for you. Please check the examples that
 come with previous version of the gem (0.10).
 
 If you want to install the latest version of this gem use the command:
@@ -58,6 +58,14 @@ an IO stream:
     reader = PDF::Reader.new(io)
     puts reader.info
 
+If you open a PDF with File#open or IO#open, I strongly recommend using "rb"
+mode to ensure the file isn't mangled by ruby being 'helpful'.
+
+    File.open("somefile.pdf", "rb") do |io|
+      reader = PDF::Reader.new(io)
+      puts reader.info
+    end
+
 PDF is a page based file format, so most visible information is available via
 page-based iteration
 
@@ -97,9 +105,8 @@ The second method is preferred to increase the effectiveness of internal caching
 
 = Text Encoding
 
-Internally, text can be stored inside a PDF in various encodings, including
-zingbats, win-1252, mac roman and a form of Unicode. To avoid confusion, all
-text will be converted to UTF-8 before it is passed back from PDF::Reader.
+Regardless of the internal encoding used in the PDF all text will be converted
+to UTF-8 before it is passed back from PDF::Reader.
 
 Strings that contain binary data (like font blobs) will be marked as such on
 M17N aware VMs.
