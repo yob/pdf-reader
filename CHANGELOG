@@ -1,7 +1,9 @@
-v1.0.0.beta2 (XXX)
+v1.0.0.rc1 (19th December 2011)
 - performance optimisations (all by Bernerd Schaefer)
 - some improvements to text extraction from form xobjects
 - assume invalid font encodings are StandardEncoding
+- use binary mode when opening PDFs to stop ruby being helpful and transcoding
+    bytes for us
 
 v1.0.0.beta1 (6th October 2011)
 - ensure inline images that contain "EI" are correctly parsed
