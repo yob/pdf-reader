@@ -20,6 +20,9 @@ data/cairo-basic.pdf:
 data/dutch.pdf:
   :bytes: 14163
   :md5: cbe0d3075d4474a221cd0b3800c5a0e4
+data/encrypted_with_no_user_pass_and_revision_one.pdf:
+  :bytes: 15674
+  :md5: 88a9b78341fa55879fa94930bd4d33af
 data/invalid/data.csv:
   :bytes: 26
   :md5: 7168179491824d651a304cbb83c16964
