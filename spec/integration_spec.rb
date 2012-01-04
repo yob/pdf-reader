@@ -218,6 +218,14 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  it "should correctly extract text from an encrypted PDF with no user password and revision 1" do
+    filename = pdf_spec_file("encrypted_with_no_user_pass_and_revision_one")
+
+    PDF::Reader.open(filename) do |reader|
+      reader.page(1).text.should eql("WOOOOO DOCUMENT!")
+    end
+  end
+
   it "should correctly extract text from an encrypted PDF with a user password" do
     filename = pdf_spec_file("encrypted_with_user_pass_apples")
 
