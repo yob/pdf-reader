@@ -25,7 +25,7 @@ describe "Spec suite PDFs" do
       item.should_not be_nil, "#{path} not found in integrity YAML file"
 
       # every PDF in the suite MUST be the correct number of bytes
-      File.size(path).should == item[:bytes]
+      File.size(path).should eql(item[:bytes])
 
       # every PDF in the suite MUST be unchanged
       md5 = Digest::MD5.hexdigest(File.open(path, "rb") { |f|  f.read })
