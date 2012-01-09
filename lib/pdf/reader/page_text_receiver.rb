@@ -32,7 +32,7 @@ module PDF
         @font_stack    = [build_fonts(page.fonts)]
         @xobject_stack = [page.xobjects]
         @content = {}
-        @stack   = [DEFAULT_GRAPHICS_STATE]
+        @stack   = [DEFAULT_GRAPHICS_STATE.dup]
       end
 
       def content
