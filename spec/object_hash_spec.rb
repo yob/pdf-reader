@@ -24,6 +24,15 @@ describe PDF::Reader::ObjectHash do
     filename = pdf_spec_file("cairo-unicode")
      lambda {PDF::Reader::ObjectHash.new(10)}.should raise_error(ArgumentError)
   end
+
+  context "when there is a junk prefix" do
+    let(:sample_name) { pdf_spec_file("junk_prefix") }
+    let(:object_hash) { PDF::Reader::ObjectHash.new(sample_name) }
+    let(:stream) { object_hash.instance_variable_get(:@io) }
+    before { stream.rewind }
+    subject { stream.read(4) }
+    it { should eql("%PDF") }
+  end
 end
 
 describe PDF::Reader::ObjectHash, "[] method" do
@@ -172,7 +181,7 @@ describe PDF::Reader::ObjectHash, "each method" do
     h = PDF::Reader::ObjectHash.new(filename)
 
     count = 0
-    h.each do 
+    h.each do
       count += 1
     end
     count.should eql(57)
@@ -196,7 +205,7 @@ describe PDF::Reader::ObjectHash, "each_key method" do
     h = PDF::Reader::ObjectHash.new(filename)
 
     count = 0
-    h.each_key do 
+    h.each_key do
       count += 1
     end
     count.should eql(57)
@@ -219,7 +228,7 @@ describe PDF::Reader::ObjectHash, "each_value method" do
     h = PDF::Reader::ObjectHash.new(filename)
 
     count = 0
-    h.each_value do 
+    h.each_value do
       count += 1
     end
     count.should eql(57)
