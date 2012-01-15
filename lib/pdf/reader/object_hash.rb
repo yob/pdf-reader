@@ -332,19 +332,33 @@ class PDF::Reader
       if input.respond_to?(:seek) && input.respond_to?(:read)
         input
       elsif File.file?(input.to_s)
-        StringIO.new read_as_binary(input)
+        read_with_quirks(input)
       else
         raise ArgumentError, "input must be an IO-like object or a filename"
       end
     end
 
-    def read_as_binary(input)
-      if File.respond_to?(:binread)
-        File.binread(input.to_s)
+    # Load file as a StringIO stream, accounting for invalid format
+    # where additional characters exist in the file before the %PDF start of file
+    def read_with_quirks(input)
+      stream = File.open(input.to_s, "rb")
+      if ofs = pdf_offset(stream)
+        stream.seek(ofs)
+        StringIO.new(stream.read)
       else
-        File.open(input.to_s,"rb") { |f| f.read }
+        raise ArgumentError, "invalid file format"
       end
     end
 
+    # Returns the offset of the PDF document in the +stream+.
+    # Checks up to 50 chars into the file, returns nil of no PDF stream detected.
+    def pdf_offset(stream)
+      stream.rewind
+      ofs = stream.pos
+      until stream.readchar == '%' || ofs > 50
+        ofs += 1
+      end
+      ofs < 50 ? ofs : nil
+    end
   end
 end
