@@ -76,7 +76,7 @@ module PDF
             params << token
           end
         end
-      rescue EOFError => e
+      rescue EOFError
         raise MalformedPDFError, "End Of File while processing a content stream"
       end
     end
