@@ -229,8 +229,6 @@ module PDF
       # underlying device space.
       #
       def transform(point, z = 1)
-        trm = text_rendering_matrix
-
         point.transform(text_rendering_matrix, z)
       end
 
