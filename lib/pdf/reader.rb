@@ -159,7 +159,7 @@ module PDF
       yield PDF::Reader.new(input, opts)
     end
 
-    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    # DEPRECATED: this method was deprecated in version 1.0.0 and will
     #             eventually be removed
     #
     #
@@ -171,7 +171,7 @@ module PDF
       end
     end
 
-    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    # DEPRECATED: this method was deprecated in version 1.0.0 and will
     #             eventually be removed
     #
     # Parse the given string, sending events to the given receiver.
@@ -182,7 +182,7 @@ module PDF
       end
     end
 
-    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    # DEPRECATED: this method was deprecated in version 1.0.0 and will
     #             eventually be removed
     #
     # Parse the file with the given name, returning an unmarshalled ruby version of
@@ -194,7 +194,7 @@ module PDF
       }
     end
 
-    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    # DEPRECATED: this method was deprecated in version 1.0.0 and will
     #             eventually be removed
     #
     # Parse the given string, returning an unmarshalled ruby version of represents
@@ -245,7 +245,7 @@ module PDF
     end
 
 
-    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    # DEPRECATED: this method was deprecated in version 1.0.0 and will
     #             eventually be removed
     #
     # Given an IO object that contains PDF data, parse it.
@@ -263,7 +263,7 @@ module PDF
       self
     end
 
-    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    # DEPRECATED: this method was deprecated in version 1.0.0 and will
     #             eventually be removed
     #
     # Given an IO object that contains PDF data, return the contents of a single object
@@ -276,7 +276,7 @@ module PDF
 
     private
 
-    # recursively convert strings from outside a content stream intop UTF-8
+    # recursively convert strings from outside a content stream into UTF-8
     #
     def doc_strings_to_utf8(obj)
       case obj
