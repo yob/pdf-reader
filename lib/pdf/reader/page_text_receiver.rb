@@ -286,7 +286,7 @@ module PDF
       end
 
       # private class for representing points on a cartesian plain. Used
-      # to simplify maths in the MinPpi class.
+      # to simplify maths.
       #
       class Point < Struct.new(:x, :y)
         def transform(trm, z)
@@ -294,10 +294,6 @@ module PDF
             (trm[0,0] * x) + (trm[1,0] * y) + (trm[2,0] * z),
             (trm[0,1] * x) + (trm[1,1] * y) + (trm[2,1] * z)
           )
-        end
-
-        def distance(point)
-          Math.hypot(point.x - @x, point.y - @y)
         end
       end
     end
