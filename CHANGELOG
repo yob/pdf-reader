@@ -1,3 +1,7 @@
+v1.0.0 (16th January 2012)
+- support a new encryption variation
+- bugfix in PageTextRender (thanks Paul Gallagher)
+
 v1.0.0.rc1 (19th December 2011)
 - performance optimisations (all by Bernerd Schaefer)
 - some improvements to text extraction from form xobjects
