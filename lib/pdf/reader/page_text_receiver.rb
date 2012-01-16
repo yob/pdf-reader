@@ -1,12 +1,6 @@
 # coding: utf-8
 
 require 'matrix'
-require 'yaml'
-
-begin
-  require 'psych'
-rescue LoadError
-end
 
 module PDF
   class Reader
