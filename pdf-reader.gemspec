@@ -2,7 +2,7 @@
 # which will make the gem filesize irritatingly large
 Gem::Specification.new do |spec|
   spec.name = "pdf-reader"
-  spec.version = "1.0.0.rc1"
+  spec.version = "1.0.0"
   spec.summary = "A library for accessing the content of PDF files"
   spec.description = "The PDF::Reader library implements a PDF parser conforming as much as possible to the PDF specification from Adobe"
   spec.files =  Dir.glob("{examples,lib}/**/**/*") + ["Rakefile"]
@@ -31,17 +31,14 @@ Gem::Specification.new do |spec|
 
   ********************************************
 
-  This is a beta release of PDF::Reader to gather feedback on the proposed
-  API changes.
+  v1.0.0 of PDF::Reader introduced a new page-based API. There are extensive
+  examples showing how to use it in the README and examples directory.
+
+  For detailed documentation, check the rdocs for the PDF::Reader,
+  PDF::Reader::Page and PDF::Reader::ObjectHash classes.
 
   The old API is marked as deprecated but will continue to work with no
   visible warnings for now.
-
-  The new API is documented in the README and in rdoc for the PDF::Reader,
-  PDF::Reader::Page and PDF::Reader::ObjectHash classes.
-
-  Do not use this in production, stick to stable releases for that. If you do
-  take the new API for a spin, please send any feedback my way.
 
   ********************************************
 
