@@ -272,7 +272,7 @@ class PDF::Reader
         row += 1
       end
 
-      pixels.map { |row| row.flatten.pack("C*") }.join("")
+      pixels.map { |bytes| bytes.flatten.pack("C*") }.join("")
     end
   end
 end
