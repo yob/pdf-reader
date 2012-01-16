@@ -1,18 +1,3 @@
-= !PLEASE NOTE!
-
-All the examples below are for the latest (pre-release) version of the gem (0.11)
-
-If you have installed the gem via the rubygems with the command:
-
-    $ gem install pdf-reader
-
-Then the examples below *will not work* for you. Please check the examples that
-come with previous version of the gem (0.10).
-
-If you want to install the latest version of this gem use the command:
-
-    $ gem install pdf-reader --prerelease
-
 = Release Notes
 
 The PDF::Reader library implements a PDF parser conforming as much as possible
@@ -59,7 +44,8 @@ an IO stream:
     puts reader.info
 
 If you open a PDF with File#open or IO#open, I strongly recommend using "rb"
-mode to ensure the file isn't mangled by ruby being 'helpful'.
+mode to ensure the file isn't mangled by ruby being 'helpful'. This is
+particularly important on windows and MRI >= 1.9.2.
 
     File.open("somefile.pdf", "rb") do |io|
       reader = PDF::Reader.new(io)
