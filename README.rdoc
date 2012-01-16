@@ -97,6 +97,15 @@ to UTF-8 before it is passed back from PDF::Reader.
 Strings that contain binary data (like font blobs) will be marked as such on
 M17N aware VMs.
 
+= Former API
+
+Version 1.0.0 of PDF::Reader introduced a new page-based API that provides
+efficient and easy access to any page.
+
+The previous API is marked as deprecated but will continue to work for the
+time being. Eventually calls to the old API will begin triggering deprecation
+warnings before it is completely removed in version 2.0.0.
+
 = Exceptions
 
 There are two key exceptions that you will need to watch out for when processing a
@@ -105,7 +114,7 @@ PDF file:
 MalformedPDFError - The PDF appears to be corrupt in some way. If you believe the
 file should be valid, or that a corrupt file didn't raise an exception, please
 forward a copy of the file to the maintainers (preferably via the google group)
-and we can attempt to improve the code.
+and we will attempt to improve the code.
 
 UnsupportedFeatureError - The PDF uses a feature that PDF::Reader doesn't currently
 support. Again, we welcome submissions of PDF files that exhibit these features to help
