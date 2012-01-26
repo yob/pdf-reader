@@ -78,6 +78,18 @@ describe PDF::Reader::Buffer, "token method" do
     buf.token.should eql(">")
     buf.token.should be_nil
   end
+  
+  it "should parse an empty value from a checkbox correctly" do
+    buf = parse_string("<< /V / >>")
+
+    buf.token.should eql("<<")
+    buf.token.should eql("/")
+    buf.token.should eql("V")
+    buf.token.should eql("/")
+    buf.token.should eql(" ")
+    buf.token.should eql(">>")
+    buf.token.should be_nil
+  end
 
   it "should correctly return two name tokens" do
     buf = parse_string("/Type/Pages")
