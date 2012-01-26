@@ -86,7 +86,7 @@ describe PDF::Reader::Buffer, "token method" do
     buf.token.should eql("/")
     buf.token.should eql("V")
     buf.token.should eql("/")
-    buf.token.should eql(" ")
+    buf.token.should eql("")
     buf.token.should eql(">>")
     buf.token.should be_nil
   end
