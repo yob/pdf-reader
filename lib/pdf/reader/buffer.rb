@@ -318,6 +318,7 @@ class PDF::Reader
           # opening delimiter, start of new token
           @tokens << tok if tok.size > 0
           @tokens << chr
+          @tokens << "" if chr == "/" && peek_char == " "
           tok = ""
           break
         when "\x29", "\x5D", "\x7D"

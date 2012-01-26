@@ -21,9 +21,9 @@ describe PDF::Reader::Parser do
 
   # '/' is a valid PDF name, but :"" is not a valid ruby symbol.
   # How should I handle this?
-  it "should parse an empty name correctly" #do
-    #parse_string("/").parse_token.should eql(:"")
-  #end
+  it "should parse an empty name correctly" do
+    parse_string("/").parse_token.should eql("")
+  end
 
   it "should parse booleans correctly" do
     parse_string("true").parse_token.should be_true
