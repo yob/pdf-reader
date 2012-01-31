@@ -25,13 +25,13 @@ describe PDF::Reader::Parser do
   # Names as a syntax error
   if RUBY_VERSION >= "1.9"
     it "should parse an empty name correctly" do
-      parse_string("/").parse_token.should eql(:"")
+      parse_string("/").parse_token.should eql("".to_sym)
     end
 
     it "should parse two empty names correctly" do
       parser = parse_string("/ /")
-      parser.parse_token.should eql(:"")
-      parser.parse_token.should eql(:"")
+      parser.parse_token.should eql("".to_sym)
+      parser.parse_token.should eql("".to_sym)
     end
   else
     it "should parse an empty name correctly" do
