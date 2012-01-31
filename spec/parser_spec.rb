@@ -19,11 +19,31 @@ describe PDF::Reader::Parser do
     parse_string("/Ja#6des").parse_token.should eql(:"James")
   end
 
-  # '/' is a valid PDF name, but :"" is not a valid ruby symbol.
-  # How should I handle this?
-  it "should parse an empty name correctly" #do
-    #parse_string("/").parse_token.should eql(:"")
-  #end
+  # '/' is a valid PDF name, but :"" is only a valid ruby symbol in 1.9
+  # On 1.8 VMs the best I can do is a string with a single space. This
+  # is bound to cause trouble but it's better than treating empty PDF
+  # Names as a syntax error
+  if RUBY_VERSION >= "1.9"
+    it "should parse an empty name correctly" do
+      parse_string("/").parse_token.should eql(:"")
+    end
+
+    it "should parse two empty names correctly" do
+      parser = parse_string("/ /")
+      parser.parse_token.should eql(:"")
+      parser.parse_token.should eql(:"")
+    end
+  else
+    it "should parse an empty name correctly" do
+      parse_string("/").parse_token.should eql(:" ")
+    end
+
+    it "should parse two empty names correctly" do
+      parser = parse_string("/ /")
+      parser.parse_token.should eql(:" ")
+      parser.parse_token.should eql(:" ")
+    end
+  end
 
   it "should parse booleans correctly" do
     parse_string("true").parse_token.should be_true

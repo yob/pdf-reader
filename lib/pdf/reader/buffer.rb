@@ -314,7 +314,7 @@ class PDF::Reader
           @tokens << chr
           tok = ""
           break
-        when "\x28", "\x5B", "\x7B", "\x2F"
+        when "\x28", "\x5B", "\x7B"
           # opening delimiter, start of new token
           @tokens << tok if tok.size > 0
           @tokens << chr
@@ -324,6 +324,14 @@ class PDF::Reader
           # closing delimiter
           @tokens << tok if tok.size > 0
           @tokens << chr
+          tok = ""
+          break
+        when "\x2F"
+          # PDF name, start of new token
+          @tokens << tok if tok.size > 0
+          @tokens << chr
+          next_char = peek_char
+          @tokens << "" if chr == "/" && (next_char == " " || next_char.nil?)
           tok = ""
           break
         else

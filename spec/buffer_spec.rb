@@ -89,6 +89,16 @@ describe PDF::Reader::Buffer, "token method" do
     buf.token.should be_nil
   end
 
+  it "should correctly return two empty name tokens" do
+    buf = parse_string("/ /")
+
+    buf.token.should eql("/")
+    buf.token.should eql("")
+    buf.token.should eql("/")
+    buf.token.should eql("")
+    buf.token.should be_nil
+  end
+
   it "should tokenise a dict correctly" do
     buf = parse_string("/Registry (Adobe) /Ordering (Japan1) /Supplement")
     buf.token.should eql("/")
