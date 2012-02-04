@@ -68,11 +68,8 @@ class PDF::Reader
 
     def glyph_width(c)
       @missing_width ||= 0
-      if @widths.nil?
-        0
-      else
-        @widths.fetch(c.codepoints.first - @first_char, @missing_width)
-      end
+      @widths        ||= []
+      @widths.fetch(c - @first_char, @missing_width)
     end
 
     private

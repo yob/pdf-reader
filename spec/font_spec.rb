@@ -90,7 +90,45 @@ describe PDF::Reader::Font do
   end
 
   describe "glyph_width()" do
-    it "should be spec'd"
+    context "with a FirstChar of 1" do
+      let(:raw)  do
+        {
+          :Encoding  => :WinAnsiEncoding,
+          :Type      => :Font,
+          :FirstChar => 1,
+          :Widths    => [100, 200, 300, 400]
+        }
+      end
+      let(:font) { PDF::Reader::Font.new(object_hash, raw) }
+
+      it "should return the width for a glyph" do
+        font.glyph_width(2).should == 200
+      end
+
+      it "should return 0 for an unknown glyph" do
+        font.glyph_width(10).should == 0
+      end
+    end
+
+    context "with a FirstChar of 5" do
+      let(:raw)  do
+        {
+          :Encoding  => :WinAnsiEncoding,
+          :Type      => :Font,
+          :FirstChar => 5,
+          :Widths    => [100, 200, 300, 400]
+        }
+      end
+      let(:font) { PDF::Reader::Font.new(object_hash, raw) }
+
+      it "should return the width for a glyph" do
+        font.glyph_width(7).should == 300
+      end
+
+      it "should return 0 for an unknown glyph" do
+        font.glyph_width(20).should == 0
+      end
+    end
   end
 
 end
