@@ -41,14 +41,10 @@ class PDF::Reader
         enc = nil
       end
 
-      @to_unicode_required = unicode_required?(enc)
+      @enc_name = enc
       @unpack   = get_unpack(enc)
       @map_file = get_mapping_file(enc)
       load_mapping(@map_file) if @map_file
-    end
-
-    def to_unicode_required?
-      @to_unicode_required
     end
 
     # set the differences table for this encoding. should be an array in the following format:
@@ -91,13 +87,38 @@ class PDF::Reader
     # * pack the final array of Unicode codepoints into a utf-8 string
     # * mark the string as utf-8 if we're running on a M17N aware VM
     #
-    def to_utf8(str, tounicode = nil)
+    def to_utf8(str)
+      if utf8_conversion_impossible?
+        little_boxes(str.unpack(unpack).size)
+      else
+        convert_to_utf8(str)
+      end
+    end
+
+    private
+
+    def utf8_conversion_impossible?
+      @enc_name == :"Identity-H" || @enc_name == :"Identity-V"
+    end
+
+    def little_boxes(times)
+      codepoints = [ PDF::Reader::Encoding::UNKNOWN_CHAR ] * times
+      codepoints.pack("U*")
+    end
+
+    def convert_to_utf8(str)
       ret = str.unpack(unpack).map { |c|
         differences[c] || c
-      }.map { |num|
-        original_codepoint_to_unicode(num, tounicode)
+      }.map { |c|
+        mapping[c] || c
       }.map { |c|
         names_to_unicode[c] || c
+      }.map { |c|
+        if PDF::Reader::Encoding::CONTROL_CHARS.include?(c)
+          PDF::Reader::Encoding::UNKNOWN_CHAR
+        else
+          c
+        end
       }.map { |c|
         if c.nil? || !c.is_a?(Fixnum)
           PDF::Reader::Encoding::UNKNOWN_CHAR
@@ -109,22 +130,6 @@ class PDF::Reader
       ret.force_encoding("UTF-8") if ret.respond_to?(:force_encoding)
 
       ret
-    end
-
-    private
-
-    def original_codepoint_to_unicode(cp, tounicode = nil)
-      if tounicode && (code = tounicode.decode(cp))
-        code
-      elsif to_unicode_required? && (tounicode.nil? || tounicode.decode(cp).nil?)
-        PDF::Reader::Encoding::UNKNOWN_CHAR
-      elsif mapping[cp]
-        mapping[cp]
-      elsif PDF::Reader::Encoding::CONTROL_CHARS.include?(cp)
-        PDF::Reader::Encoding::UNKNOWN_CHAR
-      else
-        cp
-      end
     end
 
     def get_unpack(enc)
@@ -155,10 +160,6 @@ class PDF::Reader
       else
         File.dirname(__FILE__) + "/encodings/standard.txt"
       end
-    end
-
-    def unicode_required?(enc)
-      enc == :"Identity-H" or enc == :"Identity-V"
     end
 
     def mapping

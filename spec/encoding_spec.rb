@@ -52,7 +52,7 @@ end
 
 describe "The PDF::Reader::Encoding::IdentityH class" do
 
-  it "should return utf-8 squares if to_utf8 is called without a cmap" do
+  it "should return utf-8 squares if to_utf8 is called for an Identity-H encoding" do
     e = PDF::Reader::Encoding.new("Identity-H")
     [
       {:expert => "\x22",             :utf8 => ""},
@@ -60,7 +60,6 @@ describe "The PDF::Reader::Encoding::IdentityH class" do
       {:expert => "\x22\xF7\x22\xF7", :utf8 => [0x25AF,0x25AF].pack("U*")}
     ].each do |vals|
       result = e.to_utf8(vals[:expert])
-
       if RUBY_VERSION >= "1.9"
         result.encoding.to_s.should eql("UTF-8")
         vals[:utf8].force_encoding("UTF-8")
@@ -70,18 +69,6 @@ describe "The PDF::Reader::Encoding::IdentityH class" do
     end
   end
 
-  it "should convert an IdentityH encoded string into UTF-8" do
-    e = PDF::Reader::Encoding.new("Identity-H")
-    cmap = PDF::Reader::CMap.new("")
-    cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
-    result = e.to_utf8("\x00\x01\x00\x02", cmap)
-
-    result.should eql("€1")
-
-    if RUBY_VERSION >= "1.9"
-      result.encoding.to_s.should eql("UTF-8")
-    end
-  end
 end
 
 describe "The PDF::Reader::Encoding::IdentityV class" do
@@ -103,18 +90,6 @@ describe "The PDF::Reader::Encoding::IdentityV class" do
     end
   end
 
-  it "should convert an IdentityV encoded string into UTF-8" do
-    e = PDF::Reader::Encoding.new("Identity-V")
-    cmap = PDF::Reader::CMap.new("")
-    cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
-    result = e.to_utf8("\x00\x01\x00\x02", cmap)
-
-    result.should eql("€1")
-
-    if RUBY_VERSION >= "1.9"
-      result.encoding.to_s.should eql("UTF-8")
-    end
-  end
 end
 
 describe "The PDF::Reader::Encoding::MacExpertEncoding class" do
@@ -157,19 +132,6 @@ describe "The PDF::Reader::Encoding::MacExpertEncoding class" do
     end
   end
 
-  it "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
-    e = PDF::Reader::Encoding.new(:MacExpertEncoding)
-    cmap = PDF::Reader::CMap.new("")
-    cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
-    result = e.to_utf8("\x01\x02", cmap)
-
-    result.should eql("€1")
-
-    if RUBY_VERSION >= "1.9"
-      result.encoding.to_s.should eql("UTF-8")
-    end
-
-  end
 end
 
 describe "The PDF::Reader::Encoding::MacRomanEncoding class" do
@@ -214,19 +176,6 @@ describe "The PDF::Reader::Encoding::MacRomanEncoding class" do
     end
   end
 
-  it "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
-    e = PDF::Reader::Encoding.new(:MacRomanEncoding)
-    cmap = PDF::Reader::CMap.new("")
-    cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
-    result = e.to_utf8("\x01\x02", cmap)
-
-    result.should eql("€1")
-
-    if RUBY_VERSION >= "1.9"
-      result.encoding.to_s.should eql("UTF-8")
-    end
-
-  end
 end
 
 describe "The PDF::Reader::Encoding::PDFDocEncoding class" do
@@ -269,19 +218,6 @@ describe "The PDF::Reader::Encoding::PDFDocEncoding class" do
     end
   end
 
-  it "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
-    e = PDF::Reader::Encoding.new(:PDFDocEncoding)
-    cmap = PDF::Reader::CMap.new("")
-    cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
-    result = e.to_utf8("\x01\x02", cmap)
-
-    result.should eql("€1")
-
-    if RUBY_VERSION >= "1.9"
-      result.encoding.to_s.should eql("UTF-8")
-    end
-
-  end
 end
 
 describe "The PDF::Reader::Encoding::StandardEncoding class" do
@@ -328,19 +264,6 @@ describe "The PDF::Reader::Encoding::StandardEncoding class" do
     end
   end
 
-  it "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
-    e = PDF::Reader::Encoding.new(:StandardEncoding)
-    cmap = PDF::Reader::CMap.new("")
-    cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
-    result = e.to_utf8("\x01\x02", cmap)
-
-    result.should eql("€1")
-
-    if RUBY_VERSION >= "1.9"
-      result.encoding.to_s.should eql("UTF-8")
-    end
-
-  end
 end
 
 describe "The PDF::Reader::Encoding::SymbolEncoding class" do
@@ -385,19 +308,6 @@ describe "The PDF::Reader::Encoding::SymbolEncoding class" do
     end
   end
 
-  it "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
-    e = PDF::Reader::Encoding.new(:SymbolEncoding)
-    cmap = PDF::Reader::CMap.new("")
-    cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
-    result = e.to_utf8("\x01\x02", cmap)
-
-    result.should eql("€1")
-
-    if RUBY_VERSION >= "1.9"
-      result.encoding.to_s.should eql("UTF-8")
-    end
-
-  end
 end
 
 describe "The PDF::Reader::Encoding::WinAnsiEncoding class" do
@@ -441,31 +351,6 @@ describe "The PDF::Reader::Encoding::WinAnsiEncoding class" do
     end
   end
 
-  it "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
-    e = PDF::Reader::Encoding.new(:WinAnsiEncoding)
-    cmap = PDF::Reader::CMap.new("")
-    cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
-    result = e.to_utf8("\x01\x02", cmap)
-
-    result.should eql("€1")
-
-    if RUBY_VERSION >= "1.9"
-      result.encoding.to_s.should eql("UTF-8")
-    end
-  end
-
-  it "should correctly convert a string into utf-8 when a ToUnicode CMap is provided for some characters" do
-    e = PDF::Reader::Encoding.new(:WinAnsiEncoding)
-    cmap = PDF::Reader::CMap.new("")
-    cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
-    result = e.to_utf8("\x01\x02.00", cmap)
-
-    result.should eql("€1.00")
-
-    if RUBY_VERSION >= "1.9"
-      result.encoding.to_s.should eql("UTF-8")
-    end
-  end
 end
 
 describe "The PDF::Reader::Encoding::ZapfDingbatsEncoding class" do
@@ -509,19 +394,6 @@ describe "The PDF::Reader::Encoding::ZapfDingbatsEncoding class" do
     end
   end
 
-  it "should correctly convert a string into utf-8 when a ToUnicode CMap is provided" do
-    e = PDF::Reader::Encoding.new(:ZapfDingbatsEncoding)
-    cmap = PDF::Reader::CMap.new("")
-    cmap.instance_variable_set("@map",{1 => 0x20AC, 2 => 0x0031})
-    result = e.to_utf8("\x01\x02", cmap)
-
-    result.should eql("€1")
-
-    if RUBY_VERSION >= "1.9"
-      result.encoding.to_s.should eql("UTF-8")
-    end
-
-  end
 end
 
 describe "The PDF::Reader::Encoding::UTF16Encoding class" do
