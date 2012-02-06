@@ -44,7 +44,8 @@ class PDF::Reader
       @pdf_version = read_version
       @xref        = PDF::Reader::XRef.new(@io)
       @trailer     = @xref.trailer
-      @cache       = PDF::Reader::ObjectCache.new
+      # cache up to 20% of objects. Should this be configurable?
+      @cache       = PDF::Reader::ObjectCache.new(@xref.size * 0.2)
       @sec_handler = build_security_handler(opts)
     end
 

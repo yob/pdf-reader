@@ -17,7 +17,7 @@ class PDF::Reader
 
     def initialize(lru_size = 1000)
       @objects = {}
-      @lru_cache = LRUCache.new(:max_size => lru_size)
+      @lru_cache = LRUCache.new(:max_size => lru_size.to_i)
     end
 
     def [](key)
