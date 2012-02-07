@@ -103,7 +103,9 @@ class PDF::Reader
 
     def little_boxes(times)
       codepoints = [ PDF::Reader::Encoding::UNKNOWN_CHAR ] * times
-      codepoints.pack("U*")
+      ret = codepoints.pack("U*")
+      ret.force_encoding("UTF-8") if ret.respond_to?(:force_encoding)
+      ret
     end
 
     def convert_to_utf8(str)
