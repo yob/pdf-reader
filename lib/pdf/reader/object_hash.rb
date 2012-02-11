@@ -31,6 +31,7 @@ class PDF::Reader
     attr_accessor :default
     attr_reader :trailer, :pdf_version
     attr_reader :sec_handler
+    attr_reader :cache_stats
 
     # Creates a new ObjectHash object. Input can be a string with a valid filename
     # or an IO-like object.
@@ -45,6 +46,7 @@ class PDF::Reader
       @xref        = PDF::Reader::XRef.new(@io)
       @trailer     = @xref.trailer
       @cache       = PDF::Reader::ObjectCache.new
+      @cache_stats = {}
       @sec_handler = build_security_handler(opts)
     end
 
@@ -75,13 +77,17 @@ class PDF::Reader
       unless key.is_a?(PDF::Reader::Reference)
         key = PDF::Reader::Reference.new(key.to_i, 0)
       end
+      @cache_stats[key] ||= {:hits => 0, :misses => 0}
 
       if @cache.has_key?(key)
+        @cache_stats[key][:hits] += 1
         @cache[key]
       elsif xref[key].is_a?(Fixnum)
+        @cache_stats[key][:misses] += 1
         buf = new_buffer(xref[key])
         @cache[key] = decrypt(key, Parser.new(buf, self).object(key.id, key.gen))
       elsif xref[key].is_a?(PDF::Reader::Reference)
+        @cache_stats[key][:misses] += 1
         container_key = xref[key]
         object_streams[container_key] ||= PDF::Reader::ObjectStream.new(object(container_key))
         @cache[key] = object_streams[container_key][key.id]

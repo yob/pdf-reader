@@ -371,3 +371,67 @@ describe PDF::Reader::ObjectHash, "page_references method" do
     arr.map { |ref| ref.id }.should eql([4, 7, 10, 13])
   end
 end
+
+describe PDF::Reader::ObjectHash, "cache_stats method" do
+
+  context "with no object lookups" do
+    it "should return an empty Hash" do
+      filename = pdf_spec_file("cairo-unicode")
+      h = PDF::Reader::ObjectHash.new(filename)
+
+      h.cache_stats.should be_a(Hash)
+      h.cache_stats.should be_empty
+    end
+  end
+
+  context "with a single object lookup" do
+    let!(:h) {
+      filename = pdf_spec_file("cairo-unicode")
+      h = PDF::Reader::ObjectHash.new(filename)
+    }
+
+    before do
+      h[1]
+    end
+
+    it "should return a Hash with a single entry" do
+      h.cache_stats.should be_a(Hash)
+      h.cache_stats.size.should == 1
+    end
+
+    it "should return a Hash with References as keys" do
+      h.cache_stats.keys.first.should be_a(PDF::Reader::Reference)
+    end
+
+    it "should return a Hash with hit and miss counts for each reference" do
+      values = h.cache_stats.values
+      values.should == [{:hits => 0, :misses => 1}]
+    end
+  end
+
+  context "with a two object lookups" do
+    let!(:h) {
+      filename = pdf_spec_file("cairo-unicode")
+      h = PDF::Reader::ObjectHash.new(filename)
+    }
+
+    before do
+      h[1]
+      h[1]
+    end
+
+    it "should return a Hash with a single entry" do
+      h.cache_stats.should be_a(Hash)
+      h.cache_stats.size.should == 1
+    end
+
+    it "should return a Hash with References as keys" do
+      h.cache_stats.keys.first.should be_a(PDF::Reader::Reference)
+    end
+
+    it "should return a Hash with hit and miss counts for each reference" do
+      values = h.cache_stats.values
+      values.should == [{:hits => 1, :misses => 1}]
+    end
+  end
+end
