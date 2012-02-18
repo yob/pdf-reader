@@ -1,6 +1,7 @@
 # coding: utf-8
 
 require 'matrix'
+require 'forwardable'
 
 module PDF
   class Reader
