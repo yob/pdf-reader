@@ -195,6 +195,16 @@ module PDF
       # Public Visible State
       #####################################################
 
+      # transform x and y co-ordinates from the current user space to the
+      # underlying device space.
+      #
+      def ctm_transform(x, y, z = 1)
+        [
+          (ctm[0,0] * x) + (ctm[1,0] * y) + (ctm[2,0] * z),
+          (ctm[0,1] * x) + (ctm[1,1] * y) + (ctm[2,1] * z)
+        ]
+      end
+
       # transform x and y co-ordinates from the current text space to the
       # underlying device space.
       #
