@@ -64,23 +64,4 @@ describe PDF::Reader::PageTextReceiver do
     @receiver.content.should eql("one\ntwo\nthree\nfour")
   end
 
-  describe "##DEFAULT_GRAPHICS_STATE" do
-    subject { PDF::Reader::PageState::DEFAULT_GRAPHICS_STATE }
-
-    context "when walking more than one document" do
-      let!(:expect) { PDF::Reader::PageState::DEFAULT_GRAPHICS_STATE.dup }
-      before do
-        2.times do
-          page = PDF::Reader.new(pdf_spec_file("adobe_sample")).page(1)
-          receiver = PDF::Reader::PageTextReceiver.new
-          page.walk(receiver)
-        end
-      end
-      it "should not mutate" do
-        should eql(expect)
-      end
-    end
-
-  end
-
 end
