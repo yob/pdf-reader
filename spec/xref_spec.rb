@@ -102,4 +102,14 @@ describe PDF::Reader::XRef, "initilisation" do
       end.should raise_exception(PDF::Reader::MalformedPDFError)
     end
   end
+
+  context "with zeroed_xref_entry.pdf" do
+    let!(:file) { File.new(pdf_spec_file("zeroed_xref_entry"))}
+    subject     { PDF::Reader::XRef.new(file)}
+
+    it "should ignore non-free entries in the xref stream that point to offset 0" do
+      subject.size.should eql(6)
+      subject.xref.keys.should_not include(7)
+    end
+  end
 end

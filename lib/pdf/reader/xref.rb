@@ -124,7 +124,7 @@ class PDF::Reader
             generation = buf.token.to_i
             state = buf.token
 
-            store(objid, generation, offset) if state == "n"
+            store(objid, generation, offset) if state == "n" && offset > 0
             objid += 1
             params.clear
           end
