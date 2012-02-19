@@ -149,6 +149,9 @@ data/form_xobject.pdf:
 data/lzw_compressed.dat:
   :bytes: 238
   :md5: 7c36794572f259c5201e4bd049c3742e
+data/zeroed_xref_entry.pdf:
+  :bytes: 955
+  :md5: c951b17cfca59178fee1447643b512be
 data/cmap_with_bfrange_three.txt:
   :bytes: 1890
   :md5: 1d1ec5fc186ae22063c5fa756cb67b9a
