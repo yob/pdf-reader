@@ -331,7 +331,7 @@ class PDF::Reader
           @tokens << tok if tok.size > 0
           @tokens << chr
           next_char = peek_char
-          @tokens << "" if chr == "/" && (next_char == " " || next_char.nil?)
+          @tokens << "" if chr == "/" && [nil, " ", "\n"].include?(next_char)
           tok = ""
           break
         else
