@@ -26,6 +26,9 @@ describe PDF::Reader::Parser do
   if RUBY_VERSION >= "1.9"
     it "should parse an empty name correctly" do
       parse_string("/").parse_token.should eql("".to_sym)
+      parser = parse_string("/\n/")
+      parser.parse_token.should eql("".to_sym)
+      parser.parse_token.should eql("".to_sym)
     end
 
     it "should parse two empty names correctly" do
@@ -36,6 +39,9 @@ describe PDF::Reader::Parser do
   else
     it "should parse an empty name correctly" do
       parse_string("/").parse_token.should eql(:" ")
+      parser = parse_string("/\n/")
+      parser.parse_token.should eql(:" ")
+      parser.parse_token.should eql(:" ")
     end
 
     it "should parse two empty names correctly" do

@@ -97,6 +97,13 @@ describe PDF::Reader::Buffer, "token method" do
     buf.token.should eql("/")
     buf.token.should eql("")
     buf.token.should be_nil
+
+    buf = parse_string("/\n/")
+    buf.token.should eql("/")
+    buf.token.should eql("")
+    buf.token.should eql("/")
+    buf.token.should eql("")
+    buf.token.should be_nil
   end
 
   it "should tokenise a dict correctly" do
