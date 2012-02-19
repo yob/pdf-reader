@@ -25,6 +25,7 @@ module PDF
         @objects       = page.objects
         @font_stack    = [build_fonts(page.fonts)]
         @xobject_stack = [page.xobjects]
+        @cs_stack      = [page.color_spaces]
         @stack         = [DEFAULT_GRAPHICS_STATE.dup]
       end
 
@@ -168,10 +169,7 @@ module PDF
       #####################################################
       def invoke_xobject(label)
         save_graphics_state
-        dict = @xobject_stack.detect { |xobjects|
-          xobjects.has_key?(label)
-        }
-        xobject = dict ? dict[label] : nil
+        xobject = find_xobject(label)
 
         raise MalformedPDFError, "XObject #{label} not found" if xobject.nil?
         matrix = xobject.hash[:Matrix]
@@ -217,10 +215,28 @@ module PDF
       end
 
       def current_font
+        find_font(state[:text_font])
+      end
+
+      def find_font(label)
         dict = @font_stack.detect { |fonts|
-          fonts.has_key?(state[:text_font])
+          fonts.has_key?(label)
         }
-        dict ? dict[state[:text_font]] : nil
+        dict ? dict[label] : nil
+      end
+
+      def find_color_space(label)
+        dict = @cs_stack.detect { |colorspaces|
+          colorspaces.has_key?(label)
+        }
+        dict ? dict[label] : nil
+      end
+
+      def find_xobject(label)
+        dict = @xobject_stack.detect { |xobjects|
+          xobjects.has_key?(label)
+        }
+        dict ? dict[label] : nil
       end
 
       private
