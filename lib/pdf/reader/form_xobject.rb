@@ -13,6 +13,8 @@ module PDF
     class FormXObject
       include ResourceMethods
 
+      attr_reader :xobject
+
       def initialize(page, xobject)
         @page    = page
         @objects = page.objects
