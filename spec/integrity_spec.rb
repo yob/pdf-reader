@@ -2,6 +2,8 @@
 
 require File.dirname(__FILE__) + "/spec_helper"
 
+require 'yaml'
+
 # This spec just checks that the PDFs in the spec suite are intact.
 #
 # If the PDFs have been modified in some way (like git mangling the
