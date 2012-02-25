@@ -362,13 +362,26 @@ end
 
 describe PDF::Reader::ObjectHash, "page_references method" do
 
-  it "should return the document PDF version dictionary" do
-    filename = pdf_spec_file("cairo-unicode")
-    h = PDF::Reader::ObjectHash.new(filename)
+  context "with cairo-unicode.pdf" do
+    it "should return an ordered array of references to page objects" do
+      filename = pdf_spec_file("cairo-unicode")
+      h = PDF::Reader::ObjectHash.new(filename)
 
-    arr = h.page_references
-    arr.size.should eql(4)
-    arr.map { |ref| ref.id }.should eql([4, 7, 10, 13])
+      arr = h.page_references
+      arr.size.should eql(4)
+      arr.map { |ref| ref.id }.should eql([4, 7, 10, 13])
+    end
+  end
+
+  context "with indirect_kids_array.pdf" do
+    it "should return an ordered array of references to page objects" do
+      filename = pdf_spec_file("indirect_kids_array")
+      h = PDF::Reader::ObjectHash.new(filename)
+
+      arr = h.page_references
+      arr.size.should eql(1)
+      arr.map { |ref| ref.id }.should eql([6])
+    end
   end
 end
 

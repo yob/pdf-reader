@@ -65,6 +65,9 @@ data/override_inherited_attributes.pdf:
 data/difference_table_encrypted.pdf:
   :bytes: 1442
   :md5: 142596eae43ecd6bad12ccfd3d0921d1
+data/indirect_kids_array.pdf:
+  :bytes: 951
+  :md5: 7cb585bfe3f5266ed50bd205422953fd
 data/xref_subsections.pdf:
   :bytes: 95030
   :md5: a3822639a354f7a6443637ee27ffa39b
