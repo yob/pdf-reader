@@ -368,6 +368,20 @@ describe PDF::Reader::Buffer, "token method" do
     buf.token.should eql(binary_string("aaa bbb ccc \xF0EI\xF0"))
     buf.token.should eql("EI")
   end
+
+  it "should correctly tokenise a hash that has ID as a key" do
+    io = StringIO.new("<</ID /S1 >> BDC")
+    buf = PDF::Reader::Buffer.new(io, :content_stream => true)
+
+    buf.pos.should eql(0)
+    buf.token.should eql("<<")
+    buf.token.should eql("/")
+    buf.token.should eql("ID")
+    buf.token.should eql("/")
+    buf.token.should eql("S1")
+    buf.token.should eql(">>")
+    buf.token.should eql("BDC")
+  end
 end
 
 describe PDF::Reader::Buffer, "empty? method" do

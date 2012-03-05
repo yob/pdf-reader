@@ -171,7 +171,11 @@ class PDF::Reader
       when "<" then :hex_string
       when "stream" then :stream
       when "ID"
-        in_content_stream? ? :inline : :regular
+        if in_content_stream?  && @tokens[-2] != "/"
+          :inline
+        else
+          :regular
+        end
       else
         :regular
       end
