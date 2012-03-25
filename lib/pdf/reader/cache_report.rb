@@ -12,22 +12,19 @@ class PDF::Reader
     end
 
     def to_s
-      "reference,hits,misses,total\n" +
-      sorted_by_access_count.map { |row|
+      rows = [
+        header,
+        "*" * header.size
+      ] + sorted_by_access_count.map { |row|
         ref, hits, misses, total = *row
         [
-          "\"#{ref.id}:#{ref.gen}\"",
-          "#{hits}",
-          "#{misses}",
-          "#{total}"
-        ].join(",")
-      }.join("\n")
-    end
-
-    def save(path)
-      File.open(path,"wb") do |file|
-        file.write to_s
-      end
+          " #{ref.id}:#{ref.gen}".ljust(12),
+          "#{hits} ".rjust(10),
+          "#{misses} ".rjust(10),
+          "#{total} ".rjust(10)
+        ].join("|")
+      }
+      rows.join("\n")
     end
 
     private
