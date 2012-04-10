@@ -276,4 +276,12 @@ describe PDF::Reader, "integration specs" do
     image_data[0,3].unpack("C*").should   eql [255,255,255]
     image_data[-3,3].unpack("C*").should  eql [255,255,255]
   end
+
+  it "should correctly extract text from a page that has multiple content streams" do
+    filename = pdf_spec_file("content_stream_as_array")
+
+    PDF::Reader.open(filename) do |reader|
+      reader.page(1).text.should include("Arkansas Declaration Relating")
+    end
+  end
 end

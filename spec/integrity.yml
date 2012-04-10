@@ -47,6 +47,9 @@ data/prince1.pdf:
 data/cmap_with_bfrange.txt:
   :bytes: 3098
   :md5: 3546b23adc960d913b60386ed86d2f00
+data/content_stream_as_array.pdf:
+  :bytes: 121168
+  :md5: 1890a5daee3dff7bd6c79fee537702cd
 data/cairo-multiline.pdf:
   :bytes: 6199
   :md5: a4cc434461064dd84a0c3ccc4f473fc0

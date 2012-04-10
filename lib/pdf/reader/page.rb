@@ -104,7 +104,7 @@ module PDF
           objects.deref(obj)
         }.map { |obj|
           obj.unfiltered_data
-        }.join
+        }.join(" ")
       end
 
       private
