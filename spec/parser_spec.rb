@@ -154,6 +154,12 @@ describe PDF::Reader::Parser do
     dict[:Supplement].should  eql(5)
   end
 
+  it "should parse dictionary with extra space ok" do
+    str = "<<\r\n/Type /Pages\r\n/Count 3\r\n/Kids [ 25 0 R 27 0 R]\r\n                                                      \r\n>>"
+    dict = parse_string(str).parse_token
+    dict.size.should == 3
+  end
+
   it "should parse an array correctly" do
     parse_string("[ 10 0 R 12 0 R ]").parse_token.size.should eql(2)
   end
