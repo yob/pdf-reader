@@ -36,6 +36,7 @@ class PDF::Reader
   # the raw tokens into objects we can work with (strings, ints, arrays, etc)
   #
   class Buffer
+    TOKEN_WHITESPACE=["\x00", "\x09", "\x0A", "\x0C", "\x0D", "\x20"]
 
     attr_reader :pos
 
@@ -299,9 +300,14 @@ class PDF::Reader
             chr = @io.read(1)
             done = true if chr.nil? || chr == "\x0A" || chr == "\x0D"
           end
-        when "\x00", "\x09", "\x0A", "\x0C", "\x0D", "\x20"
+        when *TOKEN_WHITESPACE
           # white space, token finished
           @tokens << tok if tok.size > 0
+
+          #If the token was empty, chomp the rest of the whitespace too
+          while TOKEN_WHITESPACE.include?(peek_char) && tok.size == 0
+            @io.read(1)
+          end
           tok = ""
           break
         when "\x3C"
