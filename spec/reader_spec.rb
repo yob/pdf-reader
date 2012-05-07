@@ -27,12 +27,22 @@ describe PDF::Reader do
   end
 
   describe "page_count()" do
-    it "should return the correct page_count" do
-      PDF::Reader.new(cairo_basic).page_count.should eql(2)
+    context "with cairo-basic" do
+      it "should return the correct page_count" do
+        PDF::Reader.new(cairo_basic).page_count.should eql(2)
+      end
     end
 
-    it "should return the correct page_count" do
-      PDF::Reader.new(no_text_spaces).page_count.should eql(6)
+    context "with cairo-basic" do
+      it "should return the correct page_count" do
+        PDF::Reader.new(no_text_spaces).page_count.should eql(6)
+      end
+    end
+
+    context "with indirect_page_count" do
+      it "should return the correct page_count" do
+        PDF::Reader.new(pdf_spec_file("indirect_page_count")).page_count.should eql(1)
+      end
     end
   end
 

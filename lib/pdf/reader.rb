@@ -135,7 +135,7 @@ module PDF
 
     def page_count
       pages = @objects.deref(root[:Pages])
-      @page_count ||= pages[:Count]
+      @page_count ||= @objects.deref(pages[:Count])
     end
 
     def pdf_version
