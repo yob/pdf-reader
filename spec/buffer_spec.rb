@@ -323,7 +323,7 @@ describe PDF::Reader::Buffer, "token method" do
   end
 
   it "should correctly tokenise an inline image when inside a content stream" do
-    io = StringIO.new("BI ID aaa bbb ccc \xF0\xF0\xF0 EI")
+    io = StringIO.new(binary_string("BI ID aaa bbb ccc \xF0\xF0\xF0 EI"))
     buf = PDF::Reader::Buffer.new(io, :content_stream => true)
 
     buf.pos.should eql(0)
@@ -334,7 +334,7 @@ describe PDF::Reader::Buffer, "token method" do
   end
 
   it "should correctly tokenise an inline image when outside a content stream" do
-    io = StringIO.new("BI ID aaa bbb ccc \xF0\xF0\xF0 EI")
+    io = StringIO.new(binary_string("BI ID aaa bbb ccc \xF0\xF0\xF0 EI"))
     buf = PDF::Reader::Buffer.new(io, :content_stream => false)
 
     buf.pos.should eql(0)
@@ -348,7 +348,7 @@ describe PDF::Reader::Buffer, "token method" do
   end
 
   it "should correctly tokenise an inline image that contains the letters 'EI' within the image data" do
-    io = StringIO.new("BI ID aaa bbb ccc \xF0EI\xF0 EI")
+    io = StringIO.new(binary_string("BI ID aaa bbb ccc \xF0EI\xF0 EI"))
     buf = PDF::Reader::Buffer.new(io, :content_stream => true)
 
     buf.pos.should eql(0)
@@ -359,7 +359,7 @@ describe PDF::Reader::Buffer, "token method" do
   end
 
   it "should correctly tokenise an inline image that contains the letters 'EI' within the image data" do
-    io = StringIO.new("BI ID aaa bbb ccc \xF0EI\xF0\nEI")
+    io = StringIO.new(binary_string("BI ID aaa bbb ccc \xF0EI\xF0\nEI"))
     buf = PDF::Reader::Buffer.new(io, :content_stream => true)
 
     buf.pos.should eql(0)
