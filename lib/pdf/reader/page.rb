@@ -126,7 +126,7 @@ module PDF
         params  = []
 
         while (token = tokens.shift)
-          if token.kind_of?(Token) and PagesStrategy::OPERATORS.has_key?(token)
+          if PagesStrategy::OPERATORS.has_key?(token)
             callback(receivers, PagesStrategy::OPERATORS[token], params)
             params.clear
           else
