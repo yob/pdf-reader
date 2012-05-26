@@ -5,7 +5,7 @@ require 'parslet'
 module PDF
   class Reader
     class Transform < Parslet::Transform
-      rule(:string_literal => simple(:value)) { value }
+      rule(:string_literal => simple(:value)) { value.to_s }
       rule(:string_literal => subtree(:value)) {
         if value.is_a?(String)
           value
@@ -33,7 +33,7 @@ module PDF
 
       rule(:integer => simple(:value)) { value.to_i }
 
-      rule(:boolean => simple(:value)) { value == "true" }
+      rule(:boolean => simple(:value)) { value.to_s == "true" }
 
       rule(:null => simple(:value)) { nil }
 
@@ -43,9 +43,9 @@ module PDF
         ::Hash[*Transform.new.apply(contents)]
       }
 
-      rule(:indirect => simple(:value)) { value }
+      rule(:indirect => simple(:value)) { value.to_s }
 
-      rule(:keyword => simple(:value)) { value}
+      rule(:keyword => simple(:value)) { value.to_s }
 
       rule(:op => simple(:value)) { value.to_s }
     end

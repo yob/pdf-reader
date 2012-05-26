@@ -6,7 +6,7 @@ describe PDF::Reader::Transform, "#transform" do
   let!(:transform) { PDF::Reader::Transform.new }
 
   context "literal string" do
-    let!(:ast) { [{ :string_literal => "abc"}] }
+    let!(:ast) { [{ :string_literal => :abc}] }
 
     it "should be transformed into tokens" do
       transform.apply(ast).should == %w{ abc }
@@ -93,7 +93,7 @@ describe PDF::Reader::Transform, "#transform" do
     end
   end
 
-  context "PDF int" do
+  context "PDF int (positive)" do
     let!(:ast) { [{ :float => "10"}] }
 
     it "should be transformed into tokens" do
@@ -101,8 +101,16 @@ describe PDF::Reader::Transform, "#transform" do
     end
   end
 
+  context "PDF int (negative)" do
+    let!(:ast) { [{ :float => "-10"}] }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ -10 ]
+    end
+  end
+
   context "PDF true" do
-    let!(:ast) { [{ :boolean => "true"}] }
+    let!(:ast) { [{ :boolean => :true}] }
 
     it "should be transformed into tokens" do
       transform.apply(ast).should == [ true ]
@@ -162,7 +170,7 @@ describe PDF::Reader::Transform, "#transform" do
   end
 
   context "Indirect Reference" do
-    let!(:ast) { [ {:indirect => "1 0 R"} ] }
+    let!(:ast) { [ {:indirect => :"1 0 R"} ] }
 
     # TODO this should actually transform the reference into a
     #      PDF::Reader::Reference object
@@ -172,23 +180,22 @@ describe PDF::Reader::Transform, "#transform" do
   end
 
   context "PDF Keywords" do
-    let!(:ast) { [ {:keyword => "endstream"} ] }
+    let!(:ast) {
+      [ {:keyword => "endstream"}, {:keyword => :obj} ]
+    }
 
     it "should be transformed into tokens" do
-      transform.apply(ast).should == [ "endstream" ]
+      transform.apply(ast).should == [ "endstream", "obj" ]
     end
   end
 
   context "operators" do
-    let!(:ast) { [ {:op => "q"}, {:op => "Q"} ] }
+    let!(:ast) { [ {:op => "q"}, {:op => :Q} ] }
 
-    it "should be trasformed into tokens" do
+    it "should be transformed into tokens" do
       transform.apply(ast).should == [ "q", "Q" ]
     end
 
-    it "should be transformed into Strings" do
-      transform.apply(ast).map(&:class).should == [ String, String ]
-    end
   end
 
 end
