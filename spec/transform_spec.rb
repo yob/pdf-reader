@@ -2,124 +2,193 @@
 
 require File.dirname(__FILE__) + "/spec_helper"
 
-describe PDF::Reader::Transform do
-  let(:transform) { PDF::Reader::Transform.new }
+describe PDF::Reader::Transform, "#transform" do
+  let!(:transform) { PDF::Reader::Transform.new }
 
-  it "transforms a literal string" do
-    str = [{ :string_literal => "abc"}]
-    transform.apply(str).should == %w{ abc }
+  context "literal string" do
+    let!(:ast) { [{ :string_literal => "abc"}] }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == %w{ abc }
+    end
   end
 
-  it "transforms a an empty literal string" do
-    ast = [{ :string_literal => [] }]
-    transform.apply(ast).should == [ "" ]
+  context "empty literal string" do
+    let!(:ast) { [{ :string_literal => [] }] }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ "" ]
+    end
   end
 
-  it "transforms a nested literal string" do
-    ast = [{ :string_literal => [{:string_literal => "abc"}] }]
-    transform.apply(ast).should == [ "abc" ]
+  context "nested literal string" do
+    let!(:ast)  { [{ :string_literal => [{:string_literal => "abc"}] }] }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ "abc" ]
+    end
   end
 
-  it "transforms a hex string without captials" do
-    str = [{ :string_hex => "00ffab"}]
-    transform.apply(str).should == [ binary_string("\x00\xff\xab") ]
+  context "PDF Hex string without capitals" do
+    let!(:ast) { [{ :string_hex => "00ffab"}] }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ binary_string("\x00\xff\xab") ]
+    end
   end
 
-  it "transforms a hex string with spaces" do
-    str = [{ :string_hex => "00ff ab"}]
-    transform.apply(str).should == [ binary_string("\x00\xff\xab") ]
+  context "PDF Hex string with spaces" do
+    let!(:ast) { [{ :string_hex => "00ff ab"}] }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ binary_string("\x00\xff\xab") ]
+    end
   end
 
-  it "transforms a hex string with an odd number of characters" do
-    str = [{ :string_hex => "00ffa"}]
-    transform.apply(str).should == [ binary_string("\x00\xff\xa0") ]
+  context "PDF Hex string with an odd number of characters" do
+    let!(:ast) { [{ :string_hex => "00ffa"}] }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ binary_string("\x00\xff\xa0") ]
+    end
   end
 
-  it "transforms a PDF Name to a ruby symbol" do
-    str = [{ :name => "James"}]
-    transform.apply(str).should == [ :James ]
+  context "PDF Name" do
+    let!(:ast) { [{ :name => "James"}] }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ :James ]
+    end
   end
 
-  it "transforms a PDF Name with encoded bytes to a ruby symbol" do
-    str = [{ :name => "James#20Healy"}]
-    transform.apply(str).should == [ :"James Healy" ]
+  context "PDF Name with encoded bytes" do
+    let!(:ast) { [{ :name => "James#20Healy"}] }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ :"James Healy" ]
+    end
   end
 
-  it "transforms a PDF Name with encoded bytes to a ruby symbol" do
-    str = [{ :name => "James#23Healy"}]
-    transform.apply(str).should == [ :"James#Healy" ]
+  context "PDF Name with encoded bytes" do
+    let!(:ast) { [{ :name => "James#23Healy"}] }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ :"James#Healy" ]
+    end
   end
 
-  it "transforms a PDF Name with encoded bytes to a ruby symbol" do
-    str = [{ :name => "Ja#6des"}]
-    transform.apply(str).should == [ :"James" ]
+  context "PDF Name with encoded bytes to a ruby symbol" do
+    let!(:ast) { [{ :name => "Ja#6des"}] }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ :"James" ]
+    end
   end
 
-  it "transforms a float" do
-    str = [{ :float => "1.9"}]
-    transform.apply(str).should == [ 1.9 ]
+  context "PDF float" do
+    let!(:ast) { [{ :float => "1.9"}] }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ 1.9 ]
+    end
   end
 
-  it "transforms an int" do
-    str = [{ :float => "10"}]
-    transform.apply(str).should == [ 10 ]
+  context "PDF int" do
+    let!(:ast) { [{ :float => "10"}] }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ 10 ]
+    end
   end
 
-  it "transforms a true boolean" do
-    str = [{ :boolean => "true"}]
-    transform.apply(str).should == [ true ]
+  context "PDF true" do
+    let!(:ast) { [{ :boolean => "true"}] }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ true ]
+    end
   end
 
-  it "transforms a false boolean" do
-    str = [{ :boolean => "false"}]
-    transform.apply(str).should == [ false ]
+  context "PDF false" do
+    let!(:ast) { [{ :boolean => "false"}] }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ false ]
+    end
   end
 
-  it "transforms a null" do
-    str = [{ :null => "null"}]
-    transform.apply(str).should == [ nil ]
+  context "PDF null" do
+    let!(:ast) { [{ :null => "null"}] }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ nil ]
+    end
   end
 
-  it "transforms an array" do
-    ast = [
-      { :array => [
-        {:integer => "1"},
-        {:integer => "2"},
-        {:integer => "3"},
-        {:integer => "4"}
-        ]
-      }
-    ]
-    transform.apply(ast).should == [ [1, 2, 3, 4] ]
+  context "PDF array" do
+    let!(:ast) {
+      [
+        { :array => [
+          {:integer => "1"},
+          {:integer => "2"},
+          {:integer => "3"},
+          {:integer => "4"}
+          ]
+        }
+      ]
+    }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ [1, 2, 3, 4] ]
+    end
   end
 
-  it "transforms a dict" do
-    ast = [
-      { :dict => [
-        {:name => "One"},
-        {:integer => "1"},
-        {:name => "Two"},
-        {:integer => "2"}
-        ]
-      }
-    ]
-    transform.apply(ast).should == [ {:One => 1, :Two => 2} ]
+  context "PDF dict" do
+    let!(:ast) {
+      [
+        { :dict => [
+          {:name => "One"},
+          {:integer => "1"},
+          {:name => "Two"},
+          {:integer => "2"}
+          ]
+        }
+      ]
+    }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ {:One => 1, :Two => 2} ]
+    end
   end
 
-  it "transforms an indirect reference" do
+  context "Indirect Reference" do
+    let!(:ast) { [ {:indirect => "1 0 R"} ] }
+
     # TODO this should actually transform the reference into a
     #      PDF::Reader::Reference object
-    ast = [ {:indirect => "1 0 R"} ]
-    transform.apply(ast).should == [ "1 0 R" ]
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ "1 0 R" ]
+    end
   end
 
-  it "transforms a PDF keyword" do
-    ast = [ {:keyword => "endstream"} ]
-    transform.apply(ast).should == [ "endstream" ]
+  context "PDF Keywords" do
+    let!(:ast) { [ {:keyword => "endstream"} ] }
+
+    it "should be transformed into tokens" do
+      transform.apply(ast).should == [ "endstream" ]
+    end
   end
 
-  it "transforms an operator" do
-    ast = [ {:op => "q"}, {:op => "Q"} ]
-    transform.apply(ast).should == [ "q", "Q" ]
+  context "operators" do
+    let!(:ast) { [ {:op => "q"}, {:op => "Q"} ] }
+
+    it "should be trasformed into tokens" do
+      transform.apply(ast).should == [ "q", "Q" ]
+    end
+
+    it "should be transformed into Strings" do
+      transform.apply(ast).map(&:class).should == [ String, String ]
+    end
   end
+
 end
