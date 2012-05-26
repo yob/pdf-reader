@@ -117,4 +117,9 @@ describe PDF::Reader::Transform do
     ast = [ {:keyword => "endstream"} ]
     transform.apply(ast).should == [ "endstream" ]
   end
+
+  it "transforms an operator" do
+    ast = [ {:op => "q"}, {:op => "Q"} ]
+    transform.apply(ast).should == [ "q", "Q" ]
+  end
 end

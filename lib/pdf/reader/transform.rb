@@ -46,6 +46,8 @@ module PDF
       rule(:indirect => simple(:value)) { value }
 
       rule(:keyword => simple(:value)) { value}
+
+      rule(:op => simple(:value)) { value.to_s }
     end
   end
 end
