@@ -48,10 +48,10 @@ class PdfTransform < Parslet::Transform
   rule(:string_literal => subtree(:value)) {
     if value.is_a?(String)
       value
-    elsif value.is_a?(Array) && value.empty?
-      ""
+    elsif value.is_a?(Array) && value.size > 0
+      PdfTransform.new.apply(value.first)
     else
-      PdfTransform.new.apply(value)
+      ""
     end
   }
 
@@ -111,6 +111,11 @@ describe PdfTransform do
   it "transforms a an empty literal string" do
     ast = [{ :string_literal => [] }]
     transform.apply(ast).should == [ "" ]
+  end
+
+  it "transforms a nested literal string" do
+    ast = [{ :string_literal => [{:string_literal => "abc"}] }]
+    transform.apply(ast).should == [ "abc" ]
   end
 
   it "transforms a hex string without captials" do
