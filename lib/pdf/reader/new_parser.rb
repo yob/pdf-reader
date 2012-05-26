@@ -13,7 +13,7 @@ module PDF
       # delimiter
       rule(:regular)   { match('[^\(\)<>\[\]{}/%\x00\x09\x0A\x0C\x0D\x20]')}
 
-      rule(:doc) { ( op | string_literal | string_hex | array | dict | name | boolean | null | keyword | indirect | float | integer | space ).repeat }
+      rule(:doc) { ( string_literal | string_hex | array | dict | name | boolean_t | boolean_f | null | keyword | indirect | float | integer | op | space ).repeat }
 
       rule(:string_literal_content) {
         str('\(') | str('\)') | match["^()"]
@@ -37,7 +37,8 @@ module PDF
 
       rule(:indirect)       { (match('[0-9]').repeat(1) >> space >> match('[0-9]').repeat(1) >> space >> str("R")).as(:indirect) }
 
-      rule(:boolean)        { (str("true") | str("false")).as(:boolean)}
+      rule(:boolean_t)        { str("true").as(:boolean)}
+      rule(:boolean_f)        { str("false").as(:boolean)}
 
       rule(:null)           { str('null').as(:null) }
 

@@ -319,6 +319,18 @@ describe PDF::Reader::NewParser do
     parser.parse(str).should == ast
   end
 
+  it "should parse a dictionary with a false value" do
+    str = "<</Title false>>"
+    ast = [
+      { :dict => [
+        {:name => "Title"},
+        {:boolean => "false"}
+        ]
+      }
+    ]
+    parser.parse(str).should == ast
+  end
+
   it "parses an indirect reference" do
     str = "1 0 R"
     ast = [ {:indirect => "1 0 R"} ]
