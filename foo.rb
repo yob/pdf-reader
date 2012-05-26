@@ -306,7 +306,7 @@ describe PdfParser do
 
   it "should parse a hex string with captials" do
     str = " <00FFAB> "
-    ast = [ { :string_hex => "00FFFB" } ]
+    ast = [ { :string_hex => "00FFAB" } ]
     parser.parse(str).should == ast
   end
 
