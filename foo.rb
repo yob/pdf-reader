@@ -12,11 +12,12 @@ class PdfParser < Parslet::Parser
 
   rule(:doc) { ( string_literal | string_hex | array | dict | name | boolean | null | keyword | indirect | float | integer | space ).repeat }
 
+  rule(:string_literal_content) {
+    str('\(') | str('\)') | match["^()"]
+  }
+
   rule(:string_literal) {
-    str("(") >> (
-      (str('\\') >> any) |
-      (str(')').absent? >> any)
-    ).repeat.as(:string_literal) >> str(")")
+    str("(") >> (string_literal_content | string_literal).repeat.as(:string_literal) >> str(")")
   }
 
   rule(:string_hex)     { str("<") >> (match('[A-Fa-f0-9]') | space).repeat(1).as(:string_hex) >> str(">") }
@@ -281,8 +282,8 @@ describe PdfParser do
   end
 
   it "should parse a string containing an escaped left paren" do
-    str    = "(x \\( x)"
-    ast = [{ :string_literal => "x \\( x" }]
+    str    = '(x \( x)'
+    ast = [{ :string_literal => 'x \( x' }]
     parser.parse(str).should == ast
   end
 
@@ -292,11 +293,11 @@ describe PdfParser do
     parser.parse(str).should == ast
   end
 
-  #it "should parse a string containing an balanced nested parens" do
-  #  str    = "((x))"
-  #  ast = [{ :string_literal => "(x)" }]
-  #  parser.parse(str).should == ast
-  #end
+  it "should parse a string containing an balanced nested parens" do
+    str    = "((x))"
+    ast = [{ :string_literal => [{:string_literal => "x"}] }]
+    parser.parse(str).should == ast
+  end
 
   it "should parse a hex string without captials" do
     str = "<00ffab>"
