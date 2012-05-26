@@ -21,6 +21,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency("rake")
   spec.add_development_dependency("roodi")
+  spec.add_development_dependency("parslet")
   spec.add_development_dependency("rspec", "~>2.3")
   spec.add_development_dependency("ZenTest", "~>4.4.2")
 

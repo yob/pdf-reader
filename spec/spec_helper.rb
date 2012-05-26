@@ -17,4 +17,5 @@ Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f }
 RSpec.configure do |config|
   config.expect_with :rspec, :stdlib
   config.include ReaderSpecHelper
+  config.include EncodingHelper
 end
