@@ -18,11 +18,11 @@ module PDF
 
       rule(:string_hex => simple(:value)) {
         value << "0" unless value.size % 2 == 0
-        value.gsub(/[^A-F0-9]/i,"").scan(/../).map { |i| i.hex.chr }.join
+        value.to_s.gsub(/[^A-F0-9]/i,"").scan(/../).map { |i| i.hex.chr }.join
       }
 
       rule(:name => simple(:value)) {
-        value.scan(/#([A-Fa-f0-9]{2})/).each do |find|
+        value.to_s.scan(/#([A-Fa-f0-9]{2})/).each do |find|
           replace = find[0].hex.chr
           value.gsub!("#"+find[0], replace)
         end
