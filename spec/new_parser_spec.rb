@@ -332,4 +332,10 @@ describe PDF::Reader::NewParser do
     ast = [ {:keyword => "endstream"} ]
     parser.parse(str).should == ast
   end
+
+  it "should parse operators string" do
+    str = "q Q"
+    ast = [{ :op => "q" }, { :op => "Q"}]
+    parser.parse(str).should == ast
+  end
 end
