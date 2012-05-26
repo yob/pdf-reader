@@ -303,6 +303,22 @@ describe PDF::Reader::NewParser do
     parser.parse(str).should == ast
   end
 
+  it "should parse a dictionary with an embedded dictionary" do
+    str = "<</X << /Y 1 >> >>"
+    ast = [
+      { :dict => [
+        {:name => "X"},
+        {:dict => [
+          {:name => "Y"},
+          {:integer => "1"}
+          ]
+        }
+      ]
+      }
+    ]
+    parser.parse(str).should == ast
+  end
+
   it "parses an indirect reference" do
     str = "1 0 R"
     ast = [ {:indirect => "1 0 R"} ]
