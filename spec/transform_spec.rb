@@ -193,7 +193,10 @@ describe PDF::Reader::Transform, "#transform" do
     let!(:ast) { [ {:op => "q"}, {:op => :Q} ] }
 
     it "should be transformed into tokens" do
-      transform.apply(ast).should == [ "q", "Q" ]
+      transform.apply(ast).should == [
+        PDF::Reader::Token.new("q"),
+        PDF::Reader::Token.new("Q")
+      ]
     end
 
   end

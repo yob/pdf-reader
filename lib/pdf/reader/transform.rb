@@ -47,7 +47,7 @@ module PDF
 
       rule(:keyword => simple(:value)) { value.to_s }
 
-      rule(:op => simple(:value)) { value.to_s }
+      rule(:op => simple(:value)) { Token.new(value.to_s) }
     end
   end
 end
