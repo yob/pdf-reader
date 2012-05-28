@@ -85,7 +85,7 @@ grammar Pdf
   end
 
   rule base_object
-    null / boolean / number / string / name / array / dictionary
+    null / boolean_true / boolean_false / number / string / name / array / dictionary
   end
 
   rule composed_object
@@ -95,11 +95,15 @@ grammar Pdf
   #=================================================
 
   rule null
-    'null'
+    'null' <PDF::Reader::NullNode>
   end
 
-  rule boolean
-    'true' / 'false'
+  rule boolean_false
+    'false' <PDF::Reader::BooleanNode>
+  end
+
+  rule boolean_true
+    'true' <PDF::Reader::BooleanNode>
   end
 
   rule number
@@ -110,11 +114,11 @@ grammar Pdf
   end
    
   rule integer
-     '0' / sign? [1-9] [0-9]*
+     '0' / sign? [1-9] [0-9]* <PDF::Reader::Integer>
   end
 
   rule real
-    sign? '.' [0-9]+ / sign? '0.' [0-9]+ / sign? [1-9] [0-9]* '.' [0-9]*
+    sign? '.' [0-9]+ / sign? '0.' [0-9]+ / sign? [1-9] [0-9]* '.' [0-9]* <PDF::Reader::Float>
   end
 
   rule sign
@@ -130,7 +134,7 @@ grammar Pdf
   end
 
   rule string_litteral
-    '(' (string_litteral / string_char / continuation)* ')'
+    '(' (string_litteral / string_char / continuation)* ')'  <PDF::Reader::LiteralString>
   end
 
   rule string_char
@@ -146,7 +150,7 @@ grammar Pdf
   end
 
   rule string_hexadecimal
-   '<' (two_hexa_digits / separator)* '>'
+   '<' (two_hexa_digits / separator)* '>' <PDF::Reader::HexString>
   end
 
   rule two_hexa_digits
@@ -166,7 +170,7 @@ grammar Pdf
   #----------------------------------------
 
   rule name
-    '/' (regular_ASCII_char / two_digit_code)+
+    '/' (regular_ASCII_char / two_digit_code)+ <PDF::Reader::Name>
   end
 
   rule two_digit_code
@@ -178,7 +182,7 @@ grammar Pdf
   #----------------------------------------
 
   rule array
-    '[' (object / separator)* ']'
+    '[' (object / separator)* ']' <PDF::Reader::ArrayNode>
   end
 
   #----------------------------------------
@@ -186,7 +190,7 @@ grammar Pdf
   #----------------------------------------
 
   rule dictionary
-    '<<' (separator* dictionary_entry separator*)* '>>'
+    '<<' (separator* dictionary_entry separator*)* '>>' <PDF::Reader::DictNode>
   end
 
   rule dictionary_entry
