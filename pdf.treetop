@@ -1,49 +1,281 @@
 grammar Pdf
-  rule doc
-    ( string_literal / space / string_hex / array / dict / float / integer / name / boolean_true / boolean_false / null )*
+
+  rule file
+    header (body separator* xref_section separator* trailer eol?)+
   end
 
-  rule string_literal
-    "(" [^()]+ ")" <PDF::Reader::LiteralString>
+  rule header
+    comment
   end
 
-  rule string_hex
-    "<" [0-9A-Fa-f]+ ">" <PDF::Reader::HexString>
+  rule body
+    (comment / object / separator)*
   end
 
-  rule float
-    [0-9]+ "." [0-9]+ <PDF::Reader::Float>
+  #---------------------------------------------
+  # XREF SECTION
+  #---------------------------------------------
+  rule xref_section
+    'xref' eol xref_subsection+
   end
 
-  rule integer
-    [0-9]+ <PDF::Reader::Integer>
+  rule xref_subsection
+    xref_section_header xref_entry+
   end
 
-  rule name
-    "/" [A-Za-z0-9]+ <PDF::Reader::Name>
+  rule xref_section_header
+    # the separator* should be eol but some PDF files do not
+    # follow the PDF spec (especially in object streams)
+    xref_1st_object_number " " xref_entry_count separator*
   end
 
-  rule boolean_true
-    "true"  <PDF::Reader::BooleanTrue>
+  rule xref_1st_object_number
+    integer
   end
 
-  rule boolean_false
-    "false"  <PDF::Reader::BooleanFalse>
+  rule xref_entry_count
+    integer
   end
+
+  rule xref_entry
+    xref_offset " " xref_generation " " xref_in_use xref_eol
+  end
+
+  rule xref_offset
+    [0-9] [0-9] [0-9] [0-9] [0-9] [0-9] [0-9] [0-9] [0-9] [0-9]
+  end
+
+  rule xref_generation
+    [0-9] [0-9] [0-9] [0-9] [0-9]
+  end
+
+  rule xref_in_use
+    [fn]
+  end
+
+  rule xref_eol
+    "\r\n" / " \r" / " \n"
+  end
+
+  #---------------------------------------------
+  # TRAILER
+  #---------------------------------------------
+  rule trailer
+    'trailer' eol? trailer_dictionary eol? 'startxref' eol? xref_last_section_offset eol? '%%EOF'
+  end
+
+  rule trailer_dictionary
+    dictionary
+  end
+
+  rule xref_last_section_offset
+    integer
+  end
+
+  #---------------------------------------------
+  # BODY OBJECTS
+  #---------------------------------------------
+
+  rule comment
+    "%" ( !eol . )* eol
+  end
+
+  rule object
+    composed_object / base_object
+  end
+
+  rule base_object
+    null / boolean / number / string / name / array / dictionary
+  end
+
+  rule composed_object
+    stream / indirect_object_definition / indirect_object_reference
+  end
+
+  #=================================================
 
   rule null
-    "null" <PDF::Reader::NullNode>
+    'null'
   end
+
+  rule boolean
+    'true' / 'false'
+  end
+
+  rule number
+    # caution !! order is important here: real must be before
+    # integer or the integral part of a real could be interpreted
+    # as a integer followed by a real starting with a '.' (dot)
+    real / integer
+  end
+   
+  rule integer
+     '0' / sign? [1-9] [0-9]*
+  end
+
+  rule real
+    sign? '.' [0-9]+ / sign? '0.' [0-9]+ / sign? [1-9] [0-9]* '.' [0-9]*
+  end
+
+  rule sign
+    [+-]
+  end
+
+  #----------------------------------------
+  # String
+  #----------------------------------------
+
+  rule string
+    string_litteral / string_hexadecimal
+  end
+
+  rule string_litteral
+    '(' (string_litteral / string_char / continuation)* ')'
+  end
+
+  rule string_char
+    escape_sequence / [^)]
+  end
+
+  rule escape_sequence
+    "\\n" / "\\r" / "\\t" / "\\b" / "\\f" / "\\(" / "\\)" / "\\\\" / octal_sequence
+  end
+
+  rule octal_sequence
+    "\\" (octal_digit octal_digit octal_digit / octal_digit octal_digit / octal_digit)
+  end
+
+  rule string_hexadecimal
+   '<' (two_hexa_digits / separator)* '>'
+  end
+
+  rule two_hexa_digits
+    hexa_digit hexa_digit
+  end
+
+  rule hexa_digit
+    [0-9A-Fa-f]
+  end
+
+  rule octal_digit
+    [0-7]
+  end
+
+  #----------------------------------------
+  # Name
+  #----------------------------------------
+
+  rule name
+    '/' (regular_ASCII_char / two_digit_code)+
+  end
+
+  rule two_digit_code
+    '#' two_digit
+  end
+
+  #----------------------------------------
+  # Array
+  #----------------------------------------
 
   rule array
-    "[" doc "]" <PDF::Reader::ArrayNode>
+    '[' (object / separator)* ']'
   end
 
-  rule dict
-    "<<" doc ">>" <PDF::Reader::DictNode>
+  #----------------------------------------
+  # Dictionary
+  #----------------------------------------
+
+  rule dictionary
+    '<<' (separator* dictionary_entry separator*)* '>>'
   end
 
-  rule space
-    [\s]+
+  rule dictionary_entry
+    dictionary_key separator* dictionary_value
+  end
+
+  rule dictionary_key
+    name
+  end
+
+  rule dictionary_value
+    object
+  end
+
+  #----------------------------------------
+  # Stream
+  #----------------------------------------
+
+  rule stream
+    dictionary separator* 'stream' ("\r\n" / "\n")  ( !"endstream" . )* eol? 'endstream'
+  end
+
+  #----------------------------------------
+  # Indirect object definition
+  #----------------------------------------
+
+  rule indirect_object_definition
+    object_number separator* generation_number separator* 'obj' separator* object separator* 'endobj'
+  end
+
+  rule object_number
+    integer
+  end
+
+  rule generation_number
+    integer
+  end
+
+  #----------------------------------------
+  # Indirect object reference
+  #----------------------------------------
+
+  rule indirect_object_reference
+    object_number_ref separator* generation_number_ref separator* 'R'
+  end
+
+  rule object_number_ref
+    integer
+  end
+
+  rule generation_number_ref
+    integer
+  end
+
+  #----------------------------------------
+  # Spaces, delimiters and characters
+  #----------------------------------------
+
+  rule eol
+    "\r\n" / [\n\r]
+  end
+
+  rule white_space
+    [\000\011\012\014\015\040]
+  end
+
+  rule continuation
+    "\\" eol
+  end
+
+  rule separator
+    white_space / eol / continuation
+  end
+
+  rule delimiter
+    [()\[\]><{}%]
+  end
+
+  # All characters except the white-space characters and delimiters are referred to as regular characters.
+  rule regular_char
+    regular_ASCII_char / regular_non_ASCII_char
+  end
+
+  rule regular_ASCII_char
+    [!"$&'*+,\-\.0-9:;=?@A-Z\\\^_`a-z|~]
+  end
+
+  rule regular_non_ASCII_char
+    [\001\002\003\004\005\006\007\010\013\016\017\020\021\022\023\024\025\026\027\030\031\032\e\034\035\036\037\200\201\202\203\204\205\206\207\210\211\212\213\214\215\216\217\220\221\222\223\224\225\226\227\230\231\232\233\234\235\236\237\240\241\242\243\244\245\246\247\250\251\252\253\254\255\256\257\260\261\262\263\264\265\266\267\270\271\272\273\274\275\276\277\300\301\302\303\304\305\306\307\310\311\312\313\314\315\316\317\320\321\322\323\324\325\326\327\330\331\332\333\334\335\336\337\340\341\342\343\344\345\346\347\350\351\352\353\354\355\356\357\360\361\362\363\364\365\366\367\370\371\372\373\374\375\376\377]
   end
 end
+
