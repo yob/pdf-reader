@@ -60,8 +60,8 @@ module PDF
       # returns the plain text content of this page encoded as UTF-8. Any
       # characters that can't be translated will be returned as a ▯
       #
-      def text
-        receiver = PageTextReceiver.new
+      def text(delimiter = nil)
+        receiver = PageTextReceiver.new(delimiter)
         walk(receiver)
         receiver.content
       end

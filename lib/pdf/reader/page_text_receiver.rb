@@ -8,6 +8,11 @@ module PDF
     class PageTextReceiver
       extend Forwardable
 
+      # Initialize with an optional text delimiter
+      def initialize (delimiter = nil)
+        @delimiter = delimiter
+      end
+
       # Graphics State Operators
       def_delegators :@state, :save_graphics_state, :restore_graphics_state
 
@@ -49,6 +54,7 @@ module PDF
         raise PDF::Reader::MalformedPDFError, "current font is invalid" if @state.current_font.nil?
         newx, newy = @state.trm_transform(0,0)
         @content[newy] ||= ""
+        @content[newy] << @delimiter if @delimiter && @content[newy].length > 0
         @content[newy] << @state.current_font.to_utf8(string)
       end
 
