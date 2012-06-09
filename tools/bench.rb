@@ -13,14 +13,13 @@ require 'perftools'
 # ensure we've loaded the correct pdf-reader
 PDF::Reader::NewParser
 
-#PerfTools::CpuProfiler.start("/tmp/restart_profile") do
+PerfTools::CpuProfiler.start("/tmp/restart_profile") do
   PDF::Reader.open("restart.pdf") do |reader|
-    reader.pages.each do |page|
-      puts page.number
-      page.text
-    end
+    #reader.pages.each do |page|
+      reader.page(5).text
+    #end
   end
-#end
+end
 
-#`pprof.rb --text /tmp/restart_profile > bench.txt`
-#`pprof.rb --pdf  /tmp/restart_profile > bench.pdf`
+`pprof.rb --text /tmp/restart_profile > bench.txt`
+`pprof.rb --pdf  /tmp/restart_profile > bench.pdf`
