@@ -27,20 +27,25 @@ module PDF
 
       rule(:string_hex)     { str("<") >> (match('[A-Fa-f0-9]') | space).repeat(1).as(:string_hex) >> str(">") }
 
-      rule(:array)          { str("[") >> base_object.as(:array) >> str("]") }
+      rule(:array)          { str("[") >> (base_object | space).repeat.as(:array) >> str("]") }
 
-      rule(:dict)           { str("<<") >> base_object.as(:dict) >> str(">>") }
+      rule(:dict)           { str("<<") >> (base_object |space).repeat.as(:dict) >> str(">>") }
 
       rule(:name)           { str('/') >> regular.repeat(1).as(:name) }
 
-      rule(:float)          { (match('[\+\-]').maybe >> match('[0-9]').repeat(1) >> str('.') >> match('[0-9]').repeat(1) ).as(:float) }
+      rule(:float)          { (sign.maybe >> single_digit.repeat(1) >> str('.') >> single_digit.repeat(1) ).as(:float) }
 
-      rule(:integer)        { (match('[\+\-]').maybe >> match('[0-9]').repeat(1)).as(:integer) }
+      rule(:integer)        { (sign.maybe >> single_digit.repeat(1)).as(:integer) }
 
-      rule(:indirect)       { (match('[0-9]').repeat(1) >> space >> match('[0-9]').repeat(1) >> space >> str("R")).as(:indirect) }
+      rule(:sign)           { str("+") | str("-") }
 
-      rule(:boolean_t)        { str("true").as(:boolean)}
-      rule(:boolean_f)        { str("false").as(:boolean)}
+      rule(:single_digit)   { (str("0") | str("1") | str("2") | str("3") | str("4") | str("5") | str("6") | str("7") | str("8") | str("9"))}
+
+      rule(:indirect)       { (single_digit.repeat(1) >> space >> single_digit.repeat(1) >> space >> str("R")).as(:indirect) }
+
+      rule(:boolean_t)      { str("true").as(:boolean)}
+
+      rule(:boolean_f)      { str("false").as(:boolean)}
 
       rule(:null)           { str('null').as(:null) }
 
