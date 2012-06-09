@@ -40,7 +40,9 @@ module PDF
 
     class Name < Treetop::Runtime::SyntaxNode
       def to_ruby
-        elements[1].text_value.to_sym
+        elements[1].text_value.gsub(/#\h\h/) { |match|
+          match[1, 2].hex.chr
+        }.to_sym
       end
     end
 

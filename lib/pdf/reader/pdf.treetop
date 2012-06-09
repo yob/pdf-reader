@@ -212,7 +212,7 @@ grammar Pdf
   end
 
   rule two_digit_code
-    '#' two_digit
+    '#' two_hexa_digits
   end
 
   #----------------------------------------
