@@ -66,12 +66,11 @@ module PDF
       end
 
       def content_stream(receivers, instructions)
-        buffer       = Buffer.new(StringIO.new(instructions), :content_stream => true)
-        parser       = Parser.new(buffer, @objects)
-        params       = []
+        tokens  = NewParser.parse(instructions)
+        params  = []
 
-        while (token = parser.parse_token(PagesStrategy::OPERATORS))
-          if token.kind_of?(Token) and PagesStrategy::OPERATORS.has_key?(token)
+        while (token = tokens.shift)
+          if token.is_a?(Token) && PagesStrategy::OPERATORS.has_key?(token)
             callback(receivers, PagesStrategy::OPERATORS[token], params)
             params.clear
           else
