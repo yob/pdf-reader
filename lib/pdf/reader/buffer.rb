@@ -151,6 +151,8 @@ class PDF::Reader
     # attempt to prime the buffer with the next few tokens.
     #
     def prepare_tokens
+      return if @pos >= @io.size
+
       10.times do
         case state
         when :literal_string then prepare_literal_token
