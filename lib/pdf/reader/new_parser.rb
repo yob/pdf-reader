@@ -64,7 +64,18 @@ module PDF
 
     class LiteralString < Treetop::Runtime::SyntaxNode
       def to_ruby
-        elements[1].text_value
+        elements[1].text_value.
+          gsub("\\n","\x0A").  # \n becomes New Line
+          gsub("\\r","\x0D").  # \r becomes Carriage Return
+          gsub("\\t","\x09").  # \t becomes Horizontal Tab
+          gsub("\\b","\x08").  # \b becomes Backspace
+          #gsub("\\b","\x08"). # \f becomes Form Feed
+          gsub("\\(","\x28").  # \( becomes Left Paren
+          gsub("\\)","\x29").  # \\ becomes Right Paren
+          gsub("\\\\","\x5C"). # \\ becomes \
+          gsub(/\\([0-7]){3}/) { |m| m[1,3].oct.chr }.  # \ddd is an octal char
+          gsub(/\\([0-7]){2}/) { |m| m[1,2].oct.chr }.  # \dd  is an octal char
+          gsub(/\\([0-7]){1}/) { |m| m[1,1].oct.chr }   # \d   is an octal char
       end
     end
 

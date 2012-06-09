@@ -41,39 +41,51 @@ describe PDF::Reader::NewParser do
     PDF::Reader::NewParser.parse(str).should == tokens
   end
 
+  it "should parse a literal string containing an escaped backslash" do
+    str    = '(this \\ is a string)'
+    tokens = ["this \\ is a string"]
+    PDF::Reader::NewParser.parse(str).should == tokens
+  end
+
   it "should parse a literal string containing an escaped new line" do
     str    = '(this \n is a string)'
-    tokens = ['this \n is a string']
+    tokens = ["this \n is a string"]
     PDF::Reader::NewParser.parse(str).should == tokens
   end
 
   it "should parse a literal string containing an escaped tab" do
     str    = '(x \t x)'
-    tokens = ['x \t x']
+    tokens = ["x \t x"]
     PDF::Reader::NewParser.parse(str).should == tokens
   end
 
   it "should parse a literal string containing an escaped octal" do
     str    = '(x \101 x)'
-    tokens = ['x \101 x']
+    tokens = ["x A x"]
+    PDF::Reader::NewParser.parse(str).should == tokens
+  end
+
+  it "should parse a literal string containing an escaped octal" do
+    str    = '(x \43 x)'
+    tokens = ["x # x"]
     PDF::Reader::NewParser.parse(str).should == tokens
   end
 
   it "should parse a literal string containing an escaped digit" do
     str    = '(x \1 x)'
-    tokens = ['x \1 x']
+    tokens = [binary_string("x \1 x")]
     PDF::Reader::NewParser.parse(str).should == tokens
   end
 
   it "should parse a literal string containing an escaped left paren" do
     str    = '(x \( x)'
-    tokens = ['x \( x']
+    tokens = ["x ( x"]
     PDF::Reader::NewParser.parse(str).should == tokens
   end
 
   it "should parse a literal string containing an escaped right paren" do
     str    = '(x \) x)'
-    tokens = ['x \) x']
+    tokens = ["x ) x"]
     PDF::Reader::NewParser.parse(str).should == tokens
   end
 
