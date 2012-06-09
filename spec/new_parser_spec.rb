@@ -173,6 +173,12 @@ describe PDF::Reader::NewParser do
     PDF::Reader::NewParser.parse(str).should == tokens
   end
 
+  it "should parse multiple floats" do
+    str    = "0.1 0.2 1.3"
+    tokens = [ 0.1, 0.2, 1.3 ]
+    PDF::Reader::NewParser.parse(str).should == tokens
+  end
+
   it "should parse a pdf name" do
     str    = "/James"
     tokens = [ :James ]

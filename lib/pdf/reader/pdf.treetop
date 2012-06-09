@@ -154,7 +154,9 @@ grammar Pdf
   end
 
   rule real
-    sign? '.' [0-9]+ / sign? '0.' [0-9]+ / sign? [1-9] [0-9]* '.' [0-9]* <PDF::Reader::Float>
+    sign? '.' [0-9]+              <PDF::Reader::Float> /
+    sign? '0.' [0-9]+             <PDF::Reader::Float> /
+    sign? [1-9] [0-9]* '.' [0-9]* <PDF::Reader::Float>
   end
 
   rule sign
