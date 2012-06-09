@@ -13,7 +13,10 @@ module PDF
       # delimiter
       rule(:regular)   { match('[^\(\)<>\[\]{}/%\x00\x09\x0A\x0C\x0D\x20]')}
 
-      rule(:doc) { ( string_literal | string_hex | array | dict | name | boolean_t | boolean_f | null | keyword | indirect | float | integer | op | space ).repeat }
+      rule(:content_stream) { ( base_object | operator | space).repeat }
+
+
+      rule(:base_object) { ( string_literal | string_hex | array | dict | name | boolean_t | boolean_f | null | indirect | float | integer ).repeat }
 
       rule(:string_literal_content) {
         str('\(') | str('\)') | match["^()"]
@@ -25,9 +28,9 @@ module PDF
 
       rule(:string_hex)     { str("<") >> (match('[A-Fa-f0-9]') | space).repeat(1).as(:string_hex) >> str(">") }
 
-      rule(:array)          { str("[") >> doc.as(:array) >> str("]") }
+      rule(:array)          { str("[") >> base_object.as(:array) >> str("]") }
 
-      rule(:dict)           { str("<<") >> doc.as(:dict) >> str(">>") }
+      rule(:dict)           { str("<<") >> base_object.as(:dict) >> str(">>") }
 
       rule(:name)           { str('/') >> regular.repeat(1).as(:name) }
 
@@ -42,7 +45,7 @@ module PDF
 
       rule(:null)           { str('null').as(:null) }
 
-      rule(:op)             {
+      rule(:operator)       {
                               str("BDC").as(:op) |
                               str("BMC").as(:op) |
                               str("EMC").as(:op) |
@@ -120,9 +123,11 @@ module PDF
                               str('"').as(:op)
                             }
 
-      rule(:keyword)        { (str('obj') | str('endobj') | str('stream') | str('endstream')).as(:keyword)}
+      #rule(:keyword)        { (str('obj') | str('endobj') | str('stream') | str('endstream')).as(:keyword)}
 
-      root(:doc)
+      rule(:eol) { str("\r\n") | match('[\n\r]') }
+
+      root(:content_stream)
     end
   end
 end
