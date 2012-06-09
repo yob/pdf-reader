@@ -252,8 +252,8 @@ describe PDF::Reader::NewParser do
   end
 
   it "should parse an array of ints" do
-    str    = "[ 1 2 3 4 ]"
-    tokens = [[ 1, 2, 3, 4 ]]
+    str    = "[ 1 2 3 0 0 4 ]"
+    tokens = [[ 1, 2, 3, 0, 0, 4 ]]
     PDF::Reader::NewParser.parse(str).should == tokens
   end
 

@@ -142,7 +142,15 @@ grammar Pdf
   end
 
   rule integer
-     '0' / sign? [1-9] [0-9]* <PDF::Reader::Integer>
+    zero_integer / non_zero_integer
+  end
+
+  rule zero_integer
+    '0' <PDF::Reader::Integer>
+  end
+
+  rule non_zero_integer
+    sign? [1-9] [0-9]* <PDF::Reader::Integer>
   end
 
   rule real
