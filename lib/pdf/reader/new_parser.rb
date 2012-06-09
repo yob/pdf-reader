@@ -90,7 +90,7 @@ module PDF
     class NewParser
       Treetop.load(File.join(File.dirname(__FILE__), 'pdf.treetop'))
 
-      attr_reader :pos
+      attr_reader :pos, :count
 
       def initialize(data)
         @data = data
@@ -99,15 +99,27 @@ module PDF
         @parser.root = :content_stream
         @pos = 0
         @tokens = []
+        @count = 0
       end
 
       def next_token
-        100.times { prepare_tokens } if @tokens.size <= 3
+        100.times { prepare_tokens } if @tokens.size <= 3 && @pos < @data.bytesize
         @tokens.shift
       end
 
       def all_tokens
-        100.times { prepare_tokens } if @tokens.size <= 3
+        #100.times { prepare_tokens } if @tokens.size <= 3 && @pos < @data.bytesize
+        @parser.consume_all_input = true
+        tree = @parser.parse(@data, index: @pos)
+        if tree
+          @tokens = tree.elements.select { |obj|
+            obj.respond_to?(:to_ruby)
+          }.map(&:to_ruby)
+        else
+          # If the AST is nil then there was an error during parsing
+          # we need to report a simple error message to help the user
+          raise Exception, "Parse error at offset: #{@parser.index}"
+        end
         @tokens
       end
 
@@ -115,6 +127,7 @@ module PDF
 
       def prepare_tokens
         return if @pos >= @data.bytesize
+        @count += 1
 
         token = @parser.parse(@data, index: @pos)
         @pos  = @parser.index
