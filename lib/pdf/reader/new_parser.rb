@@ -68,13 +68,19 @@ module PDF
       end
     end
 
+    class Operator < Treetop::Runtime::SyntaxNode
+      def to_ruby
+        Token.new(text_value)
+      end
+    end
+
     class NewParser
       Treetop.load(File.join(File.dirname(__FILE__), 'pdf.treetop'))
       @@parser = PdfParser.new
 
       def self.parse(data)
         # Pass the data over to the parser instance
-        tree = @@parser.parse(data, root: :body)
+        tree = @@parser.parse(data, root: :content_stream)
 
         # If the AST is nil then there was an error during parsing
         # we need to report a simple error message to help the user

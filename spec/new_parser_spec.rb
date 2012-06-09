@@ -113,6 +113,12 @@ describe PDF::Reader::NewParser do
     PDF::Reader::NewParser.parse(str).should == tokens
   end
 
+  it "should parse two integers" do
+    str    = "9 9"
+    tokens = [ 9, 9 ]
+    PDF::Reader::NewParser.parse(str).should == tokens
+  end
+
   it "should parse a double digit integer" do
     str    = "99"
     tokens = [ 99 ]
@@ -289,7 +295,7 @@ describe PDF::Reader::NewParser do
 
   it "should parse operators" do
     str    = "q Q"
-    tokens = [ "q", "Q" ]
+    tokens = %w{ q Q }
     PDF::Reader::NewParser.parse(str).should == tokens
   end
 end

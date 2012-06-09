@@ -12,6 +12,29 @@ grammar Pdf
     (comment / object / separator)*
   end
 
+  rule content_stream
+    (comment / operator / base_object / separator)*
+  end
+
+  #---------------------------------------------
+  # Content Stream Operators
+  #---------------------------------------------
+  rule operator
+    (three_char_operator / two_char_operator / single_char_operator)+ <PDF::Reader::Operator>
+  end
+
+  rule three_char_operator
+   'qqq'
+  end
+
+  rule two_char_operator
+    'qq'
+  end
+
+  rule single_char_operator
+    'Q' / 'q'
+  end
+
   #---------------------------------------------
   # XREF SECTION
   #---------------------------------------------
@@ -112,7 +135,7 @@ grammar Pdf
     # as a integer followed by a real starting with a '.' (dot)
     real / integer
   end
-   
+
   rule integer
      '0' / sign? [1-9] [0-9]* <PDF::Reader::Integer>
   end
