@@ -7,17 +7,19 @@
 #     ruby tools/bench.rb
 #     evince bench.pdf
 
-$:.unshift "../lib"
-require 'pdf-reader'
-require 'perftools'
+#$:.unshift "../lib"
+require 'pdf/reader'
+#require 'perftools'
 
-PerfTools::CpuProfiler.start("/tmp/bench.tmp") do
+PDF::Reader::NewParser
+
+#PerfTools::CpuProfiler.start("/tmp/bench.tmp") do
   PDF::Reader.open("restart.pdf") do |reader|
-    reader.pages.each do |page|
-      page.text
-    end
+    #reader.pages.each do |page|
+      reader.page(5).text
+    #end
   end
-end
+#end
 
-`pprof.rb --text /tmp/restart_profile > bench.txt`
-`pprof.rb --pdf  /tmp/restart_profile > bench.pdf`
+#`pprof.rb --text /tmp/restart_profile > bench.txt`
+#`pprof.rb --pdf  /tmp/restart_profile > bench.pdf`

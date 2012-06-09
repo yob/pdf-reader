@@ -121,8 +121,11 @@ module PDF
       end
 
       def content_stream(receivers, instructions)
+        start_time = Time.now.to_i
         ast     = NewParser.new.parse(instructions)
+        puts "ast done: #{Time.now.to_i - start_time}s"
         tokens  = Transform.new.apply(ast)
+        puts "transform done: #{Time.now.to_i - start_time}s"
         params  = []
 
         while (token = tokens.shift)
