@@ -13,7 +13,7 @@ grammar Pdf
   end
 
   rule content_stream
-    (comment / operator / base_object / separator)*
+    (comment / base_object / operator / separator)*
   end
 
   #---------------------------------------------
@@ -24,15 +24,20 @@ grammar Pdf
   end
 
   rule three_char_operator
-   'qqq'
+    "BDC" / "BMC" / "EMC" / "SCN" / "scn"
   end
 
   rule two_char_operator
-    'qq'
+    "b*" / "B*" / "BI" / "BT" / "BX" / "cm" / "CS" / "cs" / "d0" / "d1" /
+    "Do" / "DP" / "EI" / "ET" / "EX" / "f*" / "gs" / "ID" / "MP" / "re" /
+    "RG" / "rg" / "ri" / "SC" / "sc" / "sh" / "T*" / "Tc" / "Td" / "TD" /
+    "Tf" / "Tj" / "TJ" / "TL" / "Tm" / "Tr" / "Ts" / "Tw" / "Tz" / "W*"
   end
 
   rule single_char_operator
-    'Q' / 'q'
+    "b" / "B" / "c" / "d" / "f" / "F" / "G" / "g" / "h" / "i" / "j" / "J" /
+    "K" / "k" / "l" / "m" / "M" / "n" / "q" / "Q" / 'q' / 'Q' / "s" / "S" /
+    "v" / "w" / "W" / "y" / "\'" / '\"'
   end
 
   #---------------------------------------------

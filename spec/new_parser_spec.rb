@@ -298,4 +298,10 @@ describe PDF::Reader::NewParser do
     tokens = %w{ q Q }
     PDF::Reader::NewParser.parse(str).should == tokens
   end
+
+  it "should parse three char operators before one char" do
+    str    = "B BDC B"
+    tokens = %w{ B BDC B }
+    PDF::Reader::NewParser.parse(str).should == tokens
+  end
 end
