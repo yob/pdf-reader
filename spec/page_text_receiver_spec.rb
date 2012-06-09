@@ -43,4 +43,25 @@ describe PDF::Reader::PageTextReceiver do
 
     @receiver.content.should eql("James Healy\nSome regular content")
   end
+
+  it "should correctly parse a page with nested Form XObjects" do
+    @reader   = PDF::Reader.new(pdf_spec_file("nested_form_xobject"))
+    @page     = @reader.page(1)
+    @receiver = PDF::Reader::PageTextReceiver.new
+
+    @page.walk(@receiver)
+
+    @receiver.content.should eql("")
+  end
+
+  it "should correctly parse a page with nested Form XObjects" do
+    @reader   = PDF::Reader.new(pdf_spec_file("nested_form_xobject_another"))
+    @page     = @reader.page(1)
+    @receiver = PDF::Reader::PageTextReceiver.new
+
+    @page.walk(@receiver)
+
+    @receiver.content.should eql("one\ntwo\nthree\nfour")
+  end
+
 end

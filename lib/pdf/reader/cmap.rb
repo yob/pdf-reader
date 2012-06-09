@@ -26,6 +26,8 @@
 class PDF::Reader
   class CMap # :nodoc:
 
+    attr_reader :map
+
     def initialize(data)
       @map = {}
       process_data(data)

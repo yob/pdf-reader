@@ -14,7 +14,7 @@ end
 describe PDF::Reader::ObjectHash do
   it "should correctly load a PDF from a StringIO object" do
     filename = pdf_spec_file("cairo-unicode")
-    io = StringIO.new(File.read(filename))
+    io = StringIO.new(binread(filename))
     h = PDF::Reader::ObjectHash.new(io)
 
     h.map { |ref, obj| obj.class }.size.should eql(57)
@@ -79,6 +79,54 @@ describe PDF::Reader::ObjectHash, "object method" do
 
     h.object(PDF::Reader::Reference.new(3,0)).should eql(3649)
   end
+end
+
+describe PDF::Reader::ObjectHash, "deref! method" do
+
+  let(:hash) do
+    PDF::Reader::ObjectHash.new pdf_spec_file("cairo-unicode")
+  end
+
+  it "should return regular objects unchanged" do
+    hash.deref!(-1).should      eql(-1)
+    hash.deref!(nil).should     be_nil
+    hash.deref!("James").should eql("James")
+  end
+
+  it "should translate reference objects into an extracted PDF object" do
+    hash.deref!(PDF::Reader::Reference.new(3,0)).should eq 3649
+  end
+
+  it "should recursively dereference references within hashes" do
+    font_descriptor = hash.deref! PDF::Reader::Reference.new(17, 0)
+    font_descriptor[:FontFile3].should be_an_instance_of \
+      PDF::Reader::Stream
+  end
+
+  it "should recursively dereference references within stream hashes" do
+    font_file = hash.deref! PDF::Reader::Reference.new(15, 0)
+    font_file.hash[:Length].should eq 2103
+  end
+
+  it "should recursively dereference references within arrays" do
+    font = hash.deref! PDF::Reader::Reference.new(19, 0)
+    font[:DescendantFonts][0][:Subtype].should eq :CIDFontType0
+  end
+
+  it "should return a new Hash, not mutate the provided Hash" do
+    orig_collection = {}
+    new_collection  = hash.deref!(orig_collection)
+
+    orig_collection.object_id.should_not == new_collection.object_id
+  end
+
+  it "should return a new Array, not mutate the provided Array" do
+    orig_collection = []
+    new_collection  = hash.deref!(orig_collection)
+
+    orig_collection.object_id.should_not == new_collection.object_id
+  end
+
 end
 
 describe PDF::Reader::ObjectHash, "fetch method" do
@@ -314,12 +362,25 @@ end
 
 describe PDF::Reader::ObjectHash, "page_references method" do
 
-  it "should return the document PDF version dictionary" do
-    filename = pdf_spec_file("cairo-unicode")
-    h = PDF::Reader::ObjectHash.new(filename)
+  context "with cairo-unicode.pdf" do
+    it "should return an ordered array of references to page objects" do
+      filename = pdf_spec_file("cairo-unicode")
+      h = PDF::Reader::ObjectHash.new(filename)
 
-    arr = h.page_references
-    arr.size.should eql(4)
-    arr.map { |ref| ref.id }.should eql([4, 7, 10, 13])
+      arr = h.page_references
+      arr.size.should eql(4)
+      arr.map { |ref| ref.id }.should eql([4, 7, 10, 13])
+    end
+  end
+
+  context "with indirect_kids_array.pdf" do
+    it "should return an ordered array of references to page objects" do
+      filename = pdf_spec_file("indirect_kids_array")
+      h = PDF::Reader::ObjectHash.new(filename)
+
+      arr = h.page_references
+      arr.size.should eql(1)
+      arr.map { |ref| ref.id }.should eql([6])
+    end
   end
 end

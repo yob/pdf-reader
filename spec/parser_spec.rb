@@ -19,11 +19,37 @@ describe PDF::Reader::Parser do
     parse_string("/Ja#6des").parse_token.should eql(:"James")
   end
 
-  # '/' is a valid PDF name, but :"" is not a valid ruby symbol.
-  # How should I handle this?
-  it "should parse an empty name correctly" #do
-    #parse_string("/").parse_token.should eql(:"")
-  #end
+  # '/' is a valid PDF name, but :"" is only a valid ruby symbol in 1.9
+  # On 1.8 VMs the best I can do is a string with a single space. This
+  # is bound to cause trouble but it's better than treating empty PDF
+  # Names as a syntax error
+  if RUBY_VERSION >= "1.9"
+    it "should parse an empty name correctly" do
+      parse_string("/").parse_token.should eql("".to_sym)
+      parser = parse_string("/\n/")
+      parser.parse_token.should eql("".to_sym)
+      parser.parse_token.should eql("".to_sym)
+    end
+
+    it "should parse two empty names correctly" do
+      parser = parse_string("/ /")
+      parser.parse_token.should eql("".to_sym)
+      parser.parse_token.should eql("".to_sym)
+    end
+  else
+    it "should parse an empty name correctly" do
+      parse_string("/").parse_token.should eql(:" ")
+      parser = parse_string("/\n/")
+      parser.parse_token.should eql(:" ")
+      parser.parse_token.should eql(:" ")
+    end
+
+    it "should parse two empty names correctly" do
+      parser = parse_string("/ /")
+      parser.parse_token.should eql(:" ")
+      parser.parse_token.should eql(:" ")
+    end
+  end
 
   it "should parse booleans correctly" do
     parse_string("true").parse_token.should be_true
@@ -128,17 +154,23 @@ describe PDF::Reader::Parser do
     dict[:Supplement].should  eql(5)
   end
 
+  it "should parse dictionary with extra space ok" do
+    str = "<<\r\n/Type /Pages\r\n/Count 3\r\n/Kids [ 25 0 R 27 0 R]\r\n                                                      \r\n>>"
+    dict = parse_string(str).parse_token
+    dict.size.should == 3
+  end
+
   it "should parse an array correctly" do
     parse_string("[ 10 0 R 12 0 R ]").parse_token.size.should eql(2)
   end
 
   it "should parse numbers correctly" do
     parser = parse_string("1 2 -3 4.5 -5")
-    parser.parse_token.should == 1
-    parser.parse_token.should == 2
-    parser.parse_token.should == -3
-    parser.parse_token.should == 4.5
-    parser.parse_token.should == -5
+    parser.parse_token.should eql( 1)
+    parser.parse_token.should eql( 2)
+    parser.parse_token.should eql(-3)
+    parser.parse_token.should eql( 4.5)
+    parser.parse_token.should eql(-5)
   end
 
 end

@@ -124,7 +124,7 @@ class PDF::Reader
             generation = buf.token.to_i
             state = buf.token
 
-            store(objid, generation, offset) if state == "n"
+            store(objid, generation, offset) if state == "n" && offset > 0
             objid += 1
             params.clear
           end
@@ -146,7 +146,7 @@ class PDF::Reader
     # Read a XReaf stream from the underlying buffer instead of a traditional xref table.
     #
     def load_xref_stream(stream)
-      unless stream.hash[:Type] == :XRef
+      unless stream.is_a?(PDF::Reader::Stream) && stream.hash[:Type] == :XRef
         raise PDF::Reader::MalformedPDFError, "xref stream not found when expected"
       end
       trailer = Hash[stream.hash.select { |key, value|

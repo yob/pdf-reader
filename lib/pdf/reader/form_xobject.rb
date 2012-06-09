@@ -11,17 +11,14 @@ module PDF
     # This behaves and looks much like a limited PDF::Reader::Page class.
     #
     class FormXObject
+      include ResourceMethods
+
+      attr_reader :xobject
 
       def initialize(page, xobject)
         @page    = page
         @objects = page.objects
         @xobject = @objects.deref(xobject)
-      end
-
-      # Returns the resources that accompany this form.
-      #
-      def resources
-        @resources ||= @objects.deref(@xobject.hash[:Resources]) || {}
       end
 
       # return a hash of fonts used on this form.
@@ -31,7 +28,7 @@ module PDF
       # The values are a PDF::Reader::Font instances that provide access
       # to most available metrics for each font.
       #
-      def fonts
+      def font_objects
         raw_fonts = @objects.deref(resources[:Font] || {})
         ::Hash[raw_fonts.map { |label, font|
           [label, PDF::Reader::Font.new(@objects, @objects.deref(font))]
@@ -56,6 +53,12 @@ module PDF
 
       private
 
+      # Returns the resources that accompany this form.
+      #
+      def resources
+        @resources ||= @objects.deref(@xobject.hash[:Resources]) || {}
+      end
+
       def callback(receivers, name, params=[])
         receivers.each do |receiver|
           receiver.send(name, *params) if receiver.respond_to?(name)
@@ -75,7 +78,7 @@ module PDF
             params << token
           end
         end
-      rescue EOFError => e
+      rescue EOFError
         raise MalformedPDFError, "End Of File while processing a content stream"
       end
     end

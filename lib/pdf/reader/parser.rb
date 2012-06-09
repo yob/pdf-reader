@@ -28,14 +28,39 @@ class PDF::Reader
   # An internal PDF::Reader class that reads objects from the PDF file and converts
   # them into useable ruby objects (hash's, arrays, true, false, etc)
   class Parser
+
+    TOKEN_STRATEGY = proc { |parser, token| Token.new(token) }
+
+    STRATEGIES = {
+      "/"  => proc { |parser, token| parser.send(:pdf_name) },
+      "<<" => proc { |parser, token| parser.send(:dictionary) },
+      "["  => proc { |parser, token| parser.send(:array) },
+      "("  => proc { |parser, token| parser.send(:string) },
+      "<"  => proc { |parser, token| parser.send(:hex_string) },
+
+      nil     => proc { nil },
+      "true"  => proc { true },
+      "false" => proc { false },
+      "null"  => proc { nil },
+
+      "obj"       => TOKEN_STRATEGY,
+      "endobj"    => TOKEN_STRATEGY,
+      "stream"    => TOKEN_STRATEGY,
+      "endstream" => TOKEN_STRATEGY,
+      ">>"        => TOKEN_STRATEGY,
+      "]"         => TOKEN_STRATEGY,
+      ">"         => TOKEN_STRATEGY,
+      ")"         => TOKEN_STRATEGY
+    }
+
     ################################################################################
     # Create a new parser around a PDF::Reader::Buffer object
     #
     # buffer - a PDF::Reader::Buffer object that contains PDF data
-    # ohash  - a PDF::Reader::ObjectHash object that can return objects from the PDF file
-    def initialize (buffer, ohash=nil)
+    # objects  - a PDF::Reader::ObjectHash object that can return objects from the PDF file
+    def initialize (buffer, objects=nil)
       @buffer = buffer
-      @ohash  = ohash
+      @objects  = objects
     end
     ################################################################################
     # Reads the next token from the underlying buffer and convets it to an appropriate
@@ -45,24 +70,20 @@ class PDF::Reader
     def parse_token (operators={})
       token = @buffer.token
 
-      case token
-      when PDF::Reader::Reference, nil then return token
-      when "/"                         then return pdf_name()
-      when "<<"                        then return dictionary()
-      when "["                         then return array()
-      when "("                         then return string()
-      when "<"                         then return hex_string()
-      when "true"                      then return true
-      when "false"                     then return false
-      when "null"                      then return nil
-      when "obj", "endobj", "stream", "endstream" then return Token.new(token)
-      when "stream", "endstream"       then return Token.new(token)
-      when ">>", "]", ">", ")"         then return Token.new(token)
+      if STRATEGIES.has_key? token
+        STRATEGIES[token].call(self, token)
+      elsif token.is_a? PDF::Reader::Reference
+        token
+      elsif token.is_a? Token
+        token
+      elsif operators.has_key? token
+        Token.new(token)
+      elsif token.respond_to?(:to_token)
+        token.to_token
+      elsif token =~ /\d*\.\d/
+        token.to_f
       else
-        if operators.has_key?(token)   then return Token.new(token)
-        elsif token =~ /\d*\.\d/       then return token.to_f
-        else                           return token.to_i
-        end
+        token.to_i
       end
     end
     ################################################################################
@@ -109,9 +130,9 @@ class PDF::Reader
     # reads a PDF name from the buffer and converts it to a Ruby Symbol
     def pdf_name
       tok = @buffer.token
-      tok.scan(/#([A-Fa-f0-9]{2})/).each do |find|
-        replace = find[0].hex.chr
-        tok.gsub!("#"+find[0], replace)
+      tok = " " if tok == "" && RUBY_VERSION < "1.9"
+      tok.gsub!(/#([A-Fa-f0-9]{2})/) do |match|
+        match[1, 2].hex.chr
       end
       tok.to_sym
     end
@@ -206,8 +227,8 @@ class PDF::Reader
     # Decodes the contents of a PDF Stream and returns it as a Ruby String.
     def stream (dict)
       raise MalformedPDFError, "PDF malformed, missing stream length" unless dict.has_key?(:Length)
-      if @ohash
-        length = @ohash.object(dict[:Length])
+      if @objects
+        length = @objects.deref(dict[:Length])
       else
         length = dict[:Length] || 0
       end

@@ -23,8 +23,8 @@ describe PDF::Reader do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return a single float argument on #{filename}" do
         receiver.all_args(:pdf_version).each.each do |args|
-          args.size.should eql(1)
-          args[0].should   be_a_kind_of(Float)
+          assert_equal 1, args.size
+          assert args[0].is_a?(Float)
         end
       end
     end
@@ -34,8 +34,8 @@ describe PDF::Reader do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return a single hash argument on #{filename}" do
         receiver.all_args(:metadata).each.each do |args|
-          args.size.should eql(1)
-          args[0].should   be_a_kind_of(Hash)
+          assert_equal 1, args.size
+          assert args[0].is_a?(Hash)
           check_utf8(args)
         end
       end
@@ -47,8 +47,8 @@ describe PDF::Reader do
       it "should return a single UTF-8 string argument on #{filename}" do
 
         receiver.all_args(:xml_metadata).each do |args|
-          args.size.should eql(1)
-          args[0].should   be_a_kind_of(String)
+          assert_equal 1, args.size
+          assert args[0].is_a?(String)
           check_utf8(args)
         end
 
@@ -61,8 +61,8 @@ describe PDF::Reader do
       it "should return a single Fixnum argument that is > 0 on #{filename}" do
 
         receiver.all_args(:page_count).each do |args|
-          args.size.should      eql(1)
-          args[0].should        be_a_kind_of(Fixnum)
+          assert_equal 1, args.size
+          assert args[0].is_a?(Fixnum)
           (args[0] > 0).should  be_true
         end
 
@@ -78,7 +78,7 @@ describe PDF::Reader do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:begin_inline_image).each do |args|
-          args.should be_empty
+          assert_equal [], args
         end
       end
     end
@@ -88,9 +88,9 @@ describe PDF::Reader do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return a Hash and binary string argument on #{filename}" do
         receiver.all_args(:begin_inline_image_data).each do |args|
-          args.size.should eql(2)
-          args[0].should   be_a_kind_of(Hash)
-          args[1].should   be_a_kind_of(String)
+          assert_equal 2, args.size
+          assert args[0].is_a?(Hash)
+          assert args[1].is_a?(String)
           check_utf8(args[0])
           check_binary(args[1])
         end
@@ -108,7 +108,8 @@ describe PDF::Reader do
           else
             bytes_per_pixel = bits / 8.0
           end
-          args[1].size.should eql((width * height * bytes_per_pixel).to_i)
+          length = (width * height * bytes_per_pixel).to_i
+          assert_equal length, args[1].size
         end
 
       end
@@ -119,7 +120,7 @@ describe PDF::Reader do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:begin_text_object).each do |args|
-          args.should be_empty
+          assert_equal [], args
         end
       end
     end
@@ -129,7 +130,7 @@ describe PDF::Reader do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:end_document).each do |args|
-          args.should be_empty
+          assert_equal [], args
         end
       end
     end
@@ -140,7 +141,7 @@ describe PDF::Reader do
       it "should return no arguments on #{filename}" do
 
         receiver.all_args(:end_inline_image).each do |args|
-          args.should be_empty
+          assert_equal [], args
         end
 
       end
@@ -151,7 +152,7 @@ describe PDF::Reader do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:end_page).each do |args|
-          args.should be_empty
+          assert_equal [], args
         end
       end
     end
@@ -161,7 +162,7 @@ describe PDF::Reader do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:end_page_container).each do |args|
-          args.should be_empty
+          assert_equal [], args
         end
       end
     end
@@ -171,7 +172,7 @@ describe PDF::Reader do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:end_text_object).each do |args|
-          args.should be_empty
+          assert_equal [], args
         end
       end
     end
@@ -181,8 +182,8 @@ describe PDF::Reader do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return a single UTF-8 strings on #{filename}" do
         receiver.all_args(:move_to_next_line_and_show_text).each do |args|
-          args.size.should eql(1)
-          args[0].should   be_a_kind_of(String)
+          assert_equal 1, args.size
+          assert args[0].is_a? String
           check_utf8(args)
         end
       end
@@ -193,7 +194,7 @@ describe PDF::Reader do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:restore_graphics_state).each do |args|
-          args.should be_empty
+          assert_equal [], args
         end
       end
     end
@@ -203,7 +204,7 @@ describe PDF::Reader do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:save_graphics_state).each do |args|
-          args.should be_empty
+          assert_equal [], args
         end
       end
     end
@@ -213,9 +214,9 @@ describe PDF::Reader do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
         receiver.all_args(:set_text_font_and_size).each do |args|
-          args.size.should eql(2)
-          args[0].should be_a(Symbol)
-          args[1].should be_a(Numeric)
+          assert_equal 2, args.size
+          assert args[0].is_a? Symbol
+          assert args[1].is_a? Numeric
         end
       end
     end
@@ -225,8 +226,8 @@ describe PDF::Reader do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return a single UTF-8 string argument on #{filename}" do
         receiver.all_args(:show_text).each do |args|
-          args.size.should eql(1)
-          args[0].should   be_a_kind_of(String)
+          assert_equal 1, args.size
+          assert args[0].is_a? String
           check_utf8(args)
         end
       end
@@ -238,7 +239,7 @@ describe PDF::Reader do
       it "should return an array of Numbers and UTF-8 strings on #{filename}" do
         receiver.all_args(:show_text_with_positioning).each do |args|
           args[0].each do |arg|
-            (arg.class == String || arg.class == Fixnum || arg.class == Float).should   be_true
+            assert arg.class == String || arg.class == Fixnum || arg.class == Float
           end
           check_utf8(args)
         end
@@ -250,10 +251,10 @@ describe PDF::Reader do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return a single UTF-8 strings on #{filename}" do
         receiver.all_args(:set_spacing_next_line_show_text).each do |args|
-          args.size.should eql(3)
-          args[0].should   be_a_kind_of(Numeric)
-          args[1].should   be_a_kind_of(Numeric)
-          args[2].should   be_a_kind_of(String)
+          assert_equal 3, args.size
+          assert args[0].is_a?(Numeric)
+          assert args[1].is_a?(Numeric)
+          assert args[2].is_a?(String)
           check_utf8(args)
         end
       end

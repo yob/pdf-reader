@@ -89,6 +89,23 @@ describe PDF::Reader::Buffer, "token method" do
     buf.token.should be_nil
   end
 
+  it "should correctly return two empty name tokens" do
+    buf = parse_string("/ /")
+
+    buf.token.should eql("/")
+    buf.token.should eql("")
+    buf.token.should eql("/")
+    buf.token.should eql("")
+    buf.token.should be_nil
+
+    buf = parse_string("/\n/")
+    buf.token.should eql("/")
+    buf.token.should eql("")
+    buf.token.should eql("/")
+    buf.token.should eql("")
+    buf.token.should be_nil
+  end
+
   it "should tokenise a dict correctly" do
     buf = parse_string("/Registry (Adobe) /Ordering (Japan1) /Supplement")
     buf.token.should eql("/")
@@ -306,28 +323,64 @@ describe PDF::Reader::Buffer, "token method" do
   end
 
   it "should correctly tokenise an inline image when inside a content stream" do
-    io = StringIO.new("BT ID aaa bbb ccc \xF0\xF0\xF0 EI")
+    io = StringIO.new(binary_string("BI ID aaa bbb ccc \xF0\xF0\xF0 EI"))
     buf = PDF::Reader::Buffer.new(io, :content_stream => true)
 
     buf.pos.should eql(0)
-    buf.token.should eql("BT")
+    buf.token.should eql("BI")
     buf.token.should eql("ID")
     buf.token.should eql(binary_string("aaa bbb ccc \xF0\xF0\xF0"))
     buf.token.should eql("EI")
   end
 
   it "should correctly tokenise an inline image when outside a content stream" do
-    io = StringIO.new("BT ID aaa bbb ccc \xF0\xF0\xF0 EI")
+    io = StringIO.new(binary_string("BI ID aaa bbb ccc \xF0\xF0\xF0 EI"))
     buf = PDF::Reader::Buffer.new(io, :content_stream => false)
 
     buf.pos.should eql(0)
-    buf.token.should eql("BT")
+    buf.token.should eql("BI")
     buf.token.should eql("ID")
     buf.token.should eql("aaa")
     buf.token.should eql("bbb")
     buf.token.should eql("ccc")
     buf.token.should eql(binary_string("\xF0\xF0\xF0"))
     buf.token.should eql("EI")
+  end
+
+  it "should correctly tokenise an inline image that contains the letters 'EI' within the image data" do
+    io = StringIO.new(binary_string("BI ID aaa bbb ccc \xF0EI\xF0 EI"))
+    buf = PDF::Reader::Buffer.new(io, :content_stream => true)
+
+    buf.pos.should eql(0)
+    buf.token.should eql("BI")
+    buf.token.should eql("ID")
+    buf.token.should eql(binary_string("aaa bbb ccc \xF0EI\xF0"))
+    buf.token.should eql("EI")
+  end
+
+  it "should correctly tokenise an inline image that contains the letters 'EI' within the image data" do
+    io = StringIO.new(binary_string("BI ID aaa bbb ccc \xF0EI\xF0\nEI"))
+    buf = PDF::Reader::Buffer.new(io, :content_stream => true)
+
+    buf.pos.should eql(0)
+    buf.token.should eql("BI")
+    buf.token.should eql("ID")
+    buf.token.should eql(binary_string("aaa bbb ccc \xF0EI\xF0"))
+    buf.token.should eql("EI")
+  end
+
+  it "should correctly tokenise a hash that has ID as a key" do
+    io = StringIO.new("<</ID /S1 >> BDC")
+    buf = PDF::Reader::Buffer.new(io, :content_stream => true)
+
+    buf.pos.should eql(0)
+    buf.token.should eql("<<")
+    buf.token.should eql("/")
+    buf.token.should eql("ID")
+    buf.token.should eql("/")
+    buf.token.should eql("S1")
+    buf.token.should eql(">>")
+    buf.token.should eql("BDC")
   end
 end
 

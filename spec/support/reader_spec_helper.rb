@@ -12,7 +12,18 @@ module ReaderSpecHelper
     elsif File.file?(invalid_filename)
       return invalid_filename
     else
-      raise ArgumentError, "#{filename} not found"
+      raise ArgumentError, "#{valid_filename} not found"
+    end
+  end
+
+  # a safe method for opening a file and loading the contents as 
+  # a binary string.
+  #
+  def binread(filename)
+    if File.respond_to?(:binread)
+      File.binread(filename)
+    else
+      File.open(filename, "rb") { |f| f.read }
     end
   end
 

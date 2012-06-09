@@ -118,17 +118,24 @@ module PDF
     end
 
     def info
-      @objects.deref(@objects.trailer[:Info])
+      dict = @objects.deref(@objects.trailer[:Info])
+      doc_strings_to_utf8(dict)
     end
 
     def metadata
       stream = @objects.deref(root[:Metadata])
-      stream ? stream.unfiltered_data : nil
+      if stream.nil?
+        nil
+      else
+        xml = stream.unfiltered_data
+        xml.force_encoding("utf-8") if xml.respond_to?(:force_encoding)
+        xml
+      end
     end
 
     def page_count
       pages = @objects.deref(root[:Pages])
-      @page_count ||= pages[:Count]
+      @page_count ||= @objects.deref(pages[:Count])
     end
 
     def pdf_version
@@ -152,7 +159,7 @@ module PDF
       yield PDF::Reader.new(input, opts)
     end
 
-    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    # DEPRECATED: this method was deprecated in version 1.0.0 and will
     #             eventually be removed
     #
     #
@@ -164,7 +171,7 @@ module PDF
       end
     end
 
-    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    # DEPRECATED: this method was deprecated in version 1.0.0 and will
     #             eventually be removed
     #
     # Parse the given string, sending events to the given receiver.
@@ -175,7 +182,7 @@ module PDF
       end
     end
 
-    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    # DEPRECATED: this method was deprecated in version 1.0.0 and will
     #             eventually be removed
     #
     # Parse the file with the given name, returning an unmarshalled ruby version of
@@ -187,7 +194,7 @@ module PDF
       }
     end
 
-    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    # DEPRECATED: this method was deprecated in version 1.0.0 and will
     #             eventually be removed
     #
     # Parse the given string, returning an unmarshalled ruby version of represents
@@ -238,7 +245,7 @@ module PDF
     end
 
 
-    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    # DEPRECATED: this method was deprecated in version 1.0.0 and will
     #             eventually be removed
     #
     # Given an IO object that contains PDF data, parse it.
@@ -256,7 +263,7 @@ module PDF
       self
     end
 
-    # DEPRECATED: this method was deprecated in version 0.11.0 and will
+    # DEPRECATED: this method was deprecated in version 1.0.0 and will
     #             eventually be removed
     #
     # Given an IO object that contains PDF data, return the contents of a single object
@@ -268,6 +275,46 @@ module PDF
     end
 
     private
+
+    # recursively convert strings from outside a content stream into UTF-8
+    #
+    def doc_strings_to_utf8(obj)
+      case obj
+      when ::Hash then
+        {}.tap { |new_hash|
+          obj.each do |key, value|
+            new_hash[key] = doc_strings_to_utf8(value)
+          end
+        }
+      when Array then
+        obj.map { |item| doc_strings_to_utf8(item) }
+      when String then
+        if obj[0,2].unpack("C*") == [254, 255]
+          utf16_to_utf8(obj)
+        else
+          pdfdoc_to_utf8(obj)
+        end
+      else
+        obj
+      end
+    end
+
+    # TODO find a PDF I can use to spec this behaviour
+    #
+    def pdfdoc_to_utf8(obj)
+      obj.force_encoding("utf-8") if obj.respond_to?(:force_encoding)
+      obj
+    end
+
+    # one day we'll all run on a 1.9 compatible VM and I can just do this with
+    # String#encode
+    #
+    def utf16_to_utf8(obj)
+      str = obj[2, obj.size]
+      str = str.unpack("n*").pack("U*")
+      str.force_encoding("utf-8") if str.respond_to?(:force_encoding)
+      str
+    end
 
     def strategies
       @strategies ||= [
@@ -284,6 +331,7 @@ module PDF
 end
 ################################################################################
 
+require 'pdf/reader/resource_methods'
 require 'pdf/reader/abstract_strategy'
 require 'pdf/reader/buffer'
 require 'pdf/reader/cmap'
@@ -306,6 +354,7 @@ require 'pdf/reader/register_receiver'
 require 'pdf/reader/standard_security_handler'
 require 'pdf/reader/stream'
 require 'pdf/reader/text_receiver'
+require 'pdf/reader/page_state'
 require 'pdf/reader/page_text_receiver'
 require 'pdf/reader/token'
 require 'pdf/reader/xref'

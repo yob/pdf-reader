@@ -8,6 +8,9 @@ end
 
 describe PDF::Reader::PagesStrategy do
 
+  let(:object_hash) { PDF::Reader::ObjectHash.allocate }
+  let(:font) { PDF::Reader::Font.new(object_hash, {}) }
+
   it "should send the correct callbacks when processing instructions containing a single text block" do
 
     # mock up an object that will be called with callbacks. This will test that
@@ -25,7 +28,7 @@ describe PDF::Reader::PagesStrategy do
 
     # process the instructions
     content = PDF::Reader::PagesStrategy.new(nil, receiver)
-    content.content_stream(instructions, {:F1 => PDF::Reader::Font.new})
+    content.content_stream(instructions, {:F1 => font})
   end
 
   it "should send the correct callbacks when processing instructions containing 2 text blocks" do
@@ -45,7 +48,7 @@ describe PDF::Reader::PagesStrategy do
 
     # process the instructions
     content = PDF::Reader::PagesStrategy.new(nil, receiver)
-    content.content_stream(instructions, {:F1 => PDF::Reader::Font.new})
+    content.content_stream(instructions, {:F1 => font})
   end
 
   it "should send the correct callbacks when processing instructions containing an inline image" do
@@ -66,9 +69,9 @@ describe PDF::Reader::PagesStrategy do
 
     # process the instructions
     content = PDF::Reader::PagesStrategy.new(nil, receiver)
-    fonts = {:F9 => PDF::Reader::Font.new,
-             :F8 => PDF::Reader::Font.new,
-             :Fb => PDF::Reader::Font.new}
+    fonts = {:F9 => font,
+             :F8 => font,
+             :Fb => font}
     content.content_stream(obj, fonts)
   end
 

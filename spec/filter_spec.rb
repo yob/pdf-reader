@@ -4,17 +4,19 @@ require File.dirname(__FILE__) + "/spec_helper"
 
 describe PDF::Reader::Filter do
 
+  context "JPXDecode" do
+    it "returns the data unchanged" do
+      filter = PDF::Reader::Filter.new(:JPXDecode)
+      filter.filter("\x00").should eql("\x00")
+    end
+  end
+
   it "should inflate a RFC1950 (zlib) deflated stream correctly"
   it "should inflate a raw RFC1951 deflated stream correctly"
   it "should inflate a deflated stream with PNG predictors correctly" do
     filter = PDF::Reader::Filter.new(:FlateDecode, :Columns => 5, :Predictor => 12)
-    if File.respond_to?(:binread)
-      deflated_data    = File.binread(File.dirname(__FILE__) + "/data/deflated_with_predictors.dat")
-      depredicted_data = File.binread(File.dirname(__FILE__) + "/data/deflated_with_predictors_result.dat")
-    else
-      deflated_data    = File.open(File.dirname(__FILE__) + "/data/deflated_with_predictors.dat","r") { |f| f.read }
-      depredicted_data = File.open(File.dirname(__FILE__) + "/data/deflated_with_predictors_result.dat","r") { |f| f.read }
-    end
+    deflated_data    = binread(File.dirname(__FILE__) + "/data/deflated_with_predictors.dat")
+    depredicted_data = binread(File.dirname(__FILE__) + "/data/deflated_with_predictors_result.dat")
     filter.filter(deflated_data).should eql(depredicted_data)
   end
 
@@ -29,13 +31,8 @@ describe PDF::Reader::Filter do
 
   it "should filter a lzw stream with no predictors correctly" do
     filter = PDF::Reader::Filter.new(:LZWDecode)
-    if File.respond_to?(:binread)
-      compressed_data   = File.binread(File.dirname(__FILE__) + "/data/lzw_compressed.dat")
-      decompressed_data = File.binread(File.dirname(__FILE__) + "/data/lzw_decompressed.dat")
-    else
-      compressed_data   = File.open(File.dirname(__FILE__) + "/data/lzw_compressed.dat","r") { |f| f.read }
-      decompressed_data = File.open(File.dirname(__FILE__) + "/data/lzw_decompressed.dat","r") { |f| f.read }
-    end
+    compressed_data   = binread(File.dirname(__FILE__) + "/data/lzw_compressed.dat")
+    decompressed_data = binread(File.dirname(__FILE__) + "/data/lzw_decompressed.dat")
     filter.filter(compressed_data).should eql(decompressed_data)
   end
 

@@ -4,6 +4,7 @@ require File.dirname(__FILE__) + "/spec_helper"
 
 describe PDF::Reader do
   let(:cairo_basic)   { pdf_spec_file("cairo-basic")}
+  let(:oo3)           { pdf_spec_file("oo3")}
   let(:no_text_spaces) { pdf_spec_file("no_text_spaces")}
 
   describe "open() class method" do
@@ -26,12 +27,22 @@ describe PDF::Reader do
   end
 
   describe "page_count()" do
-    it "should return the correct page_count" do
-      PDF::Reader.new(cairo_basic).page_count.should eql(2)
+    context "with cairo-basic" do
+      it "should return the correct page_count" do
+        PDF::Reader.new(cairo_basic).page_count.should eql(2)
+      end
     end
 
-    it "should return the correct page_count" do
-      PDF::Reader.new(no_text_spaces).page_count.should eql(6)
+    context "with cairo-basic" do
+      it "should return the correct page_count" do
+        PDF::Reader.new(no_text_spaces).page_count.should eql(6)
+      end
+    end
+
+    context "with indirect_page_count" do
+      it "should return the correct page_count" do
+        PDF::Reader.new(pdf_spec_file("indirect_page_count")).page_count.should eql(1)
+      end
     end
   end
 
@@ -41,13 +52,32 @@ describe PDF::Reader do
 
       info.size.should eql(2)
       info[:Creator].should eql("cairo 1.4.6 (http://cairographics.org)")
-      info[:Creator].should eql("cairo 1.4.6 (http://cairographics.org)")
+      info[:Producer].should eql("cairo 1.4.6 (http://cairographics.org)")
     end
 
     it "should return the correct info hash from no_text_spaces" do
       info = PDF::Reader.new(no_text_spaces).info
 
       info.size.should eql(9)
+    end
+
+    it "should return the correct info hash from a file with utf-16 encoded info" do
+      info = PDF::Reader.new(oo3).info
+
+      info.size.should eql(3)
+      info[:Creator].should  eql "Writer"
+      info[:Producer].should eql "OpenOffice.org 3.2"
+      info[:CreationDate].should eql "D:20101113071546-06'00'"
+    end
+
+    if RUBY_VERSION >= "1.9.2"
+      it "should return an info hash with strings marked as UTF-8" do
+        info = PDF::Reader.new(oo3).info
+
+        info[:Creator].encoding.should      eql Encoding::UTF_8
+        info[:Producer].encoding.should     eql Encoding::UTF_8
+        info[:CreationDate].encoding.should eql Encoding::UTF_8
+      end
     end
   end
 
@@ -63,6 +93,13 @@ describe PDF::Reader do
       metadata.should include("<x:xmpmeta")
     end
 
+    if RUBY_VERSION >= "1.9.2"
+      it "should return the metadata string marked as UTF-8" do
+        metadata = PDF::Reader.new(no_text_spaces).metadata
+
+        metadata.encoding.should eql Encoding::UTF_8
+      end
+    end
   end
 
   describe "pages()" do

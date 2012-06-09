@@ -30,27 +30,17 @@ class PDF::Reader
 
     attr_accessor :default
     attr_reader :trailer, :pdf_version
+    attr_reader :sec_handler
 
-    # Creates a new ObjectHash object. input can be a string with a valid filename,
-    # a string containing a PDF file, or an IO object.
+    # Creates a new ObjectHash object. Input can be a string with a valid filename
+    # or an IO-like object.
     #
-    # valid options
+    # Valid options:
     #
     #   :password - the user password to decrypt the source PDF
     #
     def initialize(input, opts = {})
-      if input.respond_to?(:seek) && input.respond_to?(:read)
-        @io = input
-      elsif File.file?(input.to_s)
-        if File.respond_to?(:binread)
-          input = File.binread(input.to_s)
-        else
-          input = File.read(input.to_s)
-        end
-        @io = StringIO.new(input)
-      else
-        raise ArgumentError, "input must be an IO-like object or a filename"
-      end
+      @io          = extract_io_from(input)
       @pdf_version = read_version
       @xref        = PDF::Reader::XRef.new(@io)
       @trailer     = @xref.trailer
@@ -67,9 +57,7 @@ class PDF::Reader
 
     # returns true if the supplied references points to an object with a stream
     def stream?(ref)
-      self[ref].class == PDF::Reader::Stream
-    rescue
-      false
+      self.has_key?(ref) && self[ref].is_a?(PDF::Reader::Stream)
     end
 
     # Access an object from the PDF. key can be an int or a PDF::Reader::Reference
@@ -83,23 +71,23 @@ class PDF::Reader
     #
     def [](key)
       return default if key.to_i <= 0
-      begin
-        unless key.kind_of?(PDF::Reader::Reference)
-          key = PDF::Reader::Reference.new(key.to_i, 0)
-        end
-        if @cache.has_key?(key)
-          @cache[key]
-        elsif xref[key].is_a?(Fixnum)
-          buf = new_buffer(xref[key])
-          @cache[key] = decrypt(key, Parser.new(buf, self).object(key.id, key.gen))
-        elsif xref[key].is_a?(PDF::Reader::Reference)
-          container_key = xref[key]
-          object_streams[container_key] ||= PDF::Reader::ObjectStream.new(object(container_key))
-          @cache[key] = object_streams[container_key][key.id]
-        end
-      rescue InvalidObjectError
-        return default
+
+      unless key.is_a?(PDF::Reader::Reference)
+        key = PDF::Reader::Reference.new(key.to_i, 0)
       end
+
+      if @cache.has_key?(key)
+        @cache[key]
+      elsif xref[key].is_a?(Fixnum)
+        buf = new_buffer(xref[key])
+        @cache[key] = decrypt(key, Parser.new(buf, self).object(key.id, key.gen))
+      elsif xref[key].is_a?(PDF::Reader::Reference)
+        container_key = xref[key]
+        object_streams[container_key] ||= PDF::Reader::ObjectStream.new(object(container_key))
+        @cache[key] = object_streams[container_key][key.id]
+      end
+    rescue InvalidObjectError
+      return default
     end
 
     # If key is a PDF::Reader::Reference object, lookup the corresponding
@@ -109,6 +97,27 @@ class PDF::Reader
       key.is_a?(PDF::Reader::Reference) ? self[key] : key
     end
     alias :deref :object
+
+    # Recursively dereferences the object refered to be +key+. If +key+ is not
+    # a PDF::Reader::Reference, the key is returned unchanged.
+    #
+    def deref!(key)
+      case object = deref(key)
+      when Hash
+        {}.tap { |hash|
+          object.each do |k, value|
+            hash[k] = deref!(value)
+          end
+        }
+      when PDF::Reader::Stream
+        object.hash = deref!(object.hash)
+        object
+      when Array
+        object.map { |value| deref!(value) }
+      else
+        object
+      end
+    end
 
     # Access an object from the PDF. key can be an int or a PDF::Reader::Reference
     # object.
@@ -251,6 +260,10 @@ class PDF::Reader
       trailer.has_key?(:Encrypt)
     end
 
+    def sec_handler?
+      !!sec_handler
+    end
+
     private
 
     def build_security_handler(opts = {})
@@ -266,11 +279,11 @@ class PDF::Reader
     end
 
     def decrypt(ref, obj)
-      return obj if @sec_handler.nil?
+      return obj unless sec_handler?
 
       case obj
       when PDF::Reader::Stream then
-        obj.data = @sec_handler.decrypt(obj.data, ref)
+        obj.data = sec_handler.decrypt(obj.data, ref)
         obj
       when Hash                then
         arr = obj.map { |key,val| [key, decrypt(ref, val)] }.flatten(1)
@@ -278,7 +291,7 @@ class PDF::Reader
       when Array               then
         obj.collect { |item| decrypt(ref, item) }
       when String
-        @sec_handler.decrypt(obj, ref)
+        sec_handler.decrypt(obj, ref)
       else
         obj
       end
@@ -304,7 +317,7 @@ class PDF::Reader
       if obj[:Type] == :Page
         ref
       elsif obj[:Type] == :Pages
-        obj[:Kids].map { |kid| get_page_objects(kid) }
+        deref(obj[:Kids]).map { |kid| get_page_objects(kid) }
       end
     end
 
@@ -313,6 +326,24 @@ class PDF::Reader
       m, version = *@io.read(10).match(/PDF-(\d.\d)/)
       @io.seek(0)
       version.to_f
+    end
+
+    def extract_io_from(input)
+      if input.respond_to?(:seek) && input.respond_to?(:read)
+        input
+      elsif File.file?(input.to_s)
+        StringIO.new read_as_binary(input)
+      else
+        raise ArgumentError, "input must be an IO-like object or a filename"
+      end
+    end
+
+    def read_as_binary(input)
+      if File.respond_to?(:binread)
+        File.binread(input.to_s)
+      else
+        File.open(input.to_s,"rb") { |f| f.read }
+      end
     end
 
   end

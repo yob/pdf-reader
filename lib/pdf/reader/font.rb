@@ -35,10 +35,13 @@ class PDF::Reader
         return
       end
       @ohash = ohash
+      @tounicode = nil
 
       extract_base_info(obj)
       extract_descriptor(obj)
       extract_descendants(obj)
+
+      @encoding ||= PDF::Reader::Encoding.new(:StandardEncoding)
     end
 
     def basefont=(font)
@@ -56,27 +59,17 @@ class PDF::Reader
     end
 
     def to_utf8(params)
-      raise UnsupportedFeatureError, "font encoding '#{encoding}' currently unsupported" if encoding.kind_of?(String)
-
-      if params.class == String
-        # translate the bytestram into a UTF-8 string.
-        # If an encoding hasn't been specified, assume the text using this
-        # font is in Adobe Standard Encoding.
-        (encoding || PDF::Reader::Encoding.new(:StandardEncoding)).to_utf8(params, tounicode)
-      elsif params.class == Array
-        params.collect { |param| self.to_utf8(param) }
+      if @tounicode
+        to_utf8_via_cmap(params)
       else
-        params
+        to_utf8_via_encoding(params)
       end
     end
 
     def glyph_width(c)
       @missing_width ||= 0
-      if @widths.nil?
-        0
-      else
-        @widths.fetch(c.codepoints.first - @first_char, @missing_width)
-      end
+      @widths        ||= []
+      @widths.fetch(c - @first_char, @missing_width)
     end
 
     private
@@ -85,7 +78,7 @@ class PDF::Reader
       @subtype  = @ohash.object(obj[:Subtype])
       @basefont = @ohash.object(obj[:BaseFont])
       @encoding = PDF::Reader::Encoding.new(@ohash.object(obj[:Encoding]))
-      @widths   = @ohash.object(obj[:Widths])
+      @widths   = @ohash.object(obj[:Widths]) || []
       @first_char = @ohash.object(obj[:FirstChar])
       if obj[:ToUnicode]
         stream = @ohash.object(obj[:ToUnicode])
@@ -110,6 +103,30 @@ class PDF::Reader
       @descendantfonts = descendants.map { |desc|
         PDF::Reader::Font.new(@ohash, @ohash.object(desc))
       }
+    end
+
+    def to_utf8_via_cmap(params)
+      if params.class == String
+        params.unpack(encoding.unpack).map { |c|
+          @tounicode.decode(c) || PDF::Reader::Encoding::UNKNOWN_CHAR
+        }.pack("U*")
+      elsif params.class == Array
+        params.collect { |param| to_utf8_via_cmap(param) }
+      else
+        params
+      end
+    end
+
+    def to_utf8_via_encoding(params)
+      raise UnsupportedFeatureError, "font encoding '#{encoding}' currently unsupported" if encoding.kind_of?(String)
+
+      if params.class == String
+        encoding.to_utf8(params)
+      elsif params.class == Array
+        params.collect { |param| to_utf8_via_encoding(param) }
+      else
+        params
+      end
     end
 
   end

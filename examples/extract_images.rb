@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # coding: utf-8
 
 # This demonstrates a way to extract some images (those based on the JPG or
@@ -14,9 +15,7 @@ module ExtractImages
   class Extractor
 
     def page(page)
-      count = 0
-
-      process_resources(page, page.resources, count)
+      process_page(page, 0)
     end
 
     private
@@ -25,17 +24,13 @@ module ExtractImages
       @complete_refs ||= {}
     end
 
-    def process_resources(page, resources, count)
-      xobjects = resources[:XObject]
-      return count if xobjects.nil?
+    def process_page(page, count)
+      xobjects = page.xobjects
+      return count if xobjects.empty?
 
       xobjects.each do |name, stream|
-        next if complete_refs[stream]
-        complete_refs[stream] = true
-
-        stream = page.objects.deref(stream)
-
-        if stream.hash[:Subtype] == :Image
+        case stream.hash[:Subtype]
+        when :Image then
           count += 1
 
           case stream.hash[:Filter]
@@ -46,8 +41,8 @@ module ExtractImages
           else
             ExtractImages::Raw.new(stream).save("#{page.number}-#{count}-#{name}.tif")
           end
-        elsif stream.hash[:Subtype] == :Form
-          count = process_resources(page, PDF::Reader::FormXObject.new(page, stream).resources, count)
+        when :Form then
+          count = process_page(PDF::Reader::FormXObject.new(page, stream), count)
         end
       end
       count

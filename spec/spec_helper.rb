@@ -7,6 +7,7 @@ Bundler.setup
 require 'pdf/reader'
 require 'timeout'
 require 'singleton'
+require 'digest/md5'
 
 
 # Requires supporting ruby files with custom matchers and macros, etc,
@@ -14,5 +15,6 @@ require 'singleton'
 Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f }
 
 RSpec.configure do |config|
+  config.expect_with :rspec, :stdlib
   config.include ReaderSpecHelper
 end

@@ -1,3 +1,5 @@
+= Release Notes
+
 The PDF::Reader library implements a PDF parser conforming as much as possible
 to the PDF specification from Adobe.
 
@@ -32,7 +34,7 @@ this object.
     puts reader.metadata
     puts reader.page_count
 
-PDF::Reader.new can accept an IO stream or a filename. Here's an example with
+PDF::Reader.new accepts an IO stream or a filename. Here's an example with
 an IO stream:
 
     require 'open-uri'
@@ -40,6 +42,15 @@ an IO stream:
     io     = open('http://example.com/somefile.pdf')
     reader = PDF::Reader.new(io)
     puts reader.info
+
+If you open a PDF with File#open or IO#open, I strongly recommend using "rb"
+mode to ensure the file isn't mangled by ruby being 'helpful'. This is
+particularly important on windows and MRI >= 1.9.2.
+
+    File.open("somefile.pdf", "rb") do |io|
+      reader = PDF::Reader.new(io)
+      puts reader.info
+    end
 
 PDF is a page based file format, so most visible information is available via
 page-based iteration
@@ -80,12 +91,20 @@ The second method is preferred to increase the effectiveness of internal caching
 
 = Text Encoding
 
-Internally, text can be stored inside a PDF in various encodings, including
-zingbats, win-1252, mac roman and a form of Unicode. To avoid confusion, all
-text will be converted to UTF-8 before it is passed back from PDF::Reader.
+Regardless of the internal encoding used in the PDF all text will be converted
+to UTF-8 before it is passed back from PDF::Reader.
 
 Strings that contain binary data (like font blobs) will be marked as such on
 M17N aware VMs.
+
+= Former API
+
+Version 1.0.0 of PDF::Reader introduced a new page-based API that provides
+efficient and easy access to any page.
+
+The previous API is marked as deprecated but will continue to work for the
+time being. Eventually calls to the old API will begin triggering deprecation
+warnings before it is completely removed in version 2.0.0.
 
 = Exceptions
 
@@ -95,7 +114,7 @@ PDF file:
 MalformedPDFError - The PDF appears to be corrupt in some way. If you believe the
 file should be valid, or that a corrupt file didn't raise an exception, please
 forward a copy of the file to the maintainers (preferably via the google group)
-and we can attempt to improve the code.
+and we will attempt to improve the code.
 
 UnsupportedFeatureError - The PDF uses a feature that PDF::Reader doesn't currently
 support. Again, we welcome submissions of PDF files that exhibit these features to help
@@ -106,6 +125,16 @@ don't, 'rescue MalformedPDFError' will catch all the subclassed errors as well.
 
 Any other exceptions should be considered bugs in either PDF::Reader (please
 report it!).
+
+= PDF Integrity
+
+Windows developers may run into problems when running specs due to MalformedPDFError's
+This is usually because CRLF characters are automatically added to some of the PDF's in
+the spec folder when you checkout a branch from Git.
+
+To remove any invalid CRLF characters added while checking out a branch from Git, run:
+
+    rake fix_integrity
 
 = Maintainers
 

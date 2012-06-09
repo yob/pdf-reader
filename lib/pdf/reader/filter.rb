@@ -48,6 +48,7 @@ class PDF::Reader
       when :DCTDecode       then @filter = nil
       when :FlateDecode     then @filter = :flate
       when :JBIG2Decode     then @filter = nil
+      when :JPXDecode       then @filter = nil
       when :LZWDecode       then @filter = :lzw
       when :RunLengthDecode then @filter = :runlength
       else
@@ -126,7 +127,11 @@ class PDF::Reader
       out = ""
 
       while pos < data.length
-        length = data.getbyte(pos)
+        if data.respond_to?(:getbyte)
+          length = data.getbyte(pos)
+        else
+          length = data[pos]
+        end
         pos += 1
 
         case
@@ -196,7 +201,7 @@ class PDF::Reader
 
       data = data.unpack("C*")
 
-      pixel_bytes     = 1 #pixel_bitlength / 8
+      pixel_bytes     = opts[:Colors] || 1
       scanline_length = (pixel_bytes * opts[:Columns]) + 1
       row = 0
       pixels = []
@@ -267,7 +272,7 @@ class PDF::Reader
         row += 1
       end
 
-      pixels.map { |row| row.flatten.pack("C*") }.join("")
+      pixels.map { |bytes| bytes.flatten.pack("C*") }.join("")
     end
   end
 end

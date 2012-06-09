@@ -12,6 +12,7 @@ module PDF
     # objects accessor to help walk the page dictionary in any useful way.
     #
     class Page
+      include ResourceMethods
 
       # lowlevel hash-like access to all objects in the underlying PDF
       attr_reader :objects
@@ -45,71 +46,15 @@ module PDF
         "<PDF::Reader::Page page: #{@pagenum}>"
       end
 
-      # Returns the attributes that accompany this page. Includes
+      # Returns the attributes that accompany this page, including
       # attributes inherited from parents.
       #
       def attributes
-        hash = {}
-        page_with_ancestors.reverse.each do |obj|
-          hash.merge!(@objects.deref(obj))
-        end
-        hash
-      end
-
-      # Returns the resources that accompany this page. Includes
-      # resources inherited from parents.
-      #
-      def resources
-        @resources ||= @objects.deref(attributes[:Resources]) || {}
-      end
-
-      # Returns a Hash of color spaces that are available to this page
-      #
-      def color_spaces
-        @objects.deref(resources[:ColorSpace]) || {}
-      end
-
-      # Returns a Hash of fonts that are available to this page
-      #
-      def fonts
-        @objects.deref(resources[:Font]) || {}
-      end
-
-      # Returns a Hash of external graphic states that are available to this
-      # page
-      #
-      def graphic_states
-        @objects.deref(resources[:ExtGState]) || {}
-      end
-
-      # Returns a Hash of patterns that are available to this page
-      #
-      def patterns
-        @objects.deref(resources[:Pattern]) || {}
-      end
-
-      # Returns an Array of procedure sets that are available to this page
-      #
-      def procedure_sets
-        @objects.deref(resources[:ProcSet]) || []
-      end
-
-      # Returns a Hash of properties sets that are available to this page
-      #
-      def properties
-        @objects.deref(resources[:Properties]) || {}
-      end
-
-      # Returns a Hash of shadings that are available to this page
-      #
-      def shadings
-        @objects.deref(resources[:Shading]) || {}
-      end
-
-      # Returns a Hash of XObjects that are available to this page
-      #
-      def xobjects
-        @objects.deref(resources[:XObject]) || {}
+        @attributes ||= {}.tap { |hash|
+          page_with_ancestors.reverse.each do |obj|
+            hash.merge!(@objects.deref(obj))
+          end
+        }
       end
 
       # returns the plain text content of this page encoded as UTF-8. Any
@@ -159,13 +104,20 @@ module PDF
           objects.deref(obj)
         }.map { |obj|
           obj.unfiltered_data
-        }.join
+        }.join(" ")
       end
 
       private
 
       def root
         root ||= objects.deref(@objects.trailer[:Root])
+      end
+
+      # Returns the resources that accompany this page. Includes
+      # resources inherited from parents.
+      #
+      def resources
+        @resources ||= @objects.deref(attributes[:Resources]) || {}
       end
 
       def content_stream(receivers, instructions)
@@ -181,11 +133,11 @@ module PDF
             params << token
           end
         end
-      rescue EOFError => e
+      rescue EOFError
         raise MalformedPDFError, "End Of File while processing a content stream"
       end
 
-      # calls the name callback method on the receiver class with params as the arguments
+      # calls the name callback method on each receiver object with params as the arguments
       #
       def callback (receivers, name, params=[])
         receivers.each do |receiver|
@@ -193,14 +145,16 @@ module PDF
         end
       end
 
-      def page_with_ancestors(obj = nil)
-        obj = objects.deref(obj)
-        if obj.nil?
-          [@page_object] + page_with_ancestors(@page_object[:Parent])
-        elsif obj[:Parent]
-          [select_inheritable(obj)] + page_with_ancestors(obj[:Parent])
+      def page_with_ancestors
+        [ @page_object ] + ancestors
+      end
+
+      def ancestors(origin = @page_object[:Parent])
+        if origin.nil?
+          []
         else
-          [select_inheritable(obj)]
+          obj = objects.deref(origin)
+          [ select_inheritable(obj) ] + ancestors(obj[:Parent])
         end
       end
 

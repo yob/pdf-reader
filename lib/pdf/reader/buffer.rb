@@ -36,6 +36,7 @@ class PDF::Reader
   # the raw tokens into objects we can work with (strings, ints, arrays, etc)
   #
   class Buffer
+    TOKEN_WHITESPACE=[0x00, 0x09, 0x0A, 0x0C, 0x0D, 0x20]
 
     attr_reader :pos
 
@@ -151,14 +152,11 @@ class PDF::Reader
     #
     def prepare_tokens
       10.times do
-        if state == :literal_string
-          prepare_literal_token
-        elsif state == :hex_string
-          prepare_hex_token
-        elsif state == :regular
-          prepare_regular_token
-        elsif state == :inline
-          prepare_inline_token
+        case state
+        when :literal_string then prepare_literal_token
+        when :hex_string     then prepare_hex_token
+        when :regular        then prepare_regular_token
+        when :inline         then prepare_inline_token
         end
       end
 
@@ -169,14 +167,16 @@ class PDF::Reader
     # Determine the current context/state by examining the last token we found
     #
     def state
-      if @tokens[-1] == "("
-        :literal_string
-      elsif @tokens[-1] == "<"
-        :hex_string
-      elsif @tokens[-1] == "stream"
-        :stream
-      elsif in_content_stream? && @tokens[-1] == "ID"
-        :inline
+      case @tokens.last
+      when "(" then :literal_string
+      when "<" then :hex_string
+      when "stream" then :stream
+      when "ID"
+        if in_content_stream?  && @tokens[-2] != "/"
+          :inline
+        else
+          :regular
+        end
       else
         :regular
       end
@@ -209,14 +209,19 @@ class PDF::Reader
     def prepare_inline_token
       str = ""
 
-      while str[-2,2] != "EI"
+      buffer = []
+
+      until buffer[0] =~ /\s/ && buffer[1, 2] == ["E", "I"]
         chr = @io.read(1)
-        break if chr.nil?
-        str << chr
+        buffer << chr
+
+        if buffer.length > 3
+          str << buffer.shift
+        end
       end
 
-      @tokens << str[0, str.size-2].strip
-      @io.seek(-2, IO::SEEK_CUR) unless chr.nil?
+      @tokens << string_token(str.strip)
+      @io.seek(-3, IO::SEEK_CUR) unless chr.nil?
     end
 
     # if we're currently inside a hex string, read hex nibbles until
@@ -227,18 +232,17 @@ class PDF::Reader
       finished = false
 
       while !finished
-        chr = @io.read(1)
-        codepoint = chr.to_s.unpack("C*").first
-        if chr.nil?
+        byte = @io.getbyte
+        if byte.nil?
           finished = true # unbalanced params
-        elsif (48..57).include?(codepoint) || (65..90).include?(codepoint) || (97..122).include?(codepoint)
-          str << chr
-        elsif codepoint <= 32
+        elsif (48..57).include?(byte) || (65..90).include?(byte) || (97..122).include?(byte)
+          str << byte.chr
+        elsif byte <= 32
           # ignore it
         else
           @tokens << str if str.size > 0
-          @tokens << ">" if chr != ">"
-          @tokens << chr
+          @tokens << ">" if byte != 0x3E # '>'
+          @tokens << byte.chr
           finished = true
         end
       end
@@ -258,19 +262,19 @@ class PDF::Reader
       count = 1
 
       while count > 0
-        chr = @io.read(1)
-        if chr.nil?
+        byte = @io.getbyte
+        if byte.nil?
           count = 0 # unbalanced params
-        elsif chr == "\x5c"
-          str << chr << @io.read(1).to_s
-        elsif chr == "("
+        elsif byte == 0x5C
+          str << byte.chr << @io.getbyte.chr
+        elsif byte == 0x28 # "("
           str << "("
           count += 1
-        elsif chr == ")"
+        elsif byte == 0x29 # ")"
           count -= 1
           str << ")" unless count == 0
         else
-          str << chr unless count == 0
+          str << byte.chr unless count == 0
         end
       end
 
@@ -286,48 +290,68 @@ class PDF::Reader
     def prepare_regular_token
       tok = ""
 
-      while chr = @io.read(1)
-        case chr
-        when "\x25"
+      while byte = @io.getbyte
+        case byte
+        when 0x25
           # comment, ignore everything until the next EOL char
           done = false
           while !done
-            chr = @io.read(1)
-            done = true if chr.nil? || chr == "\x0A" || chr == "\x0D"
+            byte = @io.getbyte
+            done = true if byte.nil? || byte == 0x0A || byte == 0x0D
           end
-        when "\x00", "\x09", "\x0A", "\x0C", "\x0D", "\x20"
+        when *TOKEN_WHITESPACE
           # white space, token finished
           @tokens << tok if tok.size > 0
+
+          #If the token was empty, chomp the rest of the whitespace too
+          while TOKEN_WHITESPACE.include?(peek_byte) && tok.size == 0
+            @io.getbyte
+          end
           tok = ""
           break
-        when "\x3C"
+        when 0x3C
           # opening delimiter '<', start of new token
           @tokens << tok if tok.size > 0
-          chr << @io.read(1) if peek_char == "\x3C" # check if token is actually '<<'
-          @tokens << chr
+          if peek_byte == 0x3C # check if token is actually '<<'
+            @io.getbyte
+            @tokens << "<<"
+          else
+            @tokens << "<"
+          end
           tok = ""
           break
-        when "\x3E"
+        when 0x3E
           # closing delimiter '>', start of new token
           @tokens << tok if tok.size > 0
-          chr << @io.read(1) if peek_char == "\x3E" # check if token is actually '>>'
-          @tokens << chr
+          if peek_byte == 0x3E # check if token is actually '>>'
+            @io.getbyte
+            @tokens << ">>"
+          else
+            @tokens << byte.chr
+          end
           tok = ""
           break
-        when "\x28", "\x5B", "\x7B", "\x2F"
+        when 0x28, 0x5B, 0x7B
           # opening delimiter, start of new token
           @tokens << tok if tok.size > 0
-          @tokens << chr
+          @tokens << byte.chr
           tok = ""
           break
-        when "\x29", "\x5D", "\x7D"
+        when 0x29, 0x5D, 0x7D
           # closing delimiter
           @tokens << tok if tok.size > 0
-          @tokens << chr
+          @tokens << byte.chr
+          tok = ""
+          break
+        when 0x2F
+          # PDF name, start of new token
+          @tokens << tok if tok.size > 0
+          @tokens << byte.chr
+          @tokens << "" if byte == 0x2F && [nil, 0x20, 0x0A].include?(peek_byte)
           tok = ""
           break
         else
-          tok << chr
+          tok << byte.chr
         end
       end
 
@@ -337,10 +361,21 @@ class PDF::Reader
     # peek at the next character in the io stream, leaving the stream position
     # untouched
     #
-    def peek_char
-      chr = @io.read(1)
-      @io.seek(-1, IO::SEEK_CUR) unless chr.nil?
-      chr
+    def peek_byte
+      byte = @io.getbyte
+      @io.seek(-1, IO::SEEK_CUR) if byte
+      byte
+    end
+
+    # for a handful of tokens we want to tell the parser how to convert them
+    # into higher level tokens. This methods adds a to_token() method
+    # to tokens that should remain as strings.
+    #
+    def string_token(token)
+      def token.to_token
+        to_s
+      end
+      token
     end
   end
 end
