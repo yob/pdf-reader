@@ -89,22 +89,42 @@ module PDF
 
     class NewParser
       Treetop.load(File.join(File.dirname(__FILE__), 'pdf.treetop'))
-      @@parser = PdfParser.new
 
-      def self.parse(data)
-        # Pass the data over to the parser instance
-        tree = @@parser.parse(data, root: :content_stream)
-
-        # If the AST is nil then there was an error during parsing
-        # we need to report a simple error message to help the user
-        if tree.nil?
-          raise Exception, "Parse error at offset: #{@@parser.index}"
-        end
-
-        tree.elements.select { |obj|
-          obj.respond_to?(:to_ruby)
-        }.map(&:to_ruby)
+      def initialize(data)
+        @data = data
+        @parser = PdfParser.new
+        @parser.consume_all_input = false
+        @parser.root = :content_stream
+        @pos = 0
+        @tokens = []
       end
+
+      def next_token
+        prepare_tokens if @tokens.size <= 3
+        @tokens.shift
+      end
+
+      def all_tokens
+        prepare_tokens if @tokens.size <= 3
+        @tokens
+      end
+
+      private
+
+      def prepare_tokens
+        tree = @parser.parse(@data, index: @pos)
+        if tree
+          @tokens += tree.elements.select { |obj|
+            obj.respond_to?(:to_ruby)
+          }.map(&:to_ruby)
+        else
+          # If the AST is nil then there was an error during parsing
+          # we need to report a simple error message to help the user
+          raise Exception, "Parse error at offset: #{@parser.index}"
+        end
+        @pos = @parser.index
+      end
+
     end
   end
 end
