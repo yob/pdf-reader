@@ -11,7 +11,7 @@ $:.unshift "../lib"
 require 'pdf-reader'
 require 'perftools'
 
-PerfTools::CpuProfiler.start("/tmp/bench.tmp") do
+PerfTools::CpuProfiler.start("/tmp/restart_profile") do
   PDF::Reader.open("restart.pdf") do |reader|
     reader.pages.each do |page|
       page.text
