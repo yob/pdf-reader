@@ -123,8 +123,13 @@ module PDF
       def content_stream(receivers, instructions)
         parser = NewParser.new(instructions)
         params  = []
+        counter = 0
 
         while (token = parser.next_token)
+          counter += 1
+          if counter% 100 == 0
+            puts "#{parser.pos} - #{params.size}"
+          end
           if token.is_a?(Token) && PagesStrategy::OPERATORS.has_key?(token)
             callback(receivers, PagesStrategy::OPERATORS[token], params)
             params.clear

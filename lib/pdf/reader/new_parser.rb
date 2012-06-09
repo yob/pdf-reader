@@ -90,6 +90,8 @@ module PDF
     class NewParser
       Treetop.load(File.join(File.dirname(__FILE__), 'pdf.treetop'))
 
+      attr_reader :pos
+
       def initialize(data)
         @data = data
         @parser = PdfParser.new
