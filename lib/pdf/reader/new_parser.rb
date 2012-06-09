@@ -25,7 +25,11 @@ module PDF
         str("(") >> (string_literal_content | string_literal).repeat.as(:string_literal) >> str(")")
       }
 
-      rule(:string_hex)     { str("<") >> (match('[A-Fa-f0-9]') | space).repeat(1).as(:string_hex) >> str(">") }
+      rule(:string_hex)     { str("<") >> (hex_char | space).repeat(1).as(:string_hex) >> str(">") }
+
+      rule(:hex_char)       { lower_hex_char | upper_hex_char | single_digit }
+      rule(:lower_hex_char) { str("a") | str("b") | str("c") |  str("d") |  str("e") |  str("f")  }
+      rule(:upper_hex_char) { str("A") | str("B") | str("C") |  str("D") |  str("E") |  str("F")  }
 
       rule(:array)          { str("[") >> (base_object | space).repeat.as(:array) >> str("]") }
 
@@ -49,83 +53,7 @@ module PDF
 
       rule(:null)           { str('null').as(:null) }
 
-      rule(:operator)       {
-                              str("BDC").as(:op) |
-                              str("BMC").as(:op) |
-                              str("EMC").as(:op) |
-                              str("SCN").as(:op) |
-                              str("scn").as(:op) |
-                              str("b*").as(:op)  |
-                              str("B*").as(:op)  |
-                              str("BI").as(:op)  |
-                              str("BT").as(:op)  |
-                              str("BX").as(:op)  |
-                              str("cm").as(:op)  |
-                              str("CS").as(:op)  |
-                              str("cs").as(:op)  |
-                              str("d0").as(:op)  |
-                              str("d1").as(:op)  |
-                              str("Do").as(:op)  |
-                              str("DP").as(:op)  |
-                              str("EI").as(:op)  |
-                              str("ET").as(:op)  |
-                              str("EX").as(:op)  |
-                              str("f*").as(:op)  |
-                              str("gs").as(:op)  |
-                              str("ID").as(:op)  |
-                              str("MP").as(:op)  |
-                              str("re").as(:op)  |
-                              str("RG").as(:op)  |
-                              str("rg").as(:op)  |
-                              str("ri").as(:op)  |
-                              str("SC").as(:op)  |
-                              str("sc").as(:op)  |
-                              str("sh").as(:op)  |
-                              str("T*").as(:op)  |
-                              str("Tc").as(:op)  |
-                              str("Td").as(:op)  |
-                              str("TD").as(:op)  |
-                              str("Tf").as(:op)  |
-                              str("Tj").as(:op)  |
-                              str("TJ").as(:op)  |
-                              str("TL").as(:op)  |
-                              str("Tm").as(:op)  |
-                              str("Tr").as(:op)  |
-                              str("Ts").as(:op)  |
-                              str("Tw").as(:op)  |
-                              str("Tz").as(:op)  |
-                              str("W*").as(:op)  |
-                              str("b").as(:op)   |
-                              str("B").as(:op)   |
-                              str("c").as(:op)   |
-                              str("d").as(:op)   |
-                              str("f").as(:op)   |
-                              str("F").as(:op)   |
-                              str("G").as(:op)   |
-                              str("g").as(:op)   |
-                              str("h").as(:op)   |
-                              str("i").as(:op)   |
-                              str("j").as(:op)   |
-                              str("J").as(:op)   |
-                              str("K").as(:op)   |
-                              str("k").as(:op)   |
-                              str("l").as(:op)   |
-                              str("m").as(:op)   |
-                              str("M").as(:op)   |
-                              str("n").as(:op)   |
-                              str("q").as(:op)   |
-                              str("Q").as(:op)   |
-                              str('q').as(:op)   |
-                              str('Q').as(:op)   |
-                              str("s").as(:op)   |
-                              str("S").as(:op)   |
-                              str("v").as(:op)   |
-                              str("w").as(:op)   |
-                              str("W").as(:op)   |
-                              str("y").as(:op)   |
-                              str("'").as(:op)   |
-                              str('"').as(:op)
-                            }
+      rule(:operator)   { match('[^\(\)<>\[\]{}/%\x00\x09\x0A\x0C\x0D\x20]').repeat(1,3).as(:op)}
 
       #rule(:keyword)        { (str('obj') | str('endobj') | str('stream') | str('endstream')).as(:keyword)}
 
