@@ -13,7 +13,7 @@ grammar Pdf
   end
 
   rule content_stream
-    (comment / base_object / operator / separator)*
+    (comment / base_object / operator / separator)
   end
 
   #---------------------------------------------

@@ -100,29 +100,31 @@ module PDF
       end
 
       def next_token
-        prepare_tokens if @tokens.size <= 3
+        100.times { prepare_tokens } if @tokens.size <= 3
         @tokens.shift
       end
 
       def all_tokens
-        prepare_tokens if @tokens.size <= 3
+        100.times { prepare_tokens } if @tokens.size <= 3
         @tokens
       end
 
       private
 
       def prepare_tokens
-        tree = @parser.parse(@data, index: @pos)
-        if tree
-          @tokens += tree.elements.select { |obj|
-            obj.respond_to?(:to_ruby)
-          }.map(&:to_ruby)
+        return if @pos >= @data.bytesize
+
+        token = @parser.parse(@data, index: @pos)
+        @pos  = @parser.index
+        if token
+          if token.respond_to?(:to_ruby)
+            @tokens << token.to_ruby
+          end
         else
           # If the AST is nil then there was an error during parsing
           # we need to report a simple error message to help the user
-          raise Exception, "Parse error at offset: #{@parser.index}"
+          raise Exception, "Parse error at offset: #{@pos}"
         end
-        @pos = @parser.index
       end
 
     end
