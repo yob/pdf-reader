@@ -65,12 +65,31 @@ module PDF
         end
       end
 
-      def content_stream(receivers, instructions)
-        buffer       = Buffer.new(StringIO.new(instructions), :content_stream => true)
-        parser       = Parser.new(buffer, @objects)
-        params       = []
+      def md5(data)
+        digest = Digest::MD5.new
+        digest << data
+        digest.hexdigest
+      end
 
-        while (token = parser.parse_token(PagesStrategy::OPERATORS))
+      def get_tokens(instructions)
+        cache_key = md5(instructions)
+        $global_cache ||= {}
+        $global_cache[cache_key] ||= begin
+          tokens = []
+          buffer       = Buffer.new(StringIO.new(instructions), :content_stream => true)
+          parser       = Parser.new(buffer, @objects)
+          while (token = parser.parse_token(PagesStrategy::OPERATORS))
+            tokens << token
+          end
+          tokens
+        end
+      end
+
+      def content_stream(receivers, instructions)
+        params  = []
+        tokens  = get_tokens(instructions)
+
+        while token = tokens.shift
           if token.kind_of?(Token) and PagesStrategy::OPERATORS.has_key?(token)
             callback(receivers, PagesStrategy::OPERATORS[token], params)
             params.clear
