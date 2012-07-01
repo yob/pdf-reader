@@ -25,9 +25,6 @@
 ################################################################################
 
 require 'stringio'
-require 'zlib'
-
-require 'ascii85'
 
 module PDF
   ################################################################################
@@ -113,6 +110,8 @@ module PDF
     #
     def initialize(input = nil, opts = {})
       if input # support the deprecated Reader API
+        @cache   = PDF::Reader::ObjectCache.new
+        opts.merge!(:cache => @cache)
         @objects = PDF::Reader::ObjectHash.new(input, opts)
       end
     end
