@@ -4,72 +4,73 @@ require File.dirname(__FILE__) + "/spec_helper"
 
 describe PDF::Reader::Filter do
 
-  context "JPXDecode" do
-    it "returns the data unchanged" do
-      filter = PDF::Reader::Filter.new(:JPXDecode)
-      filter.filter("\x00").should eql("\x00")
+  describe "#with" do
+    context "when passed :ASCII85Decode" do
+      it "should return the appropriate class" do
+        PDF::Reader::Filter.with(:ASCII85Decode).should be_a(PDF::Reader::Filter::Ascii85)
+      end
+    end
+
+    context "when passed :ASCIIHexDecode" do
+      it "should return the appropriate class" do
+        PDF::Reader::Filter.with(:ASCIIHexDecode).should be_a(PDF::Reader::Filter::AsciiHex)
+      end
+    end
+
+    context "when passed :CCITTFaxDecode" do
+      it "should return the appropriate class" do
+        PDF::Reader::Filter.with(:CCITTFaxDecode).should be_a(PDF::Reader::Filter::Null)
+      end
+    end
+
+    context "when passed :DCTDecode" do
+      it "should return the appropriate class" do
+        PDF::Reader::Filter.with(:DCTDecode).should be_a(PDF::Reader::Filter::Null)
+      end
+    end
+
+    context "when passed :ASCII85Decode" do
+      it "should return the appropriate class" do
+        PDF::Reader::Filter.with(:ASCII85Decode).should be_a(PDF::Reader::Filter::Ascii85)
+      end
+    end
+
+    context "when passed :FlateDecode" do
+      it "should return the appropriate class" do
+        PDF::Reader::Filter.with(:FlateDecode).should be_a(PDF::Reader::Filter::Flate)
+      end
+    end
+
+    context "when passed :JBIG2ecode" do
+      it "should return the appropriate class" do
+        PDF::Reader::Filter.with(:JBIG2Decode).should be_a(PDF::Reader::Filter::Null)
+      end
+    end
+
+    context "when passed :JPXDecode" do
+      it "should return the appropriate class" do
+        PDF::Reader::Filter.with(:JPXDecode).should be_a(PDF::Reader::Filter::Null)
+      end
+    end
+
+    context "when passed :LZWDecode" do
+      it "should return the appropriate class" do
+        PDF::Reader::Filter.with(:LZWDecode).should be_a(PDF::Reader::Filter::Lzw)
+      end
+    end
+
+    context "when passed :RunLengthDecode" do
+      it "should return the appropriate class" do
+        PDF::Reader::Filter.with(:RunLengthDecode).should be_a(PDF::Reader::Filter::RunLength)
+      end
+    end
+
+    context "when passed an unrecognised filter" do
+      it "should raise an exception" do
+        lambda {
+          PDF::Reader::Filter.with(:FooDecode)
+        }.should raise_error(PDF::Reader::UnsupportedFeatureError)
+      end
     end
   end
-
-  it "should inflate a RFC1950 (zlib) deflated stream correctly"
-  it "should inflate a raw RFC1951 deflated stream correctly"
-  it "should inflate a deflated stream with PNG predictors correctly" do
-    filter = PDF::Reader::Filter.new(:FlateDecode, :Columns => 5, :Predictor => 12)
-    deflated_data    = binread(File.dirname(__FILE__) + "/data/deflated_with_predictors.dat")
-    depredicted_data = binread(File.dirname(__FILE__) + "/data/deflated_with_predictors_result.dat")
-    filter.filter(deflated_data).should eql(depredicted_data)
-  end
-
-  it "should inflate a deflated stream with tiff predictors correctly" do
-    filter         = PDF::Reader::Filter.new(:FlateDecode, :Columns => 5, :Predictor => 2, :Colors => 3)
-    original_data  = "abcabcabcabcabcabcabcabcabcabc"
-    predicted_data = "abc\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00abc\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
-    deflated_data  = Zlib::Deflate.deflate(predicted_data)
-
-    filter.filter(deflated_data).should eql(original_data)
-  end
-
-  it "should filter a lzw stream with no predictors correctly" do
-    filter = PDF::Reader::Filter.new(:LZWDecode)
-    compressed_data   = binread(File.dirname(__FILE__) + "/data/lzw_compressed.dat")
-    decompressed_data = binread(File.dirname(__FILE__) + "/data/lzw_decompressed.dat")
-    filter.filter(compressed_data).should eql(decompressed_data)
-  end
-
-  it "should filter a ASCII85 stream correctly" do
-    filter = PDF::Reader::Filter.new(:ASCII85Decode)
-    encoded_data = Ascii85::encode("Ruby")
-    filter.filter(encoded_data).should eql("Ruby")
-  end
-
-  it "should filter a ASCII85 stream missing <~ correctly" do
-    filter = PDF::Reader::Filter.new(:ASCII85Decode)
-    encoded_data = Ascii85::encode("Ruby")[2,100]
-    filter.filter(encoded_data).should eql("Ruby")
-  end
-
-  it "should filter a ASCIIHex stream correctly" do
-    filter = PDF::Reader::Filter.new(:ASCIIHexDecode)
-    encoded_data = "<52756279>"
-    filter.filter(encoded_data).should eql("Ruby")
-  end
-
-  it "should filter a ASCIIHex stream missing delimiters" do
-    filter = PDF::Reader::Filter.new(:ASCIIHexDecode)
-    encoded_data = "52756279"
-    filter.filter(encoded_data).should eql("Ruby")
-  end
-
-  it "should filter a ASCIIHex stream with an odd number of nibbles" do
-    filter = PDF::Reader::Filter.new(:ASCIIHexDecode)
-    encoded_data = "5275627"
-    filter.filter(encoded_data).should eql("Rubp")
-  end
-
-  it "should filter a RunLengthDecode stream correctly" do
-    filter = PDF::Reader::Filter.new(:RunLengthDecode)
-    encoded_data = [2, "\x00"*3, 255, "\x01", 128].pack('Ca*Ca*C')
-    filter.filter(encoded_data).should eql("\x00\x00\x00\x01\x01")
-  end
-
 end
