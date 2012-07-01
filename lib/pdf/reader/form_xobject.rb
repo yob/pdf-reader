@@ -65,12 +65,22 @@ module PDF
         end
       end
 
+      def tokens
+        @tokens ||= begin
+                      buffer = Buffer.new(StringIO.new(raw_content), :content_stream => true)
+                      parser = Parser.new(buffer, @objects)
+                      result = []
+                      while (token = parser.parse_token(PagesStrategy::OPERATORS))
+                        result << token
+                      end
+                      result
+                    end
+      end
+
       def content_stream(receivers, instructions)
-        buffer       = Buffer.new(StringIO.new(instructions), :content_stream => true)
-        parser       = Parser.new(buffer, @objects)
         params       = []
 
-        while (token = parser.parse_token(PagesStrategy::OPERATORS))
+        tokens.each do |token|
           if token.kind_of?(Token) and PagesStrategy::OPERATORS.has_key?(token)
             callback(receivers, PagesStrategy::OPERATORS[token], params)
             params.clear
