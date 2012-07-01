@@ -6,7 +6,7 @@ class PDF::Reader
 
   # A Hash-like object for caching commonly used objects from a PDF file.
   #
-  # This is an internal class used by PDF::Reader::ObjectHash
+  # This is an internal class, no promises about a stable API.
   #
   class ObjectCache # nodoc
 
