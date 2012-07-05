@@ -48,11 +48,6 @@ module PDF
       def show_text(string) # Tj
         raise PDF::Reader::MalformedPDFError, "current font is invalid" if @state.current_font.nil?
         newx, newy = @state.trm_transform(0,0)
-        
-        # make sure slight variations in Y-coord don't 
-        # cause lines to read out-of-order
-        newy = newy.round(0)
-        
         @content[newy] ||= ""
         @content[newy] << @state.current_font.to_utf8(string)
       end
