@@ -1,5 +1,7 @@
 # coding: utf-8
 
+require 'digest/md5'
+
 module PDF
   class Reader
 
@@ -15,9 +17,10 @@ module PDF
 
       attr_reader :xobject
 
-      def initialize(page, xobject)
+      def initialize(page, xobject, options = {})
         @page    = page
         @objects = page.objects
+        @cache   = options[:cache] || {}
         @xobject = @objects.deref(xobject)
       end
 
@@ -65,8 +68,16 @@ module PDF
         end
       end
 
+      def content_stream_md5
+        @content_stream_md5 ||= Digest::MD5.hexdigest(raw_content)
+      end
+
+      def cached_tokens_key
+        @cached_tokens_key ||= "tokens-#{content_stream_md5}"
+      end
+
       def tokens
-        @tokens ||= begin
+        @cache[cached_tokens_key] ||= begin
                       buffer = Buffer.new(StringIO.new(raw_content), :content_stream => true)
                       parser = Parser.new(buffer, @objects)
                       result = []
