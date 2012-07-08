@@ -15,12 +15,17 @@ class PDF::Reader
     # avoid lots of repetitive (and expensive) tokenising
     CACHEABLE_TYPES = [:Catalog, :Page, :Pages]
 
+    attr_reader :hits, :misses
+
     def initialize(lru_size = 1000)
       @objects = {}
       @lru_cache = LRUCache.new(:max_size => lru_size)
+      @hits = 0
+      @misses = 0
     end
 
     def [](key)
+      update_stats(key)
       @objects[key] || @lru_cache[key]
     end
 
@@ -33,6 +38,7 @@ class PDF::Reader
     end
 
     def fetch(key, local_default = nil)
+      update_stats(key)
       @objects[key] || @lru_cache.fetch(key, local_default)
     end
 
@@ -85,6 +91,14 @@ class PDF::Reader
     end
 
     private
+
+    def update_stats(key)
+      if has_key?(key)
+        @hits += 1
+      else
+        @misses += 1
+      end
+    end
 
     def cacheable?(obj)
       obj.is_a?(Hash) && CACHEABLE_TYPES.include?(obj[:Type])
