@@ -284,4 +284,14 @@ describe PDF::Reader, "integration specs" do
       reader.page(1).text.should include("Arkansas Declaration Relating")
     end
   end
+
+  it "should correctly extract text from a PDF with a junk prefix" do
+    filename = pdf_spec_file("junk_prefix")
+
+    PDF::Reader.open(filename) do |reader|
+      page = reader.page(1)
+      page.text.should eql("This PDF contains junk before the %-PDF marker")
+    end
+  end
+
 end
