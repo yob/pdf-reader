@@ -22,6 +22,7 @@ module PDF
       # starting a new page
       def initialize(page)
         @page          = page
+        @cache         = page.cache
         @objects       = page.objects
         @font_stack    = [build_fonts(page.fonts)]
         @xobject_stack = [page.xobjects]
@@ -176,7 +177,7 @@ module PDF
         concatenate_matrix(*matrix) if matrix
 
         if xobject.hash[:Subtype] == :Form
-          form = PDF::Reader::FormXObject.new(@page, xobject)
+          form = PDF::Reader::FormXObject.new(@page, xobject, :cache => @cache)
           @font_stack.unshift(form.font_objects)
           @xobject_stack.unshift(form.xobjects)
           yield form if block_given?
