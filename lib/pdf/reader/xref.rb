@@ -143,7 +143,7 @@ class PDF::Reader
     end
 
     ################################################################################
-    # Read a XReaf stream from the underlying buffer instead of a traditional xref table.
+    # Read an XRef stream from the underlying buffer instead of a traditional xref table.
     #
     def load_xref_stream(stream)
       unless stream.is_a?(PDF::Reader::Stream) && stream.hash[:Type] == :XRef
@@ -203,7 +203,7 @@ class PDF::Reader
     # Wrap the io stream we're working with in a buffer that can tokenise it for us.
     #
     # We create multiple buffers so we can be tokenising multiple sections of the file
-    # at the same time without worring about clearing the buffers contents.
+    # at the same time without worrying about clearing the buffers contents.
     #
     def new_buffer(offset = 0)
       PDF::Reader::Buffer.new(@io, :seek => offset)

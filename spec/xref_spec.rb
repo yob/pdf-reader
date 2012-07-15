@@ -9,24 +9,24 @@ end
 
 describe PDF::Reader::XRef, "initilisation" do
   context "with cairo-basic.pdf" do
-    it "should load all xrefs corectly from a File" do
+    it "should load all xrefs correctly from a File" do
       filename = File.new(pdf_spec_file("cairo-basic"))
       tbl      = PDF::Reader::XRef.new(filename)
       tbl.xref.keys.size.should eql(15) # 1 xref table with 16 items (ignore the first)
     end
-    it "should load all xrefs corectly from a StringIO" do
+    it "should load all xrefs correctly from a StringIO" do
       data = StringIO.new(binread(pdf_spec_file("cairo-basic")))
       tbl  = PDF::Reader::XRef.new(data)
       tbl.xref.keys.size.should eql(15) # 1 xref table with 16 items (ignore the first)
     end
   end
   context "with cairo-unicode.pdf" do
-    it "should load all xrefs corectly" do
+    it "should load all xrefs correctly" do
       file = File.new(pdf_spec_file("cairo-unicode"))
       tbl  = PDF::Reader::XRef.new(file)
       tbl.xref.keys.size.should eql(57) # 1 xref table with 58 items (ignore the first)
     end
-    it "should load all xrefs corectly from a StringIO" do
+    it "should load all xrefs correctly from a StringIO" do
       data = StringIO.new(binread(pdf_spec_file("cairo-unicode")))
       tbl  = PDF::Reader::XRef.new(data)
       tbl.xref.keys.size.should eql(57) # 1 xref table with 58 items (ignore the first)
@@ -34,7 +34,7 @@ describe PDF::Reader::XRef, "initilisation" do
   end
 
   context "with openoffice-2.2.pdf" do
-    it "should load all xrefs corectly" do
+    it "should load all xrefs correctly" do
       @file = File.new(pdf_spec_file("openoffice-2.2"))
       @tbl = PDF::Reader::XRef.new(@file)
       @tbl.xref.keys.size.should eql(28) # 1 xref table with 29 items (ignore the first)
@@ -42,7 +42,7 @@ describe PDF::Reader::XRef, "initilisation" do
   end
 
   context "with pdflatex.pdf" do
-    it "should load all xrefs corectly" do
+    it "should load all xrefs correctly" do
       @file = File.new(pdf_spec_file("pdflatex"))
       @tbl = PDF::Reader::XRef.new(@file)
       @tbl.xref.keys.size.should eql(353) # 1 xref table with 360 items (but a bunch are ignored)
@@ -50,7 +50,7 @@ describe PDF::Reader::XRef, "initilisation" do
   end
 
   context "with xref_subsecetions.pdf" do
-    it "should load all xrefs corectly from a PDF that has multiple xref sections with subsections and xref streams" do
+    it "should load all xrefs correctly from a PDF that has multiple xref sections with subsections and xref streams" do
       @file = File.new(pdf_spec_file("xref_subsections"))
       @tbl = PDF::Reader::XRef.new(@file)
       @tbl.xref.keys.size.should eql(539)
