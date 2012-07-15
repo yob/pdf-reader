@@ -355,7 +355,7 @@ class PDF::Reader
     def pdf_offset(stream)
       stream.rewind
       ofs = stream.pos
-      until stream.readchar == '%' || ofs > 50
+      until (c = stream.readchar) == '%' || c == 37 || ofs > 50
         ofs += 1
       end
       ofs < 50 ? ofs : nil
