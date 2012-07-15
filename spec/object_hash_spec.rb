@@ -25,14 +25,6 @@ describe PDF::Reader::ObjectHash do
      lambda {PDF::Reader::ObjectHash.new(10)}.should raise_error(ArgumentError)
   end
 
-  context "when there is a junk prefix" do
-    let(:sample_name) { pdf_spec_file("junk_prefix") }
-    let(:object_hash) { PDF::Reader::ObjectHash.new(sample_name) }
-    let(:stream) { object_hash.instance_variable_get(:@io) }
-    before { stream.rewind }
-    subject { stream.read(4) }
-    it { should eql("%PDF") }
-  end
 end
 
 describe PDF::Reader::ObjectHash, "[] method" do

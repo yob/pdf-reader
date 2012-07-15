@@ -112,4 +112,21 @@ describe PDF::Reader::XRef, "initilisation" do
       subject.xref.keys.should_not include(7)
     end
   end
+
+  context "with junk_prefix.pdf" do
+    it "should load all xrefs correctly from a File" do
+      File.open(pdf_spec_file("junk_prefix")) do |file|
+        tbl      = PDF::Reader::XRef.new(file)
+        tbl.xref.keys.size.should eql(6) # 1 xref table with 6 items (ignore the first)
+      end
+    end
+
+    it "should load all xrefs with an offset to skip junk at the beginning of the file" do
+      File.open(pdf_spec_file("junk_prefix")) do |file|
+        tbl      = PDF::Reader::XRef.new(file)
+        tbl.xref[1][0].should == 36
+        tbl.xref[2][0].should == 130
+      end
+    end
+  end
 end

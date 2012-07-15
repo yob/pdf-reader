@@ -53,9 +53,11 @@ class PDF::Reader
     #
     def initialize (io)
       @io = io
+      @junk_offset = calc_junk_offset(io) || 0
       @xref = {}
       @trailer = load_offsets
     end
+
     ################################################################################
     # return the number of objects in this file. Objects with multiple generations are
     # only counter once.
@@ -93,6 +95,7 @@ class PDF::Reader
     #
     def load_offsets(offset = nil)
       offset ||= new_buffer.find_first_xref_offset
+      offset += @junk_offset
 
       buf = new_buffer(offset)
       tok_one = buf.token
@@ -124,7 +127,7 @@ class PDF::Reader
             generation = buf.token.to_i
             state = buf.token
 
-            store(objid, generation, offset) if state == "n" && offset > 0
+            store(objid, generation, offset + @junk_offset) if state == "n" && offset > 0
             objid += 1
             params.clear
           end
@@ -169,7 +172,7 @@ class PDF::Reader
           f2    = unpack_bytes(entry[widths[0],widths[1]])
           f3    = unpack_bytes(entry[widths[0]+widths[1],widths[2]])
           if f1 == 1 && f2 > 0
-            store(objid, f3, f2)
+            store(objid, f3, f2 + @junk_offset)
           elsif f1 == 2 && f2 > 0
             store(objid, 0, PDF::Reader::Reference.new(f2, 0))
           end
@@ -213,6 +216,22 @@ class PDF::Reader
     #
     def store (id, gen, offset)
       (@xref[id] ||= {})[gen] ||= offset
+    end
+    ################################################################################
+    # Returns the offset of the PDF document in the +stream+. In theory this
+    # should always be 0, but all sort of crazy junk is prefixed to PDF files
+    # in the real world.
+    #
+    # Checks up to 50 chars into the file, returns nil if no PDF data detected.
+    #
+    def calc_junk_offset(io)
+      io.rewind
+      offset = io.pos
+      until (c = io.readchar) == '%' || c == 37 || offset > 50
+        offset += 1
+      end
+      io.rewind
+      offset < 50 ? offset : nil
     end
   end
   ################################################################################
