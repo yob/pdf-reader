@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require 'rufus-lru'
+require 'hashery'
 
 class PDF::Reader
 
@@ -19,7 +19,7 @@ class PDF::Reader
 
     def initialize(lru_size = 1000)
       @objects = {}
-      @lru_cache = Rufus::Lru::Hash.new(lru_size.to_i)
+      @lru_cache = Hashery::LRUHash.new(lru_size.to_i)
       @hits = 0
       @misses = 0
     end

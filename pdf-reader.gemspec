@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency('Ascii85', '~> 1.0.0')
   spec.add_dependency('ruby-rc4')
-  spec.add_dependency('rufus-lru')
+  spec.add_dependency('hashery', '~> 2.0')
 
   spec.post_install_message = <<END_DESC
 
