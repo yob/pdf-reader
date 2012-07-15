@@ -44,7 +44,7 @@ class PDF::Reader
       @pdf_version = read_version
       @xref        = PDF::Reader::XRef.new(@io)
       @trailer     = @xref.trailer
-      @cache       = PDF::Reader::ObjectCache.new
+      @cache       = opts[:cache] || PDF::Reader::ObjectCache.new
       @sec_handler = build_security_handler(opts)
     end
 

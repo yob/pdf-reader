@@ -1,10 +1,12 @@
 # coding: utf-8
 
+require 'lrucache'
+
 class PDF::Reader
 
   # A Hash-like object for caching commonly used objects from a PDF file.
   #
-  # This is an internal class used by PDF::Reader::ObjectHash
+  # This is an internal class, no promises about a stable API.
   #
   class ObjectCache # nodoc
 
@@ -13,53 +15,67 @@ class PDF::Reader
     # avoid lots of repetitive (and expensive) tokenising
     CACHEABLE_TYPES = [:Catalog, :Page, :Pages]
 
-    def initialize
+    attr_reader :hits, :misses
+
+    def initialize(lru_size = 1000)
       @objects = {}
+      @lru_cache = LRUCache.new(:max_size => lru_size)
+      @hits = 0
+      @misses = 0
     end
 
     def [](key)
-      @objects[key]
+      update_stats(key)
+      @objects[key] || @lru_cache[key]
     end
 
     def []=(key, value)
-      @objects[key] = value if cacheable?(value)
+      if cacheable?(value)
+        @objects[key] = value
+      else
+        @lru_cache[key] = value
+      end
     end
 
     def fetch(key, local_default = nil)
-      @objects.fetch(key, local_default)
+      update_stats(key)
+      @objects[key] || @lru_cache.fetch(key, local_default)
     end
 
     def each(&block)
       @objects.each(&block)
+      @lru_cache.each(&block)
     end
     alias :each_pair :each
 
     def each_key(&block)
       @objects.each_key(&block)
+      @lru_cache.each_key(&block)
     end
 
     def each_value(&block)
       @objects.each_value(&block)
+      @lru_cache.each_value(&block)
     end
 
     def size
-      @objects.size
+      @objects.size + @lru_cache.size
     end
     alias :length :size
 
     def empty?
-      @objects.empty?
+      @objects.empty? && @lru_cache.empty?
     end
 
-    def has_key?(key)
-      @objects.has_key?(key)
+    def include?(key)
+      @objects.include?(key) || @lru_cache.include?(key)
     end
-    alias :include? :has_key?
-    alias :key? :has_key?
-    alias :member? :has_key?
+    alias :has_key? :include?
+    alias :key? :include?
+    alias :member? :include?
 
     def has_value?(value)
-      @objects.has_value?(value)
+      @objects.has_value?(value) || @lru_cache.has_value?(value)
     end
 
     def to_s
@@ -67,19 +83,26 @@ class PDF::Reader
     end
 
     def keys
-      @objects.keys
+      @objects.keys + @lru_cache.keys
     end
 
     def values
-      @objects.values
+      @objects.values + @lru_cache.values
     end
 
     private
 
+    def update_stats(key)
+      if has_key?(key)
+        @hits += 1
+      else
+        @misses += 1
+      end
+    end
+
     def cacheable?(obj)
       obj.is_a?(Hash) && CACHEABLE_TYPES.include?(obj[:Type])
     end
-
 
   end
 end

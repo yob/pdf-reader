@@ -1,5 +1,7 @@
 # coding: utf-8
 
+require 'digest/md5'
+
 module PDF
   class Reader
 
@@ -15,9 +17,10 @@ module PDF
 
       attr_reader :xobject
 
-      def initialize(page, xobject)
+      def initialize(page, xobject, options = {})
         @page    = page
         @objects = page.objects
+        @cache   = options[:cache] || {}
         @xobject = @objects.deref(xobject)
       end
 
@@ -65,12 +68,30 @@ module PDF
         end
       end
 
+      def content_stream_md5
+        @content_stream_md5 ||= Digest::MD5.hexdigest(raw_content)
+      end
+
+      def cached_tokens_key
+        @cached_tokens_key ||= "tokens-#{content_stream_md5}"
+      end
+
+      def tokens
+        @cache[cached_tokens_key] ||= begin
+                      buffer = Buffer.new(StringIO.new(raw_content), :content_stream => true)
+                      parser = Parser.new(buffer, @objects)
+                      result = []
+                      while (token = parser.parse_token(PagesStrategy::OPERATORS))
+                        result << token
+                      end
+                      result
+                    end
+      end
+
       def content_stream(receivers, instructions)
-        buffer       = Buffer.new(StringIO.new(instructions), :content_stream => true)
-        parser       = Parser.new(buffer, @objects)
         params       = []
 
-        while (token = parser.parse_token(PagesStrategy::OPERATORS))
+        tokens.each do |token|
           if token.kind_of?(Token) and PagesStrategy::OPERATORS.has_key?(token)
             callback(receivers, PagesStrategy::OPERATORS[token], params)
             params.clear

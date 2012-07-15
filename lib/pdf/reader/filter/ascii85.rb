@@ -1,5 +1,7 @@
 # coding: utf-8
-#
+
+require 'ascii85'
+
 class PDF::Reader
   module Filter # :nodoc:
     class Ascii85

@@ -25,9 +25,6 @@
 ################################################################################
 
 require 'stringio'
-require 'zlib'
-
-require 'ascii85'
 
 module PDF
   ################################################################################
@@ -113,6 +110,8 @@ module PDF
     #
     def initialize(input = nil, opts = {})
       if input # support the deprecated Reader API
+        @cache   = PDF::Reader::ObjectCache.new
+        opts.merge!(:cache => @cache)
         @objects = PDF::Reader::ObjectHash.new(input, opts)
       end
     end
@@ -222,7 +221,7 @@ module PDF
     #
     def pages
       (1..self.page_count).map { |num|
-        PDF::Reader::Page.new(@objects, num)
+        PDF::Reader::Page.new(@objects, num, :cache => @cache)
       }
     end
 
@@ -241,7 +240,7 @@ module PDF
     def page(num)
       num = num.to_i
       raise ArgumentError, "valid pages are 1 .. #{self.page_count}" if num < 1 || num > self.page_count
-      PDF::Reader::Page.new(@objects, num)
+      PDF::Reader::Page.new(@objects, num, :cache => @cache)
     end
 
 
