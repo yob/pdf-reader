@@ -86,14 +86,15 @@ module ExtractImages
       tiff = header.dup
       tiff << short_tag.call( 256, 1, w ) # image width
       tiff << short_tag.call( 257, 1, h ) # image height
-      tiff << long_tag.call( 258, 4, (header.size + (tag_count*12))) # bits per pixel
+      tiff << long_tag.call( 258, 4, (header.size + (tag_count*12) + 4)) # bits per pixel
       tiff << short_tag.call( 259, 1, 1 ) # compression
       tiff << short_tag.call( 262, 1, 5 ) # colorspace - separation
-      tiff << long_tag.call( 273, 1, (10 + (tag_count*12) + 16) ) # data offset
+      tiff << long_tag.call( 273, 1, (10 + (tag_count*12) + 20) ) # data offset
       tiff << short_tag.call( 277, 1, 4 ) # samples per pixel
       tiff << long_tag.call( 279, 1, stream.unfiltered_data.size) # data byte size
       tiff << short_tag.call( 284, 1, 1 ) # planer config
       tiff << long_tag.call( 332, 1, 1)   # inkset - CMYK
+      tiff << [0].pack("I") # next IFD pointer
       tiff << [bpc, bpc, bpc, bpc].pack("IIII")
       tiff << stream.unfiltered_data
       File.open(filename, "wb") { |file| file.write tiff }
@@ -119,10 +120,12 @@ module ExtractImages
       tiff << short_tag.call( 258, 1, 8 ) # bits per pixel
       tiff << short_tag.call( 259, 1, 1 ) # compression
       tiff << short_tag.call( 262, 1, 1 ) # colorspace - grayscale
-      tiff << long_tag.call( 273, 1, (10 + (tag_count*12)) ) # data offset
+      tiff << long_tag.call( 273, 1, (10 + (tag_count*12) + 4) ) # data offset
       tiff << short_tag.call( 277, 1, 1 ) # samples per pixel
       tiff << long_tag.call( 279, 1, stream.unfiltered_data.size) # data byte size
       tiff << short_tag.call( 284, 1, 1 ) # planer config
+      tiff << [0].pack("I") # next IFD pointer
+      p stream.unfiltered_data.size
       tiff << stream.unfiltered_data
       File.open(filename, "wb") { |file| file.write tiff }
     end
@@ -144,12 +147,13 @@ module ExtractImages
       tiff = header.dup
       tiff << short_tag.call( 256, 1, w ) # image width
       tiff << short_tag.call( 257, 1, h ) # image height
-      tiff << long_tag.call( 258, 3, (header.size + (tag_count*12))) # bits per pixel
+      tiff << long_tag.call( 258, 3, (header.size + (tag_count*12) + 4)) # bits per pixel
       tiff << short_tag.call( 259, 1, 1 ) # compression
       tiff << short_tag.call( 262, 1, 2 ) # colorspace - RGB
-      tiff << long_tag.call( 273, 1, (header.size + (tag_count*12) + 12) ) # data offset
+      tiff << long_tag.call( 273, 1, (header.size + (tag_count*12) + 16) ) # data offset
       tiff << short_tag.call( 277, 1, 3 ) # samples per pixel
       tiff << long_tag.call( 279, 1, stream.unfiltered_data.size) # data byte size
+      tiff << [0].pack("I") # next IFD pointer
       tiff << [bpc, bpc, bpc].pack("III")
       tiff << stream.unfiltered_data
       File.open(filename, "wb") { |file| file.write tiff }
@@ -209,8 +213,9 @@ module ExtractImages
       + short_tag.call( 256, cols ) \
       + short_tag.call( 257, h ) \
       + short_tag.call( 259, 4 ) \
-      + long_tag.call( 273, (10 + (5*12)) ) \
+      + long_tag.call( 273, (10 + (5*12) + 4) ) \
       + long_tag.call( 279, len) \
+      + [0].pack("I") \
       + stream.data
       File.open(filename, "wb") { |file| file.write tiff }
     end
