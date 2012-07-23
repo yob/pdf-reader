@@ -20,14 +20,20 @@ module PDF
       # the raw PDF object that defines this page
       attr_reader :page_object
 
+      # a Hash-like object for storing cached data. Generally this is scoped to
+      # the current document and is used to avoid repeating expensive
+      # operations
+      attr_reader :cache
+
       # creates a new page wrapper.
       #
       # * objects - an ObjectHash instance that wraps a PDF file
       # * pagenum - an int specifying the page number to expose. 1 indexed.
       #
-      def initialize(objects, pagenum)
+      def initialize(objects, pagenum, options = {})
         @objects, @pagenum = objects, pagenum
         @page_object = objects.deref(objects.page_references[pagenum - 1])
+        @cache       = options[:cache] || {}
 
         unless @page_object.is_a?(::Hash)
           raise ArgumentError, "invalid page: #{pagenum}"
