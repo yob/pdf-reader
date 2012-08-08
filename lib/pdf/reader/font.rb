@@ -236,8 +236,8 @@ class PDF::Reader
         @widths   = @ohash.object(obj[:Widths]) || []
         @first_char = @ohash.object(obj[:FirstChar])
         @last_char = @ohash.object(obj[:LastChar])
-        puts "Non-CID First Char: #{@first_char} Last Char: #{@last_char} "
-          + "Font Widths: #{@widths.inspect}" if @DEBUG_FONT
+        puts "Non-CID First Char: #{@first_char} Last Char: #{@last_char} " + 
+          "Font Widths: #{@widths.inspect}" if @DEBUG_FONT
         # Encoding is required for Type3, optional for Type1
         @encoding = PDF::Reader::Encoding.new(@ohash.object(obj[:Encoding]))
         puts "Encoding:\n #{@encoding.inspect}" if @DEBUG_FONT
