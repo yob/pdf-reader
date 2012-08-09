@@ -58,19 +58,19 @@ class PDF::Reader
       @max_width             ||= 0
       @missing_width         ||= 0
       @font_flags            ||= 0
-      @is_fixed_width        = (@font_flags & 1) > 0
-      @is_serif              = (@font_flags & 2) > 0
-      @is_symbolic           = (@font_flags & 4) > 0
-      @is_script             = (@font_flags & 8) > 0
-      @is_italic             = (@font_flags & 64) > 0
-      @is_all_caps           = (@font_flags & 65536) > 0
-      @is_small_caps         = (@font_flags & 131072) > 0
+      @is_fixed_width        = (@font_flags & 0x00001) > 0
+      @is_serif              = (@font_flags & 0x00002) > 0
+      @is_symbolic           = (@font_flags & 0x00004) > 0
+      @is_script             = (@font_flags & 0x00008) > 0
+      @is_italic             = (@font_flags & 0x00040) > 0
+      @is_all_caps           = (@font_flags & 0x10000) > 0
+      @is_small_caps         = (@font_flags & 0x20000) > 0
 
-      puts self.inspect if debug_font
+      puts self.inspect if debug_font > 0
       if @font_program_stream
         @is_ttf = true
-        puts "TTF: #{self.ttf_program_stream.inspect}" if debug_font
-        test_ttf_program_stream if debug_font
+        puts "TTF: #{self.ttf_program_stream.inspect}" if debug_font > 1
+        test_ttf_program_stream if debug_font > 2
       end
     end
 
@@ -85,10 +85,10 @@ class PDF::Reader
         else
           glyph_id = char_code
         end
-        puts "Using Char Code: #{char_code} is Glyph ID: #{glyph_id}" if @debug_font
+        puts "Using Char Code: #{char_code} is Glyph ID: #{glyph_id}" if @debug_font > 0
         char_metric = ttf_program_stream.horizontal_metrics.metrics[glyph_id]
         if char_metric
-          puts "Char Code: #{char_code} -- Advance Width: #{char_metric.advance_width}"
+          puts "Char Code: #{char_code} -- Advance Width: #{char_metric.advance_width}" > 0
           return char_metric.advance_width
         end
       end
