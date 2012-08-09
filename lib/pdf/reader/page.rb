@@ -63,6 +63,12 @@ module PDF
         }
       end
 
+      def formatted_text(verbosity = 0)
+        receiver = PDF::Reader::Formatted::PageTextReceiver.new(verbosity)
+        walk receiver
+        receiver.layout_page.to_s
+      end
+
       # returns the plain text content of this page encoded as UTF-8. Any
       # characters that can't be translated will be returned as a ▯
       #
