@@ -6,7 +6,7 @@ module PDF
       class PageTextReceiver
         extend Forwardable
 
-        attr_reader :verbosity, :state, :content
+        attr_reader :verbosity, :state, :content, :options
 
         @current_text_group
         @current_line
@@ -19,8 +19,9 @@ module PDF
         def_delegators :@state, :concatenate_matrix
         ##########  END FORWARDERS  ##########
 
-        def initialize(verbosity = 0)
-          @verbosity = verbosity
+        def initialize(options = {})
+          @options = options
+          @verbosity = options.fetch(:verbosity, 0)
         end
 
         # starting a new page
@@ -162,7 +163,7 @@ module PDF
 
         def layout_page
           puts "Laying Out Content\n\n" if verbosity > 0
-          helper = @content.each.inject(LayoutHelper.new(@verbosity)) do |layout_helper, text_group|
+          helper = @content.each.inject(LayoutHelper.new(@options)) do |layout_helper, text_group|
             layout_helper.add_lines_from_text_group text_group
             layout_helper
           end

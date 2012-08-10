@@ -2,13 +2,14 @@ module PDF
   class Reader
     class Formatted
       class LayoutHelper
-        attr_reader :lines, :verbosity
+        attr_reader :lines, :verbosity, :options
 
         @tg = nil
 
-        def initialize(verbosity = 0)
+        def initialize(options = {})
           @lines = []
-          @verbosity = verbosity
+          @options = options
+          @verbosity = options.fetch(:verbosity, 0)
           @tg = PageLayout::TextGroup.new(@verbosity)
         end
 
@@ -26,10 +27,10 @@ module PDF
         end
 
         def to_s
-          def_rows = 100
-          def_cols = 200
-          row_multiplier = 8.0 # 800
-          col_multiplier = 3.0 # 600
+          def_rows = @options.fetch(:number_of_rows, 100)
+          def_cols = @options.fetch(:number_of_cols, 200)
+          row_multiplier = @options.fetch(:row_scale, 8.0) # 800
+          col_multiplier = @options.fetch(:col_scale, 3.0) # 600
           page = []
           def_value = ""
           def_cols.times { def_value << " " }
@@ -51,8 +52,9 @@ module PDF
             end
           end
           final_string = ""
+          strip_empty_lines = @options.fetch(:strip_empty_lines, true)
           page.each do |line|
-            final_string << line << "\n" unless line.strip.length == 0
+            final_string << line << "\n" unless line.strip.length == 0 && strip_empty_lines
           end
           final_string
         end
