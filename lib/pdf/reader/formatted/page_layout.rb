@@ -31,14 +31,15 @@ module PDF
                 current_line = line
               else
                 if current_line.runs.size > 0
+                  max_gap = 10 # points
                   fs_run = current_line.runs.last
                   fs_run ||= current_line.runs.first
-                  puts "Current Line: #{current_line}\nNext Line: #{line}" if @verbosity > 2
+                  puts "Current Line: #{current_line}Next Line: #{line}" if @verbosity > 2
                   puts "Current XMax: #{current_line.x_max} // #{line.position} == " +
                        "#{current_line.position} && #{(line.position.x - current_line.x_max).abs}" +
-                       " < #{fs_run.font_size}" if @verbosity > 2
+                       " < #{max_gap}\n" if @verbosity > 2
                   if (line.position.y - current_line.position.y).abs < fs_run.font_size &&
-                    (line.position.x - current_line.x_max).abs < fs_run.font_size
+                    (line.position.x - current_line.x_max).abs < max_gap
                     line.runs.each do |run|
                       current_line.runs << run
                     end
