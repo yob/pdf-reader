@@ -109,7 +109,7 @@ class PDF::Reader
       if params.class == String
         params.unpack(encoding.unpack).map { |c|
           @tounicode.decode(c) || PDF::Reader::Encoding::UNKNOWN_CHAR
-        }.pack("U*")
+        }.flatten.pack("U*")
       elsif params.class == Array
         params.collect { |param| to_utf8_via_cmap(param) }
       else
