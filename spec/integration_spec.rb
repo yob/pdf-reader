@@ -324,8 +324,9 @@ describe PDF::Reader, "integration specs" do
     # pdf-reader would return Nil instead of the correct unicode character
     PDF::Reader.open(filename) do |reader|
       page = reader.page(1)
-      m = /\u{1d475}\u{1d468}\u{1d47a}\u{1d46a}\u{1d468}\u{1d479}/.match(page.text)
-      m[0].to_s.should eql("\u{1d475}\u{1d468}\u{1d47a}\u{1d46a}\u{1d468}\u{1d479}")
+      # 𝑵𝑨𝑺𝑪𝑨𝑹
+      utf8_str = [0x1d475, 0x1d468, 0x1d47a, 0x1d46a, 0x1d468, 0x1d479].pack("U*")
+      page.text.should include(utf8_str)
     end
   end
 
