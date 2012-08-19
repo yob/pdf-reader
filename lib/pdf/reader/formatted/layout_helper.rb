@@ -54,7 +54,7 @@ module PDF
           final_string = ""
           strip_empty_lines = @options.fetch(:strip_empty_lines, true)
           page.each do |line|
-            final_string << line << "\n" unless line.strip.length == 0 && strip_empty_lines
+            final_string << line.rstrip << "\n" unless line.strip.length == 0 && strip_empty_lines
           end
           final_string
         end
