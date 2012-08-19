@@ -294,4 +294,40 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  it "should correctly extract text from a pdf that has a cmap entry that uses ligatures" do
+    filename = pdf_spec_file("ligature_integration_sample")
+    # there are two locations in the following pdf that have the following sequence
+    # [ 85,   68,   73,    192,        70]   after cmap translation this should yield
+    # [[114], [97], [102], [102, 105], [99]] or more specifically
+    # [r,     a,    f,     fi,         c]
+    #
+    # prior to commit d37b4bf52e243dfb999fa0cda791449c50f6d16d
+    # the fi would be returned as f
+
+    PDF::Reader.open(filename) do |reader|
+      page = reader.page(1)
+      m = /raffic/.match(page.text)
+      m[0].to_s.should eql("raffic")
+    end
+  end
+
+  it "should correctly extract text from a pdf that has a cmap entry that contains surrogate pairs" do
+    filename = pdf_spec_file("surrogate_pair_integration_sample")
+    # the following pdf has a sequence in it that requires 32-bit Unicode, pdf requires
+    # all text to be stored in 16-bit. To acheive this surrogate-pairs are used. cmap
+    # converts the surrogate-pairs back to 32-bit and ruby handles them nicely.
+    # the following sequence exists in this pdf page
+    # \u{1d475}\u{1d468}\u{1d47a}\u{1d46a}\u{1d468}\u{1d479} => NASCAR
+    # these codepoints are in the "Math Alphanumeric Symbols (Italic) section of Unicode"
+    #
+    # prior to commit d37b4bf52e243dfb999fa0cda791449c50f6d16d
+    # pdf-reader would return Nil instead of the correct unicode character
+    PDF::Reader.open(filename) do |reader|
+      page = reader.page(1)
+      # 𝑵𝑨𝑺𝑪𝑨𝑹
+      utf8_str = [0x1d475, 0x1d468, 0x1d47a, 0x1d46a, 0x1d468, 0x1d479].pack("U*")
+      page.text.should include(utf8_str)
+    end
+  end
+
 end

@@ -60,6 +60,10 @@ class PDF::Reader
       @map.size
     end
 
+    # Convert a glyph code into one or more Codepoints.
+    #
+    # Returns an array of Fixnums.
+    #
     def decode(c)
       # TODO: implement the conversion
       return c unless c.class == Fixnum
@@ -74,12 +78,23 @@ class PDF::Reader
     end
 
     def str_to_int(str)
-      return nil if str.nil? || str.size == 0 || str.size >= 3
-
-      if str.size == 1
-        str.unpack("C*")[0]
+      return nil if str.nil? || str.size == 0
+      unpacked_string = if str.size == 1 # UTF-8
+        str.unpack("C*")
+      else # UTF-16
+         str.unpack("n*")
+      end
+      if unpacked_string.length == 1
+        unpacked_string
+      elsif unpacked_string.length == 2 && (unpacked_string[0] > 0xD800 && unpacked_string[0] < 0xDBFF)
+        # this is a Unicode UTF-16 "Surrogate Pair" see Unicode Spec. Chapter 3.7
+        # lets convert to a UTF-32. (the high bit is between 0xD800-0xDBFF, the
+        # low bit is between 0xDC00-0xDFFF) for example: U+1D44E (U+D835 U+DC4E)
+        [(unpacked_string[0] - 0xD800) * 0x400 + (unpacked_string[1] - 0xDC00) + 0x10000]
       else
-        str.unpack("n*")[0]
+        # it is a bad idea to just return the first 16 bits, as this doesn't allow
+        # for ligatures for example fi (U+0066 U+0069)
+        unpacked_string
       end
     end
 
@@ -88,7 +103,7 @@ class PDF::Reader
       find    = str_to_int(parser.parse_token)
       replace = str_to_int(parser.parse_token)
       while find && replace
-        @map[find] = replace
+        @map[find[0]] = replace
         find       = str_to_int(parser.parse_token)
         replace    = str_to_int(parser.parse_token)
       end
@@ -114,21 +129,21 @@ class PDF::Reader
     end
 
     def bfrange_type_one(start_code, end_code, dst)
-      start_code = str_to_int(start_code)
-      end_code   = str_to_int(end_code)
+      start_code = str_to_int(start_code)[0]
+      end_code   = str_to_int(end_code)[0]
       dst        = str_to_int(dst)
 
       # add all values in the range to our mapping
       (start_code..end_code).each_with_index do |val, idx|
-        @map[val] = dst + idx
+        @map[val] = dst.length == 1 ? [dst[0] + idx] : [dst[0], dst[1] + 1]
         # ensure a single range does not exceed 255 chars
         raise PDF::Reader::MalformedPDFError, "a CMap bfrange cann't exceed 255 chars" if idx > 255
       end
     end
 
     def bfrange_type_two(start_code, end_code, dst)
-      start_code = str_to_int(start_code)
-      end_code   = str_to_int(end_code)
+      start_code = str_to_int(start_code)[0]
+      end_code   = str_to_int(end_code)[0]
       from_range = (start_code..end_code)
 
       # add all values in the range to our mapping
