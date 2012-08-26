@@ -26,6 +26,7 @@
 class PDF::Reader
   class GlyphHash # :nodoc:
     def initialize
+      # only parse the glyph list once, and cache the results (for performance)
       @adobe = @@cache ||= load_adobe_glyph_mapping
     end
 
