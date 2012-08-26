@@ -26,7 +26,8 @@
 class PDF::Reader
   class GlyphHash # :nodoc:
     def initialize
-      @adobe = load_adobe_glyph_mapping
+      # only parse the glyph list once, and cache the results (for performance)
+      @adobe = @@cache ||= load_adobe_glyph_mapping
     end
 
     # attempt to convert a PDF Name to a unicode codepoint. Returns nil
@@ -82,7 +83,7 @@ class PDF::Reader
         end
       end
 
-      glyphs
+      glyphs.freeze
     end
 
   end
