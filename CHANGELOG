@@ -1,3 +1,11 @@
+v1.2.0 (28th AUgust 2012)
+- Feature: correctly extract text using surrogate pairs and ligatures
+  (thanks Nathaniel Madura)
+- Speed optimisation: cache tokenised Form XObjects to avoid re-parsing them
+- Feature: support opening documents with some junk bytes prepended to file
+  (thanks Paul Gallagher)
+  - Acrobat does this, so it seemed reasonable to add support
+
 v1.1.1 (9th May 2012)
 - bugfix release to improve parsing of some PDFs
 
