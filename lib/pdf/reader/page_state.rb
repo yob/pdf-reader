@@ -7,16 +7,18 @@ module PDF
     class PageState
 
       DEFAULT_GRAPHICS_STATE = {
-        :ctm          => Matrix.identity(3),
-        :char_spacing => 0,
-        :word_spacing => 0,
-        :h_scaling    => 100,
-        :text_leading => 0,
-        :text_font    => nil,
-        :text_font_size => nil,
-        :text_mode    => 0,
-        :text_rise    => 0,
-        :text_knockout => 0
+        :ctm              => Matrix.identity(3),
+        :char_spacing     => 0,
+        :word_spacing     => 0,
+        :h_scaling        => 100,
+        :text_leading     => 0,
+        :text_font        => nil,
+        :text_font_size   => nil,
+        :text_mode        => 0,
+        :text_rise        => 0,
+        :text_knockout    => 0,
+        :text_line_matrix => Matrix.identity(3),
+        :text_matrix      => Matrix.identity(3),
       }
 
       # starting a new page
@@ -71,13 +73,13 @@ module PDF
       #####################################################
 
       def begin_text_object
-        @text_matrix      = Matrix.identity(3)
-        @text_line_matrix = Matrix.identity(3)
+        self.text_matrix      = Matrix.identity(3)
+        self.text_line_matrix = Matrix.identity(3)
       end
 
       def end_text_object
-        @text_matrix      = Matrix.identity(3)
-        @text_line_matrix = Matrix.identity(3)
+        self.text_matrix      = Matrix.identity(3)
+        self.text_line_matrix = Matrix.identity(3)
       end
 
       #####################################################
@@ -98,7 +100,7 @@ module PDF
       end
 
       def font_size
-        state[:text_font_size] * @text_matrix[0,0]
+        state[:text_font_size] * self.text_matrix[0,0]
       end
 
       def set_text_leading(leading)
@@ -121,30 +123,25 @@ module PDF
       # Text Positioning Operators
       #####################################################
 
-      def move_text_position(x, y) # Td
-        temp_matrix = Matrix[
-          [1, 0, 0],
-          [0, 1, 0],
-          [x, y, 1]
-        ]
-        @text_matrix = @text_line_matrix = temp_matrix * @text_line_matrix
+      def move_text_position(x, y)
+        move_text_xy x, y
       end
 
       def move_text_position_and_set_leading(x, y) # TD
         set_text_leading(-1 * y)
-        move_text_position(x, y)
+        move_text_xy x, y
       end
 
-      def set_text_matrix_and_text_line_matrix(a, b, c, d, e, f) # Tm
-        @text_matrix = @text_line_matrix = Matrix[
+      def set_text_matrix_and_text_line_matrix(a, b, c, d, e, f)
+        self.text_matrix = self.text_line_matrix = Matrix[
           [a, b, 0],
           [c, d, 0],
           [e, f, 1]
         ]
       end
 
-      def move_to_start_of_next_line # T*
-        move_text_position(0, -state[:text_leading])
+      def move_to_start_of_next_line
+        move_text_xy(0, -state[:text_leading])
       end
 
       #####################################################
@@ -240,6 +237,41 @@ module PDF
         dict ? dict[label] : nil
       end
 
+      # when save_graphics_state is called, we need to push a new copy of the
+      # current state onto the stack. That way any modifications to the state
+      # will be undone once restore_graphics_state is called.
+      #
+      # This returns a deep clone of the current state, ensuring changes are
+      # keep separate from earlier states.
+      #
+      # Marshal is used to round-trip the state through a string to easily
+      # perform the deep clone. Kinda hacky, but effective.
+      #
+      # Make clone_state public
+      def clone_state
+        if @stack.empty?
+          {}
+        else
+          Marshal.load Marshal.dump(@stack.last)
+        end
+      end
+
+      def text_matrix
+        state[:text_matrix]
+      end
+
+      def text_line_matrix
+        state[:text_line_matrix]
+      end
+
+      def text_matrix=(value)
+        state[:text_matrix] = value
+      end
+
+      def text_line_matrix=(value)
+        state[:text_line_matrix] = value
+      end
+
       private
 
       def text_rendering_matrix
@@ -249,7 +281,7 @@ module PDF
           [0, state[:text_rise], 1]
         ]
 
-        state_matrix * @text_matrix * ctm
+        state_matrix * self.text_matrix * ctm
       end
 
       # return the current transformation matrix
@@ -272,22 +304,14 @@ module PDF
         ::Hash[wrapped_fonts]
       end
 
-      # when save_graphics_state is called, we need to push a new copy of the
-      # current state onto the stack. That way any modifications to the state
-      # will be undone once restore_graphics_state is called.
-      #
-      # This returns a deep clone of the current state, ensuring changes are
-      # keep separate from earlier states.
-      #
-      # Marshal is used to round-trip the state through a string to easily
-      # perform the deep clone. Kinda hacky, but effective.
-      #
-      def clone_state
-        if @stack.empty?
-          {}
-        else
-          Marshal.load Marshal.dump(@stack.last)
-        end
+
+      def move_text_xy(x, y)
+        temp_matrix = Matrix[
+          [1, 0, 0],
+          [0, 1, 0],
+          [x, y, 1]
+        ]
+        self.text_matrix = self.text_line_matrix = (temp_matrix * self.text_line_matrix)
       end
 
     end

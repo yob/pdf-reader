@@ -3,3 +3,6 @@ pkg
 Gemfile.lock
 .idea
 
+
+*.gem
+.DS_Store
