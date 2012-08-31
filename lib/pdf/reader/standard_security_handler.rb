@@ -1,3 +1,5 @@
+# coding: utf-8
+
 ################################################################################
 #
 # Copyright (C) 2011 Evan J Brunner (ejbrun@appittome.com)
