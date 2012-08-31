@@ -8,8 +8,8 @@ require 'rspec/core/rake_task'
 require 'roodi'
 require 'roodi_task'
 
-# Cane only works on ruby 1.9.3 or higher
-if RUBY_VERSION >= "1.9.3"
+# Cane requires ripper, which appears to only work on MRI 1.9
+if RUBY_VERSION >= "1.9" && RUBY_PLATFORM =~ /linux/
 
   desc "Default Task"
   task :default => [ :quality, :spec ]
