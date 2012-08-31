@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency("roodi")
   spec.add_development_dependency("rspec", "~>2.3")
   spec.add_development_dependency("ZenTest", "~>4.4.2")
+  spec.add_development_dependency("cane", "~>2.2")
 
   spec.add_dependency('Ascii85', '~> 1.0.0')
   spec.add_dependency('ruby-rc4')
