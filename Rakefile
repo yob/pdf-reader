@@ -8,10 +8,25 @@ require 'rspec/core/rake_task'
 require 'roodi'
 require 'roodi_task'
 
-desc "Default Task"
-task :default => [ :spec ]
+# Cane requires ripper, which appears to only work on MRI 1.9
+if RUBY_VERSION >= "1.9" && RUBY_ENGINE == "ruby"
 
-# run all rspecs
+  desc "Default Task"
+  task :default => [ :quality, :spec ]
+
+  require 'cane/rake_task'
+  desc "Run cane to check quality metrics"
+  Cane::RakeTask.new(:quality) do |cane|
+    cane.abc_max = 20
+    cane.style_measure = 100
+    cane.max_violations = 108
+  end
+
+else
+  desc "Default Task"
+  task :default => [ :spec ]
+end
+
 desc "Run all rspec files"
 RSpec::Core::RakeTask.new("spec") do |t|
   t.rspec_opts  = ["--color", "--format progress"]

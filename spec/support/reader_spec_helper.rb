@@ -16,7 +16,7 @@ module ReaderSpecHelper
     end
   end
 
-  # a safe method for opening a file and loading the contents as 
+  # a safe method for opening a file and loading the contents as
   # a binary string.
   #
   def binread(filename)
