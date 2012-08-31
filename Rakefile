@@ -9,7 +9,7 @@ require 'roodi'
 require 'roodi_task'
 
 # Cane requires ripper, which appears to only work on MRI 1.9
-if RUBY_VERSION >= "1.9" && RUBY_PLATFORM =~ /linux/
+if RUBY_VERSION >= "1.9" && RUBY_ENGINE == "ruby"
 
   desc "Default Task"
   task :default => [ :quality, :spec ]
