@@ -163,7 +163,7 @@ describe PDF::Reader::Buffer, "token method" do
     buf.token.should eql("James \\(Code Monkey")
     buf.token.should eql(")")
   end
-  
+
   it "should correctly return an indirect reference" do
     buf = parse_string("aaa 1 0 R bbb")
 
