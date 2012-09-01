@@ -5,7 +5,6 @@ module PDF
     class PageState
 
       DEFAULT_GRAPHICS_STATE = {
-        :ctm          => [1,0,0, 0,1,0, 0,0,1], # identity matrix
         :char_spacing => 0,
         :word_spacing => 0,
         :h_scaling    => 100,
@@ -26,6 +25,7 @@ module PDF
         @xobject_stack = [page.xobjects]
         @cs_stack      = [page.color_spaces]
         @stack         = [DEFAULT_GRAPHICS_STATE.dup]
+        state[:ctm]    = identity_matrix
       end
 
       #####################################################
