@@ -15,11 +15,15 @@ if RUBY_VERSION >= "1.9" && RUBY_ENGINE == "ruby"
   task :default => [ :quality, :spec ]
 
   require 'cane/rake_task'
+  require 'morecane'
+
   desc "Run cane to check quality metrics"
   Cane::RakeTask.new(:quality) do |cane|
     cane.abc_max = 20
     cane.style_measure = 100
     cane.max_violations = 108
+
+    cane.use Morecane::EncodingCheck, encoding_glob: "{app,lib,spec}/**/*.rb"
   end
 
 else
