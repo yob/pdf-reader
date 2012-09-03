@@ -1,13 +1,10 @@
 # coding: utf-8
 
-require 'matrix'
-
 module PDF
   class Reader
     class PageState
 
       DEFAULT_GRAPHICS_STATE = {
-        :ctm          => Matrix.identity(3),
         :char_spacing => 0,
         :word_spacing => 0,
         :h_scaling    => 100,
@@ -28,6 +25,7 @@ module PDF
         @xobject_stack = [page.xobjects]
         @cs_stack      = [page.color_spaces]
         @stack         = [DEFAULT_GRAPHICS_STATE.dup]
+        state[:ctm]    = identity_matrix
       end
 
       #####################################################
@@ -54,16 +52,12 @@ module PDF
       # with the new matrix to form the updated matrix.
       #
       def concatenate_matrix(a, b, c, d, e, f)
-        transform = Matrix[
-          [a, b, 0],
-          [c, d, 0],
-          [e, f, 1]
-        ]
         if state[:ctm]
-          state[:ctm] = transform * state[:ctm]
+          multiply!(state[:ctm], a,b,0, c,d,0, e,f,1)
         else
-          state[:ctm] = transform
+          state[:ctm] = [a,b,0, c,d,0, e,f,1]
         end
+        @text_rendering_matrix = nil # invalidate cached value
       end
 
       #####################################################
@@ -71,13 +65,11 @@ module PDF
       #####################################################
 
       def begin_text_object
-        @text_matrix      = Matrix.identity(3)
-        @text_line_matrix = Matrix.identity(3)
+        @text_matrix = identity_matrix
       end
 
       def end_text_object
-        @text_matrix      = Matrix.identity(3)
-        @text_line_matrix = Matrix.identity(3)
+        # don't need to do anything
       end
 
       #####################################################
@@ -98,7 +90,7 @@ module PDF
       end
 
       def font_size
-        state[:text_font_size] * @text_matrix[0,0]
+        state[:text_font_size] * @text_matrix[0]
       end
 
       def set_text_leading(leading)
@@ -122,12 +114,17 @@ module PDF
       #####################################################
 
       def move_text_position(x, y) # Td
-        temp_matrix = Matrix[
-          [1, 0, 0],
-          [0, 1, 0],
-          [x, y, 1]
-        ]
-        @text_matrix = @text_line_matrix = temp_matrix * @text_line_matrix
+        # multiply the following matrix by @text_matrix,
+        #   and store the result back into @text_matrix:
+        #   1 0 0
+        #   0 1 0
+        #   x y 1
+
+        a2,b2,c2, d2,e2,f2, g2,h2,i2 = @text_matrix
+        @text_matrix[6] = (x * a2) + (y * d2) + g2
+        @text_matrix[7] = (x * b2) + (y * e2) + h2
+        @text_matrix[8] = (x * c2) + (y * f2) + i2
+        @text_rendering_matrix = nil # invalidate cached value
       end
 
       def move_text_position_and_set_leading(x, y) # TD
@@ -136,11 +133,12 @@ module PDF
       end
 
       def set_text_matrix_and_text_line_matrix(a, b, c, d, e, f) # Tm
-        @text_matrix = @text_line_matrix = Matrix[
-          [a, b, 0],
-          [c, d, 0],
-          [e, f, 1]
+        @text_matrix = [
+          a, b, 0,
+          c, d, 0,
+          e, f, 1
         ]
+        @text_rendering_matrix = nil # invalidate cached value
       end
 
       def move_to_start_of_next_line # T*
@@ -199,8 +197,8 @@ module PDF
       #
       def ctm_transform(x, y, z = 1)
         [
-          (ctm[0,0] * x) + (ctm[1,0] * y) + (ctm[2,0] * z),
-          (ctm[0,1] * x) + (ctm[1,1] * y) + (ctm[2,1] * z)
+          (ctm[0] * x) + (ctm[3] * y) + (ctm[6] * z),
+          (ctm[1] * x) + (ctm[4] * y) + (ctm[7] * z)
         ]
       end
 
@@ -210,8 +208,8 @@ module PDF
       def trm_transform(x, y, z = 1)
         trm = text_rendering_matrix
         [
-          (trm[0,0] * x) + (trm[1,0] * y) + (trm[2,0] * z),
-          (trm[0,1] * x) + (trm[1,1] * y) + (trm[2,1] * z)
+          (trm[0] * x) + (trm[3] * y) + (trm[6] * z),
+          (trm[1] * x) + (trm[4] * y) + (trm[7] * z)
         ]
       end
 
@@ -243,13 +241,15 @@ module PDF
       private
 
       def text_rendering_matrix
-        state_matrix = Matrix[
-          [font_size * state[:h_scaling], 0, 0],
-          [0, font_size, 0],
-          [0, state[:text_rise], 1]
-        ]
-
-        state_matrix * @text_matrix * ctm
+        @text_rendering_matrix ||= begin
+          state_matrix = [
+            font_size * state[:h_scaling], 0, 0,
+            0, font_size, 0,
+            0, state[:text_rise], 1
+          ]
+          multiply!(state_matrix, *@text_matrix)
+          multiply!(state_matrix, *ctm)
+        end
       end
 
       # return the current transformation matrix
@@ -290,6 +290,41 @@ module PDF
         end
       end
 
+      #####################################################
+      # Low-level Matrix Operations
+      #####################################################
+
+      # This class uses 3x3 matrices to represent geometric transformations
+      # These matrices are represented by arrays with 9 elements
+      # The array [a,b,c,d,e,f,g,h,i] would represent a matrix like:
+      #   a b c
+      #   d e f
+      #   g h i
+
+      def identity_matrix
+        [1,0,0, 0,1,0, 0,0,1]
+      end
+
+      # multiply two 3x3 matrices
+      # the second is represented by the last 9 scalar arguments
+      # store the results back into the first (to avoid allocating memory)
+      #
+      def multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
+        a1,b1,c1, d1,e1,f1, g1,h1,i1 = m1
+        a = (a1 * a2) + (b1 * d2) + (c1 * g2)
+        b = (a1 * b2) + (b1 * e2) + (c1 * h2)
+        c = (a1 * c2) + (b1 * f2) + (c1 * i2)
+        d = (d1 * a2) + (e1 * d2) + (f1 * g2)
+        e = (d1 * b2) + (e1 * e2) + (f1 * h2)
+        f = (d1 * c2) + (e1 * f2) + (f1 * i2)
+        g = (g1 * a2) + (h1 * d2) + (i1 * g2)
+        h = (g1 * b2) + (h1 * e2) + (i1 * h2)
+        i = (g1 * c2) + (h1 * f2) + (i1 * i2)
+        m1[0] = a; m1[1] = b; m1[2] = c
+        m1[3] = d; m1[4] = e; m1[5] = f
+        m1[6] = g; m1[7] = h; m1[8] = i
+        m1
+      end
     end
   end
 end
