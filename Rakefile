@@ -23,7 +23,7 @@ if RUBY_VERSION >= "1.9" && RUBY_ENGINE == "ruby"
     cane.style_measure = 100
     cane.max_violations = 108
 
-    cane.use Morecane::EncodingCheck, encoding_glob: "{app,lib,spec}/**/*.rb"
+    cane.use Morecane::EncodingCheck, :encoding_glob => "{app,lib,spec}/**/*.rb"
   end
 
 else
