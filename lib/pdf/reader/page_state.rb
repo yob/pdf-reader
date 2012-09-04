@@ -57,7 +57,7 @@ module PDF
         else
           state[:ctm] = [a,b,0, c,d,0, e,f,1]
         end
-        @trm_transform = nil # invalidate cached value
+        @text_rendering_matrix = nil # invalidate cached value
       end
 
       #####################################################
@@ -125,7 +125,7 @@ module PDF
         @text_matrix[6] = (x * a2) + (y * d2) + g2
         @text_matrix[7] = (x * b2) + (y * e2) + h2
         @text_matrix[8] = (x * c2) + (y * f2) + i2
-        @trm_transform = nil # invalidate cached value
+        @text_rendering_matrix = nil # invalidate cached value
       end
 
       def move_text_position_and_set_leading(x, y) # TD
@@ -139,7 +139,7 @@ module PDF
           c, d, 0,
           e, f, 1
         ]
-        @trm_transform = nil # invalidate cached value
+        @text_rendering_matrix = nil # invalidate cached value
       end
 
       def move_to_start_of_next_line # T*
@@ -207,13 +207,11 @@ module PDF
       # underlying device space.
       #
       def trm_transform(x, y, z = 1)
-        @trm_transform ||= begin
-          trm = text_rendering_matrix
-          [
-            (trm[0] * x) + (trm[2] * y) + (trm[4] * z),
-            (trm[1] * x) + (trm[3] * y) + (trm[5] * z)
-          ]
-        end
+        trm = text_rendering_matrix
+        [
+          (trm[0] * x) + (trm[2] * y) + (trm[4] * z),
+          (trm[1] * x) + (trm[3] * y) + (trm[5] * z)
+        ]
       end
 
       def current_font
@@ -241,48 +239,50 @@ module PDF
         dict ? dict[label] : nil
       end
 
-      private
-
       def text_rendering_matrix
-        # original code:
-        #   state_matrix = [
-        #     font_size * state[:h_scaling], 0, 0,
-        #     0, font_size, 0,
-        #     0, state[:text_rise], 1
-        #   ]
-        #   multiply!(state_matrix, *@text_matrix)
-        #   multiply!(state_matrix, *ctm)
+        @text_rendering_matrix ||= begin
+          # original code:
+          #   state_matrix = [
+          #     font_size * state[:h_scaling], 0, 0,
+          #     0, font_size, 0,
+          #     0, state[:text_rise], 1
+          #   ]
+          #   multiply!(state_matrix, *@text_matrix)
+          #   multiply!(state_matrix, *ctm)
 
-        # (matrix multiplication has been inlined for performance)
-        # (we also take advantage of the fact that the top-right and middle-right
-        #  elements of @text_matrix are always zero, the top-right and 
-        #  middle-right elements of ctm are always zero, and the bottom-right 
-        #  element of ctm is always one)
-        # (also, the right-hand column of state_matrix will never be used)
+          # (matrix multiplication has been inlined for performance)
+          # (we also take advantage of the fact that the top-right and middle-right
+          #  elements of @text_matrix are always zero, the top-right and 
+          #  middle-right elements of ctm are always zero, and the bottom-right 
+          #  element of ctm is always one)
+          # (also, the right-hand column of state_matrix will never be used)
 
-        a1,b1,c1, d1,e1,f1, g1,h1,i1 = @text_matrix # c1 and f1 will always be 0
-        a2,b2,c2, d2,e2,f2, g2,h2,i2 = ctm # c2 and f2 will always be 0, i2 will always be 1
+          a1,b1,c1, d1,e1,f1, g1,h1,i1 = @text_matrix # c1 and f1 will always be 0
+          a2,b2,c2, d2,e2,f2, g2,h2,i2 = ctm # c2 and f2 will always be 0, i2 will always be 1
 
-        scaled_font_size    = font_size * state[:h_scaling]
-        text_rise           = state[:text_rise]
-        scaled_font_size_a1 = scaled_font_size * a1
-        scaled_font_size_b1 = scaled_font_size * b1
-        font_size_d1        = font_size * d1
-        font_size_e1        = font_size * e1
-        text_rise_d1        = (text_rise * d1) + g1
-        text_rise_e1        = (text_rise * e1) + h1
+          scaled_font_size    = font_size * state[:h_scaling]
+          text_rise           = state[:text_rise]
+          scaled_font_size_a1 = scaled_font_size * a1
+          scaled_font_size_b1 = scaled_font_size * b1
+          font_size_d1        = font_size * d1
+          font_size_e1        = font_size * e1
+          text_rise_d1        = (text_rise * d1) + g1
+          text_rise_e1        = (text_rise * e1) + h1
 
-        [
-          (scaled_font_size_a1 * a2) + (scaled_font_size_b1 * d2),
-          (scaled_font_size_a1 * b2) + (scaled_font_size_b1 * e2),
-          # 0, # omitted, next index represents middle-left
-          (font_size_d1 * a2) + (font_size_e1 * d2),
-          (font_size_d1 * b2) + (font_size_e1 * e2),
-          # 0, # omitted, next index represents bottom-left
-          (text_rise_d1 * a2) + (text_rise_e1 * d2) + (i1 * g2),
-          (text_rise_d1 * b2) + (text_rise_e1 * e2) + (i1 * h2)
-        ]
+          [
+            (scaled_font_size_a1 * a2) + (scaled_font_size_b1 * d2),
+            (scaled_font_size_a1 * b2) + (scaled_font_size_b1 * e2),
+            # 0, # omitted, next index represents middle-left
+            (font_size_d1 * a2) + (font_size_e1 * d2),
+            (font_size_d1 * b2) + (font_size_e1 * e2),
+            # 0, # omitted, next index represents bottom-left
+            (text_rise_d1 * a2) + (text_rise_e1 * d2) + (i1 * g2),
+            (text_rise_d1 * b2) + (text_rise_e1 * e2) + (i1 * h2)
+          ]
+        end
       end
+
+      private
 
       # return the current transformation matrix
       #
