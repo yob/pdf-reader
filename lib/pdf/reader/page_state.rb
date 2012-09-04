@@ -5,15 +5,15 @@ module PDF
     class PageState
 
       DEFAULT_GRAPHICS_STATE = {
-        :char_spacing => 0,
-        :word_spacing => 0,
-        :h_scaling    => 100,
-        :text_leading => 0,
-        :text_font    => nil,
+        :char_spacing   => 0,
+        :word_spacing   => 0,
+        :h_scaling      => 100,
+        :text_leading   => 0,
+        :text_font      => nil,
         :text_font_size => nil,
-        :text_mode    => 0,
-        :text_rise    => 0,
-        :text_knockout => 0
+        :text_mode      => 0,
+        :text_rise      => 0,
+        :text_knockout  => 0
       }
 
       # starting a new page
@@ -57,7 +57,7 @@ module PDF
         else
           state[:ctm] = [a,b,0, c,d,0, e,f,1]
         end
-        @text_rendering_matrix = nil # invalidate cached value
+        @trm_transform = nil # invalidate cached value
       end
 
       #####################################################
@@ -124,7 +124,7 @@ module PDF
         @text_matrix[6] = (x * a2) + (y * d2) + g2
         @text_matrix[7] = (x * b2) + (y * e2) + h2
         @text_matrix[8] = (x * c2) + (y * f2) + i2
-        @text_rendering_matrix = nil # invalidate cached value
+        @trm_transform = nil # invalidate cached value
       end
 
       def move_text_position_and_set_leading(x, y) # TD
@@ -138,7 +138,7 @@ module PDF
           c, d, 0,
           e, f, 1
         ]
-        @text_rendering_matrix = nil # invalidate cached value
+        @trm_transform = nil # invalidate cached value
       end
 
       def move_to_start_of_next_line # T*
@@ -206,11 +206,13 @@ module PDF
       # underlying device space.
       #
       def trm_transform(x, y, z = 1)
-        trm = text_rendering_matrix
-        [
-          (trm[0] * x) + (trm[3] * y) + (trm[6] * z),
-          (trm[1] * x) + (trm[4] * y) + (trm[7] * z)
-        ]
+        @trm_transform ||= begin
+          trm = text_rendering_matrix
+          [
+            (trm[0] * x) + (trm[3] * y) + (trm[6] * z),
+            (trm[1] * x) + (trm[4] * y) + (trm[7] * z)
+          ]
+        end
       end
 
       def current_font
@@ -241,15 +243,14 @@ module PDF
       private
 
       def text_rendering_matrix
-        @text_rendering_matrix ||= begin
-          state_matrix = [
-            font_size * state[:h_scaling], 0, 0,
-            0, font_size, 0,
-            0, state[:text_rise], 1
-          ]
-          multiply!(state_matrix, *@text_matrix)
-          multiply!(state_matrix, *ctm)
-        end
+        state_matrix = [
+          font_size * state[:h_scaling], 0, 0,
+          0, font_size, 0,
+          0, state[:text_rise], 1
+        ]
+        multiply!(state_matrix, *@text_matrix)
+        multiply!(state_matrix, *ctm)
+        state_matrix
       end
 
       # return the current transformation matrix
@@ -311,18 +312,15 @@ module PDF
       #
       def multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
         a1,b1,c1, d1,e1,f1, g1,h1,i1 = m1
-        a = (a1 * a2) + (b1 * d2) + (c1 * g2)
-        b = (a1 * b2) + (b1 * e2) + (c1 * h2)
-        c = (a1 * c2) + (b1 * f2) + (c1 * i2)
-        d = (d1 * a2) + (e1 * d2) + (f1 * g2)
-        e = (d1 * b2) + (e1 * e2) + (f1 * h2)
-        f = (d1 * c2) + (e1 * f2) + (f1 * i2)
-        g = (g1 * a2) + (h1 * d2) + (i1 * g2)
-        h = (g1 * b2) + (h1 * e2) + (i1 * h2)
-        i = (g1 * c2) + (h1 * f2) + (i1 * i2)
-        m1[0] = a; m1[1] = b; m1[2] = c
-        m1[3] = d; m1[4] = e; m1[5] = f
-        m1[6] = g; m1[7] = h; m1[8] = i
+        m1[0] = (a1 * a2) + (b1 * d2) + (c1 * g2)
+        m1[1] = (a1 * b2) + (b1 * e2) + (c1 * h2)
+        m1[2] = (a1 * c2) + (b1 * f2) + (c1 * i2)
+        m1[3] = (d1 * a2) + (e1 * d2) + (f1 * g2)
+        m1[4] = (d1 * b2) + (e1 * e2) + (f1 * h2)
+        m1[5] = (d1 * c2) + (e1 * f2) + (f1 * i2)
+        m1[6] = (g1 * a2) + (h1 * d2) + (i1 * g2)
+        m1[7] = (g1 * b2) + (h1 * e2) + (i1 * h2)
+        m1[8] = (g1 * c2) + (h1 * f2) + (i1 * i2)
         m1
       end
     end
