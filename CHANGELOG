@@ -1,4 +1,7 @@
-v1.2.0 (28th AUgust 2012)
+v1.3.0 (XXX)
+- Numerous performance optimisations (thanks Alex Dowad)
+
+v1.2.0 (28th August 2012)
 - Feature: correctly extract text using surrogate pairs and ligatures
   (thanks Nathaniel Madura)
 - Speed optimisation: cache tokenised Form XObjects to avoid re-parsing them
