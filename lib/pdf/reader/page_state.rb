@@ -252,8 +252,8 @@ module PDF
 
           # (matrix multiplication has been inlined for performance)
           # (we also take advantage of the fact that the top-right and middle-right
-          #  elements of @text_matrix are always zero, the top-right and 
-          #  middle-right elements of ctm are always zero, and the bottom-right 
+          #  elements of @text_matrix are always zero, the top-right and
+          #  middle-right elements of ctm are always zero, and the bottom-right
           #  element of ctm is always one)
           # (also, the right-hand column of state_matrix will never be used)
 
