@@ -63,9 +63,14 @@ describe PDF::Reader::PageState do
         state.concatenate_matrix(2, 0,
                                  0, 1,
                                  0, 0)
-        state.clone_state[:ctm].should == [2, 0, 0,
-                                           0, 1, 0,
-                                           0, 0, 1]
+
+        # how the matrix is stored and multiplied is really an implementation
+        # detail, so it's better to check the results indirectly via the API
+        # external collaborators will use
+        state.ctm_transform(0,0).should == [0, 0]
+        state.ctm_transform(0,1).should == [0, 1]
+        state.ctm_transform(1,0).should == [2, 0]
+        state.ctm_transform(1,1).should == [2, 1]
       end
     end
 
@@ -74,9 +79,14 @@ describe PDF::Reader::PageState do
         state.concatenate_matrix(1, 2,
                                  0, 1,
                                  0, 0)
-        state.clone_state[:ctm].should == [1, 2, 0,
-                                           0, 1, 0,
-                                           0, 0, 1]
+
+        # how the matrix is stored and multiplied is really an implementation
+        # detail, so it's better to check the results indirectly via the API
+        # external collaborators will use
+        state.ctm_transform(0,0).should == [0, 0]
+        state.ctm_transform(0,1).should == [0, 1]
+        state.ctm_transform(1,0).should == [1, 2]
+        state.ctm_transform(1,1).should == [1, 3]
       end
     end
 
@@ -85,9 +95,14 @@ describe PDF::Reader::PageState do
         state.concatenate_matrix(1, 0,
                                  2, 1,
                                  0, 0)
-        state.clone_state[:ctm].should == [1, 0, 0,
-                                           2, 1, 0,
-                                           0, 0, 1]
+
+        # how the matrix is stored and multiplied is really an implementation
+        # detail, so it's better to check the results indirectly via the API
+        # external collaborators will use
+        state.ctm_transform(0,0).should == [0, 0]
+        state.ctm_transform(0,1).should == [2, 1]
+        state.ctm_transform(1,0).should == [1, 0]
+        state.ctm_transform(1,1).should == [3, 1]
       end
     end
 
@@ -96,9 +111,14 @@ describe PDF::Reader::PageState do
         state.concatenate_matrix(1, 0,
                                  0, 2,
                                  0, 0)
-        state.clone_state[:ctm].should == [1, 0, 0,
-                                           0, 2, 0,
-                                           0, 0, 1]
+
+        # how the matrix is stored and multiplied is really an implementation
+        # detail, so it's better to check the results indirectly via the API
+        # external collaborators will use
+        state.ctm_transform(0,0).should == [0, 0]
+        state.ctm_transform(0,1).should == [0, 2]
+        state.ctm_transform(1,0).should == [1, 0]
+        state.ctm_transform(1,1).should == [1, 2]
       end
     end
 
@@ -107,9 +127,14 @@ describe PDF::Reader::PageState do
         state.concatenate_matrix(1, 0,
                                  0, 1,
                                  2, 0)
-        state.clone_state[:ctm].should == [1, 0, 0,
-                                           0, 1, 0,
-                                           2, 0, 1]
+
+        # how the matrix is stored and multiplied is really an implementation
+        # detail, so it's better to check the results indirectly via the API
+        # external collaborators will use
+        state.ctm_transform(0,0).should == [2, 0]
+        state.ctm_transform(0,1).should == [2, 1]
+        state.ctm_transform(1,0).should == [3, 0]
+        state.ctm_transform(1,1).should == [3, 1]
       end
     end
 
@@ -118,9 +143,14 @@ describe PDF::Reader::PageState do
         state.concatenate_matrix(1, 0,
                                  0, 1,
                                  0, 2)
-        state.clone_state[:ctm].should == [1, 0, 0,
-                                           0, 1, 0,
-                                           0, 2, 1]
+
+        # how the matrix is stored and multiplied is really an implementation
+        # detail, so it's better to check the results indirectly via the API
+        # external collaborators will use
+        state.ctm_transform(0,0).should == [0, 2]
+        state.ctm_transform(0,1).should == [0, 3]
+        state.ctm_transform(1,0).should == [1, 2]
+        state.ctm_transform(1,1).should == [1, 3]
       end
     end
   end
