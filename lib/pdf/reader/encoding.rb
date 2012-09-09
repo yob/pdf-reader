@@ -34,6 +34,9 @@ class PDF::Reader
     attr_reader :unpack
 
     def initialize(enc)
+      @mapping  = {} # maps from character codes to Unicode codepoints
+                     # also maps control and invalid chars to UNKNOWN_CHAR
+
       if enc.kind_of?(Hash)
         self.differences = enc[:Differences] if enc[:Differences]
         enc = enc[:Encoding] || enc[:BaseEncoding]
@@ -46,7 +49,9 @@ class PDF::Reader
       @enc_name = enc
       @unpack   = get_unpack(enc)
       @map_file = get_mapping_file(enc)
+
       load_mapping(@map_file) if @map_file
+      add_control_chars_to_mapping
     end
 
     # set the differences table for this encoding. should be an array in the following format:
@@ -68,6 +73,7 @@ class PDF::Reader
           byte = val.to_i
         else
           @differences[byte] = val
+          @mapping[byte] = names_to_unicode[val]
           byte += 1
         end
       end
@@ -75,6 +81,7 @@ class PDF::Reader
     end
 
     def differences
+      # this method is only used by the spec tests
       @differences ||= {}
     end
 
@@ -111,28 +118,8 @@ class PDF::Reader
     end
 
     def convert_to_utf8(str)
-      ret = str.unpack(unpack).map { |c|
-        differences[c] || c
-      }.map { |c|
-        mapping[c] || c
-      }.map { |c|
-        names_to_unicode[c] || c
-      }.map { |c|
-        if PDF::Reader::Encoding::CONTROL_CHARS.include?(c)
-          PDF::Reader::Encoding::UNKNOWN_CHAR
-        else
-          c
-        end
-      }.map { |c|
-        if c.nil? || !c.is_a?(Fixnum)
-          PDF::Reader::Encoding::UNKNOWN_CHAR
-        else
-          c
-        end
-      }.pack("U*")
-
+      ret = str.unpack(unpack).map! { |c| @mapping[c] || c }.pack("U*")
       ret.force_encoding("UTF-8") if ret.respond_to?(:force_encoding)
-
       ret
     end
 
@@ -166,12 +153,8 @@ class PDF::Reader
       end
     end
 
-    def mapping
-      @mapping ||= {}
-    end
-
     def has_mapping?
-      mapping.size > 0
+      @mapping.size > 0
     end
 
     def names_to_unicode
@@ -185,10 +168,16 @@ class PDF::Reader
       File.open(file, mode) do |f|
         f.each do |l|
           m, single_byte, unicode = *l.match(/([0-9A-Za-z]+);([0-9A-F]{4})/)
-          mapping["0x#{single_byte}".hex] = "0x#{unicode}".hex if single_byte
+          @mapping["0x#{single_byte}".hex] = "0x#{unicode}".hex if single_byte
         end
       end
     end
 
+    def add_control_chars_to_mapping
+      PDF::Reader::Encoding::CONTROL_CHARS.each do |byte|
+        @mapping[byte] = PDF::Reader::Encoding::UNKNOWN_CHAR
+      end
+      @mapping[nil] = PDF::Reader::Encoding::UNKNOWN_CHAR
+    end
   end
 end

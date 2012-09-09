@@ -1,4 +1,4 @@
-# coding: utf-8
+# coding: ASCII-8BIT
 
 ################################################################################
 #
@@ -236,7 +236,7 @@ class PDF::Reader
         if byte.nil?
           finished = true # unbalanced params
         elsif (48..57).include?(byte) || (65..90).include?(byte) || (97..122).include?(byte)
-          str << byte.chr
+          str << byte
         elsif byte <= 32
           # ignore it
         else
@@ -266,7 +266,7 @@ class PDF::Reader
         if byte.nil?
           count = 0 # unbalanced params
         elsif byte == 0x5C
-          str << byte.chr << @io.getbyte.chr
+          str << byte << @io.getbyte
         elsif byte == 0x28 # "("
           str << "("
           count += 1
@@ -274,7 +274,7 @@ class PDF::Reader
           count -= 1
           str << ")" unless count == 0
         else
-          str << byte.chr unless count == 0
+          str << byte unless count == 0
         end
       end
 
@@ -327,7 +327,7 @@ class PDF::Reader
             @io.getbyte
             @tokens << ">>"
           else
-            @tokens << byte.chr
+            @tokens << ">"
           end
           tok = ""
           break
@@ -351,7 +351,7 @@ class PDF::Reader
           tok = ""
           break
         else
-          tok << byte.chr
+          tok << byte
         end
       end
 

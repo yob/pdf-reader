@@ -76,8 +76,6 @@ class PDF::Reader
         STRATEGIES[token].call(self, token)
       elsif token.is_a? PDF::Reader::Reference
         token
-      elsif token.is_a? Token
-        token
       elsif operators.has_key? token
         Token.new(token)
       elsif token.respond_to?(:to_token)
@@ -102,6 +100,7 @@ class PDF::Reader
 
       obj = parse_token
       post_obj = parse_token
+
       if post_obj == "stream"
         stream(obj)
       else
@@ -173,58 +172,30 @@ class PDF::Reader
       return "" if str == ")"
       Error.assert_equal(parse_token, ")")
 
-      ret = ""
-      idx = 0
-
-      while idx < str.size
-        chr = str[idx,1]
-        jump = 1
-
-        if chr == "\\"
-          jump = 2
-          case str[idx+1, 1]
-          when "" then jump = 1
-          when "n"  then chr = "\n"
-          when "r"  then chr = "\r"
-          when "t"  then chr = "\t"
-          when "b"  then chr = "\b"
-          when "f"  then chr = "\f"
-          when "("  then chr = "("
-          when ")"  then chr = ")"
-          when "\\" then chr = "\\"
-          when "\n" then
-            chr = ""
-            jump = 2
-          else
-            if str[idx+1,3].match(/\d{3}/)
-              jump = 4
-              chr = str[idx+1,3].oct.chr
-            elsif str[idx+1,2].match(/\d{2}/)
-              jump = 3
-              chr = ("0"+str[idx+1,2]).oct.chr
-            elsif str[idx+1,1].match(/\d/)
-              jump = 2
-              chr = ("00"+str[idx+1,1]).oct.chr
-            else
-              jump = 1
-              chr = ""
-            end
-
-          end
-        elsif chr == "\r" && str[idx+1,1] == "\n"
-          chr = "\n"
-          jump = 2
-        elsif chr == "\n" && str[idx+1,1] == "\r"
-          chr = "\n"
-          jump = 2
-        elsif chr == "\r"
-          chr = "\n"
-        end
-        ret << chr
-        idx += jump
+      str.gsub!(/\\([nrtbf()\\\n]|\d{1,3})?|\r\n?|\n\r/m) do |match|
+        MAPPING[match] || ""
       end
-      ret
+      str
     end
+
+    MAPPING = {
+      "\r"   => "\n",
+      "\n\r" => "\n",
+      "\r\n" => "\n",
+      "\\n"  => "\n",
+      "\\r"  => "\r",
+      "\\t"  => "\t",
+      "\\b"  => "\b",
+      "\\f"  => "\f",
+      "\\("  => "(",
+      "\\)"  => ")",
+      "\\\\" => "\\",
+      "\\\n" => "",
+    }
+    0.upto(9)   { |n| MAPPING["\\00"+n.to_s] = ("00"+n.to_s).oct.chr }
+    0.upto(99)  { |n| MAPPING["\\0"+n.to_s]  = ("0"+n.to_s).oct.chr }
+    0.upto(377) { |n| MAPPING["\\"+n.to_s]   = n.to_s.oct.chr }
+
     ################################################################################
     # Decodes the contents of a PDF Stream and returns it as a Ruby String.
     def stream (dict)
