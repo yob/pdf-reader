@@ -212,12 +212,19 @@ module PDF
       # transform x and y co-ordinates from the current text space to the
       # underlying device space.
       #
+      # transforming (0,0) is a really common case, so optimise for it to
+      # avoid unnecessary object allocations
+      #
       def trm_transform(x, y, z = 1)
         trm = text_rendering_matrix
-        [
-          (trm[0] * x) + (trm[2] * y) + (trm[4] * z),
-          (trm[1] * x) + (trm[3] * y) + (trm[5] * z)
-        ]
+        if x == 0 && y == 0 && z == 1
+          [trm[6], trm[7]]
+        else
+          [
+            (trm[0] * x) + (trm[3] * y) + (trm[6] * z),
+            (trm[1] * x) + (trm[4] * y) + (trm[7] * z)
+          ]
+        end
       end
 
       def current_font
@@ -245,6 +252,30 @@ module PDF
         dict ? dict[label] : nil
       end
 
+      def stack_depth
+        @stack.size
+      end
+
+      # This returns a deep clone of the current state, ensuring changes are
+      # keep separate from earlier states.
+      #
+      # Marshal is used to round-trip the state through a string to easily
+      # perform the deep clone. Kinda hacky, but effective.
+      #
+      def clone_state
+        if @stack.empty?
+          {}
+        else
+          Marshal.load Marshal.dump(@stack.last)
+        end
+      end
+
+      private
+
+      # used for many and varied text positioning calculations. We potentially
+      # need to access the results of this method many times when working with
+      # text, so memoize it
+      #
       def text_rendering_matrix
         @text_rendering_matrix ||= begin
           # original code:
@@ -278,36 +309,16 @@ module PDF
           [
             (scaled_font_size_a1 * a2) + (scaled_font_size_b1 * d2),
             (scaled_font_size_a1 * b2) + (scaled_font_size_b1 * e2),
-            # 0, # omitted, next index represents middle-left
+            0,
             (font_size_d1 * a2) + (font_size_e1 * d2),
             (font_size_d1 * b2) + (font_size_e1 * e2),
-            # 0, # omitted, next index represents bottom-left
+            0,
             (text_rise_d1 * a2) + (text_rise_e1 * d2) + (i1 * g2),
-            (text_rise_d1 * b2) + (text_rise_e1 * e2) + (i1 * h2)
+            (text_rise_d1 * b2) + (text_rise_e1 * e2) + (i1 * h2),
+            1
           ]
         end
       end
-
-      def stack_depth
-        @stack.size
-      end
-
-      # This returns a deep clone of the current state, ensuring changes are
-      # keep separate from earlier states.
-      #
-      # Marshal is used to round-trip the state through a string to easily
-      # perform the deep clone. Kinda hacky, but effective.
-      #
-      def clone_state
-        if @stack.empty?
-          {}
-        else
-          Marshal.load Marshal.dump(@stack.last)
-        end
-      end
-
-
-      private
 
       # return the current transformation matrix
       #

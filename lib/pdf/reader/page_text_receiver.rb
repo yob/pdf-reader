@@ -47,7 +47,7 @@ module PDF
       # record text that is drawn on the page
       def show_text(string) # Tj
         raise PDF::Reader::MalformedPDFError, "current font is invalid" if @state.current_font.nil?
-        newy  = @state.text_rendering_matrix[5]
+        newy  = @state.trm_transform(0,0).last
         @content[newy] ||= ""
         @content[newy] << @state.current_font.to_utf8(string)
       end
