@@ -32,10 +32,16 @@ module PDF
       # Graphics State Operators
       #####################################################
 
+      # Clones the current graphics state and push it onto the top of the stack.
+      # Any changes that are subsequently made to the state can then by reversed
+      # by calling restore_graphics_state.
+      #
       def save_graphics_state
         @stack.push clone_state
       end
 
+      # Restore the state to the previous value on the stack.
+      #
       def restore_graphics_state
         @stack.pop
       end
@@ -282,6 +288,25 @@ module PDF
         end
       end
 
+      def stack_depth
+        @stack.size
+      end
+
+      # This returns a deep clone of the current state, ensuring changes are
+      # keep separate from earlier states.
+      #
+      # Marshal is used to round-trip the state through a string to easily
+      # perform the deep clone. Kinda hacky, but effective.
+      #
+      def clone_state
+        if @stack.empty?
+          {}
+        else
+          Marshal.load Marshal.dump(@stack.last)
+        end
+      end
+
+
       private
 
       # return the current transformation matrix
@@ -304,24 +329,6 @@ module PDF
         ::Hash[wrapped_fonts]
       end
 
-      # when save_graphics_state is called, we need to push a new copy of the
-      # current state onto the stack. That way any modifications to the state
-      # will be undone once restore_graphics_state is called.
-      #
-      # This returns a deep clone of the current state, ensuring changes are
-      # keep separate from earlier states.
-      #
-      # Marshal is used to round-trip the state through a string to easily
-      # perform the deep clone. Kinda hacky, but effective.
-      #
-      def clone_state
-        if @stack.empty?
-          {}
-        else
-          Marshal.load Marshal.dump(@stack.last)
-        end
-      end
-
       #####################################################
       # Low-level Matrix Operations
       #####################################################
@@ -334,7 +341,9 @@ module PDF
       #   g h i
 
       def identity_matrix
-        [1,0,0, 0,1,0, 0,0,1]
+        [1,0,0,
+         0,1,0,
+         0,0,1]
       end
 
       # multiply two 3x3 matrices
