@@ -5,6 +5,7 @@ require 'zlib'
 
 class PDF::Reader
   module Filter # :nodoc:
+    # implementation of the Flate (zlib) stream filter
     class Flate
       def initialize(options = {})
         @options = options

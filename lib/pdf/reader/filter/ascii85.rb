@@ -4,6 +4,7 @@ require 'ascii85'
 
 class PDF::Reader
   module Filter # :nodoc:
+    # implementation of the Ascii85 filter
     class Ascii85
       def initialize(options = {})
         @options = options

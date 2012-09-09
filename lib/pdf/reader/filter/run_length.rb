@@ -1,7 +1,8 @@
 # coding: utf-8
 #
-class PDF::Reader
+class PDF::Reader # :nodoc:
   module Filter # :nodoc:
+    # implementation of the run length stream filter
     class RunLength
       def initialize(options = {})
         @options = options

@@ -1,7 +1,9 @@
 # coding: utf-8
 
-module PDF
-  class Reader
+class PDF::Reader
+    # encapsulates logic for tracking graphics state as the instructions for
+    # a single page are processed. Most of the public methods correspond
+    # directly to PDF operators.
     class PageState
 
       DEFAULT_GRAPHICS_STATE = {
@@ -375,6 +377,4 @@ module PDF
         m1
       end
     end
-  end
 end
-

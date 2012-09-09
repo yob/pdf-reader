@@ -2,6 +2,7 @@
 #
 class PDF::Reader
   module Filter # :nodoc:
+    # implementation of the AsciiHex stream filter
     class AsciiHex
       def initialize(options = {})
         @options = options

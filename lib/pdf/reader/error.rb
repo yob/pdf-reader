@@ -23,7 +23,6 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-
 class PDF::Reader
   ################################################################################
   # An internal PDF::Reader class that helps to verify various parts of the PDF file
@@ -47,10 +46,24 @@ class PDF::Reader
     end
     ################################################################################
   end
+
   ################################################################################
+  # an exception that is raised when we believe the current PDF is not following
+  # the PDF spec and cannot be recovered
   class MalformedPDFError < RuntimeError; end
+
+  ################################################################################
+  # an exception that is raised when a PDF object appears to be invalid
   class InvalidObjectError < MalformedPDFError; end
+
+  ################################################################################
+  # an exception that is raised when a PDF follows the specs but uses a feature
+  # that we don't support just yet
   class UnsupportedFeatureError < RuntimeError; end
+
+  ################################################################################
+  # an exception that is raised when a PDF is encrypted and we don't have the
+  # necessary data to decrypt it
   class EncryptedPDFError < UnsupportedFeatureError; end
 end
 ################################################################################
