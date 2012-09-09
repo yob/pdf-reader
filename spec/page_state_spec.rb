@@ -129,12 +129,135 @@ describe PDF::Reader::PageState do
     context "with an empty page" do
       let!(:state)  {PDF::Reader::PageState.new(page) }
 
-      it "should set the text_matrix to the identity matrix" do
+      it "should initialze the text_matrix to ensure text is positioned at 0,0" do
         state.begin_text_object
-        state.instance_variable_get(:@text_matrix).should == [1,0,0,
-                                                              0,1,0,
-                                                              0,0,1]
+        state.set_text_font_and_size(:Test, 12)
 
+        state.trm_transform(0,0).should == [0,0]
+        state.trm_transform(0,1).should == [0, 12]
+        state.trm_transform(1,0).should == [1200, 0]
+        state.trm_transform(1,1).should == [1200, 12]
+      end
+    end
+  end
+
+  describe "#move_text_position" do
+    context "with an empty page" do
+      let!(:state)  {PDF::Reader::PageState.new(page) }
+
+      it "should correctly alter the text position" do
+        state.begin_text_object
+        state.set_text_font_and_size(:Test, 12)
+        state.move_text_position(5, 10)
+
+        # how the matrix is stored and multiplied is really an implementation
+        # detail, so it's better to check the results indirectly via the API
+        # external collaborators will use
+        state.trm_transform(0,0).should == [5,10]
+        state.trm_transform(0,1).should == [5, 22]
+        state.trm_transform(1,0).should == [1205, 10]
+        state.trm_transform(1,1).should == [1205, 22]
+      end
+    end
+  end
+
+  describe "#move_text_position_and_set_leading" do
+    context "with an empty page" do
+      let!(:state)  {PDF::Reader::PageState.new(page) }
+
+      it "should correctly alter the text position" do
+        state.begin_text_object
+        state.set_text_font_and_size(:Test, 12)
+        state.move_text_position_and_set_leading(5, 10)
+
+        # how the matrix is stored and multiplied is really an implementation
+        # detail, so it's better to check the results indirectly via the API
+        # external collaborators will use
+        state.trm_transform(0,0).should == [5, 10]
+        state.trm_transform(0,1).should == [5, 22]
+        state.trm_transform(1,0).should == [1205, 10]
+        state.trm_transform(1,1).should == [1205, 22]
+      end
+
+      it "should correctly alter the text leading" do
+        state.begin_text_object
+        state.set_text_font_and_size(:Test, 12)
+        state.move_text_position_and_set_leading(5, 10)
+
+        state.clone_state[:text_leading].should == -10
+      end
+    end
+  end
+
+  describe "#set_text_matrix_and_text_line_matrix" do
+    context "with an empty page" do
+      let!(:state)  {PDF::Reader::PageState.new(page) }
+
+      it "should correctly alter the text position" do
+        state.begin_text_object
+        state.set_text_font_and_size(:Test, 12)
+        state.set_text_matrix_and_text_line_matrix(1, 2, 3, 4, 5, 6)
+
+        # how the matrix is stored and multiplied is really an implementation
+        # detail, so it's better to check the results indirectly via the API
+        # external collaborators will use
+        state.trm_transform(0,0).should == [5, 6]
+        state.trm_transform(0,1).should == [41, 54]
+        state.trm_transform(1,0).should == [1205, 2406]
+        state.trm_transform(1,1).should == [1241, 2454]
+      end
+    end
+  end
+
+  describe "#move_to_start_of_next_line" do
+    context "with an empty page" do
+      let!(:state)  {PDF::Reader::PageState.new(page) }
+
+      it "should correctly alter the text position" do
+        state.begin_text_object
+        state.set_text_font_and_size(:Test, 12)
+        state.set_text_leading(15)
+        state.move_to_start_of_next_line
+
+        # how the matrix is stored and multiplied is really an implementation
+        # detail, so it's better to check the results indirectly via the API
+        # external collaborators will use
+        state.trm_transform(0,0).should == [0, -15]
+        state.trm_transform(0,1).should == [0, -3]
+        state.trm_transform(1,0).should == [1200, -15]
+        state.trm_transform(1,1).should == [1200, -3]
+      end
+    end
+  end
+
+  describe "#set_spacing_next_line_show_text" do
+    context "with an empty page" do
+      let!(:state)  {PDF::Reader::PageState.new(page) }
+
+      it "should set word spacing" do
+        state.begin_text_object
+        state.set_spacing_next_line_show_text(10, 20, "test")
+        state.clone_state[:word_spacing].should == 10
+      end
+
+      it "should set character spacing" do
+        state.begin_text_object
+        state.set_spacing_next_line_show_text(10, 20, "test")
+        state.clone_state[:char_spacing].should == 20
+      end
+
+      it "should correctly alter the text position" do
+        state.begin_text_object
+        state.set_text_font_and_size(:Test, 12)
+        state.set_spacing_next_line_show_text(10, 20, "test")
+
+        # how the matrix is stored and multiplied is really an implementation
+        # detail, so it's better to check the results indirectly via the API
+        # external collaborators will use
+        state.trm_transform(0,0).should == [0, 0]
+        state.trm_transform(0,1).should == [0, 12]
+        state.trm_transform(1,0).should == [1200, 0]
+        state.trm_transform(1,1).should == [1200, 12]
       end
     end
   end
