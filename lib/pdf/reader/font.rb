@@ -26,6 +26,9 @@
 ################################################################################
 
 class PDF::Reader
+  # Reprsents a single font PDF object and provides some useful methods
+  # for extracting info. Mainly used for converting text to UTF-8.
+  #
   class Font
     attr_accessor :label, :subtype, :encoding, :descendantfonts, :tounicode
     attr_reader :widths, :first_char, :ascent, :descent, :missing_width, :bbox

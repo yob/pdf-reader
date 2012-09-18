@@ -26,6 +26,9 @@
 ################################################################################
 
 class PDF::Reader
+  # A Hash-like object that can convert glyph names into a unicode codepoint.
+  # The mapping is read from a data file on disk the first time it's needed.
+  #
   class GlyphHash # :nodoc:
     def initialize
       # only parse the glyph list once, and cache the results (for performance)
@@ -47,6 +50,7 @@ class PDF::Reader
     #   => 48
     #
     #   h[:34]
+    #   => 34
     #
     def [](name)
       return nil unless name.is_a?(Symbol)

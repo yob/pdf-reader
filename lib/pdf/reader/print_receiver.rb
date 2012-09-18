@@ -1,6 +1,9 @@
 # coding: utf-8
 
 class PDF::Reader
+  # A simple receiver that prints all operaters and parameters in the content
+  # stream of a single page.
+  #
   class PrintReceiver
 
     attr_accessor :callbacks

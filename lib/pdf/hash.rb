@@ -1,6 +1,7 @@
 # coding: utf-8
 
 module PDF
+  # This class is deprecated, please stop using it.
   class Hash < ::PDF::Reader::ObjectHash # :nodoc:
     def initialize(input)
       warn "DEPRECATION NOTICE: PDF::Hash has been deprecated, use PDF::Reader::ObjectHash instead"

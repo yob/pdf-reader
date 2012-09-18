@@ -5,6 +5,10 @@ require 'forwardable'
 
 module PDF
   class Reader
+
+    # Builds a UTF-8 string of all the text on a single page by processing all
+    # the operaters in a content stream.
+    #
     class PageTextReceiver
       extend Forwardable
 

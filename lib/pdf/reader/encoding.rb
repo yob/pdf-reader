@@ -26,6 +26,8 @@
 ################################################################################
 
 class PDF::Reader
+  # Util class for working with string encodings in PDF files. Mostly used to
+  # convert strings of various PDF-dialect encodings into UTF-8.
   class Encoding # :nodoc:
     CONTROL_CHARS = [0,1,2,3,4,5,6,7,8,11,12,14,15,16,17,18,19,20,21,22,23,
                      24,25,26,27,28,29,30,31]
