@@ -257,7 +257,6 @@ class PDF::Reader
       @smallest_y_loc = key if key < @smallest_y_loc
       @location = key
       @line = @displacement[key]
-      #puts "calculate_line_and_location: @location=#@location @line=#@line smallest_y_loc=#@smallest_y_loc"
     end
     ################################################################################
   end

@@ -9,7 +9,10 @@ module PDF
     end
 
     def version
-      warn "DEPRECATION NOTICE: PDF::Hash#version has been deprecated, use PDF::Reader::ObjectHash#pdf_version instead"
+      warn <<-EOS
+        DEPRECATION NOTICE: PDF::Hash#version has been deprecated,
+        use PDF::Reader::ObjectHash#pdf_version instead
+      EOS
       pdf_version
     end
   end

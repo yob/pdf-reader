@@ -113,7 +113,8 @@ class PDF::Reader
         return load_xref_stream(stream)
       end
 
-      raise PDF::Reader::MalformedPDFError, "xref table not found at offset #{offset} (#{tok_one} != xref)"
+      raise PDF::Reader::MalformedPDFError,
+        "xref table not found at offset #{offset} (#{tok_one} != xref)"
     end
     ################################################################################
     # Assumes the underlying buffer is positioned at the start of a traditional
@@ -139,7 +140,9 @@ class PDF::Reader
 
       trailer = Parser.new(buf, self).parse_token
 
-      raise MalformedPDFError, "PDF malformed, trailer should be a dictionary" unless trailer.kind_of?(Hash)
+      unless trailer.kind_of?(Hash)
+        raise MalformedPDFError, "PDF malformed, trailer should be a dictionary"
+      end
 
       load_offsets(trailer[:XRefStm])   if trailer.has_key?(:XRefStm)
       load_offsets(trailer[:Prev].to_i) if trailer.has_key?(:Prev)

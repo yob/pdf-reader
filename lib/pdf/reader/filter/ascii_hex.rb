@@ -19,7 +19,8 @@ class PDF::Reader
         data.scan(/.{2}/).map { |s| s.hex.chr }.join("")
       rescue Exception => e
         # Oops, there was a problem decoding the stream
-        raise MalformedPDFError, "Error occured while decoding an ASCIIHex stream (#{e.class.to_s}: #{e.to_s})"
+        raise MalformedPDFError,
+            "Error occured while decoding an ASCIIHex stream (#{e.class.to_s}: #{e.to_s})"
       end
     end
   end

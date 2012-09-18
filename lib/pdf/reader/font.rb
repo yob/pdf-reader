@@ -123,7 +123,9 @@ class PDF::Reader
     end
 
     def to_utf8_via_encoding(params)
-      raise UnsupportedFeatureError, "font encoding '#{encoding}' currently unsupported" if encoding.kind_of?(String)
+      if encoding.kind_of?(String)
+        raise UnsupportedFeatureError, "font encoding '#{encoding}' currently unsupported"
+      end
 
       if params.class == String
         encoding.to_utf8(params)
