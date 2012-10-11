@@ -39,7 +39,7 @@ class PDF::Reader
       # 2) CIDFontType0C: Type 0 Font Program in Compact Font Format
       # 3) OpenType:      OpenType Font Program
       # see Section 9.9, PDF 32000-1:2008, pp 288-292
-      @font_program_stream = ohash.object(fd_hash[:FontFile2]) unless fd_hash[:FontFile2] == nil
+      @font_program_stream = ohash.object(fd_hash[:FontFile2])
       #TODO handle FontFile and FontFile3
 
       if @font_name
