@@ -4,7 +4,7 @@ require 'forwardable'
 
 module PDF
   class Reader
-    class Formatted
+    module Formatted
       class PageTextReceiver
         extend Forwardable
 

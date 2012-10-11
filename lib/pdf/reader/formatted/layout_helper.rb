@@ -2,7 +2,7 @@
 
 module PDF
   class Reader
-    class Formatted
+    module Formatted
       class LayoutHelper
         attr_reader :lines, :verbosity, :options
 

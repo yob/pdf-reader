@@ -2,8 +2,8 @@
 
 module PDF
   class Reader
-    class Formatted
-      class PageLayout
+    module Formatted
+      module PageLayout
 
         # A TextGroup is create for every BT command, and contains all the lines of
         # text that are presented in that BeginText. This class implements a very
