@@ -1,7 +1,8 @@
+# coding: utf-8
+
 require 'ttfunk'
 
 class PDF::Reader
-
 
   # Font descriptors are outlined in Section 9.8, PDF 32000-1:2008, pp 281-288
   class FontDescriptor

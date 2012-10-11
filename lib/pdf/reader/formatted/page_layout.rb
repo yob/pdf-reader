@@ -1,3 +1,5 @@
+# coding: utf-8
+
 module PDF
   class Reader
     class Formatted
@@ -281,6 +283,7 @@ module PDF
 
         end
 
+        # an X,Y point in Cartesian space
         class Position
           attr_accessor :x, :y
 
