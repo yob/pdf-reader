@@ -16,8 +16,6 @@ class PDF::Reader
         :text_mode      => 0,
         :text_rise      => 0,
         :text_knockout  => 0
-        #:text_line_matrix => Matrix.identity(3),
-        #:text_matrix      => Matrix.identity(3),
       }
 
       # starting a new page
@@ -75,7 +73,6 @@ class PDF::Reader
       #####################################################
 
       def begin_text_object
-        @text_line_matrix = identity_matrix
         @text_matrix      = identity_matrix
       end
 
@@ -285,18 +282,9 @@ class PDF::Reader
         @text_matrix
       end
 
-      def text_line_matrix
-        @text_line_matrix
-      end
-
       # TODO: is this needed?
       def text_matrix=(value)
         @text_matrix = value
-      end
-
-      # TODO: is this needed?
-      def text_line_matrix=(value)
-        @text_line_matrix = value
       end
 
       private
@@ -375,7 +363,7 @@ class PDF::Reader
           0, 1, 0,
           x, y, 1
         ]
-        @text_matrix = @text_line_matrix = multiply!(temp_matrix, *@text_line_matrix)
+        @text_matrix = multiply!(temp_matrix, *@text_matrix)
       end
 
       #####################################################
