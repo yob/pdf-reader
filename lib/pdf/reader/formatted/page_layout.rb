@@ -171,7 +171,6 @@ module PDF
         # A run of text, this can be either from a TJ or a Tj
         class Run
           attr_reader :source_text, :state, :page_state, :raw_text, :utf8_text, :font, :verbosity
-          @unscaled_text_width
 
           # Create a run with the passed text being either an array (from a TJ) or
           # a string (from a Tj), a state hash as defined in PDF::Reader::PageState,

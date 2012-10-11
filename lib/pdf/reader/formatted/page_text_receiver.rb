@@ -14,9 +14,6 @@ module PDF
 
         attr_reader :verbosity, :state, :content, :options
 
-        @current_text_group
-        @current_line
-
         ########## BEGIN FORWARDERS ##########
         # Graphics State Operators
         def_delegators :@state, :save_graphics_state, :restore_graphics_state
