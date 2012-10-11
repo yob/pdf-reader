@@ -231,9 +231,8 @@ class PDF::Reader
       if @is_cid_typ
         # CID Fonts are not required to have a W or DW entry, if they don't exist,
         # the default cid width = 1000, see Section 9.7.4.1 PDF 32000-1:2008 pp 269
-        @cid_widths         = @ohash.object(obj[:W])
-        @cid_default_width  = @ohash.object(obj[:DW])
-        @cid_default_width  ||= 1000
+        @cid_widths         = @ohash.object(obj[:W])  || []
+        @cid_default_width  = @ohash.object(obj[:DW]) || 1000
         puts "CIDFontType2 DW: #{@cid_default_width} W: #{@cid_widths.inspect}" if @DEBUG_FONT > 0
       else
         @has_to_unicode_table = false
