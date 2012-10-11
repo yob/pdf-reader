@@ -73,7 +73,7 @@ class PDF::Reader
       #####################################################
 
       def begin_text_object
-        @text_matrix      = identity_matrix
+        @text_matrix = identity_matrix
       end
 
       def end_text_object
@@ -122,8 +122,6 @@ class PDF::Reader
       #####################################################
 
       def move_text_position(x, y) # Td
-        #move_text_xy x, y
-
         # multiply the following matrix by @text_matrix,
         #   and store the result back into @text_matrix:
         #   1 0 0
@@ -140,7 +138,7 @@ class PDF::Reader
 
       def move_text_position_and_set_leading(x, y) # TD
         set_text_leading(-1 * y)
-        move_text_xy x, y
+        move_text_position(x, y)
       end
 
       def set_text_matrix_and_text_line_matrix(a, b, c, d, e, f) # Tm
@@ -152,8 +150,8 @@ class PDF::Reader
         @text_rendering_matrix = nil # invalidate cached value
       end
 
-      def move_to_start_of_next_line
-        move_text_xy(0, -state[:text_leading])
+      def move_to_start_of_next_line # T*
+        move_text_position(0, -state[:text_leading])
       end
 
       #####################################################
@@ -278,15 +276,6 @@ class PDF::Reader
         end
       end
 
-      def text_matrix
-        @text_matrix
-      end
-
-      # TODO: is this needed?
-      def text_matrix=(value)
-        @text_matrix = value
-      end
-
       private
 
       # used for many and varied text positioning calculations. We potentially
@@ -355,15 +344,6 @@ class PDF::Reader
         }
 
         ::Hash[wrapped_fonts]
-      end
-
-      def move_text_xy(x, y)
-        temp_matrix = [
-          1, 0, 0,
-          0, 1, 0,
-          x, y, 1
-        ]
-        @text_matrix = multiply!(temp_matrix, *@text_matrix)
       end
 
       #####################################################
