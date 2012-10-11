@@ -258,11 +258,14 @@ class PDF::Reader
     end
 
     def extract_descriptor(obj)
-      return unless obj[:FontDescriptor]
-      # create a font descriptor object if we can, in other words, unless this is
-      # a CID Font
-      fd = @ohash.object(obj[:FontDescriptor])
-      @font_descriptor = PDF::Reader::FontDescriptor.new(@ohash, fd, @DEBUG_FONT)
+      if obj[:FontDescriptor]
+        # create a font descriptor object if we can, in other words, unless this is
+        # a CID Font
+        fd = @ohash.object(obj[:FontDescriptor])
+        @font_descriptor = PDF::Reader::FontDescriptor.new(@ohash, fd, @DEBUG_FONT)
+      else
+        @font_descriptor = nil
+      end
     end
 
     def extract_descendants(obj)
