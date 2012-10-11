@@ -76,14 +76,14 @@ module PDF
       # :strip_empty_lines    Boolean    true   compreses resultant text so it
       #                                         is less akward, false may be more
       #                                         representative of PDF
-      # 
-      # number_of_rows and row_scale are linked and control how many lines are on a page. 
-      # They should be roughly equal to the height of the page (in points), 
+      #
+      # number_of_rows and row_scale are linked and control how many lines are on a page.
+      # They should be roughly equal to the height of the page (in points),
       # 100 * 8 == 800 =~ 11 * 72 == 792
       # likewise, number_of_cols and col_scale control how man characters can appear on a page.
       # They should be roughly equal to the width of the page (in points),
       # 200 * 3 == 600 =~ 8.5 * 72 = 612
-      # 
+      #
       # incorrect setting of these parameters may result in some text not being displayed
       def formatted_text(options = {})
         receiver = PDF::Reader::Formatted::PageTextReceiver.new(options)

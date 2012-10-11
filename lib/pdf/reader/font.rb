@@ -195,7 +195,8 @@ class PDF::Reader
         end
 
         if last < 0 && width_spec != nil
-          # this is the form 10 [234 63 234 346 47 234] where width of index 10 is 234, index 11 is 63, etc
+          # this is the form 10 [234 63 234 346 47 234] where width of index 10 is
+          # 234, index 11 is 63, etc
           if index >= first && index < first + width_spec.length
             # width is spec'd in this range
             return width_spec[index - first]

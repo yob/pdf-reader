@@ -224,10 +224,14 @@ module PDF
               puts "unscaled_text_width('#{@utf8_text}') = #{tw}" if @verbosity > 2
               tw ||= 0.0
               @unscaled_text_width = (tw - @total_kerning.to_f / 1000.0)
-              # apply character spacing
-              @unscaled_text_width += (@utf8_text.size - 1) * @state[:char_spacing] if @state[:char_spacing] != 0.0
-              # apply word spacing
-              @unscaled_text_width += @utf8_text.count(' ') * @state[:word_spacing] if @state[:word_spacing] != 0.0
+              if @state[:char_spacing] != 0.0
+                # apply character spacing
+                @unscaled_text_width += (@utf8_text.size - 1) * @state[:char_spacing]
+              end
+              if @state[:word_spacing] != 0.0
+                # apply word spacing
+                @unscaled_text_width += @utf8_text.count(' ') * @state[:word_spacing]
+              end
               puts "Text Width: (#{tw} - #{@total_kerning} / 1000) = " +
               "#{@unscaled_text_width}" if @verbosity > 2
             end

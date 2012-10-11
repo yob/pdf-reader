@@ -3,6 +3,7 @@
 module PDF
   class Reader
     module Formatted
+      # Converts an object graph of text data into a UTF8 string
       class LayoutHelper
         attr_reader :lines, :verbosity, :options
 

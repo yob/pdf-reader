@@ -5,6 +5,10 @@ require 'forwardable'
 module PDF
   class Reader
     module Formatted
+
+      # Builds a UTF-8 string of all the text on a single page by processing all
+      # the operaters in a content stream.
+      #
       class PageTextReceiver
         extend Forwardable
 
@@ -129,7 +133,9 @@ module PDF
         #####################################################
         # record text that is drawn on the page
         def show_text(string) # Tj (AWAY)
-          raise PDF::Reader::MalformedPDFError, "current font is invalid" if @state.current_font.nil?
+          if @state.current_font.nil?
+            raise PDF::Reader::MalformedPDFError, "current font is invalid"
+          end
           puts "Tj #{string.dump}" if verbosity > 2
           internal_show_text string
         end
