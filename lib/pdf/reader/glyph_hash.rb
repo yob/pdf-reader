@@ -1,3 +1,5 @@
+# coding: utf-8
+
 ################################################################################
 #
 # Copyright (C) 2011 James Healy (jimmy@deefa.com)
@@ -24,9 +26,13 @@
 ################################################################################
 
 class PDF::Reader
+  # A Hash-like object that can convert glyph names into a unicode codepoint.
+  # The mapping is read from a data file on disk the first time it's needed.
+  #
   class GlyphHash # :nodoc:
     def initialize
-      @adobe = load_adobe_glyph_mapping
+      # only parse the glyph list once, and cache the results (for performance)
+      @adobe = @@cache ||= load_adobe_glyph_mapping
     end
 
     # attempt to convert a PDF Name to a unicode codepoint. Returns nil
@@ -44,6 +50,7 @@ class PDF::Reader
     #   => 48
     #
     #   h[:34]
+    #   => 34
     #
     def [](name)
       return nil unless name.is_a?(Symbol)
@@ -82,7 +89,7 @@ class PDF::Reader
         end
       end
 
-      glyphs
+      glyphs.freeze
     end
 
   end

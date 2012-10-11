@@ -17,6 +17,7 @@ module PDF
     #
     class LZW # :nodoc:
 
+      # Wraps an LZW encoded string
       class BitStream # :nodoc:
 
         def initialize(data, bits_in_chunk)

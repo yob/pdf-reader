@@ -1,3 +1,5 @@
+# coding: utf-8
+
 ################################################################################
 #
 # Copyright (C) 2008 James Healy (jimmy@deefa.com)
@@ -24,6 +26,10 @@
 ################################################################################
 
 class PDF::Reader
+
+  # wraps a string containing a PDF CMap and provides convenience methods for
+  # extracting various useful information.
+  #
   class CMap # :nodoc:
 
     attr_reader :map
@@ -84,9 +90,9 @@ class PDF::Reader
       else # UTF-16
          str.unpack("n*")
       end
-      if unpacked_string.length == 1
+      if unpacked_string.size == 1
         unpacked_string
-      elsif unpacked_string.length == 2 && (unpacked_string[0] > 0xD800 && unpacked_string[0] < 0xDBFF)
+      elsif unpacked_string.size == 2 && unpacked_string[0] > 0xD800 && unpacked_string[0] < 0xDBFF
         # this is a Unicode UTF-16 "Surrogate Pair" see Unicode Spec. Chapter 3.7
         # lets convert to a UTF-32. (the high bit is between 0xD800-0xDBFF, the
         # low bit is between 0xDC00-0xDFFF) for example: U+1D44E (U+D835 U+DC4E)

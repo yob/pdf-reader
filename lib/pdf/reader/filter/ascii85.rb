@@ -4,6 +4,7 @@ require 'ascii85'
 
 class PDF::Reader
   module Filter # :nodoc:
+    # implementation of the Ascii85 filter
     class Ascii85
       def initialize(options = {})
         @options = options
@@ -18,7 +19,8 @@ class PDF::Reader
         ::Ascii85::decode(data)
       rescue Exception => e
         # Oops, there was a problem decoding the stream
-        raise MalformedPDFError, "Error occured while decoding an ASCII85 stream (#{e.class.to_s}: #{e.to_s})"
+        raise MalformedPDFError,
+          "Error occured while decoding an ASCII85 stream (#{e.class.to_s}: #{e.to_s})"
       end
     end
   end

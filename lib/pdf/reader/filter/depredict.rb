@@ -2,6 +2,8 @@
 
 class PDF::Reader
   module Filter # :nodoc:
+    # some filter implementations support preprocessing of the  data to
+    # improve compression
     class Depredict
       def initialize(options = {})
         @options = options || {}

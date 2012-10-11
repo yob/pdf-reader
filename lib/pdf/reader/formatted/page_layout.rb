@@ -234,7 +234,7 @@ module PDF
 
           # the font size for this run
           def font_size
-            @state[:text_font_size] * @state[:text_matrix][0, 0]
+            @page_state.font_size
           end
 
           # the font label for this run

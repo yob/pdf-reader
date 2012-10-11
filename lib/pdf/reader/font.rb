@@ -1,3 +1,5 @@
+# coding: utf-8
+
 ################################################################################
 #
 # Copyright (C) 2008 James Healy (jimmy@deefa.com)
@@ -24,6 +26,9 @@
 ################################################################################
 
 class PDF::Reader
+  # Reprsents a single font PDF object and provides some useful methods
+  # for extracting info. Mainly used for converting text to UTF-8.
+  #
   class Font
     attr_accessor :subtype, :encoding, :descendantfonts, :tounicode
     attr_reader :widths, :first_char, :last_char, :basefont, :font_descriptor,
@@ -291,7 +296,9 @@ class PDF::Reader
     end
 
     def to_utf8_via_encoding(params)
-      raise UnsupportedFeatureError, "font encoding '#{encoding}' currently unsupported" if encoding.kind_of?(String)
+      if encoding.kind_of?(String)
+        raise UnsupportedFeatureError, "font encoding '#{encoding}' currently unsupported"
+      end
 
       if params.class == String
         encoding.to_utf8(params)

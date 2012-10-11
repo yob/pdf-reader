@@ -1,3 +1,5 @@
+# coding: utf-8
+
 ################################################################################
 #
 # Copyright (C) 2006 Peter J Jones (pjones@pmade.com)
@@ -239,7 +241,9 @@ module PDF
     #
     def page(num)
       num = num.to_i
-      raise ArgumentError, "valid pages are 1 .. #{self.page_count}" if num < 1 || num > self.page_count
+      if num < 1 || num > self.page_count
+        raise ArgumentError, "valid pages are 1 .. #{self.page_count}"
+      end
       PDF::Reader::Page.new(@objects, num, :cache => @cache)
     end
 

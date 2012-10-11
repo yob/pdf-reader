@@ -169,3 +169,4 @@ little UTF-8 friendly box to indicate an unrecognisable character.
 - PDF::Reader Code Repository: http://github.com/yob/pdf-reader
 - PDF Specification: http://www.adobe.com/devnet/pdf/pdf_reference.html
 - PDF Tutorial Slide Presentations: http://home.comcast.net/~jk05/presentations/PDFTutorials.html
+- Developing with PDF (book): http://shop.oreilly.com/product/0636920025269.do

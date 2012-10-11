@@ -5,6 +5,7 @@ require 'zlib'
 
 class PDF::Reader
   module Filter # :nodoc:
+    # implementation of the Flate (zlib) stream filter
     class Flate
       def initialize(options = {})
         @options = options
@@ -30,7 +31,8 @@ class PDF::Reader
         Depredict.new(@options).filter(deflated)
       rescue Exception => e
         # Oops, there was a problem inflating the stream
-        raise MalformedPDFError, "Error occured while inflating a compressed stream (#{e.class.to_s}: #{e.to_s})"
+        raise MalformedPDFError,
+          "Error occured while inflating a compressed stream (#{e.class.to_s}: #{e.to_s})"
       end
     end
   end

@@ -2,51 +2,71 @@
 
 require File.dirname(__FILE__) + "/spec_helper"
 
-describe PDF::Reader::Encoding do
+describe PDF::Reader::Encoding, "initialisation" do
 
-  it "should return a new encoding object on request, or raise an error if unrecognised" do
-    PDF::Reader::Encoding.new("FakeEncoding").should be_a_kind_of(PDF::Reader::Encoding)
-    PDF::Reader::Encoding.new(nil).should be_a_kind_of(PDF::Reader::Encoding)
+  context "when the encoding is unrecognised" do
+    it "should return a new encoding object" do
+      PDF::Reader::Encoding.new("FakeEncoding").should be_a_kind_of(PDF::Reader::Encoding)
+      PDF::Reader::Encoding.new(nil).should be_a_kind_of(PDF::Reader::Encoding)
+    end
   end
 
-  it "should return a new encoding object on request, or raise an error if unrecognised" do
-    win =  {:Encoding => :WinAnsiEncoding}
-    fake = {:Encoding => :FakeEncoding}
-    PDF::Reader::Encoding.new(win).should  be_a_kind_of(PDF::Reader::Encoding)
-    PDF::Reader::Encoding.new(fake).should be_a_kind_of(PDF::Reader::Encoding)
+  context "when the encoding is WinAnsi" do
+    it "should return a new encoding object" do
+      win =  {:Encoding => :WinAnsiEncoding}
+      PDF::Reader::Encoding.new(win).should  be_a_kind_of(PDF::Reader::Encoding)
+    end
   end
 
-  it "should return a new encoding object with a differences table on request" do
-    win =  {
-             :Encoding    => :WinAnsiEncoding,
-             :Differences => [25, :A, 26, :B]
-           }
-    enc = PDF::Reader::Encoding.new(win)
-    enc.should be_a_kind_of(PDF::Reader::Encoding)
-    enc.differences.should be_a_kind_of(Hash)
-    enc.differences[25].should eql(:A)
-    enc.differences[26].should eql(:B)
+  context "when the encoding is WinAnsi with an even-count differences table" do
+    let!(:enc) do
+      PDF::Reader::Encoding.new(:Encoding    => :WinAnsiEncoding,
+                                :Differences => [25, :A, 26, :B]
+                               )
+    end
+    it "should return a new encoding object" do
+      enc.should be_a_kind_of(PDF::Reader::Encoding)
+    end
+    it "should record the differences" do
+      enc.differences.should be_a_kind_of(Hash)
+      enc.differences[25].should eql(:A)
+      enc.differences[26].should eql(:B)
+    end
   end
 
-  it "should return a new encoding object with a differences table on request" do
-    win =  {
-             :Encoding    => :WinAnsiEncoding,
-             :Differences => [25, :A, :B]
-           }
-    enc = PDF::Reader::Encoding.new(win)
-    enc.should be_a_kind_of(PDF::Reader::Encoding)
-    enc.differences.should be_a_kind_of(Hash)
-    enc.differences[25].should eql(:A)
-    enc.differences[26].should eql(:B)
+  context "when the encoding is WinAnsi with a odd-count differences table" do
+    let!(:enc) do
+      PDF::Reader::Encoding.new(:Encoding    => :WinAnsiEncoding,
+                                :Differences => [25, :A, 26, :B]
+                               )
+    end
+    it "should return a new encoding object" do
+      enc.should be_a_kind_of(PDF::Reader::Encoding)
+    end
+    it "should record the differences" do
+      enc.differences.should be_a_kind_of(Hash)
+      enc.differences[25].should eql(:A)
+      enc.differences[26].should eql(:B)
+    end
   end
 
-  it "should correctly replace control characters with 'unknown char' when there's no applicable difference table entry" do
-    win =  {
-             :Encoding    => :WinAnsiEncoding,
-             :Differences => [1, :A,]
-           }
-    enc = PDF::Reader::Encoding.new(win)
-    enc.to_utf8("\002").should eql("▯")
+end
+
+describe PDF::Reader::Encoding, "#to_utf8" do
+
+  context "when the encoding is WinAnsi with an even-count differences table" do
+    let!(:enc) do
+      PDF::Reader::Encoding.new(:Encoding    => :WinAnsiEncoding,
+                                :Differences => [1, :A]
+                               )
+    end
+    it "should convert recognised characters from the differences to utf-8" do
+      pending
+      enc.to_utf8("\001").should eql("A")
+    end
+    it "should convert unknown characters with 'unknown char'" do
+      enc.to_utf8("\002").should eql("▯")
+    end
   end
 end
 

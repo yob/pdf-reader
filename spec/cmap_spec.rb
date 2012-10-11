@@ -36,7 +36,7 @@ describe "PDF::Reader::CMap with a bfchar cmap" do
     map = PDF::Reader::CMap.new(binread(filename))
     map.decode(0x0100).should == [0x0100] # mapped with the bfrange operator
   end
-  
+
   it "should correctly load a cmap that uses the beginbfrange operator with the array syntax" do
     filename = File.dirname(__FILE__) + "/data/cmap_with_bfrange_three.txt"
     map = PDF::Reader::CMap.new(binread(filename))

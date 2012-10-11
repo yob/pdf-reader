@@ -2,6 +2,7 @@
 #
 class PDF::Reader
   module Filter # :nodoc:
+    # implementation of the LZW stream filter
     class Lzw
       def initialize(options = {})
         @options = options
