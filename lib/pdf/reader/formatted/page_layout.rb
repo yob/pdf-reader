@@ -116,14 +116,6 @@ module PDF
             self.line_width + self.position.x
           end
 
-          # how many characters are in this line
-          def num_of_characters
-            self.runs.inject(0) do |char_count, run|
-              char_count += run.utf8_text.size
-              char_count
-            end
-          end
-
           # the text of this line
           def text
             text = ""
@@ -136,34 +128,6 @@ module PDF
           # an indication as to whether or not this line is empty
           def is_empty?
             text.strip.length == 0
-          end
-
-          # the presumed font size of this line, there is nothing preventing
-          # different font sizes in consecutive runs.
-          def guess_font_size
-            guessed_size = nil
-            self.runs.each do |run|
-              if run.utf8_text.strip.length > 0
-                return run.font_size
-              else
-                guessed_size = run.font_size
-              end
-            end
-            guessed_size
-          end
-
-          # the presumed font label of this line, there is nothing preventing
-          # different font labels in consecutive runs.
-          def guess_font_label
-            guessed_label = nil
-            self.runs.each do |run|
-              if run.utf8_text.strip.length > 0
-                return run.font_label
-              else
-                guessed_label = run.font_label
-              end
-            end
-            guessed_label
           end
 
         end
