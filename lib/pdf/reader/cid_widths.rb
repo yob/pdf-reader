@@ -41,20 +41,18 @@ class PDF::Reader
     # this is the form 10 [234 63 234 346 47 234] where width of index 10 is
     # 234, index 11 is 63, etc
     def parse_first_form(first, widths)
-      result = {}
-      widths.each_with_index do |glyph_width, index|
-        result[first + index] = glyph_width
-      end
-      result
+      widths.inject({}) { |accum, glyph_width|
+        accum[first + accum.size] = glyph_width
+        accum
+      }
     end
 
     # this is the form 10 20 123 where all index between 10 and 20 have width 123
     def parse_second_form(first, final, width)
-      result = {}
-      (first..final).each do |index|
-        result[index] = width
-      end
-      result
+      (first..final).inject({}) { |accum, index|
+        accum[index] = width
+        accum
+      }
     end
 
   end
