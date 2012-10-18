@@ -119,12 +119,12 @@ module PDF
         end
       end
 
-      def layout_page
+      def content
         helper = @content.each.inject(Formatted::LayoutHelper.new(@options)) do |layout_helper, text_group|
           layout_helper.add_lines_from_text_group text_group
           layout_helper
         end
-        helper
+        helper.to_s
       end
 
       private

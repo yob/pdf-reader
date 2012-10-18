@@ -89,7 +89,7 @@ module PDF
       def text(options = {})
         receiver = PDF::Reader::PageTextReceiver.new(options)
         walk receiver
-        receiver.layout_page.to_s
+        receiver.content
       end
       alias :to_s :text
 
