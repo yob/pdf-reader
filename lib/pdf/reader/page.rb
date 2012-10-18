@@ -95,9 +95,10 @@ module PDF
       # characters that can't be translated will be returned as a ▯
       #
       def text
-        receiver = PageTextReceiver.new
-        walk(receiver)
-        receiver.content
+        #receiver = PageTextReceiver.new
+        #walk(receiver)
+        #receiver.content
+        formatted_text
       end
       alias :to_s :text
 
