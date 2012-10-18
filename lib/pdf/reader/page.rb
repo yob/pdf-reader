@@ -64,8 +64,8 @@ module PDF
       end
 
       # returns the plain text content of this page encoded as UTF-8 that has
-      # been layed out in a manner somewhat reflecting the source. This method
-      # can return multi-column text
+      # been layed out in a manner somewhat reflecting the source. Any
+      # characters that can't be translated will be returned as a ▯
       #
       # options hash
       # :verbosity            Integer    0      0 = no output, 3 = most output
@@ -85,20 +85,11 @@ module PDF
       # 200 * 3 == 600 =~ 8.5 * 72 = 612
       #
       # incorrect setting of these parameters may result in some text not being displayed
-      def formatted_text(options = {})
+      #
+      def text(options = {})
         receiver = PDF::Reader::Formatted::PageTextReceiver.new(options)
         walk receiver
         receiver.layout_page.to_s
-      end
-
-      # returns the plain text content of this page encoded as UTF-8. Any
-      # characters that can't be translated will be returned as a ▯
-      #
-      def text
-        #receiver = PageTextReceiver.new
-        #walk(receiver)
-        #receiver.content
-        formatted_text
       end
       alias :to_s :text
 

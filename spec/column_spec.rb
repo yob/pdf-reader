@@ -22,7 +22,7 @@ describe PDF::Reader, "column specs" do
 \s*quis nostrud exercitation ullamco laboris nisi ut\s{20,80}nisi ut aliquip ex ea commodo consequat. Duis aute
 \s*aliquip ex ea commodo consequat. Duis aute irure\s{20,80}irure dolor in reprehenderit in voluptate velit esse
       TEXT
-      ft = page.formatted_text()
+      ft = page.text
       ft.should =~ /Some Headline/
       ft.should =~ /ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu/
       ft.should =~ col_text
@@ -66,7 +66,7 @@ describe PDF::Reader, "column specs" do
 \s*id est laborum. Lorem ipsum do-\s{20,40}eiusmod tempor incididunt ut\s{20,40}qua. Ut enim ad minim veniam,
 \s*lor sit amet, consectetur adipisic-\s{20,40}labore et dolore magna aliqua. Ut\s{20,40}quis nostrud exercitation ullamco
       TEXT2
-      ft = page.formatted_text()
+      ft = page.text
       ft.should =~ three_to_two_cols
       ft.should =~ two_to_three_cols
 
