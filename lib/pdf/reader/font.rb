@@ -26,7 +26,7 @@
 ################################################################################
 
 class PDF::Reader
-  # Reprsents a single font PDF object and provides some useful methods
+  # Represents a single font PDF object and provides some useful methods
   # for extracting info. Mainly used for converting text to UTF-8.
   #
   class Font
