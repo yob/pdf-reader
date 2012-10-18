@@ -101,6 +101,13 @@ class PDF::Reader
     # looks up the specified codepoint and returns a value that is in (pdf)
     # glyph space, which is 1000 glyph units = 1 text space unit
     def glyph_width(code_point)
+      @cached_widths ||= {}
+      @cached_widths[code_point] ||= internal_glyph_width(code_point)
+    end
+
+    private
+
+    def internal_glyph_width(code_point)
       return 0 if code_point.nil? || code_point < 0
 
       puts "glyph_width(#{code_point})" if @DEBUG_FONT > 2
@@ -166,8 +173,6 @@ class PDF::Reader
       puts "font_descriptor.find_glyph_width(#{code_point}) = #{w}" if @DEBUG_FONT > 0
       return w.to_f * @font_descriptor.glyph_to_pdf_scale_factor unless w.nil?
     end
-
-    private
 
     def calculate_cidfont_glyph_width(index)
       # there are two ways to calculate a cidfont_glyph_width, that are defined
