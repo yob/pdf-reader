@@ -87,7 +87,7 @@ module PDF
       # incorrect setting of these parameters may result in some text not being displayed
       #
       def text(options = {})
-        receiver = PDF::Reader::Formatted::PageTextReceiver.new(options)
+        receiver = PDF::Reader::PageTextReceiver.new(options)
         walk receiver
         receiver.layout_page.to_s
       end
