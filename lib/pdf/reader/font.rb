@@ -183,15 +183,9 @@ class PDF::Reader
       last = -1
       width_spec = nil
       @cid_widths.each { |element|
-        begin
-          element.length
-          element_is_array = true
-        rescue
-          element_is_array = false
-        end
         if first < 0
           first = element
-        elsif element_is_array
+        elsif element.is_a?(Array)
           width_spec = element
         elsif last < 0
           last = element
