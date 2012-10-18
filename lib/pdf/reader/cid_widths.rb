@@ -10,18 +10,23 @@ class PDF::Reader
   # on below. because of these difference that may be contained within the
   # same array, it is a bit difficult to parse this array.
   class CidWidths
+    extend Forwardable
+
+    # Graphics State Operators
+    def_delegators :@widths, :[], :fetch
 
     def initialize(default, array)
       @widths  = Hash.new(default)
-      @default = default
-      @array   = array
+      parse_array(array)
     end
 
-    def [](index)
+    private
+
+    def parse_array(array)
       first = -1
       last = -1
       width_spec = nil
-      @array.each { |element|
+      array.each { |element|
         if first < 0
           first = element
         elsif element.is_a?(Array)
@@ -32,24 +37,24 @@ class PDF::Reader
           width_spec = element
         end
 
-        if last < 0 && width_spec != nil
+        if last < 0 && width_spec
           # this is the form 10 [234 63 234 346 47 234] where width of index 10 is
           # 234, index 11 is 63, etc
-          if index >= first && index < first + width_spec.length
-            # width is spec'd in this range
-            return width_spec[index - first]
+          width_spec.each_with_index do |glyph_width, index|
+            @widths[first + index] = glyph_width
           end
           first = -1
           width_spec = nil
         elsif last > 0 && width_spec != nil && width_spec > 0
           # this is the form 10 20 123 where all index between 10 and 20 have width 123
-          return width_spec if index >= first && index <= last
+          (first..last).each do |index|
+            @widths[index] = width_spec
+          end
           first = -1
           last = -1
           width_spec = nil
         end
       }
-      @default
     end
   end
 end
