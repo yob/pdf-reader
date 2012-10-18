@@ -20,6 +20,12 @@ module PDF
 
         # Matrix Operators
         def_delegators :@state, :concatenate_matrix
+
+        # Text State Operators
+        def_delegators :@state, :set_character_spacing, :set_horizontal_text_scaling
+        def_delegators :@state, :set_text_font_and_size, :font_size
+        def_delegators :@state, :set_text_leading, :set_text_rendering_mode
+        def_delegators :@state, :set_text_rise, :set_word_spacing
         ##########  END FORWARDERS  ##########
 
         def initialize(options = {})
@@ -52,38 +58,6 @@ module PDF
           @current_text_group.simplify
           @current_text_group = nil
           @state.end_text_object
-        end
-
-        #####################################################
-        # Text State Operators
-        #####################################################
-
-        def set_character_spacing(char_spacing) # Tc
-          @state.set_character_spacing(char_spacing)
-        end
-
-        def set_horizontal_text_scaling(h_scaling) # Tz
-          @state.set_horizontal_text_scaling(h_scaling)
-        end
-
-        def set_text_font_and_size(label, size) #Tf
-          @state.set_text_font_and_size(label, size)
-        end
-
-        def set_text_leading(leading) # TL
-          @state.set_text_leading(leading)
-        end
-
-        def set_text_rendering_mode(mode) # Tr
-          @state.set_text_rendering_mode(mode)
-        end
-
-        def set_text_rise(rise) # Ts
-          @state.set_text_rise(rise)
-        end
-
-        def set_word_spacing(word_spacing) # Tw
-          @state.set_word_spacing(word_spacing)
         end
 
         #####################################################
