@@ -16,45 +16,46 @@ class PDF::Reader
     def_delegators :@widths, :[], :fetch
 
     def initialize(default, array)
-      @widths  = Hash.new(default)
-      parse_array(array)
+      @widths = parse_array(default, array.dup)
     end
 
     private
 
-    def parse_array(array)
-      first = -1
-      last = -1
-      width_spec = nil
-      array.each { |element|
-        if first < 0
-          first = element
-        elsif element.is_a?(Array)
-          width_spec = element
-        elsif last < 0
-          last = element
-        else
-          width_spec = element
-        end
+    def parse_array(default, array)
+      widths  = Hash.new(default)
+      params = []
+      while array.size > 0
+        params << array.shift
 
-        if last < 0 && width_spec
-          # this is the form 10 [234 63 234 346 47 234] where width of index 10 is
-          # 234, index 11 is 63, etc
-          width_spec.each_with_index do |glyph_width, index|
-            @widths[first + index] = glyph_width
-          end
-          first = -1
-          width_spec = nil
-        elsif last > 0 && width_spec != nil && width_spec > 0
-          # this is the form 10 20 123 where all index between 10 and 20 have width 123
-          (first..last).each do |index|
-            @widths[index] = width_spec
-          end
-          first = -1
-          last = -1
-          width_spec = nil
+        if params.size == 2 && params.last.is_a?(Array)
+          widths.merge! parse_first_form(params.first, params.last)
+          params = []
+        elsif params.size == 3
+          widths.merge! parse_second_form(params[0], params[1], params[2])
+          params = []
         end
-      }
+      end
+      widths
     end
+
+    # this is the form 10 [234 63 234 346 47 234] where width of index 10 is
+    # 234, index 11 is 63, etc
+    def parse_first_form(first, widths)
+      result = {}
+      widths.each_with_index do |glyph_width, index|
+        result[first + index] = glyph_width
+      end
+      result
+    end
+
+    # this is the form 10 20 123 where all index between 10 and 20 have width 123
+    def parse_second_form(first, final, width)
+      result = {}
+      (first..final).each do |index|
+        result[index] = width
+      end
+      result
+    end
+
   end
 end
