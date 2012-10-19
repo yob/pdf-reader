@@ -54,12 +54,10 @@ module PDF
               $stderr.puts "Layout Skipping Empty Line:\n#{line}" if @verbosity > 0
             end
           end
-          final_string = ""
-          strip_empty_lines = @options.fetch(:strip_empty_lines, true)
-          page.each do |line|
-            final_string << line.rstrip << "\n" unless line.strip.length == 0 && strip_empty_lines
+          if @options.fetch(:strip_empty_lines, true)
+            page.select! { |line| line.strip.length > 0 }
           end
-          final_string
+          page.map(&:rstrip).join("\n")
         end
 
       end
