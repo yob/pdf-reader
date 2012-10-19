@@ -57,7 +57,12 @@ module PDF
           if @options.fetch(:strip_empty_lines, true)
             page.select! { |line| line.strip.length > 0 }
           end
-          page.map(&:rstrip).join("\n")
+          result = page.map(&:rstrip).join("\n")
+          if @options.fetch(:left_strip, true)
+            JustifiedLeftStrip.new(result).lstrip
+          else
+            result
+          end
         end
 
       end
