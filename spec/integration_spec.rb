@@ -47,7 +47,8 @@ describe PDF::Reader, "integration specs" do
       reader.pages.size.should eql(3)
 
       page = reader.page(1)
-      page.text.should include("Dit\302\240is\302\240een\302\240pdf\302\240test\302\240van\302\240drie\302\240pagina’s.")
+      page.text.should include("Dit\302\240is\302\240een\302\240pdf\302\240test\302\240van\302\240drie\302\240pagina")
+      page.text.should include("’s")
       page.text.should include("Pagina\302\2401")
     end
   end
