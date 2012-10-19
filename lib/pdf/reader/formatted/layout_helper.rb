@@ -43,7 +43,7 @@ module PDF
               x_pos = (line.position.x / col_multiplier).round
               y_pos = def_rows - (line.position.y / row_multiplier).round
               str = line.text
-              if y_pos <= def_rows && y_pos >= 0 && x_pos <= def_cols && x_pos >= 0
+              if y_pos < def_rows && y_pos >= 0 && x_pos < def_cols && x_pos >= 0
                 $stderr.puts "{%3d, %3d} -- %s" % [x_pos, y_pos, str.dump] if @verbosity > 2
                 page[y_pos][Range.new(x_pos, x_pos + str.length - 1)] = String.new(str)
                 $stderr.puts "Page[#{y_pos}] #{page[y_pos]}" if @verbosity > 2
