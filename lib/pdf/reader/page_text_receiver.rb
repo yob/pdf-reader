@@ -79,7 +79,7 @@ module PDF
 
       def set_text_matrix_and_text_line_matrix(a, b, c, d, e, f) # Tm
         @state.set_text_matrix_and_text_line_matrix a, b, c, d, e, f
-        create_new_line_at(e, f, false)
+        create_new_line_at(e, f, true)
       end
 
       #####################################################
