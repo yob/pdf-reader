@@ -66,7 +66,7 @@ describe PDF::Reader, "integration specs" do
 
     PDF::Reader.open(filename) do |reader|
       page = reader.page(1)
-      page.text.should match(/\ATaxInvoice/)
+      page.text.should match(/Tax\s+Invoice/)
     end
   end
 
