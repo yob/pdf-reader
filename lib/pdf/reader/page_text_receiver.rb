@@ -87,12 +87,11 @@ module PDF
         string.unpack("C*") do |chr|
           # paint the current glyph
           newx, newy = @state.trm_transform(0,0)
-          @characters << Character.new(newx, newy, chr.chr)
 
           # apply to glyph displacment for the current glyph so the next
           # glyph will appear in the correct position
           w0 = @state.current_font.glyph_width(chr) / 1000
-          puts "#{chr.chr} w:#{w0} @ #{newx},#{newy}"
+          #puts "#{chr.chr} w:#{w0} @ #{newx},#{newy}"
           tj = 0         # kerning
           fs = font_size # font size
           tc = @state.clone_state[:char_spacing] # character spacing
@@ -105,12 +104,13 @@ module PDF
           #puts "(((#{w0} - (#{tj}/1000)) * #{fs}) + #{tc} + #{tw}) * #{th}"
           tx = (((w0 - (tj/1000)) * fs) + tc + tw) * th
           ty = 0
+          @characters << Character.new(newx, newy, tx, chr.chr)
           #puts "tx: #{tx}, ty: #{ty}"
           @state.process_glyph_displacement(tx, ty)
         end
       end
 
-      class Character < Struct.new(:x, :y, :text)
+      class Character < Struct.new(:x, :y, :displacement, :text)
         include Comparable
 
         def <=>(other)
@@ -120,6 +120,29 @@ module PDF
         def to_s
           text
         end
+
+        def inspect
+          "#{text} @#{x},#{y}"
+        end
+      end
+
+      class Run
+        def initialize(chars)
+          @chars = chars.sort
+        end
+
+        def x
+          @chars.first.x
+        end
+
+        def y
+          @chars.first.y
+        end
+
+        def text
+          @chars.map(&:to_s).join
+        end
+        alias :to_s :text
 
         def inspect
           "#{text} @#{x},#{y}"
@@ -157,14 +180,26 @@ module PDF
         @characters.group_by { |char|
           char.y.to_i
         }.map { |y, chars|
-          chars.sort.map(&:to_s).join
+          group_chars_into_runs(chars.sort).map(&:to_s).join
         }.join("\n")
-        #@characters.each do |char|
-        #  puts char.inspect
-        #end
       end
 
       private
+
+      def group_chars_into_runs(chars)
+        runs = []
+        accum = []
+        while head = chars.shift
+          if accum.empty? || (accum.last.x+accum.last.displacement).to_i == head.x.to_i
+            accum << head
+          else
+            runs << Run.new(accum)
+            accum = [head]
+          end
+        end
+        runs << Run.new(accum) unless accum.empty?
+        runs
+      end
 
       # create a new line of text at the given position, set this new line
       # to be the current line, and at the new line to the text group
