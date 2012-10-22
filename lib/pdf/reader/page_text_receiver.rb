@@ -36,6 +36,7 @@ module PDF
       def page=(page)
         @state = PageState.new(page)
         @content = []
+        @characters = []
       end
 
       #####################################################
@@ -43,7 +44,6 @@ module PDF
       #####################################################
       def begin_text_object # BT
         # create a new text group and add it to the content stack
-        @characters = []
         @state.begin_text_object
       end
 
@@ -106,7 +106,7 @@ module PDF
           tx = (((w0 - (tj/1000)) * fs) + tc + tw) * th
           ty = 0
           #puts "tx: #{tx}, ty: #{ty}"
-          @state.move_text_position(tx, ty)
+          @state.process_glyph_displacement(tx, ty)
         end
       end
 

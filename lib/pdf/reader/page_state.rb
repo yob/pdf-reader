@@ -73,7 +73,8 @@ class PDF::Reader
       #####################################################
 
       def begin_text_object
-        @text_matrix = identity_matrix
+        @text_matrix      = identity_matrix
+        @text_line_matrix = identity_matrix
       end
 
       def end_text_object
@@ -122,17 +123,10 @@ class PDF::Reader
       #####################################################
 
       def move_text_position(x, y) # Td
-        # multiply the following matrix by @text_matrix,
-        #   and store the result back into @text_matrix:
-        #   1 0 0
-        #   0 1 0
-        #   x y 1
-        # (matrix multiplication code has been inlined for performance)
-
-        a2,b2,c2, d2,e2,f2, g2,h2,i2 = @text_matrix
-        @text_matrix[6] = (x * a2) + (y * d2) + g2
-        @text_matrix[7] = (x * b2) + (y * e2) + h2
-        @text_matrix[8] = (x * c2) + (y * f2) + i2
+        multiply!(@text_line_matrix, 1, 0, 0,
+                                     0, 1, 0,
+                                     x, y, 1)
+        @text_matrix = @text_line_matrix.dup
         @text_rendering_matrix = nil # invalidate cached value
       end
 
@@ -147,6 +141,7 @@ class PDF::Reader
           c, d, 0,
           e, f, 1
         ]
+        @text_line_matrix = @text_matrix.dup
         @text_rendering_matrix = nil # invalidate cached value
       end
 
@@ -274,6 +269,19 @@ class PDF::Reader
         else
           Marshal.load Marshal.dump(@stack.last)
         end
+      end
+
+      # after each glyph is painted onto the page the text matrix must be
+      # modified. There's no defined operator for this, but depending on
+      # the use case some receivers may need to mutate the state with this
+      # while walking a page.
+      #
+      # see Section 9.4.4, PDF 32000-1:2008, pp 252
+      def process_glyph_displacement(x, y)
+        multiply!(@text_matrix, 1, 0, 0,
+                                0, 1, 0,
+                                x, y, 1)
+        @text_rendering_matrix = nil # invalidate cached value
       end
 
       private
