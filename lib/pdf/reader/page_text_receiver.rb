@@ -154,30 +154,14 @@ module PDF
       end
 
       def content
-        def_rows = @options.fetch(:number_of_rows, 100)
-        def_cols = @options.fetch(:number_of_cols, 200)
-        row_multiplier = @options.fetch(:row_scale, 8.0) # 800
-        col_multiplier = @options.fetch(:col_scale, 3.0) # 600
-        page = []
-        def_value = ""
-        def_cols.times { def_value << " " }
-        def_rows.times { page << String.new(def_value) }
-        @characters.each do |char|
-          x_pos = (char.x / col_multiplier).round
-          y_pos = def_rows - (char.y / row_multiplier).round
-          if y_pos < def_rows && y_pos >= 0 && x_pos < def_cols && x_pos >= 0
-            page[y_pos][Range.new(x_pos, x_pos + char.text.length - 1)] = String.new(char.text)
-          end
-        end
-        if @options.fetch(:strip_empty_lines, true)
-          page.select! { |line| line.strip.length > 0 }
-        end
-        result = page.map(&:rstrip).join("\n")
-        if @options.fetch(:left_strip, true)
-          JustifiedLeftStrip.new(result).lstrip
-        else
-          result
-        end
+        @characters.group_by { |char|
+          char.y.to_i
+        }.map { |y, chars|
+          chars.sort.map(&:to_s).join
+        }.join("\n")
+        #@characters.each do |char|
+        #  puts char.inspect
+        #end
       end
 
       private
