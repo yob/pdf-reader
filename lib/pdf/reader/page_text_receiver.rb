@@ -43,8 +43,7 @@ module PDF
       #####################################################
       def begin_text_object # BT
         # create a new text group and add it to the content stack
-        @current_text_group = Formatted::PageLayout::TextGroup.new(@verbosity)
-        @content << @current_text_group
+        @characters = []
         @state.begin_text_object
       end
 
@@ -54,8 +53,6 @@ module PDF
         # simplify the current text group, this may reduce the number of
         # individual lines in the group by combining lines that run into each
         # other.
-        @current_text_group.simplify
-        @current_text_group = nil
         @state.end_text_object
       end
 
@@ -64,22 +61,18 @@ module PDF
       #####################################################
       def move_text_position(x, y) # Td
         @state.move_text_position(x, y)
-        create_new_line_at(x, y, true)
       end
 
       def move_text_position_and_set_leading(x, y) # TD
         @state.move_text_position_and_set_leading(x, y)
-        create_new_line_at(x, y, true)
       end
 
       def move_to_start_of_next_line # T*
         @state.move_to_start_of_next_line
-        create_new_line_at(0, 0, true)
       end
 
       def set_text_matrix_and_text_line_matrix(a, b, c, d, e, f) # Tm
         @state.set_text_matrix_and_text_line_matrix a, b, c, d, e, f
-        create_new_line_at(e, f, true)
       end
 
       #####################################################
@@ -90,10 +83,11 @@ module PDF
         if @state.current_font.nil?
           raise PDF::Reader::MalformedPDFError, "current font is invalid"
         end
-        puts "string: #{@state.current_font.to_utf8(string)}"
+        #puts "string: #{@state.current_font.to_utf8(string)}"
         string.unpack("C*") do |chr|
           # paint the current glyph
           newx, newy = @state.trm_transform(0,0)
+          @characters << Character.new(newx, newy, chr.chr)
 
           # apply to glyph displacment for the current glyph so the next
           # glyph will appear in the correct position
@@ -114,11 +108,26 @@ module PDF
           #puts "tx: #{tx}, ty: #{ty}"
           @state.move_text_position(tx, ty)
         end
-        exit(1)
+      end
+
+      class Character < Struct.new(:x, :y, :text)
+        include Comparable
+
+        def <=>(other)
+          [x,y] <=> [other.x, other.y]
+        end
+
+        def to_s
+          text
+        end
+
+        def inspect
+          "#{text} @#{x},#{y}"
+        end
       end
 
       def show_text_with_positioning(params) # TJ [(A) 120 (WA) 20 (Y)]
-        internal_show_text params
+        raise "implement this!"
       end
 
       def move_to_next_line_and_show_text(str) # '
@@ -145,11 +154,14 @@ module PDF
       end
 
       def content
-        helper = @content.each.inject(Formatted::LayoutHelper.new(@options)) do |layout_helper, text_group|
-          layout_helper.add_lines_from_text_group text_group
-          layout_helper
-        end
-        helper.to_s
+        @characters.group_by { |char|
+          char.y.to_i
+        }.map { |y, chars|
+          chars.sort.map(&:to_s).join
+        }.join("\n")
+        #@characters.each do |char|
+        #  puts char.inspect
+        #end
       end
 
       private
