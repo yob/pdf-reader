@@ -90,7 +90,31 @@ module PDF
         if @state.current_font.nil?
           raise PDF::Reader::MalformedPDFError, "current font is invalid"
         end
-        internal_show_text string
+        puts "string: #{@state.current_font.to_utf8(string)}"
+        string.unpack("C*") do |chr|
+          # paint the current glyph
+          newx, newy = @state.trm_transform(0,0)
+
+          # apply to glyph displacment for the current glyph so the next
+          # glyph will appear in the correct position
+          w0 = @state.current_font.glyph_width(chr) / 1000
+          puts "#{chr.chr} w:#{w0} @ #{newx},#{newy}"
+          tj = 0         # kerning
+          fs = font_size # font size
+          tc = @state.clone_state[:char_spacing] # character spacing
+          if chr == 32
+            tw = @state.clone_state[:word_spacing]
+          else
+            tw = 0
+          end
+          th = 100 / 100 # scaling factor
+          #puts "(((#{w0} - (#{tj}/1000)) * #{fs}) + #{tc} + #{tw}) * #{th}"
+          tx = (((w0 - (tj/1000)) * fs) + tc + tw) * th
+          ty = 0
+          #puts "tx: #{tx}, ty: #{ty}"
+          @state.move_text_position(tx, ty)
+        end
+        exit(1)
       end
 
       def show_text_with_positioning(params) # TJ [(A) 120 (WA) 20 (Y)]
@@ -98,13 +122,14 @@ module PDF
       end
 
       def move_to_next_line_and_show_text(str) # '
-        internal_move_to_next_line_and_show_text str
+        @state.move_to_start_of_next_line
+        show_text(str)
       end
 
-      def set_spacing_next_line_show_text(aw, ac, str) # "
+      def set_spacing_next_line_show_text(aw, ac, string) # "
         @state.set_word_spacing(aw)
         @state.set_character_spacing(ac)
-        internal_move_to_next_line_and_show_text str
+        move_to_next_line_and_show_text(string)
       end
 
       #####################################################
