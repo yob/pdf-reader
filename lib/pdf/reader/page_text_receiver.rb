@@ -104,6 +104,10 @@ module PDF
           @chars = chars.sort
         end
 
+        def <=>(other)
+          [x,y] <=> [other.x, other.y]
+        end
+
         def x
           @chars.first.x
         end
@@ -152,11 +156,41 @@ module PDF
       end
 
       def content
-        @characters.group_by { |char|
+        runs = @characters.group_by { |char|
           char.y.to_i
         }.map { |y, chars|
-          group_chars_into_runs(chars.sort).map(&:to_s).join
-        }.join("\n")
+          group_chars_into_runs(chars.sort)
+        }.flatten.sort.reverse
+
+        def_rows = @options.fetch(:number_of_rows, 100)
+        def_cols = @options.fetch(:number_of_cols, 200)
+        row_multiplier = @options.fetch(:row_scale, 8.0) # 800
+        col_multiplier = @options.fetch(:col_scale, 3.0) # 600
+        page = []
+        def_value = ""
+        def_cols.times { def_value << " " }
+        def_rows.times { page << String.new(def_value) }
+        runs.each do |run|
+          x_pos = (run.x / col_multiplier).round
+          y_pos = def_rows - (run.y / row_multiplier).round
+          str = run.text
+          if y_pos < def_rows && y_pos >= 0 && x_pos < def_cols && x_pos >= 0
+            $stderr.puts "{%3d, %3d} -- %s" % [x_pos, y_pos, str.dump] if @verbosity > 2
+            page[y_pos][Range.new(x_pos, x_pos + str.length - 1)] = String.new(str)
+            $stderr.puts "Page[#{y_pos}] #{page[y_pos]}" if @verbosity > 2
+          else
+            $stderr.puts "Layout Skipping Line off of page:\n#{run}" if @verbosity > 0
+          end
+        end
+        if @options.fetch(:strip_empty_lines, true)
+          page.select! { |line| line.strip.length > 0 }
+        end
+        result = page.map(&:rstrip).join("\n")
+        if @options.fetch(:left_strip, true)
+          JustifiedLeftStrip.new(result).lstrip
+        else
+          result
+        end
       end
 
       private
@@ -165,7 +199,8 @@ module PDF
         runs = []
         accum = []
         while head = chars.shift
-          if accum.empty? || (accum.last.x+accum.last.displacement).to_i == head.x.to_i
+          target_range = Range.new(head.x-12, head.x+12)
+          if accum.empty? || target_range.include?(accum.last.x+accum.last.displacement)
             accum << head
           else
             runs << Run.new(accum)
