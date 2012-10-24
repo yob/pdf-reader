@@ -84,7 +84,7 @@ module PDF
           raise PDF::Reader::MalformedPDFError, "current font is invalid"
         end
         #puts "string: #{@state.current_font.to_utf8(string)}"
-        string.unpack("C*") do |chr|
+        @state.current_font.unpack(string).each do |chr|
           # paint the current glyph
           newx, newy = @state.trm_transform(0,0)
 

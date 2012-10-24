@@ -78,6 +78,10 @@ class PDF::Reader
       end
     end
 
+    def unpack(binary_data)
+      binary_data.unpack(encoding.unpack)
+    end
+
     # breaks apart the specified fragment into it's codepoints and sums all codepoint
     # widths, returing a width specified in text space units, the given should be
     # the raw (encoded) fragment, not the converted utf-8 fragment provided by the
