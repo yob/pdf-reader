@@ -83,49 +83,6 @@ module PDF
         internal_show_text(string)
       end
 
-      class Character < Struct.new(:x, :y, :displacement, :text)
-        include Comparable
-
-        def <=>(other)
-          [x,y] <=> [other.x, other.y]
-        end
-
-        def to_s
-          text
-        end
-
-        def inspect
-          "#{text} @#{x},#{y}"
-        end
-      end
-
-      class Run
-        def initialize(chars)
-          @chars = chars.sort
-        end
-
-        def <=>(other)
-          [x,y] <=> [other.x, other.y]
-        end
-
-        def x
-          @chars.first.x
-        end
-
-        def y
-          @chars.first.y
-        end
-
-        def text
-          @chars.map(&:to_s).join
-        end
-        alias :to_s :text
-
-        def inspect
-          "#{text} @#{x},#{y}"
-        end
-      end
-
       def show_text_with_positioning(params) # TJ [(A) 120 (WA) 20 (Y)]
         params.each_slice(2).each do |string, kerning|
           internal_show_text(string, kerning || 0)
@@ -160,7 +117,7 @@ module PDF
           char.y.to_i
         }.map { |y, chars|
           group_chars_into_runs(chars.sort)
-        }.flatten.sort.reverse
+        }.flatten.sort
 
         def_rows = @options.fetch(:number_of_rows, 100)
         def_cols = @options.fetch(:number_of_cols, 200)
@@ -197,17 +154,15 @@ module PDF
 
       def group_chars_into_runs(chars)
         runs = []
-        accum = []
         while head = chars.shift
-          target_range = Range.new(head.x-12, head.x+12)
-          if accum.empty? || target_range.include?(accum.last.x+accum.last.displacement)
-            accum << head
+          if runs.empty?
+            runs << head
+          elsif runs.last.mergable?(head)
+            runs[-1] = runs.last + head
           else
-            runs << Run.new(accum)
-            accum = [head]
+            runs << head
           end
         end
-        runs << Run.new(accum) unless accum.empty?
         runs
       end
 
@@ -242,7 +197,7 @@ module PDF
           #puts "(((#{w0} - (#{tj}/1000)) * #{fs}) + #{tc} + #{tw}) * #{th}"
           tx = (((w0 - (tj/1000)) * fs) + tc + tw) * th
           ty = 0
-          @characters << Character.new(newx, newy, tx, utf8_chars)
+          @characters << TextRun.new(newx, newy, w0, utf8_chars)
           #puts "tx: #{tx}, ty: #{ty}"
           @state.process_glyph_displacement(tx, ty)
         end
