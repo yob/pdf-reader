@@ -78,8 +78,14 @@ class PDF::Reader
       end
     end
 
-    def unpack(binary_data)
-      binary_data.unpack(encoding.unpack)
+    def unpack(data)
+      data.unpack(encoding.unpack)
+    end
+
+    def split_binary_data(data)
+      data.unpack(encoding.unpack).map { |glyph_code|
+        [glyph_code].pack(encoding.unpack)
+      }
     end
 
     # breaks apart the specified fragment into it's codepoints and sums all codepoint
@@ -105,6 +111,10 @@ class PDF::Reader
     # looks up the specified codepoint and returns a value that is in (pdf)
     # glyph space, which is 1000 glyph units = 1 text space unit
     def glyph_width(code_point)
+      if code_point.is_a?(String)
+        code_point = code_point.unpack(encoding.unpack).first
+      end
+
       @cached_widths ||= {}
       @cached_widths[code_point] ||= internal_glyph_width(code_point)
     end

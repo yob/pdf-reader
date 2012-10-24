@@ -80,34 +80,7 @@ module PDF
       #####################################################
       # record text that is drawn on the page
       def show_text(string) # Tj (AWAY)
-        if @state.current_font.nil?
-          raise PDF::Reader::MalformedPDFError, "current font is invalid"
-        end
-        #puts "string: #{@state.current_font.to_utf8(string)}"
-        @state.current_font.unpack(string).each do |chr|
-          # paint the current glyph
-          newx, newy = @state.trm_transform(0,0)
-
-          # apply to glyph displacment for the current glyph so the next
-          # glyph will appear in the correct position
-          w0 = @state.current_font.glyph_width(chr) / 1000
-          #puts "#{chr.chr} w:#{w0} @ #{newx},#{newy}"
-          tj = 0         # kerning
-          fs = font_size # font size
-          tc = @state.clone_state[:char_spacing] # character spacing
-          if chr == 32
-            tw = @state.clone_state[:word_spacing]
-          else
-            tw = 0
-          end
-          th = 100 / 100 # scaling factor
-          #puts "(((#{w0} - (#{tj}/1000)) * #{fs}) + #{tc} + #{tw}) * #{th}"
-          tx = (((w0 - (tj/1000)) * fs) + tc + tw) * th
-          ty = 0
-          @characters << Character.new(newx, newy, tx, chr.chr)
-          #puts "tx: #{tx}, ty: #{ty}"
-          @state.process_glyph_displacement(tx, ty)
-        end
+        internal_show_text(string)
       end
 
       class Character < Struct.new(:x, :y, :displacement, :text)
@@ -150,7 +123,9 @@ module PDF
       end
 
       def show_text_with_positioning(params) # TJ [(A) 120 (WA) 20 (Y)]
-        raise "implement this!"
+        params.each_slice(2).each do |string, kerning|
+          internal_show_text(string, kerning || 0)
+        end
       end
 
       def move_to_next_line_and_show_text(str) # '
@@ -201,23 +176,41 @@ module PDF
         runs
       end
 
-      # create a new line of text at the given position, set this new line
-      # to be the current line, and at the new line to the text group
-      def create_new_line_at(x, y, should_transform)
-        x_new, y_new = should_transform ? @state.trm_transform(0, 0) : [x, y]
-        @current_line = Formatted::PageLayout::Line.new(Formatted::PageLayout::Position.new(x_new, y_new))
-        @current_text_group.lines << @current_line
-      end
+      def internal_show_text(string, kerning = 0)
+        if @state.current_font.nil?
+          raise PDF::Reader::MalformedPDFError, "current font is invalid"
+        end
+        #puts "string: #{@state.current_font.to_utf8(string)}"
+        glyphs = @state.current_font.split_binary_data(string)
+        glyphs.each_with_index do |glyph_code, index|
+          # paint the current glyph
+          newx, newy = @state.trm_transform(0,0)
+          utf8_chars = @state.current_font.to_utf8(glyph_code)
 
-      def internal_move_to_next_line_and_show_text(str)
-        @state.move_to_start_of_next_line
-        create_new_line_at(0, 0, true)
-        internal_show_text(str)
-      end
-
-      # Create a new run and add to the current line
-      def internal_show_text(str)
-        @current_line.runs << Formatted::PageLayout::Run.new(str, @state.clone_state, @state, @verbosity)
+          # apply to glyph displacment for the current glyph so the next
+          # glyph will appear in the correct position
+          w0 = @state.current_font.glyph_width(glyph_code) / 1000
+          #puts "#{chr.chr} w:#{w0} @ #{newx},#{newy}"
+          fs = font_size # font size
+          tc = @state.clone_state[:char_spacing] # character spacing
+          if kerning > 0 && index == glyphs.size - 1
+            tj = kerning
+          else
+            tj = 0
+          end
+          if utf8_chars == " "
+            tw = @state.clone_state[:word_spacing]
+          else
+            tw = 0
+          end
+          th = 100 / 100 # scaling factor
+          #puts "(((#{w0} - (#{tj}/1000)) * #{fs}) + #{tc} + #{tw}) * #{th}"
+          tx = (((w0 - (tj/1000)) * fs) + tc + tw) * th
+          ty = 0
+          @characters << Character.new(newx, newy, tx, utf8_chars)
+          #puts "tx: #{tx}, ty: #{ty}"
+          @state.process_glyph_displacement(tx, ty)
+        end
       end
 
     end
