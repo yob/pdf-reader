@@ -25,6 +25,10 @@ module PDF
       def_delegators :@state, :set_text_font_and_size, :font_size
       def_delegators :@state, :set_text_leading, :set_text_rendering_mode
       def_delegators :@state, :set_text_rise, :set_word_spacing
+
+      # Text Positioning Operators
+      def_delegators :@state, :move_text_position, :move_text_position_and_set_leading
+      def_delegators :@state, :set_text_matrix_and_text_line_matrix, :move_to_start_of_next_line
       ##########  END FORWARDERS  ##########
 
       def initialize(options = {})
@@ -54,25 +58,6 @@ module PDF
         # individual lines in the group by combining lines that run into each
         # other.
         @state.end_text_object
-      end
-
-      #####################################################
-      # Text Positioning Operators
-      #####################################################
-      def move_text_position(x, y) # Td
-        @state.move_text_position(x, y)
-      end
-
-      def move_text_position_and_set_leading(x, y) # TD
-        @state.move_text_position_and_set_leading(x, y)
-      end
-
-      def move_to_start_of_next_line # T*
-        @state.move_to_start_of_next_line
-      end
-
-      def set_text_matrix_and_text_line_matrix(a, b, c, d, e, f) # Tm
-        @state.set_text_matrix_and_text_line_matrix a, b, c, d, e, f
       end
 
       #####################################################
