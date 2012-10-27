@@ -195,9 +195,10 @@ module PDF
           end
           th = 100 / 100 # scaling factor
           #puts "(((#{w0} - (#{tj}/1000)) * #{fs}) + #{tc} + #{tw}) * #{th}"
-          tx = (((w0 - (tj/1000)) * fs) + tc + tw) * th
+          glyph_width = ((w0 - (tj/1000)) * fs) * th
+          tx = glyph_width + ((tc + tw) * th)
           ty = 0
-          @characters << TextRun.new(newx, newy, w0, utf8_chars)
+          @characters << TextRun.new(newx, newy, glyph_width * th, utf8_chars)
           #puts "tx: #{tx}, ty: #{ty}"
           @state.process_glyph_displacement(tx, ty)
         end
