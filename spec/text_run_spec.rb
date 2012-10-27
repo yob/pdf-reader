@@ -58,9 +58,9 @@ describe PDF::Reader::TextRun, "#mergable?" do
     end
   end
 
-  context "when the two runs are over 10pts away from each other" do
+  context "when the two runs are over 12pts away from each other" do
     let(:one)   { PDF::Reader::TextRun.new(x,           y, width, "A")}
-    let(:two)   { PDF::Reader::TextRun.new(one.endx+11, y, width, "B")}
+    let(:two)   { PDF::Reader::TextRun.new(one.endx+13, y, width, "B")}
 
     it "should return false" do
       one.mergable?(two).should be_false
@@ -95,9 +95,9 @@ describe PDF::Reader::TextRun, "#+" do
     end
   end
 
-  context "when the two runs are over 10pts away from each other" do
+  context "when the two runs are over 12pts away from each other" do
     let(:one)   { PDF::Reader::TextRun.new(x,           y, width, "A")}
-    let(:two)   { PDF::Reader::TextRun.new(one.endx+11, y, width, "B")}
+    let(:two)   { PDF::Reader::TextRun.new(one.endx+13, y, width, "B")}
 
     it "should raise an exception" do
       lambda {

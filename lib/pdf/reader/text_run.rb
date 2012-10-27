@@ -4,7 +4,7 @@ class PDF::Reader
   class TextRun < Struct.new(:x, :y, :width, :text)
     include Comparable
 
-    MERGE_LIMIT = 10
+    MERGE_LIMIT = 12
 
     alias :to_s :text
 
@@ -29,7 +29,7 @@ class PDF::Reader
     end
 
     def mergable?(other)
-      y.abs == other.y.abs && Range.new(endx - 1, endx + MERGE_LIMIT).include?(other.x)
+      y.to_i == other.y.to_i && Range.new(endx - 3, endx + MERGE_LIMIT).include?(other.x)
     end
 
     def +(other)
