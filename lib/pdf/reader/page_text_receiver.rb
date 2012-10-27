@@ -168,7 +168,7 @@ module PDF
           #puts "#{chr.chr} w:#{w0} @ #{newx},#{newy}"
           fs = font_size # font size
           tc = @state.clone_state[:char_spacing] # character spacing
-          if kerning > 0 && index == glyphs.size - 1
+          if kerning != 0 && index == glyphs.size - 1
             tj = kerning
           else
             tj = 0
@@ -180,7 +180,7 @@ module PDF
           end
           th = 100 / 100 # scaling factor
           #puts "(((#{w0} - (#{tj}/1000)) * #{fs}) + #{tc} + #{tw}) * #{th}"
-          glyph_width = ((w0 - (tj/1000)) * fs) * th
+          glyph_width = ((w0 - (tj/1000.0)) * fs) * th
           tx = glyph_width + ((tc + tw) * th)
           ty = 0
           @characters << TextRun.new(newx, newy, glyph_width * th, utf8_chars)
