@@ -75,8 +75,8 @@ describe PDF::Reader, "integration specs" do
     filename = pdf_spec_file("content_stream_missing_final_operator")
 
     PDF::Reader.open(filename) do |reader|
-      reader.page(1).text.should match(/\ALocatrix/)
-      reader.page(2).text.should match(/\AUbuntu/)
+      reader.page(1).text.should match(/Locatrix/)
+      reader.page(2).text.should match(/Ubuntu/)
     end
   end
 
