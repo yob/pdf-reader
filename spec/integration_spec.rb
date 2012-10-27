@@ -26,7 +26,7 @@ describe PDF::Reader, "integration specs" do
 
     PDF::Reader.open(filename) do |reader|
       page = reader.page(1)
-      page.text.should eql("V\ne\nr\nt\ni\nc\na\nl\n \nT\ne\nx\nt")
+      page.text.split.map(&:strip).should eql(%w{V e r t i c a l T e x t})
     end
   end
 
