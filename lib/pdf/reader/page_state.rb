@@ -123,9 +123,10 @@ class PDF::Reader
       #####################################################
 
       def move_text_position(x, y) # Td
-        multiply!(@text_line_matrix, 1, 0, 0,
-                                     0, 1, 0,
-                                     x, y, 1)
+        temp = [1, 0, 0,
+                0, 1, 0,
+                x, y, 1]
+        @text_line_matrix = multiply!(temp, *@text_line_matrix)
         @text_matrix = @text_line_matrix.dup
         @text_rendering_matrix = nil # invalidate cached value
       end
@@ -374,6 +375,9 @@ class PDF::Reader
       # multiply two 3x3 matrices
       # the second is represented by the last 9 scalar arguments
       # store the results back into the first (to avoid allocating memory)
+      #
+      # NOTE: When multiplying matrixes, ordering matters. Double check
+      #       the PDF spec to ensure you're multiplying things correctly
       #
       def multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
         a1,b1,c1, d1,e1,f1, g1,h1,i1 = m1
