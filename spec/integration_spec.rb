@@ -138,7 +138,7 @@ describe PDF::Reader, "integration specs" do
     filename = pdf_spec_file("ascii85_filter")
 
     PDF::Reader.open(filename) do |reader|
-      reader.page(1).text[0,11].should eql("Et Iunia se")
+      reader.page(1).text.should match(/Et Iunia se/)
     end
   end
 
