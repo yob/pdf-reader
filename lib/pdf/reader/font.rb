@@ -126,6 +126,13 @@ class PDF::Reader
 
       puts "glyph_width(#{code_point})" if @DEBUG_FONT > 2
 
+      # Type1 fonts can be one of 14 "built in" standard fonts. In these cases,
+      # the reader is expected to have it's own copy of the font metrics.
+      # see Section 9.6.2.2, PDF 32000-1:2008, pp 256
+      if @is_builtin
+        return 500
+      end
+
       # Type0 (or Composite) fonts are a "root font" that rely on a "descendant font"
       # to do the heavy lifting. The "descendant font" is a CID-Keyed font.
       # see Section 9.7.1, PDF 32000-1:2008, pp 267
@@ -201,8 +208,9 @@ class PDF::Reader
 
       # A Type0 font is a "root font" and will have a reference to its
       # "descendant font" whose type will be a CIDFont.
-      @is_cid_typ = @subtype == :CIDFontType2 || @subtype == :CIDFontType0
+      @is_cid_typ  = @subtype == :CIDFontType2 || @subtype == :CIDFontType0
       @is_ttyp_typ = @subtype == :TrueType
+      @is_builtin  = @subtype == :Type1 && obj[:FontDescriptor].nil?
       @basefont = @ohash.object(obj[:BaseFont])
 
       puts "##### Got Font // basefont: #{@basefont}   subtype: #{@subtype}" if @DEBUG_FONT > 0
