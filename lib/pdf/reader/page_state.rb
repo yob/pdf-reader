@@ -99,7 +99,7 @@ class PDF::Reader
       end
 
       def font_size
-        (state[:text_font_size] || 12) * @text_matrix[0]
+        (state[:text_font_size] || 12) * @text_matrix[0] * ctm[0]
       end
 
       def set_text_leading(leading)
