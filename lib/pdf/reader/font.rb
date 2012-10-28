@@ -130,7 +130,11 @@ class PDF::Reader
       # the reader is expected to have it's own copy of the font metrics.
       # see Section 9.6.2.2, PDF 32000-1:2008, pp 256
       if @is_builtin
-        return 500
+        if @basefont == :Helvetica
+          return PDF::Reader::AFM::Helvetica[code_point]
+        else
+          return 500
+        end
       end
 
       # Type0 (or Composite) fonts are a "root font" that rely on a "descendant font"
