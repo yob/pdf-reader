@@ -164,7 +164,7 @@ module PDF
 
           # apply to glyph displacment for the current glyph so the next
           # glyph will appear in the correct position
-          w0 = @state.current_font.glyph_width(glyph_code) / 1000
+          w0 = @state.current_font.glyph_width(glyph_code) / 1000.0
           #puts "#{chr.chr} w:#{w0} @ #{newx},#{newy}"
           fs = font_size # font size
           tc = @state.clone_state[:char_spacing] # character spacing
