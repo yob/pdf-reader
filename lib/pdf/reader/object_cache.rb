@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require 'hashery'
+require 'hashery/lru_hash'
 
 class PDF::Reader
 
