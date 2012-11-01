@@ -164,28 +164,16 @@ module PDF
 
           # apply to glyph displacment for the current glyph so the next
           # glyph will appear in the correct position
-          w0 = @state.current_font.glyph_width(glyph_code) / 1000.0
-          #puts "#{chr.chr} w:#{w0} @ #{newx},#{newy}"
-          fs = font_size # font size
-          tc = @state.clone_state[:char_spacing] # character spacing
+          glyph_width = @state.current_font.glyph_width(glyph_code) / 1000.0
+          th = 1
           if kerning != 0 && index == glyphs.size - 1
             tj = kerning
           else
             tj = 0
           end
-          if utf8_chars == " "
-            tw = @state.clone_state[:word_spacing]
-          else
-            tw = 0
-          end
-          th = 100 / 100 # scaling factor
-          #puts "(((#{w0} - (#{tj}/1000)) * #{fs}) + #{tc} + #{tw}) * #{th}"
-          glyph_width = ((w0 - (tj/1000.0)) * fs) * th
-          tx = glyph_width + ((tc + tw) * th)
-          ty = 0
-          @characters << TextRun.new(newx, newy, glyph_width * th, utf8_chars)
-          #puts "tx: #{tx}, ty: #{ty}"
-          @state.process_glyph_displacement(tx, ty)
+          scaled_glyph_width = glyph_width * @state.font_size * th
+          @characters << TextRun.new(newx, newy, scaled_glyph_width, utf8_chars)
+          @state.process_glyph_displacement(glyph_width, tj, utf8_chars == " ")
         end
       end
 

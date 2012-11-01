@@ -277,11 +277,39 @@ class PDF::Reader
       # the use case some receivers may need to mutate the state with this
       # while walking a page.
       #
-      # see Section 9.4.4, PDF 32000-1:2008, pp 252
-      def process_glyph_displacement(x, y)
-        multiply!(@text_matrix, 1, 0, 0,
-                                0, 1, 0,
-                                x, y, 1)
+      # NOTE: some of the variable names in this method are obscure because
+      #       they mirror variable names from the PDF spec
+      #
+      # NOTE: see Section 9.4.4, PDF 32000-1:2008, pp 252
+      #
+      # Arguments:
+      #
+      # w0 - the glyph width in *text space*. This generally means the width
+      #      in glyph space should be divded by 1000 before being passed to
+      #      this function
+      # tj - any kerning that should be applied to the text matrix before the
+      #      following glyph is painted. This is usually the numeric arguments
+      #      in the array passed to a TJ operator
+      # word_boundary - a boolean indicating if a word boundary was just
+      #                 reached. Depending on the current state extra space
+      #                 may need to be added
+      #
+      def process_glyph_displacement(w0, tj, word_boundary)
+        fs = font_size # font size
+        tc = state[:char_spacing]
+        if word_boundary
+          tw = state[:word_spacing]
+        else
+          tw = 0
+        end
+        th = state[:h_scaling] / 100.0 # scaling factor
+        glyph_width = ((w0 - (tj/1000.0)) * fs) * th
+        tx = glyph_width + ((tc + tw) * th)
+        ty = 0
+
+        multiply!(@text_matrix, 1,  0,  0,
+                                0,  1,  0,
+                                tx, ty, 1)
         @text_rendering_matrix = nil # invalidate cached value
       end
 
