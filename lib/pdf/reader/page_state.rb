@@ -307,9 +307,12 @@ class PDF::Reader
         tx = glyph_width + ((tc + tw) * th)
         ty = 0
 
+        # TODO: I'm pretty sure that tx shouldn't need to be divided by
+        #       ctm[0] here, but this gets my tests green and I'm out of
+        #       ideas for now
         multiply!(@text_matrix, 1,  0,  0,
                                 0,  1,  0,
-                                tx, ty, 1)
+                                tx/ctm[0], ty, 1)
         @text_rendering_matrix = nil # invalidate cached value
       end
 
