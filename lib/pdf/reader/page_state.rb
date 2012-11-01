@@ -405,7 +405,9 @@ class PDF::Reader
       # store the results back into the first (to avoid allocating memory)
       #
       # NOTE: When multiplying matrixes, ordering matters. Double check
-      #       the PDF spec to ensure you're multiplying things correctly
+      #       the PDF spec to ensure you're multiplying things correctly.
+      #
+      # NOTE: see Section 8.3.3, PDF 32000-1:2008, pp 119
       #
       def multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
         a1,b1,c1, d1,e1,f1, g1,h1,i1 = m1
