@@ -165,8 +165,8 @@ describe PDF::Reader::PageState do
 
         state.trm_transform(0,0).should == [0,0]
         state.trm_transform(0,1).should == [0, 12]
-        state.trm_transform(1,0).should == [1200, 0]
-        state.trm_transform(1,1).should == [1200, 12]
+        state.trm_transform(1,0).should == [12, 0]
+        state.trm_transform(1,1).should == [12, 12]
       end
     end
   end
@@ -185,8 +185,8 @@ describe PDF::Reader::PageState do
         # external collaborators will use
         state.trm_transform(0,0).should == [5,10]
         state.trm_transform(0,1).should == [5, 22]
-        state.trm_transform(1,0).should == [1205, 10]
-        state.trm_transform(1,1).should == [1205, 22]
+        state.trm_transform(1,0).should == [17, 10]
+        state.trm_transform(1,1).should == [17, 22]
       end
     end
   end
@@ -205,8 +205,8 @@ describe PDF::Reader::PageState do
         # external collaborators will use
         state.trm_transform(0,0).should == [5, 10]
         state.trm_transform(0,1).should == [5, 22]
-        state.trm_transform(1,0).should == [1205, 10]
-        state.trm_transform(1,1).should == [1205, 22]
+        state.trm_transform(1,0).should == [17, 10]
+        state.trm_transform(1,1).should == [17, 22]
       end
 
       it "should correctly alter the text leading" do
@@ -233,8 +233,8 @@ describe PDF::Reader::PageState do
         # external collaborators will use
         state.trm_transform(0,0).should == [5, 6]
         state.trm_transform(0,1).should == [41, 54]
-        state.trm_transform(1,0).should == [1205, 2406]
-        state.trm_transform(1,1).should == [1241, 2454]
+        state.trm_transform(1,0).should == [17, 30]
+        state.trm_transform(1,1).should == [53.0, 78.0]
       end
     end
   end
@@ -254,8 +254,8 @@ describe PDF::Reader::PageState do
         # external collaborators will use
         state.trm_transform(0,0).should == [0, -15]
         state.trm_transform(0,1).should == [0, -3]
-        state.trm_transform(1,0).should == [1200, -15]
-        state.trm_transform(1,1).should == [1200, -3]
+        state.trm_transform(1,0).should == [12, -15]
+        state.trm_transform(1,1).should == [12, -3]
       end
     end
   end
@@ -275,8 +275,8 @@ describe PDF::Reader::PageState do
         # external collaborators will use
         state.trm_transform(0,0).should == [0, -15]
         state.trm_transform(0,1).should == [0, -3]
-        state.trm_transform(1,0).should == [1200, -15]
-        state.trm_transform(1,1).should == [1200, -3]
+        state.trm_transform(1,0).should == [12, -15]
+        state.trm_transform(1,1).should == [12, -3]
       end
     end
   end
@@ -307,8 +307,8 @@ describe PDF::Reader::PageState do
         # external collaborators will use
         state.trm_transform(0,0).should == [0, 0]
         state.trm_transform(0,1).should == [0, 12]
-        state.trm_transform(1,0).should == [1200, 0]
-        state.trm_transform(1,1).should == [1200, 12]
+        state.trm_transform(1,0).should == [12, 0]
+        state.trm_transform(1,1).should == [12, 12]
       end
     end
   end
@@ -327,8 +327,8 @@ describe PDF::Reader::PageState do
         # external collaborators will use
         state.trm_transform(0,0).should == [40, 700]
         state.trm_transform(0,1).should == [40, 712]
-        state.trm_transform(1,0).should == [1240, 700]
-        state.trm_transform(1,1).should == [1240, 712]
+        state.trm_transform(1,0).should == [52, 700]
+        state.trm_transform(1,1).should == [52, 712]
       end
 
       context "2pt glyph width" do
@@ -342,8 +342,8 @@ describe PDF::Reader::PageState do
 
                   state.trm_transform(0,0).should == [64, 700]
                   state.trm_transform(0,1).should == [64, 712]
-                  state.trm_transform(1,0).should == [1264, 700]
-                  state.trm_transform(1,1).should == [1264, 712]
+                  state.trm_transform(1,0).should == [76, 700]
+                  state.trm_transform(1,1).should == [76, 712]
                 end
               end
               context "a word boundary" do
@@ -353,8 +353,8 @@ describe PDF::Reader::PageState do
 
                   state.trm_transform(0,0).should == [64, 700]
                   state.trm_transform(0,1).should == [64, 712]
-                  state.trm_transform(1,0).should == [1264, 700]
-                  state.trm_transform(1,1).should == [1264, 712]
+                  state.trm_transform(1,0).should == [76, 700]
+                  state.trm_transform(1,1).should == [76, 712]
                 end
               end
             end
@@ -366,8 +366,8 @@ describe PDF::Reader::PageState do
 
                   state.trm_transform(0,0).should == [63.976, 700]
                   state.trm_transform(0,1).should == [63.976, 712]
-                  state.trm_transform(1,0).should == [1263.976, 700]
-                  state.trm_transform(1,1).should == [1263.976, 712]
+                  state.trm_transform(1,0).should == [75.976, 700]
+                  state.trm_transform(1,1).should == [75.976, 712]
                 end
               end
               context "a word boundary" do
@@ -377,8 +377,8 @@ describe PDF::Reader::PageState do
 
                   state.trm_transform(0,0).should == [63.976, 700]
                   state.trm_transform(0,1).should == [63.976, 712]
-                  state.trm_transform(1,0).should == [1263.976, 700]
-                  state.trm_transform(1,1).should == [1263.976, 712]
+                  state.trm_transform(1,0).should == [75.976, 700]
+                  state.trm_transform(1,1).should == [75.976, 712]
                 end
               end
             end
@@ -395,8 +395,8 @@ describe PDF::Reader::PageState do
 
                   state.trm_transform(0,0).should == [64, 700]
                   state.trm_transform(0,1).should == [64, 712]
-                  state.trm_transform(1,0).should == [1264, 700]
-                  state.trm_transform(1,1).should == [1264, 712]
+                  state.trm_transform(1,0).should == [76, 700]
+                  state.trm_transform(1,1).should == [76, 712]
                 end
               end
               context "a word boundary" do
@@ -406,8 +406,8 @@ describe PDF::Reader::PageState do
 
                   state.trm_transform(0,0).should == [65, 700]
                   state.trm_transform(0,1).should == [65, 712]
-                  state.trm_transform(1,0).should == [1265, 700]
-                  state.trm_transform(1,1).should == [1265, 712]
+                  state.trm_transform(1,0).should == [77, 700]
+                  state.trm_transform(1,1).should == [77, 712]
                 end
               end
             end
@@ -419,8 +419,8 @@ describe PDF::Reader::PageState do
 
                   state.trm_transform(0,0).should == [63.976, 700]
                   state.trm_transform(0,1).should == [63.976, 712]
-                  state.trm_transform(1,0).should == [1263.976, 700]
-                  state.trm_transform(1,1).should == [1263.976, 712]
+                  state.trm_transform(1,0).should == [75.976, 700]
+                  state.trm_transform(1,1).should == [75.976, 712]
                 end
               end
               context "a word boundary" do
@@ -430,8 +430,8 @@ describe PDF::Reader::PageState do
 
                   state.trm_transform(0,0).should == [64.976, 700]
                   state.trm_transform(0,1).should == [64.976, 712]
-                  state.trm_transform(1,0).should == [1264.976, 700]
-                  state.trm_transform(1,1).should == [1264.976, 712]
+                  state.trm_transform(1,0).should == [76.976, 700]
+                  state.trm_transform(1,1).should == [76.976, 712]
                 end
               end
             end
@@ -450,8 +450,8 @@ describe PDF::Reader::PageState do
 
                   state.trm_transform(0,0).should == [65, 700]
                   state.trm_transform(0,1).should == [65, 712]
-                  state.trm_transform(1,0).should == [1265, 700]
-                  state.trm_transform(1,1).should == [1265, 712]
+                  state.trm_transform(1,0).should == [77, 700]
+                  state.trm_transform(1,1).should == [77, 712]
                 end
               end
               context "a word boundary" do
@@ -461,8 +461,8 @@ describe PDF::Reader::PageState do
 
                   state.trm_transform(0,0).should == [65, 700]
                   state.trm_transform(0,1).should == [65, 712]
-                  state.trm_transform(1,0).should == [1265, 700]
-                  state.trm_transform(1,1).should == [1265, 712]
+                  state.trm_transform(1,0).should == [77, 700]
+                  state.trm_transform(1,1).should == [77, 712]
                 end
               end
             end
@@ -474,8 +474,8 @@ describe PDF::Reader::PageState do
 
                   state.trm_transform(0,0).should == [64.976, 700]
                   state.trm_transform(0,1).should == [64.976, 712]
-                  state.trm_transform(1,0).should == [1264.976, 700]
-                  state.trm_transform(1,1).should == [1264.976, 712]
+                  state.trm_transform(1,0).should == [76.976, 700]
+                  state.trm_transform(1,1).should == [76.976, 712]
                 end
               end
               context "a word boundary" do
@@ -485,8 +485,8 @@ describe PDF::Reader::PageState do
 
                   state.trm_transform(0,0).should == [64.976, 700]
                   state.trm_transform(0,1).should == [64.976, 712]
-                  state.trm_transform(1,0).should == [1264.976, 700]
-                  state.trm_transform(1,1).should == [1264.976, 712]
+                  state.trm_transform(1,0).should == [76.976, 700]
+                  state.trm_transform(1,1).should == [76.976, 712]
                 end
               end
             end
@@ -503,8 +503,8 @@ describe PDF::Reader::PageState do
 
                   state.trm_transform(0,0).should == [65, 700]
                   state.trm_transform(0,1).should == [65, 712]
-                  state.trm_transform(1,0).should == [1265, 700]
-                  state.trm_transform(1,1).should == [1265, 712]
+                  state.trm_transform(1,0).should == [77, 700]
+                  state.trm_transform(1,1).should == [77, 712]
                 end
               end
               context "a word boundary" do
@@ -514,8 +514,8 @@ describe PDF::Reader::PageState do
 
                   state.trm_transform(0,0).should == [66, 700]
                   state.trm_transform(0,1).should == [66, 712]
-                  state.trm_transform(1,0).should == [1266, 700]
-                  state.trm_transform(1,1).should == [1266, 712]
+                  state.trm_transform(1,0).should == [78, 700]
+                  state.trm_transform(1,1).should == [78, 712]
                 end
               end
             end
@@ -527,8 +527,8 @@ describe PDF::Reader::PageState do
 
                   state.trm_transform(0,0).should == [64.976, 700]
                   state.trm_transform(0,1).should == [64.976, 712]
-                  state.trm_transform(1,0).should == [1264.976, 700]
-                  state.trm_transform(1,1).should == [1264.976, 712]
+                  state.trm_transform(1,0).should == [76.976, 700]
+                  state.trm_transform(1,1).should == [76.976, 712]
                 end
               end
               context "a word boundary" do
@@ -538,8 +538,8 @@ describe PDF::Reader::PageState do
 
                   state.trm_transform(0,0).should == [65.976, 700]
                   state.trm_transform(0,1).should == [65.976, 712]
-                  state.trm_transform(1,0).should == [1265.976, 700]
-                  state.trm_transform(1,1).should == [1265.976, 712]
+                  state.trm_transform(1,0).should == [77.976, 700]
+                  state.trm_transform(1,1).should == [77.976, 712]
                 end
               end
             end

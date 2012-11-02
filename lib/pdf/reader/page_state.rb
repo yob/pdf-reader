@@ -9,7 +9,7 @@ class PDF::Reader
       DEFAULT_GRAPHICS_STATE = {
         :char_spacing   => 0,
         :word_spacing   => 0,
-        :h_scaling      => 100,
+        :h_scaling      => 1.0,
         :text_leading   => 0,
         :text_font      => nil,
         :text_font_size => nil,
@@ -90,7 +90,7 @@ class PDF::Reader
       end
 
       def set_horizontal_text_scaling(h_scaling)
-        state[:h_scaling] = h_scaling
+        state[:h_scaling] = h_scaling / 100.0
       end
 
       def set_text_font_and_size(label, size)
@@ -302,7 +302,7 @@ class PDF::Reader
         else
           tw = 0
         end
-        th = state[:h_scaling] / 100.0 # scaling factor
+        th = state[:h_scaling]
         glyph_width = ((w0 - (tj/1000.0)) * fs) * th
         tx = glyph_width + ((tc + tw) * th)
         ty = 0
