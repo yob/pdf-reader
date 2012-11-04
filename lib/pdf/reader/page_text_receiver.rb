@@ -118,7 +118,7 @@ module PDF
           str = run.text
           if y_pos < def_rows && y_pos >= 0 && x_pos < def_cols && x_pos >= 0
             $stderr.puts "{%3d, %3d} -- %s" % [x_pos, y_pos, str.dump] if @verbosity > 2
-            page[y_pos][Range.new(x_pos, x_pos + str.length - 1)] = String.new(str)
+            local_string_insert(page[y_pos], str, x_pos)
             $stderr.puts "Page[#{y_pos}] #{page[y_pos]}" if @verbosity > 2
           else
             $stderr.puts "Layout Skipping Line off of page:\n#{run}" if @verbosity > 0
@@ -136,6 +136,23 @@ module PDF
       end
 
       private
+
+      # This is a simple alternative to String#[]=. We can't use the string
+      # method as it's buggy on rubinius 2.0rc1 (in 1.9 mode)
+      #
+      # See my bug report at https://github.com/rubinius/rubinius/issues/1985
+      def local_string_insert(haystack, needle, index)
+        if RUBY_DESCRIPTION =~ /\Arubinius 2.0.0/ && RUBY_VERSION >= "1.9.0"
+          char_count = needle.length
+          haystack.replace(
+            (haystack[0,index] || "") +
+            needle +
+            (haystack[index+char_count,500] || "")
+          )
+        else
+          haystack[Range.new(index, index + needle.length - 1)] = String.new(needle)
+        end
+      end
 
       def group_chars_into_runs(chars)
         runs = []
