@@ -12,11 +12,8 @@ class PDF::Reader
                 :avg_width, :max_width, :missing_width, :italic_angle, :stem_v,
                 :x_height, :font_flag, :is_serif, :is_fixed_width, :is_symbolic,
                 :is_script, :is_italic, :is_all_caps, :is_small_caps
-    @debug_font
 
-    def initialize(ohash, fd_hash, debug_font = 0)
-      @debug_font = debug_font
-
+    def initialize(ohash, fd_hash)
       @ascent                = ohash.object(fd_hash[:Ascent])
       @descent               = ohash.object(fd_hash[:Descent])
       @missing_width         = ohash.object(fd_hash[:MissingWidth])
@@ -67,12 +64,7 @@ class PDF::Reader
       @is_all_caps           = (@font_flags & 0x10000) > 0
       @is_small_caps         = (@font_flags & 0x20000) > 0
 
-      puts self.inspect if debug_font > 0
-      if @font_program_stream
-        @is_ttf = true
-        puts "TTF: #{self.ttf_program_stream.inspect}" if debug_font > 1
-        test_ttf_program_stream if debug_font > 2
-      end
+      @is_ttf = true if @font_program_stream
     end
 
     def ttf_program_stream
@@ -86,7 +78,6 @@ class PDF::Reader
         else
           glyph_id = char_code
         end
-        puts "Using Char Code: #{char_code} is Glyph ID: #{glyph_id}" if @debug_font > 0
         char_metric = ttf_program_stream.horizontal_metrics.metrics[glyph_id]
         if char_metric
           puts "Char Code: #{char_code} -- Advance Width: #{char_metric.advance_width}" > 0
@@ -105,64 +96,6 @@ class PDF::Reader
       end
       @glyph_to_pdf_sf
     end
-
-    def test_ttf_program_stream
-      file = self.ttf_program_stream
-      puts "-- FONT ------------------------------------"
-      puts "revision  : %08x" % file.header.font_revision
-      puts "name      : #{file.name.font_name.join(', ')}"
-      puts "family    : #{file.name.font_family.join(', ')}"
-      puts "subfamily : #{file.name.font_subfamily.join(', ')}"
-      puts "postscript: #{file.name.postscript_name}"
-
-      puts "-- FONT METRICS ----------------------------"
-      puts "units/em  : #{file.header.units_per_em}"
-      puts "ascent    : #{file.ascent}"
-      puts "descent   : #{file.descent}"
-      puts "line gap  : #{file.line_gap}"
-      puts "bbox      : (%d,%d)-(%d,%d)" % file.bbox
-
-      puts "-- FONT TABLES ----------------------------"
-      begin
-        advance_list = file.horizontal_metrics.metrics.inject([]) {|advances, metric|
-          advances << metric.advance_width
-        }
-        puts "HMTX(#{file.horizontal_metrics.metrics.count})>>>>\n#{advance_list}\n<<<<"
-        file.cmap.tables.each { |table|
-          puts "CMAP TABLE>>>>\nformat: #{table.format}\nplatform_id: #{table.platform_id}\nencoding_id: #{table.encoding_id}\n<<<<"
-        }
-        puts "UCODE MAP>>>>\n#{file.cmap.unicode.first.code_map}\n<<<<"
-      rescue
-        puts "problem accessing cmap"
-      end
-    end
-
-    def inspect
-      s = ""
-      s << "-- Font Descriptor ---------------\n"
-      s << " font name         : #{@font_name}\n"
-      s << " font family       : #{@font_family}\n"
-      s << " font stretch      : #{@font_stretch}\n"
-      s << " font weight       : #{@font_weight}\n"
-      s << " font bounding box : #{@font_bounding_box}\n"
-      s << " cap height        : #{@cap_height}\n"
-      s << " ascent            : #{@ascent}\n"
-      s << " descent           : #{@descent}\n"
-      s << " average width     : #{@avg_width}\n"
-      s << " max. width        : #{@max_width}\n"
-      s << " missing width     : #{@missing_width}\n"
-      s << " leading           : #{@leading}\n"
-      s << " font flags        : #{@font_flags}\n"
-      s << " is fixed width    : #{@is_fixed_width}\n"
-      s << " is serif          : #{@is_serif}\n"
-      s << " is symbolic       : #{@is_symbolic}\n"
-      s << " is script         : #{@is_script}\n"
-      s << " is italic         : #{@is_italic}\n"
-      s << " is all caps       : #{@is_all_caps}\n"
-      s << " is small caps     : #{@is_small_caps}\n"
-      s << "-- End Font Descriptor -----------\n"
-    end
-
   end
 
 end
