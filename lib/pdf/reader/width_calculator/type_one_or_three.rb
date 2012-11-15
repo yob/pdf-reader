@@ -17,17 +17,14 @@ class PDF::Reader
 
       def glyph_width(code_point)
         return 0 if code_point.nil? || code_point < 0
+        return 0 if @font.widths.nil? || @font.widths.count == 0
 
-        if @font.widths && @font.widths.count > 0
-          if @font.first_char <= code_point
-            # in ruby a negative index is valid, and will go from the end of the array
-            # which is undesireable in this case.
-            w = @font.widths.fetch(code_point - @font.first_char, @missing_width)
-          else
-            w = @missing_width
-          end
-          #TODO convert Type3 units 1000 units => 1 text space unit
-          return w.to_f
+        # in ruby a negative index is valid, and will go from the end of the array
+        # which is undesireable in this case.
+        if @font.first_char <= code_point
+          @font.widths.fetch(code_point - @font.first_char, @missing_width).to_f
+        else
+          @missing_width.to_f
         end
       end
     end

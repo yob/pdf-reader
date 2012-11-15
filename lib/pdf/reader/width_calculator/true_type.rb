@@ -25,7 +25,7 @@ class PDF::Reader
 
       #TODO convert Type3 units 1000 units => 1 text space unit
       def glyph_width_from_font(code_point)
-        return if @font.widths.nil? || @font.widths.count = 0
+        return if @font.widths.nil? || @font.widths.count == 0
 
         # in ruby a negative index is valid, and will go from the end of the array
         # which is undesireable in this case.
