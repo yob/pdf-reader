@@ -14,7 +14,7 @@ class PDF::Reader
                 :is_script, :is_italic, :is_all_caps, :is_small_caps
     @debug_font
 
-    def initialize(ohash, fd_hash, debug_font = false)
+    def initialize(ohash, fd_hash, debug_font = 0)
       @debug_font = debug_font
 
       @ascent                = ohash.object(fd_hash[:Ascent])

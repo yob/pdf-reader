@@ -33,7 +33,7 @@ class PDF::Reader
     attr_accessor :subtype, :encoding, :descendantfonts, :tounicode
     attr_reader :widths, :first_char, :last_char, :basefont, :font_descriptor,
                 :is_cid_type, :is_ttyp_type, :cid_widths, :cid_default_width,
-                :has_to_unicode_table, :DEBUG_FONT
+                :has_to_unicode_table
 
     def initialize(ohash = nil, obj = nil)
       if ohash.nil? || obj.nil?
@@ -42,14 +42,12 @@ class PDF::Reader
       end
       @ohash = ohash
       @tounicode = nil
-      @DEBUG_FONT = 0
 
       extract_base_info(obj)
       extract_descriptor(obj)
       extract_descendants(obj)
 
       @encoding ||= PDF::Reader::Encoding.new(:StandardEncoding)
-      puts "##### Finished Reading: #{@basefont}" if @DEBUG_FONT > 0
     end
 
     def basefont=(font)
@@ -124,8 +122,6 @@ class PDF::Reader
     def internal_glyph_width(code_point)
       return 0 if code_point.nil? || code_point < 0
 
-      puts "glyph_width(#{code_point})" if @DEBUG_FONT > 2
-
       # Type1 fonts can be one of 14 "built in" standard fonts. In these cases,
       # the reader is expected to have it's own copy of the font metrics.
       # see Section 9.6.2.2, PDF 32000-1:2008, pp 256
@@ -144,9 +140,7 @@ class PDF::Reader
       # the descendant font
       if @subtype == :Type0
         if descendant_font = @descendantfonts[0]
-          #DEBUG puts "Calculating type 0 font with descendant font"
           if w = descendant_font.glyph_width(code_point)
-            puts "Got Type0 font width from descendant font Width: #{w}"if @DEBUG_FONT > 1
             return w.to_f
           end
         end
@@ -160,7 +154,6 @@ class PDF::Reader
       # see Section 9.7.4.1, PDF 32000-1:2008, pp 269-270
       if @is_cid_typ
         w = calculate_cidfont_glyph_width(code_point)
-        puts "calculate_cidfont_glyph_width('#{code_point}') = #{w}" if @DEBUG_FONT > 0
         # 0 is a valid width
         return w.to_f unless w.nil?
       end
@@ -183,11 +176,9 @@ class PDF::Reader
           w = missing_width
         end
         #TODO convert Type3 units 1000 units => 1 text space unit
-        puts "Widths['#{code_point}'] = #{w}" if @DEBUG_FONT > 0
         return w.to_f
       end
 
-      puts "Font Descriptor: #{@font_descriptor.inspect}" if @DEBUG_FONT > 2
       # if all else fails revert to the font descriptor
       return unless @font_descriptor
       # true type fonts will have most of their information contained
@@ -195,7 +186,6 @@ class PDF::Reader
       # may not be in standard PDF glyph widths (1000 units => 1 text space unit)
       # so this width will need to be scaled
       w = @font_descriptor.find_glyph_width(code_point)
-      puts "font_descriptor.find_glyph_width(#{code_point}) = #{w}" if @DEBUG_FONT > 0
       return w.to_f * @font_descriptor.glyph_to_pdf_scale_factor unless w.nil?
     end
 
@@ -217,14 +207,11 @@ class PDF::Reader
       @is_builtin  = @subtype == :Type1 && obj[:FontDescriptor].nil?
       @basefont = @ohash.object(obj[:BaseFont])
 
-      puts "##### Got Font // basefont: #{@basefont}   subtype: #{@subtype}" if @DEBUG_FONT > 0
-
       if @is_cid_typ
         # CID Fonts are not required to have a W or DW entry, if they don't exist,
         # the default cid width = 1000, see Section 9.7.4.1 PDF 32000-1:2008 pp 269
         @cid_widths         = @ohash.object(obj[:W])  || []
         @cid_default_width  = @ohash.object(obj[:DW]) || 1000
-        puts "CIDFontType2 DW: #{@cid_default_width} W: #{@cid_widths.inspect}" if @DEBUG_FONT > 0
       else
         @has_to_unicode_table = false
         # TrueType has the same entries as Type1, see Section 9.6.3 PDF 32000-1:2008 pp 257
@@ -232,17 +219,13 @@ class PDF::Reader
         @widths   = @ohash.object(obj[:Widths]) || []
         @first_char = @ohash.object(obj[:FirstChar])
         @last_char = @ohash.object(obj[:LastChar])
-        puts "Non-CID First Char: #{@first_char} Last Char: #{@last_char} " +
-          "Font Widths: #{@widths.inspect}" if @DEBUG_FONT > 0
         # Encoding is required for Type3, optional for Type1
         @encoding = PDF::Reader::Encoding.new(@ohash.object(obj[:Encoding]))
-        puts "Encoding:\n #{@encoding.inspect}" if @DEBUG_FONT > 0
         if obj[:ToUnicode]
           # ToUnicode is optional for Type1 and Type3
           stream = @ohash.object(obj[:ToUnicode])
           @tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
           @has_to_unicode_table = true
-          puts "Unicode Table:\n #{@tounicode.inspect}" if @DEBUG_FONT > 0
         end
       end
     end
@@ -252,7 +235,7 @@ class PDF::Reader
         # create a font descriptor object if we can, in other words, unless this is
         # a CID Font
         fd = @ohash.object(obj[:FontDescriptor])
-        @font_descriptor = PDF::Reader::FontDescriptor.new(@ohash, fd, @DEBUG_FONT)
+        @font_descriptor = PDF::Reader::FontDescriptor.new(@ohash, fd)
       else
         @font_descriptor = nil
       end
@@ -267,14 +250,6 @@ class PDF::Reader
       @descendantfonts = descendants.map { |desc|
         PDF::Reader::Font.new(@ohash, @ohash.object(desc))
       }
-
-      if @DEBUG_FONT > 0 && @descendantfonts
-        puts "++++++++ Found Descendant Fonts"
-        @descendantfonts.each {|font|
-          puts font.basefont
-        }
-        puts "++++++++ End Descendant Fonts"
-      end
     end
 
     def to_utf8_via_cmap(params)
