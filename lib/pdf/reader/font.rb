@@ -119,20 +119,8 @@ class PDF::Reader
 
     def extract_base_info(obj)
       @subtype  = @ohash.object(obj[:Subtype])
-      # A CIDFontType[0|2] will have a reference to its FontDescriptor
-      # it's FontDescriptor _may_ have an embedded font program in
-      # one of FontFile, FontFile2, FontFile3
-
-      # A Type0 font is a "root font" and will have a reference to its
-      # "descendant font" whose type will be a CIDFont.
-      @is_cid_typ  = @subtype == :CIDFontType2 || @subtype == :CIDFontType0
-      @is_ttyp_typ = @subtype == :TrueType
-      @is_builtin  = @subtype == :Type1 && obj[:FontDescriptor].nil?
-
       @basefont = @ohash.object(obj[:BaseFont])
       @encoding = PDF::Reader::Encoding.new(@ohash.object(obj[:Encoding]))
-      # TrueType has the same entries as Type1, see Section 9.6.3 PDF 32000-1:2008 pp 257
-      # Type1 and Type3 are required to have a Widths, FirstChar, LastChar
       @widths   = @ohash.object(obj[:Widths]) || []
       @first_char = @ohash.object(obj[:FirstChar])
       @last_char = @ohash.object(obj[:LastChar])
