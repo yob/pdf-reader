@@ -66,10 +66,6 @@ class PDF::Reader
       @basefont = font
     end
 
-    def can_convert_to_utf8?
-      (@tounicode && @tounicode.map.count > 0) || @encoding
-    end
-
     def to_utf8(params)
       if @tounicode
         to_utf8_via_cmap(params)
