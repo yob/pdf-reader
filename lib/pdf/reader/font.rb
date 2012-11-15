@@ -25,6 +25,8 @@
 #
 ################################################################################
 
+require 'pdf/reader/width_calculator'
+
 class PDF::Reader
   # Represents a single font PDF object and provides some useful methods
   # for extracting info. Mainly used for converting text to UTF-8.
@@ -45,6 +47,7 @@ class PDF::Reader
       extract_base_info(obj)
       extract_descriptor(obj)
       extract_descendants(obj)
+      @width_calc = build_width_calculator
 
       @encoding ||= PDF::Reader::Encoding.new(:StandardEncoding)
     end
@@ -93,84 +96,29 @@ class PDF::Reader
       end
 
       @cached_widths ||= {}
-      @cached_widths[code_point] ||= internal_glyph_width(code_point)
+      @cached_widths[code_point] ||= @width_calc.glyph_width(code_point)
     end
 
     private
 
-    def internal_glyph_width(code_point)
-      return 0 if code_point.nil? || code_point < 0
-
-      # Type1 fonts can be one of 14 "built in" standard fonts. In these cases,
-      # the reader is expected to have it's own copy of the font metrics.
-      # see Section 9.6.2.2, PDF 32000-1:2008, pp 256
-      if @is_builtin
-        if @basefont == :Helvetica
-          return PDF::Reader::AFM::Helvetica[code_point]
-        else
-          return 500
-        end
-      end
-
-      # Type0 (or Composite) fonts are a "root font" that rely on a "descendant font"
-      # to do the heavy lifting. The "descendant font" is a CID-Keyed font.
-      # see Section 9.7.1, PDF 32000-1:2008, pp 267
-      # so if we are calculating a Type0 font width, we just pass off to
-      # the descendant font
+    def build_width_calculator
       if @subtype == :Type0
-        if descendant_font = @descendantfonts[0]
-          if w = descendant_font.glyph_width(code_point)
-            return w.to_f
-          end
-        end
-      end
-
-      # CIDFontType0 or CIDFontType2 use DW (integer) and W (array) to determine
-      # codepoint widths, note that CIDFontType2 will contain a true type font
-      # program which could be used to calculate width, however, a conforming writer
-      # is supposed to convert the widths for the codepoints used into the W array
-      # so that it can be used.
-      # see Section 9.7.4.1, PDF 32000-1:2008, pp 269-270
-      if @is_cid_typ
-        w = calculate_cidfont_glyph_width(code_point)
-        # 0 is a valid width
-        return w.to_f unless w.nil?
-      end
-
-      # Type1 and Type3 fonts use a Width table, any value not in the width
-      # table is assumed to be 0 (Type3) or defined in the font_descriptor[MissingWidth]
-      # (Type1). For Type1, these values are always 1000 glyph units = 1 text space unit.
-      # For Type3 the scale is found in FontMatrix, although, commonly 1000 glyph units =
-      # 1 text space unit ([0.001 0 0 0.001 0 0]) is used.
-      # see Section 9.6.2.1 PDF 32000-1:2008 pp 254-255 (Type1)
-      # see Section 9.6.5 PDF 32000-1:2008 pp 258-259 (Type3)
-      if @widths && @widths.count > 0
-        $stderr.puts "Problem with font (#{@basefont}), no first_char reference" if @first_char.nil?
-        missing_width = @font_descriptor ? @font_descriptor.missing_width : 0
-        if @first_char <= code_point
-          # in ruby a negative index is valid, and will go from the end of the array
-          # which is undesireable in this case.
-          w = @widths.fetch(code_point - @first_char, missing_width)
+        PDF::Reader::WidthCalculator::TypeZero.new(self)
+      elsif @subtype == :Type1
+        if @font_descriptor.nil?
+          PDF::Reader::WidthCalculator::BuiltIn.new(self)
         else
-          w = missing_width
+          PDF::Reader::WidthCalculator::TypeOneOrThree .new(self)
         end
-        #TODO convert Type3 units 1000 units => 1 text space unit
-        return w.to_f
+      elsif @subtype == :Type3
+        PDF::Reader::WidthCalculator::TypeOneOrThree.new(self)
+      elsif @subtype == :TrueType
+        PDF::Reader::WidthCalculator::TypeOneOrThree.new(self)
+      elsif @subtype == :CIDFontType0 || @subtype == :CIDFontType2
+        PDF::Reader::WidthCalculator::Composite.new(self)
+      else
+        PDF::Reader::WidthCalculator::TypeOneOrThree.new(self)
       end
-
-      # if all else fails revert to the font descriptor
-      return unless @font_descriptor
-      # true type fonts will have most of their information contained
-      # with-in a program inside the font descriptor, however the widths
-      # may not be in standard PDF glyph widths (1000 units => 1 text space unit)
-      # so this width will need to be scaled
-      w = @font_descriptor.find_glyph_width(code_point)
-      return w.to_f * @font_descriptor.glyph_to_pdf_scale_factor unless w.nil?
-    end
-
-    def calculate_cidfont_glyph_width(index)
-      foo = PDF::Reader::CidWidths.new(@cid_default_width, @cid_widths)
-      foo[index]
     end
 
     def extract_base_info(obj)
