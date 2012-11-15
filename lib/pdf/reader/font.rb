@@ -86,26 +86,6 @@ class PDF::Reader
       }
     end
 
-    # breaks apart the specified fragment into it's codepoints and sums all codepoint
-    # widths, returing a width specified in text space units, the given should be
-    # the raw (encoded) fragment, not the converted utf-8 fragment provided by the
-    # to_utf8 method
-    def width_of_fragment(fragment)
-      if can_convert_to_utf8?
-        if fragment.class == String
-          frag_width = fragment.unpack(encoding.unpack).inject(0) { |width, c|
-            gw = glyph_width(c)
-            $stderr.puts "Unexpected width received for character: #{c}" if gw.nil?
-            width += gw unless gw.nil?
-          }
-          return frag_width / 1000.0 if frag_width
-        end
-      else
-        $stderr.puts "can't convert this fragment ('#{fragment}') to unicode " +
-          "(glyphs exist, but I don't know what they represent)"
-      end
-    end
-
     # looks up the specified codepoint and returns a value that is in (pdf)
     # glyph space, which is 1000 glyph units = 1 text space unit
     def glyph_width(code_point)
