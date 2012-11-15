@@ -185,28 +185,24 @@ class PDF::Reader
       @is_cid_typ  = @subtype == :CIDFontType2 || @subtype == :CIDFontType0
       @is_ttyp_typ = @subtype == :TrueType
       @is_builtin  = @subtype == :Type1 && obj[:FontDescriptor].nil?
-      @basefont = @ohash.object(obj[:BaseFont])
 
-      if @is_cid_typ
-        # CID Fonts are not required to have a W or DW entry, if they don't exist,
-        # the default cid width = 1000, see Section 9.7.4.1 PDF 32000-1:2008 pp 269
-        @cid_widths         = @ohash.object(obj[:W])  || []
-        @cid_default_width  = @ohash.object(obj[:DW]) || 1000
-      else
-        @has_to_unicode_table = false
-        # TrueType has the same entries as Type1, see Section 9.6.3 PDF 32000-1:2008 pp 257
-        # Type1 and Type3 are required to have a Widths, FirstChar, LastChar
-        @widths   = @ohash.object(obj[:Widths]) || []
-        @first_char = @ohash.object(obj[:FirstChar])
-        @last_char = @ohash.object(obj[:LastChar])
-        # Encoding is required for Type3, optional for Type1
-        @encoding = PDF::Reader::Encoding.new(@ohash.object(obj[:Encoding]))
-        if obj[:ToUnicode]
-          # ToUnicode is optional for Type1 and Type3
-          stream = @ohash.object(obj[:ToUnicode])
-          @tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
-          @has_to_unicode_table = true
-        end
+      @basefont = @ohash.object(obj[:BaseFont])
+      @encoding = PDF::Reader::Encoding.new(@ohash.object(obj[:Encoding]))
+      # TrueType has the same entries as Type1, see Section 9.6.3 PDF 32000-1:2008 pp 257
+      # Type1 and Type3 are required to have a Widths, FirstChar, LastChar
+      @widths   = @ohash.object(obj[:Widths]) || []
+      @first_char = @ohash.object(obj[:FirstChar])
+      @last_char = @ohash.object(obj[:LastChar])
+
+      # CID Fonts are not required to have a W or DW entry, if they don't exist,
+      # the default cid width = 1000, see Section 9.7.4.1 PDF 32000-1:2008 pp 269
+      @cid_widths         = @ohash.object(obj[:W])  || []
+      @cid_default_width  = @ohash.object(obj[:DW]) || 1000
+
+      if obj[:ToUnicode]
+        # ToUnicode is optional for Type1 and Type3
+        stream = @ohash.object(obj[:ToUnicode])
+        @tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
       end
     end
 
