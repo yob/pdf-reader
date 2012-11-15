@@ -32,10 +32,6 @@ class PDF::Reader
       y.to_i == other.y.to_i && Range.new(endx - 3, endx + MERGE_LIMIT).include?(other.x)
     end
 
-    def mergable_by_pos?(otherx, othery)
-      y.to_i == othery.to_i && Range.new(endx - 3, endx + MERGE_LIMIT).include?(otherx)
-    end
-
     def +(other)
       raise ArgumentError, "#{other} cannot be merged with this run" unless mergable?(other)
 
