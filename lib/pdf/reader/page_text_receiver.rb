@@ -40,7 +40,7 @@ module PDF
       def page=(page)
         @state = PageState.new(page)
         @content = []
-        @characters = []
+        @characters = TextRunCollection.new
       end
 
       #####################################################
@@ -189,9 +189,33 @@ module PDF
             tj = 0
           end
           scaled_glyph_width = glyph_width * @state.font_size * th
-          @characters << TextRun.new(newx, newy, scaled_glyph_width, utf8_chars)
+          @characters.add_run(newx, newy, scaled_glyph_width, utf8_chars)
           @state.process_glyph_displacement(glyph_width, tj, utf8_chars == " ")
         end
+      end
+
+      class TextRunCollection
+        extend Forwardable
+
+        def_delegators :@runs, :group_by, :each
+
+        def initialize
+          @runs = []
+        end
+
+        def add_run(x, y, width, utf8)
+          last = @runs.last
+          if @runs.size > 0 && @runs.last.mergable_by_pos?(x, y)
+            last.width = (x+width) - last.x
+            last.text = last.text + utf8
+          else
+            @runs << TextRun.new(x, y, width, utf8)
+            #@runs.sort!
+          end
+        end
+
+        private
+
       end
 
     end
