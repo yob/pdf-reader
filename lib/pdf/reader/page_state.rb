@@ -75,6 +75,7 @@ class PDF::Reader
       def begin_text_object
         @text_matrix      = identity_matrix
         @text_line_matrix = identity_matrix
+        @font_size = nil
       end
 
       def end_text_object
@@ -99,7 +100,7 @@ class PDF::Reader
       end
 
       def font_size
-        state[:text_font_size] * @text_matrix[0] * ctm[0]
+        @font_size ||= state[:text_font_size] * @text_matrix[0] * ctm[0]
       end
 
       def set_text_leading(leading)
@@ -128,7 +129,7 @@ class PDF::Reader
                 x, y, 1]
         @text_line_matrix = multiply!(temp, *@text_line_matrix)
         @text_matrix = @text_line_matrix.dup
-        @text_rendering_matrix = nil # invalidate cached value
+        @font_size = @text_rendering_matrix = nil # invalidate cached value
       end
 
       def move_text_position_and_set_leading(x, y) # TD
@@ -143,7 +144,7 @@ class PDF::Reader
           e, f, 1
         ]
         @text_line_matrix = @text_matrix.dup
-        @text_rendering_matrix = nil # invalidate cached value
+        @font_size = @text_rendering_matrix = nil # invalidate cached value
       end
 
       def move_to_start_of_next_line # T*
@@ -313,7 +314,7 @@ class PDF::Reader
         multiply!(@text_matrix, 1,  0,  0,
                                 0,  1,  0,
                                 tx/ctm[0], ty, 1)
-        @text_rendering_matrix = nil # invalidate cached value
+        @font_size = @text_rendering_matrix = nil # invalidate cached value
       end
 
       private
