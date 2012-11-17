@@ -21,7 +21,7 @@ module EncodingHelper
         check_utf8(value)
       }
     when String
-      assert_equal obj.encoding, Encoding.find("utf-8")
+      assert_equal Encoding.find("utf-8"), obj.encoding
       assert obj.valid_encoding?
     else
       return
