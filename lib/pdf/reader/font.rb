@@ -160,7 +160,11 @@ class PDF::Reader
     end
 
     def to_utf8_via_cmap(params)
-      if params.class == String
+      if params.class == Fixnum
+        [
+          @tounicode.decode(params) || PDF::Reader::Encoding::UNKNOWN_CHAR
+        ].flatten.pack("U*")
+      elsif params.class == String
         params.unpack(encoding.unpack).map { |c|
           @tounicode.decode(c) || PDF::Reader::Encoding::UNKNOWN_CHAR
         }.flatten.pack("U*")
@@ -176,7 +180,9 @@ class PDF::Reader
         raise UnsupportedFeatureError, "font encoding '#{encoding}' currently unsupported"
       end
 
-      if params.class == String
+      if params.class == Fixnum
+        encoding.int_to_utf8_string(params)
+      elsif params.class == String
         encoding.to_utf8(params)
       elsif params.class == Array
         params.collect { |param| to_utf8_via_encoding(param) }

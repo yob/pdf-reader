@@ -106,6 +106,14 @@ class PDF::Reader
       end
     end
 
+    def int_to_utf8_string(glyph_code)
+      ret = [
+        @mapping[glyph_code.to_i] || glyph_code.to_i
+      ].pack("U*")
+      ret.force_encoding("UTF-8") if ret.respond_to?(:force_encoding)
+      ret
+    end
+
     private
 
     def utf8_conversion_impossible?

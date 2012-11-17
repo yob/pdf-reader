@@ -44,13 +44,16 @@ describe PDF::Reader::Font do
         font.encoding = encoding
         encoding.should_receive(:to_utf8).with("hello")
         encoding.should_receive(:to_utf8).with("howdy")
-        font.to_utf8(["hello", 1, "howdy"])
+        font.to_utf8(["hello", "howdy"])
       end
 
-      it "should return the same type when to_utf8 is called" do
+      it "should return the same type when to_utf8 is called with a string or array" do
         font.to_utf8("abc").should be_a_kind_of(String)
         font.to_utf8(["abc"]).should be_a_kind_of(Array)
-        font.to_utf8(123).should be_a_kind_of(Numeric)
+      end
+
+      it "should convert integers to a utf-8 string" do
+        font.to_utf8(123).should be_a_kind_of(String)
       end
 
       it "should use an encoding of StandardEncoding if none has been specified" do

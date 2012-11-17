@@ -269,6 +269,16 @@ class PDF::Reader
     end
     private
     ################################################################################
+    def params_to_utf8(params, font)
+      if params.is_a?(String)
+        font.to_utf8(params)
+      elsif params.is_a?(Array)
+        params.map { |i| params_to_utf8(i, font)}
+      else
+        params
+      end
+    end
+    ################################################################################
     # Walk over all pages in the PDF file, calling the appropriate callbacks for each page and all
     # its content
     def walk_pages (page)
@@ -365,7 +375,7 @@ class PDF::Reader
             if options[:raw_text]
               callback("#{OPERATORS[token]}_raw".to_sym, params)
             end
-            params = fonts[current_font].to_utf8(params)
+            params = params_to_utf8(params, fonts[current_font])
           elsif token == "ID"
             # inline image data, first convert the current params into a more familiar hash
             map = {}

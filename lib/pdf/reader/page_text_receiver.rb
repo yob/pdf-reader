@@ -174,8 +174,7 @@ module PDF
         if @state.current_font.nil?
           raise PDF::Reader::MalformedPDFError, "current font is invalid"
         end
-        #puts "string: #{@state.current_font.to_utf8(string)}"
-        glyphs = @state.current_font.split_binary_data(string)
+        glyphs = @state.current_font.unpack(string)
         glyphs.each_with_index do |glyph_code, index|
           # paint the current glyph
           newx, newy = @state.trm_transform(0,0)
