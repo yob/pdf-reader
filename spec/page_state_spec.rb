@@ -281,6 +281,27 @@ describe PDF::Reader::PageState do
     end
   end
 
+  describe "#move_to_next_line_and_show_text" do
+    context "with an empty page" do
+      let!(:state)  {PDF::Reader::PageState.new(page) }
+
+      it "should correctly alter the text position" do
+        state.begin_text_object
+        state.set_text_font_and_size(:Test, 12)
+        state.set_text_leading(15)
+        state.move_to_next_line_and_show_text("Foo")
+
+        # how the matrix is stored and multiplied is really an implementation
+        # detail, so it's better to check the results indirectly via the API
+        # external collaborators will use
+        state.trm_transform(0,0).should == [0, -15]
+        state.trm_transform(0,1).should == [0, -3]
+        state.trm_transform(1,0).should == [1200, -15]
+        state.trm_transform(1,1).should == [1200, -3]
+      end
+    end
+  end
+
   describe "#set_spacing_next_line_show_text" do
     context "with an empty page" do
       let!(:state)  {PDF::Reader::PageState.new(page) }
