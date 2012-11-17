@@ -11,6 +11,8 @@ module PDF
     class PageTextReceiver
       extend Forwardable
 
+      SPACE = " "
+
       attr_reader :state, :content, :options
 
       ########## BEGIN FORWARDERS ##########
@@ -190,7 +192,7 @@ module PDF
           end
           scaled_glyph_width = glyph_width * @state.font_size * th
           @characters << TextRun.new(newx, newy, scaled_glyph_width, utf8_chars)
-          @state.process_glyph_displacement(glyph_width, tj, utf8_chars == " ")
+          @state.process_glyph_displacement(glyph_width, tj, utf8_chars == SPACE)
         end
       end
 
