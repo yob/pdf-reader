@@ -44,7 +44,17 @@ when "perftools"
 when "gc"
   before = GC.count
   extract_text
-  puts "GC ran #{GC.count - before} times"  
+  puts "GC ran #{GC.count - before} times"
+
+when "allocations"
+  GC.disable
+  before = ObjectSpace.count_objects
+  extract_text
+  after = ObjectSpace.count_objects
+  after.each do |key, val|
+    puts "#{key}: #{val - before[key]}"
+  end
+  GC.start
 
 else
   # Benchmark
