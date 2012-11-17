@@ -422,6 +422,9 @@ class PDF::Reader
            d2 == 0 && e2 == 1 && f2 == 0 &&
                       h2 == 0 && i2 == 1
           horizontal_displacement_multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
+        elsif m1[2] == 0 && m1[5] == 0 && m1[8] == 1 &&
+              c2    == 0 && f2    == 0 && i2 == 1
+          faster_multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
         else
           regular_multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
         end
@@ -456,6 +459,20 @@ class PDF::Reader
         m1[6] = (g1 * a2) + (h1 * d2) + (i1 * g2)
         m1[7] = (g1 * b2) + (h1 * e2) + (i1 * h2)
         m1[8] = (g1 * c2) + (h1 * f2) + (i1 * i2)
+        m1
+      end
+
+      def faster_multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
+        a1,b1,c1, d1,e1,f1, g1,h1,i1 = m1
+        m1[0] = (a1 * a2) + (b1 * d2)
+        m1[1] = (a1 * b2) + (b1 * e2)
+        m1[2] = 0
+        m1[3] = (d1 * a2) + (e1 * d2)
+        m1[4] = (d1 * b2) + (e1 * e2)
+        m1[5] = 0
+        m1[6] = (g1 * a2) + (h1 * d2) + g2
+        m1[7] = (g1 * b2) + (h1 * e2) + h2
+        m1[8] = 1
         m1
       end
     end
