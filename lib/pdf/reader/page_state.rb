@@ -413,7 +413,39 @@ class PDF::Reader
       #
       # NOTE: see Section 8.3.3, PDF 32000-1:2008, pp 119
       #
+      # TODO: it might be worth adding an optimised path for vertical
+      #       displacement to speed up processing documents that use vertical
+      #       writing systems
+      #
       def multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
+        if a2 == 1 && b2 == 0 && c2 == 0 &&
+           d2 == 0 && e2 == 1 && f2 == 0 &&
+                      h2 == 0 && i2 == 1
+          horizontal_displacement_multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
+        else
+          regular_multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
+        end
+      end
+
+      # Multiplying a matrix to apply a horizontal displacement is super common,
+      # so use an optimised method that achieves the same result with significantly
+      # less object allocations.
+      #
+      # At the time of writing, the entire test suite uses this optimised multiply
+      # method 23687 times and the regular multiply 718.
+      #
+      def horizontal_displacement_multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
+        a1,b1,c1, d1,e1,f1, g1,h1,i1 = m1
+        m1[0] = a1 + (c1 * g2)
+        m1[3] = d1 + (f1 * g2)
+        m1[6] = g1 + (i1 * g2)
+        m1
+      end
+
+      # A general solution to multiplying two 3x3 matrixes. This is correct in all cases,
+      # but slower due to excessive object allocations.
+      #
+      def regular_multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
         a1,b1,c1, d1,e1,f1, g1,h1,i1 = m1
         m1[0] = (a1 * a2) + (b1 * d2) + (c1 * g2)
         m1[1] = (a1 * b2) + (b1 * e2) + (c1 * h2)
