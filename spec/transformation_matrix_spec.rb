@@ -144,24 +144,24 @@ describe PDF::Reader::TransformationMatrix, "#multiply_with_an_object!" do
         matrix_one.multiply_with_an_object!(matrix_two)
 
         # we can't use #to_a in this test because of all the floating point nums
-        matrix_one.a.round(3).should ==  3.273
-        matrix_one.b.round(3).should == -1.513
-        matrix_one.c.round(3).should ==  5.557
-        matrix_one.d.round(3).should == -3.181
-        matrix_one.e.round(3).should ==  7.842
-        matrix_one.f.round(3).should == -4.848
+        ( "%.3f" % matrix_one.a).should ==  "3.273"
+        ( "%.3f" % matrix_one.b).should == "-1.513"
+        ( "%.3f" % matrix_one.c).should ==  "5.557"
+        ( "%.3f" % matrix_one.d).should == "-3.181"
+        ( "%.3f" % matrix_one.e).should ==  "7.842"
+        ( "%.3f" % matrix_one.f).should == "-4.848"
       end
 
       it "should set the new matrix values when reversed" do
         matrix_two.multiply_with_an_object!(matrix_one)
 
         # we can't use #to_a in this test because of all the floating point nums
-        matrix_two.a.round(3).should == -3.644
-        matrix_two.b.round(3).should == -4.477
-        matrix_two.c.round(3).should ==  2.593
-        matrix_two.d.round(3).should ==  3.735
-        matrix_two.e.round(3).should ==  6
-        matrix_two.f.round(3).should ==  7
+        ( "%.3f" % matrix_two.a).should == "-3.644"
+        ( "%.3f" % matrix_two.b).should == "-4.477"
+        ( "%.3f" % matrix_two.c).should ==  "2.593"
+        ( "%.3f" % matrix_two.d).should ==  "3.735"
+        ( "%.3f" % matrix_two.e).should ==  "6.000"
+        ( "%.3f" % matrix_two.f).should ==  "7.000"
       end
     end
   end
