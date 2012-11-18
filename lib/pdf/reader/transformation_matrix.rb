@@ -1,6 +1,16 @@
 # coding: utf-8
 
 class PDF::Reader
+  # co-ordinate systems in PDF files are specified using a 3x3 matrix that looks
+  # something like this:
+  #
+  #   [ a b 0 ]
+  #   [ c d 0 ]
+  #   [ e f 1 ]
+  #
+  # Because the final column never changes, we can represent each matrix using
+  # only 6 numbers. This is important to save CPU time, memory and GC pressure
+  # caused by allocating too many unnecessary objects.
   class TransformationMatrix
     attr_reader :a, :b, :c, :d, :e, :f
 
@@ -18,11 +28,16 @@ class PDF::Reader
        @e,@f,1]
     end
 
-    # multiply two 3x3 matrices
-    # the second is represented by the last 9 scalar arguments
-    # store the results back into the first (to avoid allocating memory)
+    # multiply this matrix with another.
     #
-    # NOTE: When multiplying matrixes, ordering matters. Double check
+    # the second matrix is represented by the 6 scalar values that are changeable
+    # in a PDF transformation matrix.
+    #
+    # WARNING: This mutates the current matrix to avoid allocating memory when
+    #          we don't need too. Matrices are multiplied ALL THE FREAKING TIME
+    #          so this is a worthwhile optimisation
+    #
+    # NOTE: When multiplying matrices, ordering matters. Double check
     #       the PDF spec to ensure you're multiplying things correctly.
     #
     # NOTE: see Section 8.3.3, PDF 32000-1:2008, pp 119
@@ -33,7 +48,6 @@ class PDF::Reader
     # TODO: it might be worth adding an optimised path for vertical
     #       displacement to speed up processing documents that use vertical
     #       writing systems
-    #
     #
     def multiply!(a,b=nil,c=nil, d=nil,e=nil,f=nil)
       if b == 0 && c == 0 && f == 0
@@ -70,22 +84,33 @@ class PDF::Reader
       else
         faster_multiply!(a,b,c, d,e,f)
       end
+      self
     end
 
     private
 
-    # Multiplying a matrix to apply a horizontal displacement is super common,
-    # so use an optimised method that achieves the same result with significantly
-    # less object allocations.
+    # Optimised method for when the second matrix in the calculation is
+    # a simple horizontal displacement.
     #
-    # At the time of writing, the entire test suite uses this optimised multiply
-    # method 23687 times and the regular multiply 718.
+    # Like this:
+    #
+    #   [ 1 2 0 ]   [ 1 0 0 ]
+    #   [ 3 4 0 ] x [ 0 1 0 ]
+    #   [ 5 6 1 ]   [ 5 0 1 ]
     #
     def horizontal_displacement_multiply!(a2,b2,c2, d2,e2,f2)
       @e = @e + e2
-      self
     end
 
+    # Optimised method for when the first matrix in the calculation is
+    # a simple horizontal displacement.
+    #
+    # Like this:
+    #
+    #   [ 1 0 0 ]   [ 1 2 0 ]
+    #   [ 0 1 0 ] x [ 3 4 0 ]
+    #   [ 5 0 1 ]   [ 5 6 1 ]
+    #
     def horizontal_displacement_multiply_reversed!(a2,b2,c2,d2,e2,f2)
       newa = a2
       newb = b2
@@ -94,9 +119,17 @@ class PDF::Reader
       newe = (@e * a2) + e2
       newf = (@e * b2) + f2
       @a, @b, @c, @d, @e, @f = newa, newb, newc, newd, newe, newf
-      self
     end
 
+    # Optimised method for when the second matrix in the calculation is
+    # an X and Y scale
+    #
+    # Like this:
+    #
+    #   [ 1 2 0 ]   [ 5 0 0 ]
+    #   [ 3 4 0 ] x [ 0 5 0 ]
+    #   [ 5 6 1 ]   [ 0 0 1 ]
+    #
     def xy_scaling_multiply!(a2,b2,c2,d2,e2,f2)
       newa = @a * a2
       newb = @b * d2
@@ -105,9 +138,17 @@ class PDF::Reader
       newe = @e * a2
       newf = @f * d2
       @a, @b, @c, @d, @e, @f = newa, newb, newc, newd, newe, newf
-      self
     end
 
+    # Optimised method for when the first matrix in the calculation is
+    # an X and Y scale
+    #
+    # Like this:
+    #
+    #   [ 5 0 0 ]   [ 1 2 0 ]
+    #   [ 0 5 0 ] x [ 3 4 0 ]
+    #   [ 0 0 1 ]   [ 5 6 1 ]
+    #
     def xy_scaling_multiply_reversed!(a2,b2,c2,d2,e2,f2)
       newa = @a * a2
       newb = @a * b2
@@ -116,12 +157,17 @@ class PDF::Reader
       newe = e2
       newf = f2
       @a, @b, @c, @d, @e, @f = newa, newb, newc, newd, newe, newf
-      self
     end
 
     # A general solution to multiplying two 3x3 matrixes. This is correct in all cases,
     # but slower due to excessive object allocations. It's not actually used in any
-    # active code paths, but is here for reference
+    # active code paths, but is here for reference. Use faster_multiply instead.
+    #
+    # Like this:
+    #
+    #   [ a b 0 ]   [ a b 0 ]
+    #   [ c d 0 ] x [ c d 0 ]
+    #   [ e f 1 ]   [ e f 1 ]
     #
     def regular_multiply!(a2,b2,c2,d2,e2,f2)
       newa = (@a * a2) + (@b * c2) + (0 * e2)
@@ -131,9 +177,18 @@ class PDF::Reader
       newe = (@e * a2) + (@f * c2) + (1 * e2)
       newf = (@e * b2) + (@f * d2) + (1 * f2)
       @a, @b, @c, @d, @e, @f = newa, newb, newc, newd, newe, newf
-      self
     end
 
+    # A general solution for multiplying two matrices when we know all values
+    # in the final column are fixed. This is the fallback method for when none
+    # of the optimised methods are applicable.
+    #
+    # Like this:
+    #
+    #   [ a b 0 ]   [ a b 0 ]
+    #   [ c d 0 ] x [ c d 0 ]
+    #   [ e f 1 ]   [ e f 1 ]
+    #
     def faster_multiply!(a2,b2,c2, d2,e2,f2)
       newa = (@a * a2) + (@b * c2)
       newb = (@a * b2) + (@b * d2)
@@ -142,7 +197,6 @@ class PDF::Reader
       newe = (@e * a2) + (@f * c2) + e2
       newf = (@e * b2) + (@f * d2) + f2
       @a, @b, @c, @d, @e, @f = newa, newb, newc, newd, newe, newf
-      self
     end
   end
 end
