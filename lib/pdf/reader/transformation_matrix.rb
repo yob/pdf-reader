@@ -36,14 +36,6 @@ class PDF::Reader
     #
     #
     def multiply!(a,b=nil,c=nil, d=nil,e=nil,f=nil)
-      if a.is_a?(TransformationMatrix)
-        b = a.b
-        c = a.c
-        d = a.d
-        e = a.e
-        f = a.f
-        a = a.a
-      end
       if b == 0 && c == 0 && f == 0
         if a == 1 && d == 1
           if e == 0

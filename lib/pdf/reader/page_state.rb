@@ -129,7 +129,11 @@ class PDF::Reader
         temp = TransformationMatrix.new(1, 0,
                                         0, 1,
                                         x, y)
-        @text_line_matrix = temp.multiply!(@text_line_matrix)
+        @text_line_matrix = temp.multiply!(
+          @text_line_matrix.a, @text_line_matrix.b,
+          @text_line_matrix.c, @text_line_matrix.d,
+          @text_line_matrix.e, @text_line_matrix.f
+        )
         @text_matrix = @text_line_matrix.dup
         @font_size = @text_rendering_matrix = nil # invalidate cached value
       end
@@ -344,8 +348,16 @@ class PDF::Reader
             0, font_size,
             0, state[:text_rise]
           )
-          state_matrix.multiply!(@text_matrix)
-          state_matrix.multiply!(ctm)
+          state_matrix.multiply!(
+            @text_matrix.a, @text_matrix.b,
+            @text_matrix.c, @text_matrix.d,
+            @text_matrix.e, @text_matrix.f
+          )
+          state_matrix.multiply!(
+            ctm.a, ctm.b,
+            ctm.c, ctm.d,
+            ctm.e, ctm.f
+          )
         end
       end
 
