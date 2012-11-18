@@ -35,6 +35,7 @@ module PDF
 
       def initialize(options = {})
         @options = options
+        @current_platform_is_rbx_19 = RUBY_DESCRIPTION =~ /\Arubinius 2.0.0/ && RUBY_VERSION >= "1.9.0"
       end
 
       # starting a new page
@@ -139,7 +140,7 @@ module PDF
       #
       # See my bug report at https://github.com/rubinius/rubinius/issues/1985
       def local_string_insert(haystack, needle, index)
-        if RUBY_DESCRIPTION =~ /\Arubinius 2.0.0/ && RUBY_VERSION >= "1.9.0"
+        if @current_platform_is_rbx_19
           char_count = needle.length
           haystack.replace(
             (haystack[0,index] || "") +
