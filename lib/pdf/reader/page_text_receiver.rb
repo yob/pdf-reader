@@ -111,12 +111,13 @@ module PDF
         def_cols = @options.fetch(:number_of_cols, 200)
         row_multiplier = @options.fetch(:row_scale, 8.0) # 800
         col_multiplier = @options.fetch(:col_scale, 3.0) # 600
+        x_offset = runs.map(&:x).sort.first
         page = []
         def_value = ""
         def_cols.times { def_value << " " }
         def_rows.times { page << String.new(def_value) }
         runs.each do |run|
-          x_pos = (run.x / col_multiplier).round
+          x_pos = ((run.x - x_offset) / col_multiplier).round
           y_pos = def_rows - (run.y / row_multiplier).round
           str = run.text
           if y_pos < def_rows && y_pos >= 0 && x_pos < def_cols && x_pos >= 0
@@ -126,12 +127,7 @@ module PDF
         if @options.fetch(:strip_empty_lines, true)
           page = page.select { |line| line.strip.length > 0 }
         end
-        result = page.map(&:rstrip).join("\n")
-        if @options.fetch(:left_strip, true)
-          JustifiedLeftStrip.new(result).lstrip
-        else
-          result
-        end
+        page.map(&:rstrip).join("\n")
       end
 
       private

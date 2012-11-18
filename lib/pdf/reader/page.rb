@@ -73,8 +73,6 @@ module PDF
       # :number_of_cols       Integer    200    number of columns to use for text layout
       # :row_scale            Float      8.0    approximation of how much space a row uses
       # :col_scale            Float      3.0    approximation of how much space a column uses
-      # :left_strip           Boolean    true   remove some whitespace from left hand side
-      #                                         before returning the result
       # :strip_empty_lines    Boolean    true   compreses resultant text so it
       #                                         is less akward, false may be more
       #                                         representative of PDF
