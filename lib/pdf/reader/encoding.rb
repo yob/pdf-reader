@@ -38,6 +38,7 @@ class PDF::Reader
     def initialize(enc)
       @mapping  = {} # maps from character codes to Unicode codepoints
                      # also maps control and invalid chars to UNKNOWN_CHAR
+      @string_cache  = {} # maps from character codes to UTF-8 strings.
 
       if enc.kind_of?(Hash)
         self.differences = enc[:Differences] if enc[:Differences]
@@ -107,14 +108,18 @@ class PDF::Reader
     end
 
     def int_to_utf8_string(glyph_code)
+      @string_cache[glyph_code] ||= internal_int_to_utf8_string(glyph_code)
+    end
+
+    private
+
+    def internal_int_to_utf8_string(glyph_code)
       ret = [
         @mapping[glyph_code.to_i] || glyph_code.to_i
       ].pack("U*")
       ret.force_encoding("UTF-8") if ret.respond_to?(:force_encoding)
       ret
     end
-
-    private
 
     def utf8_conversion_impossible?
       @enc_name == :"Identity-H" || @enc_name == :"Identity-V"
