@@ -304,8 +304,14 @@ class PDF::Reader
           tw = 0
         end
         th = state[:h_scaling]
-        glyph_width = ((w0 - (tj/1000.0)) * fs) * th
-        tx = glyph_width + ((tc + tw) * th)
+        # optimise the common path to reduce Float allocations
+        if th == 1 && tj == 0 && tc == 0 && tw == 0
+          glyph_width = w0 * fs
+          tx = glyph_width
+        else
+          glyph_width = ((w0 - (tj/1000.0)) * fs) * th
+          tx = glyph_width + ((tc + tw) * th)
+        end
         ty = 0
 
         # TODO: I'm pretty sure that tx shouldn't need to be divided by
