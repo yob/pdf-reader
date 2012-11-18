@@ -50,37 +50,29 @@ class PDF::Reader
     #       writing systems
     #
     def multiply!(a,b=nil,c=nil, d=nil,e=nil,f=nil)
-      if b == 0 && c == 0 && f == 0
-        if a == 1 && d == 1
-          if e == 0
-            # the identity matrix, no effect
-            self
-          else
-            # the other matrix is a horizontal displacement
-            horizontal_displacement_multiply!(a,b,c,d,e,f)
-          end
-        else
-          # the other matrix is an xy scale
-          xy_scaling_multiply!(a,b,c,d,e,f)
-        end
-      elsif @b == 0 && @c == 0 && @f == 0
-        if @a == 1 && @d == 1
-          if @e == 0
-            # I'm the identity matrix, so just copy values across
-            @a = a
-            @b = b
-            @c = c
-            @d = d
-            @e = e
-            @f = f
-          else
-            # I'm a horizontal displacement
-            horizontal_displacement_multiply_reversed!(a,b,c,d,e,f)
-          end
-        else
-          # I'm a xy scale
-          xy_scaling_multiply_reversed!(a,b,c,d,e,f)
-        end
+      if a == 1 && b == 0 && c == 0 && d == 1 && e == 0 && f == 0
+        # the identity matrix, no effect
+        self
+      elsif @a == 1 && @b == 0 && @c == 0 && @d == 1 && @e == 0 && @f == 0
+        # I'm the identity matrix, so just copy values across
+        @a = a
+        @b = b
+        @c = c
+        @d = d
+        @e = e
+        @f = f
+      elsif a == 1 && b == 0 && c == 0 && d == 1 && f == 0
+        # the other matrix is a horizontal displacement
+        horizontal_displacement_multiply!(a,b,c,d,e,f)
+      elsif @a == 1 && @b == 0 && @c == 0 && @d == 1 && @f == 0
+        # I'm a horizontal displacement
+        horizontal_displacement_multiply_reversed!(a,b,c,d,e,f)
+      elsif @a != 1 && @b == 0 && @c == 0 && @d != 1 && @e == 0 && @f == 0
+        # I'm a xy scale
+        xy_scaling_multiply_reversed!(a,b,c,d,e,f)
+      elsif a != 1 && b == 0 && c == 0 && d != 1 && e == 0 && f == 0
+        # the other matrix is an xy scale
+        xy_scaling_multiply!(a,b,c,d,e,f)
       else
         faster_multiply!(a,b,c, d,e,f)
       end
