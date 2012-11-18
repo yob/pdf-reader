@@ -1,5 +1,7 @@
 # coding: utf-8
 
+require 'pdf/reader/transformation_matrix'
+
 class PDF::Reader
     # encapsulates logic for tracking graphics state as the instructions for
     # a single page are processed. Most of the public methods correspond
@@ -61,9 +63,9 @@ class PDF::Reader
       #
       def concatenate_matrix(a, b, c, d, e, f)
         if state[:ctm]
-          multiply!(state[:ctm], a,b,0, c,d,0, e,f,1)
+          state[:ctm].multiply!(a,b,c,d,e,f)
         else
-          state[:ctm] = [a,b,0, c,d,0, e,f,1]
+          state[:ctm] = TransformationMatrix.new(a,b,c,d,e,f)
         end
         @text_rendering_matrix = nil # invalidate cached value
       end
@@ -100,7 +102,7 @@ class PDF::Reader
       end
 
       def font_size
-        @font_size ||= state[:text_font_size] * @text_matrix[0] * ctm[0]
+        @font_size ||= state[:text_font_size] * @text_matrix.a * ctm.a
       end
 
       def set_text_leading(leading)
@@ -124,10 +126,10 @@ class PDF::Reader
       #####################################################
 
       def move_text_position(x, y) # Td
-        temp = [1, 0, 0,
-                0, 1, 0,
-                x, y, 1]
-        @text_line_matrix = multiply!(temp, *@text_line_matrix)
+        temp = TransformationMatrix.new(1, 0,
+                                        0, 1,
+                                        x, y)
+        @text_line_matrix = temp.multiply!(@text_line_matrix)
         @text_matrix = @text_line_matrix.dup
         @font_size = @text_rendering_matrix = nil # invalidate cached value
       end
@@ -138,11 +140,11 @@ class PDF::Reader
       end
 
       def set_text_matrix_and_text_line_matrix(a, b, c, d, e, f) # Tm
-        @text_matrix = [
-          a, b, 0,
-          c, d, 0,
-          e, f, 1
-        ]
+        @text_matrix = TransformationMatrix.new(
+          a, b,
+          c, d,
+          e, f
+        )
         @text_line_matrix = @text_matrix.dup
         @font_size = @text_rendering_matrix = nil # invalidate cached value
       end
@@ -201,10 +203,10 @@ class PDF::Reader
       # transform x and y co-ordinates from the current user space to the
       # underlying device space.
       #
-      def ctm_transform(x, y, z = 1)
+      def ctm_transform(x, y)
         [
-          (ctm[0] * x) + (ctm[3] * y) + (ctm[6] * z),
-          (ctm[1] * x) + (ctm[4] * y) + (ctm[7] * z)
+          (ctm.a * x) + (ctm.c * y) + (ctm.e),
+          (ctm.b * x) + (ctm.d * y) + (ctm.f)
         ]
       end
 
@@ -214,14 +216,14 @@ class PDF::Reader
       # transforming (0,0) is a really common case, so optimise for it to
       # avoid unnecessary object allocations
       #
-      def trm_transform(x, y, z = 1)
+      def trm_transform(x, y)
         trm = text_rendering_matrix
-        if x == 0 && y == 0 && z == 1
-          [trm[6], trm[7]]
+        if x == 0 && y == 0
+          [trm.e, trm.f]
         else
           [
-            (trm[0] * x) + (trm[3] * y) + (trm[6] * z),
-            (trm[1] * x) + (trm[4] * y) + (trm[7] * z)
+            (trm.a * x) + (trm.c * y) + (trm.e),
+            (trm.b * x) + (trm.d * y) + (trm.f)
           ]
         end
       end
@@ -317,14 +319,14 @@ class PDF::Reader
         # TODO: I'm pretty sure that tx shouldn't need to be divided by
         #       ctm[0] here, but this gets my tests green and I'm out of
         #       ideas for now
-        if ctm[0] == 1
-          multiply!(@text_matrix, 1,  0,  0,
-                                  0,  1,  0,
-                                  tx, ty, 1)
+        if ctm.a == 1
+          @text_matrix.multiply!(1,  0,
+                                 0,  1,
+                                 tx, ty)
         else
-          multiply!(@text_matrix, 1,  0,  0,
-                                  0,  1,  0,
-                                  tx/ctm[0], ty, 1)
+          @text_matrix.multiply!(1,  0,
+                                 0,  1,
+                                 tx/ctm.a, ty)
         end
         @font_size = @text_rendering_matrix = nil # invalidate cached value
       end
@@ -337,13 +339,13 @@ class PDF::Reader
       #
       def text_rendering_matrix
         @text_rendering_matrix ||= begin
-          state_matrix = [
-            font_size * state[:h_scaling], 0, 0,
-            0, font_size, 0,
-            0, state[:text_rise], 1
-          ]
-          multiply!(state_matrix, *@text_matrix)
-          multiply!(state_matrix, *ctm)
+          state_matrix = TransformationMatrix.new(
+            font_size * state[:h_scaling], 0,
+            0, font_size,
+            0, state[:text_rise]
+          )
+          state_matrix.multiply!(@text_matrix)
+          state_matrix.multiply!(ctm)
         end
       end
 
@@ -379,85 +381,10 @@ class PDF::Reader
       #   g h i
 
       def identity_matrix
-        [1,0,0,
-         0,1,0,
-         0,0,1]
+        TransformationMatrix.new(1, 0,
+                                 0, 1,
+                                 0, 0)
       end
 
-      # multiply two 3x3 matrices
-      # the second is represented by the last 9 scalar arguments
-      # store the results back into the first (to avoid allocating memory)
-      #
-      # NOTE: When multiplying matrixes, ordering matters. Double check
-      #       the PDF spec to ensure you're multiplying things correctly.
-      #
-      # NOTE: see Section 8.3.3, PDF 32000-1:2008, pp 119
-      #
-      # TODO: it might be worth adding an optimised path for vertical
-      #       displacement to speed up processing documents that use vertical
-      #       writing systems
-      #
-      def multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
-        if a2 == 1 && b2 == 0 && c2 == 0 &&
-           d2 == 0 && e2 == 1 && f2 == 0 &&
-           g2 == 0 && h2 == 0 && i2 == 1
-          m1
-        elsif a2 == 1 && b2 == 0 && c2 == 0 &&
-           d2 == 0 && e2 == 1 && f2 == 0 &&
-                      h2 == 0 && i2 == 1
-          horizontal_displacement_multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
-        elsif m1[2] == 0 && m1[5] == 0 && m1[8] == 1 &&
-              c2    == 0 && f2    == 0 && i2 == 1
-          faster_multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
-        else
-          regular_multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
-        end
-      end
-
-      # Multiplying a matrix to apply a horizontal displacement is super common,
-      # so use an optimised method that achieves the same result with significantly
-      # less object allocations.
-      #
-      # At the time of writing, the entire test suite uses this optimised multiply
-      # method 23687 times and the regular multiply 718.
-      #
-      def horizontal_displacement_multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
-        a1,b1,c1, d1,e1,f1, g1,h1,i1 = m1
-        m1[0] = a1 + (c1 * g2)
-        m1[3] = d1 + (f1 * g2)
-        m1[6] = g1 + (i1 * g2)
-        m1
-      end
-
-      # A general solution to multiplying two 3x3 matrixes. This is correct in all cases,
-      # but slower due to excessive object allocations.
-      #
-      def regular_multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
-        a1,b1,c1, d1,e1,f1, g1,h1,i1 = m1
-        m1[0] = (a1 * a2) + (b1 * d2) + (c1 * g2)
-        m1[1] = (a1 * b2) + (b1 * e2) + (c1 * h2)
-        m1[2] = (a1 * c2) + (b1 * f2) + (c1 * i2)
-        m1[3] = (d1 * a2) + (e1 * d2) + (f1 * g2)
-        m1[4] = (d1 * b2) + (e1 * e2) + (f1 * h2)
-        m1[5] = (d1 * c2) + (e1 * f2) + (f1 * i2)
-        m1[6] = (g1 * a2) + (h1 * d2) + (i1 * g2)
-        m1[7] = (g1 * b2) + (h1 * e2) + (i1 * h2)
-        m1[8] = (g1 * c2) + (h1 * f2) + (i1 * i2)
-        m1
-      end
-
-      def faster_multiply!(m1, a2,b2,c2, d2,e2,f2, g2,h2,i2)
-        a1,b1,c1, d1,e1,f1, g1,h1,i1 = m1
-        m1[0] = (a1 * a2) + (b1 * d2)
-        m1[1] = (a1 * b2) + (b1 * e2)
-        m1[2] = 0
-        m1[3] = (d1 * a2) + (e1 * d2)
-        m1[4] = (d1 * b2) + (e1 * e2)
-        m1[5] = 0
-        m1[6] = (g1 * a2) + (h1 * d2) + g2
-        m1[7] = (g1 * b2) + (h1 * e2) + h2
-        m1[8] = 1
-        m1
-      end
     end
 end

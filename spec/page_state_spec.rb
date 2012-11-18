@@ -296,8 +296,8 @@ describe PDF::Reader::PageState do
         # external collaborators will use
         state.trm_transform(0,0).should == [0, -15]
         state.trm_transform(0,1).should == [0, -3]
-        state.trm_transform(1,0).should == [1200, -15]
-        state.trm_transform(1,1).should == [1200, -3]
+        state.trm_transform(1,0).should == [12, -15]
+        state.trm_transform(1,1).should == [12, -3]
       end
     end
   end
