@@ -35,7 +35,6 @@ module PDF
 
       def initialize(options = {})
         @options = options
-        @verbosity = 0
       end
 
       # starting a new page
@@ -119,11 +118,7 @@ module PDF
           y_pos = def_rows - (run.y / row_multiplier).round
           str = run.text
           if y_pos < def_rows && y_pos >= 0 && x_pos < def_cols && x_pos >= 0
-            $stderr.puts "{%3d, %3d} -- %s" % [x_pos, y_pos, str.dump] if @verbosity > 2
             local_string_insert(page[y_pos], str, x_pos)
-            $stderr.puts "Page[#{y_pos}] #{page[y_pos]}" if @verbosity > 2
-          else
-            $stderr.puts "Layout Skipping Line off of page:\n#{run}" if @verbosity > 0
           end
         end
         if @options.fetch(:strip_empty_lines, true)
