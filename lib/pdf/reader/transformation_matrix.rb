@@ -27,9 +27,13 @@ class PDF::Reader
     #
     # NOTE: see Section 8.3.3, PDF 32000-1:2008, pp 119
     #
+    # NOTE: The if statements in this method are ordered to prefer optimisations
+    #       that allocate fewer objects
+    #
     # TODO: it might be worth adding an optimised path for vertical
     #       displacement to speed up processing documents that use vertical
     #       writing systems
+    #
     #
     def multiply!(a,b=nil,c=nil, d=nil,e=nil,f=nil)
       if a.is_a?(TransformationMatrix)
@@ -43,8 +47,26 @@ class PDF::Reader
       if a == 1 && b == 0 && c == 0 && d == 1 && e == 0 && f == 0
         # the identity matrix, no effect
         self
+      elsif @a == 1 && @b == 0 && @c == 0 && @d == 1 && @e == 0 && @f == 0
+        # I'm the identity matrix, so just copy values across
+        @a = a
+        @b = b
+        @c = c
+        @d = d
+        @e = e
+        @f = f
       elsif a == 1 && b == 0 && c == 0 && d == 1 && f == 0
+        # the other matrix is a horizontal displacement
         horizontal_displacement_multiply!(a,b,c,d,e,f)
+      elsif @a == 1 && @b == 0 && @c == 0 && @d == 1 && @f == 0
+        # I'm a horizontal displacement
+        horizontal_displacement_multiply_reversed!(a,b,c,d,e,f)
+      elsif @a != 1 && @b == 0 && @c == 0 && @d != 1 && @e == 0 && @f == 0
+        # I'm a xy scale
+        xy_scaling_multiply_reversed!(a,b,c,d,e,f)
+      elsif a != 1 && b == 0 && c == 0 && d != 1 && e == 0 && f == 0
+        # the other matrix is an xy scale
+        xy_scaling_multiply!(a,b,c,d,e,f)
       else
         faster_multiply!(a,b,c, d,e,f)
       end
@@ -61,6 +83,39 @@ class PDF::Reader
     #
     def horizontal_displacement_multiply!(a2,b2,c2, d2,e2,f2)
       @e = @e + e2
+      self
+    end
+
+    def horizontal_displacement_multiply_reversed!(a2,b2,c2,d2,e2,f2)
+      newa = a2
+      newb = b2
+      newc = c2
+      newd = d2
+      newe = (@e * a2) + e2
+      newf = (@e * b2) + f2
+      @a, @b, @c, @d, @e, @f = newa, newb, newc, newd, newe, newf
+      self
+    end
+
+    def xy_scaling_multiply!(a2,b2,c2,d2,e2,f2)
+      newa = @a * a2
+      newb = @b * d2
+      newc = @c * a2
+      newd = @d * d2
+      newe = @e * a2
+      newf = @f * d2
+      @a, @b, @c, @d, @e, @f = newa, newb, newc, newd, newe, newf
+      self
+    end
+
+    def xy_scaling_multiply_reversed!(a2,b2,c2,d2,e2,f2)
+      newa = @a * a2
+      newb = @a * b2
+      newc = @d * c2
+      newd = @d * d2
+      newe = e2
+      newf = f2
+      @a, @b, @c, @d, @e, @f = newa, newb, newc, newd, newe, newf
       self
     end
 
