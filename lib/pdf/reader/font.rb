@@ -78,12 +78,6 @@ class PDF::Reader
       data.unpack(encoding.unpack)
     end
 
-    def split_binary_data(data)
-      data.unpack(encoding.unpack).map { |glyph_code|
-        [glyph_code].pack(encoding.unpack)
-      }
-    end
-
     # looks up the specified codepoint and returns a value that is in (pdf)
     # glyph space, which is 1000 glyph units = 1 text space unit
     def glyph_width(code_point)
