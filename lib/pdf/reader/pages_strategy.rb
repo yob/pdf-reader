@@ -58,9 +58,10 @@ class PDF::Reader
   # == Text Callbacks
   #
   # All text passed into these callbacks will be encoded as UTF-8. Depending on where (and when) the
-  # PDF was generated, there's a good chance the text is NOT stored as UTF-8 internally so be careful
-  # when doing a comparison on strings returned from PDF::Reader (when doing unit tests for example). The
-  # string may not be byte-by-byte identical with the string that was originally written to the PDF.
+  # PDF was generated, there's a good chance the text is NOT stored as UTF-8 internally so be
+  # careful when doing a comparison on strings returned from PDF::Reader (when doing unit tests for
+  # example). The string may not be byte-by-byte identical with the string that was originally
+  # written to the PDF.
   #
   # - end_text_object
   # - move_to_start_of_next_line
