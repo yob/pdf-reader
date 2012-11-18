@@ -317,9 +317,15 @@ class PDF::Reader
         # TODO: I'm pretty sure that tx shouldn't need to be divided by
         #       ctm[0] here, but this gets my tests green and I'm out of
         #       ideas for now
-        multiply!(@text_matrix, 1,  0,  0,
-                                0,  1,  0,
-                                tx/ctm[0], ty, 1)
+        if ctm[0] == 1
+          multiply!(@text_matrix, 1,  0,  0,
+                                  0,  1,  0,
+                                  tx, ty, 1)
+        else
+          multiply!(@text_matrix, 1,  0,  0,
+                                  0,  1,  0,
+                                  tx/ctm[0], ty, 1)
+        end
         @font_size = @text_rendering_matrix = nil # invalidate cached value
       end
 
