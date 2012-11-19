@@ -1,6 +1,7 @@
 # coding: utf-8
 
 require 'forwardable'
+require 'pdf/reader/page_layout'
 
 module PDF
   class Reader
@@ -35,8 +36,6 @@ module PDF
 
       def initialize(options = {})
         @options = options
-        @current_platform_is_rbx_19 = RUBY_DESCRIPTION =~ /\Arubinius 2.0.0/ &&
-                                        RUBY_VERSION >= "1.9.0"
       end
 
       # starting a new page
@@ -101,63 +100,10 @@ module PDF
       end
 
       def content
-        runs = @characters.group_by { |char|
-          char.y.to_i
-        }.map { |y, chars|
-          group_chars_into_runs(chars.sort)
-        }.flatten.sort
-
-        def_rows = @options.fetch(:number_of_rows, 100)
-        def_cols = @options.fetch(:number_of_cols, 200)
-        row_multiplier = @options.fetch(:row_scale, 8.0) # 800
-        col_multiplier = @options.fetch(:col_scale, 3.0) # 600
-        x_offset = runs.map(&:x).sort.first
-        page = def_rows.times.map { |i| " " * def_cols }
-        runs.each do |run|
-          x_pos = ((run.x - x_offset) / col_multiplier).round
-          y_pos = def_rows - (run.y / row_multiplier).round
-          if y_pos < def_rows && y_pos >= 0 && x_pos < def_cols && x_pos >= 0
-            local_string_insert(page[y_pos], run.text, x_pos)
-          end
-        end
-        if @options.fetch(:strip_empty_lines, true)
-          page = page.select { |line| line.strip.length > 0 }
-        end
-        page.map(&:rstrip).join("\n")
+        PageLayout.new(@characters, @options).to_s
       end
 
       private
-
-      # This is a simple alternative to String#[]=. We can't use the string
-      # method as it's buggy on rubinius 2.0rc1 (in 1.9 mode)
-      #
-      # See my bug report at https://github.com/rubinius/rubinius/issues/1985
-      def local_string_insert(haystack, needle, index)
-        if @current_platform_is_rbx_19
-          char_count = needle.length
-          haystack.replace(
-            (haystack[0,index] || "") +
-            needle +
-            (haystack[index+char_count,500] || "")
-          )
-        else
-          haystack[Range.new(index, index + needle.length - 1)] = String.new(needle)
-        end
-      end
-
-      def group_chars_into_runs(chars)
-        runs = []
-        while head = chars.shift
-          if runs.empty?
-            runs << head
-          elsif runs.last.mergable?(head)
-            runs[-1] = runs.last + head
-          else
-            runs << head
-          end
-        end
-        runs
-      end
 
       def internal_show_text(string, kerning = 0)
         if @state.current_font.nil?
