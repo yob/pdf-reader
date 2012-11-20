@@ -1,6 +1,7 @@
 # coding: utf-8
 
 class PDF::Reader
+  # A value object that represents one or more consecutive characters on a page.
   class TextRun
     include Comparable
 
