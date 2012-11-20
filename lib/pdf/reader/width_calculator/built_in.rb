@@ -1,6 +1,7 @@
 # coding: utf-8
 
 require 'afm'
+require 'pdf/reader/synchronized_cache'
 
 class PDF::Reader
   module WidthCalculator
@@ -17,10 +18,12 @@ class PDF::Reader
 
       def initialize(font)
         @font = font
-        @metrics_path = File.join(File.dirname(__FILE__), "..","afm","#{font.basefont}.afm")
+        @@all_metrics ||= PDF::Reader::SynchronizedCache.new
 
-        if File.file?(@metrics_path)
-          @metrics = AFM::Font.new(@metrics_path)
+        metrics_path = File.join(File.dirname(__FILE__), "..","afm","#{font.basefont}.afm")
+
+        if File.file?(metrics_path)
+          @metrics = @@all_metrics[metrics_path] ||= AFM::Font.new(metrics_path)
         else
           raise ArgumentError, "No built-in metrics for #{font.basefont}"
         end
