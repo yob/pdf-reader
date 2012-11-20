@@ -29,16 +29,4 @@ class PDF::Reader
       @mutex.synchronize { @cache[key] = value }
     end
   end
-
-  class ThreadLocalCache
-    def initialize
-      @cache_id = "cache_#{self.object_id}".to_sym
-    end
-    def [](key)
-      (Thread.current[@cache_id] ||= {})[key]
-    end
-    def []=(key,value)
-      (Thread.current[@cache_id] ||= {})[key] = value
-    end
-  end
 end
