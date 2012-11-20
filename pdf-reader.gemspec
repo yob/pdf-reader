@@ -32,6 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency('ruby-rc4')
   spec.add_dependency('hashery', '~> 2.0')
   spec.add_dependency('ttfunk')
+  spec.add_dependency('afm', '~> 0.2.0')
 
   spec.post_install_message = <<END_DESC
 

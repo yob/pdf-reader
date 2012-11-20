@@ -336,7 +336,6 @@ end
 
 require 'pdf/reader/resource_methods'
 require 'pdf/reader/abstract_strategy'
-require 'pdf/reader/afm'
 require 'pdf/reader/buffer'
 require 'pdf/reader/cid_widths'
 require 'pdf/reader/cmap'
