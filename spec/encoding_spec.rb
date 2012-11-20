@@ -422,3 +422,15 @@ describe PDF::Reader::Encoding, "#to_utf8" do
     end
   end
 end
+
+describe PDF::Reader::Encoding, "#int_to_utf8_string" do
+
+  context "when the encoding is WinAnsi" do
+    let!(:enc) {
+      PDF::Reader::Encoding.new(:Encoding => :WinAnsiEncoding)
+    }
+    it "should convert a int glyph code to the relevant utf-8 string" do
+      enc.int_to_utf8_string(65).should == "A"
+    end
+  end
+end
