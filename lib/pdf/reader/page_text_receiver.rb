@@ -23,6 +23,9 @@ module PDF
       # Matrix Operators
       def_delegators :@state, :concatenate_matrix
 
+      # Text Object Operators
+      def_delegators :@state, :begin_text_object, :end_text_object
+
       # Text State Operators
       def_delegators :@state, :set_character_spacing, :set_horizontal_text_scaling
       def_delegators :@state, :set_text_font_and_size, :font_size
@@ -45,21 +48,8 @@ module PDF
         @characters = []
       end
 
-      #####################################################
-      # Text Object Operators
-      #####################################################
-      def begin_text_object # BT
-        # create a new text group and add it to the content stack
-        @state.begin_text_object
-      end
-
-      def end_text_object # ET
-        # empty the current line
-        @current_line = nil
-        # simplify the current text group, this may reduce the number of
-        # individual lines in the group by combining lines that run into each
-        # other.
-        @state.end_text_object
+      def content
+        PageLayout.new(@characters, @options).to_s
       end
 
       #####################################################
@@ -97,10 +87,6 @@ module PDF
             xobj.walk(self)
           end
         end
-      end
-
-      def content
-        PageLayout.new(@characters, @options).to_s
       end
 
       private
