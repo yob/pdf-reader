@@ -91,6 +91,21 @@ describe PDF::Reader::Font do
 
     end
   end
+  describe "unpack()" do
+    context "with a WinAnsi encoded font" do
+      let(:raw)  do
+        {
+          :Encoding  => :WinAnsiEncoding,
+          :Type      => :Font
+        }
+      end
+      let(:font) { PDF::Reader::Font.new(object_hash, raw) }
+
+      it "should unpack a binary string into ints" do
+        font.unpack("\x41\x42").should == [65,66]
+      end
+    end
+  end
 
   describe "glyph_width()" do
     context "with a FirstChar of 1" do
