@@ -231,7 +231,9 @@ describe PDF::Reader, "integration specs" do
     filename = pdf_spec_file("encrypted_with_user_pass_apples")
 
     PDF::Reader.open(filename, :password => "apples") do |reader|
-      reader.page(1).text.should eql("This sample file is encrypted with a user password.\nUser password: apples\nOwner password: password")
+      reader.page(1).text.should match(/^This sample file is encrypted with a user password.$/m)
+      reader.page(1).text.should match(/^User password: apples$/m)
+      reader.page(1).text.should match(/^Owner password: password$/m)
     end
   end
 
@@ -239,7 +241,9 @@ describe PDF::Reader, "integration specs" do
     filename = pdf_spec_file("encrypted_with_user_pass_apples")
 
     PDF::Reader.open(filename, :password => "password") do |reader|
-      reader.page(1).text.should eql("This sample file is encrypted with a user password.\nUser password: apples\nOwner password: password")
+      reader.page(1).text.should match(/^This sample file is encrypted with a user password.$/)
+      reader.page(1).text.should match(/^User password: apples$/m)
+      reader.page(1).text.should match(/^Owner password: password$/m)
     end
   end
 
