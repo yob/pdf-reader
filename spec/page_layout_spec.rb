@@ -7,7 +7,7 @@ describe PDF::Reader::PageLayout, "#to_s" do
     let!(:runs) do
       [
         PDF::Reader::TextRun.new(30, 700, 50, "Hello"),
-        PDF::Reader::TextRun.new(30, 650, 50, "World"),
+        PDF::Reader::TextRun.new(30, 693, 50, "World"),
       ]
     end
     subject { PDF::Reader::PageLayout.new(runs)}

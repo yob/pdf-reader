@@ -26,10 +26,7 @@ class PDF::Reader
           local_string_insert(page[y_pos], run.text, x_pos)
         end
       end
-      if @options.fetch(:strip_empty_lines, true)
-        page = page.select { |line| line.strip.length > 0 }
-      end
-      page.map(&:rstrip).join("\n")
+      page.map(&:strip).join("\n").strip
     end
 
     private
