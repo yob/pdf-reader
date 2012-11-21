@@ -11,11 +11,6 @@ class PDF::Reader
     # see Section 9.6.2.2, PDF 32000-1:2008, pp 256
     class BuiltIn
 
-      BUILT_INS = [ :Courier, :Helvetica, :"Times-Roman", :"Symbol", :"ZapfDingbats",
-                      :"Courier-Bold", :"Courier-Oblique", :"Courier-BoldOblique",
-                      :"Times-Bold", "Times-Italic", :"Times-BoldItalic",
-                      :"Helvetica-Bold", :"Helvetica-Oblique", :"Helvetica-BoldOblique" ]
-
       def initialize(font)
         @font = font
         @@all_metrics ||= PDF::Reader::SynchronizedCache.new
