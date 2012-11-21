@@ -63,7 +63,7 @@ class PDF::Reader
         @f = f
       elsif a == 1 && b == 0 && c == 0 && d == 1 && f == 0
         # the other matrix is a horizontal displacement
-        horizontal_displacement_multiply!(a,b,c,d,e,f)
+        horizontal_displacement_multiply!(e)
       elsif @a == 1 && @b == 0 && @c == 0 && @d == 1 && @f == 0
         # I'm a horizontal displacement
         horizontal_displacement_multiply_reversed!(a,b,c,d,e,f)
@@ -79,20 +79,20 @@ class PDF::Reader
       self
     end
 
-    private
-
     # Optimised method for when the second matrix in the calculation is
     # a simple horizontal displacement.
     #
     # Like this:
     #
-    #   [ 1 2 0 ]   [ 1 0 0 ]
-    #   [ 3 4 0 ] x [ 0 1 0 ]
-    #   [ 5 6 1 ]   [ 5 0 1 ]
+    #   [ 1 2 0 ]   [ 1  0 0 ]
+    #   [ 3 4 0 ] x [ 0  1 0 ]
+    #   [ 5 6 1 ]   [ e2 0 1 ]
     #
-    def horizontal_displacement_multiply!(a2,b2,c2, d2,e2,f2)
+    def horizontal_displacement_multiply!(e2)
       @e = @e + e2
     end
+
+    private
 
     # Optimised method for when the first matrix in the calculation is
     # a simple horizontal displacement.

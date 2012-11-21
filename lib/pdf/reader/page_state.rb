@@ -323,14 +323,11 @@ class PDF::Reader
         # TODO: I'm pretty sure that tx shouldn't need to be divided by
         #       ctm[0] here, but this gets my tests green and I'm out of
         #       ideas for now
+        # TODO: support ty > 0
         if ctm.a == 1
-          @text_matrix.multiply!(1,  0,
-                                 0,  1,
-                                 tx, ty)
+          @text_matrix.horizontal_displacement_multiply!(tx)
         else
-          @text_matrix.multiply!(1,  0,
-                                 0,  1,
-                                 tx/ctm.a, ty)
+          @text_matrix.horizontal_displacement_multiply!(tx/ctm.a)
         end
         @font_size = @text_rendering_matrix = nil # invalidate cached value
       end

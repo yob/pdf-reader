@@ -5,7 +5,7 @@ require File.dirname(__FILE__) + "/spec_helper"
 # The results in these specs were generated at
 # http://www.calcul.com/matrix-multiply-3x3-3x3 to ensure correctness.
 
-describe PDF::Reader::TransformationMatrix, "#multiply_with_an_object!" do
+describe PDF::Reader::TransformationMatrix, "#multiply!" do
   class PDF::Reader::TransformationMatrix
     # a helper method for tests
     def multiply_with_an_object!(m2)
@@ -166,4 +166,21 @@ describe PDF::Reader::TransformationMatrix, "#multiply_with_an_object!" do
     end
   end
 
+end
+
+describe PDF::Reader::TransformationMatrix, "#horizontal_displacement_multiply!" do
+  context "with [2,3,0   4,5,0   6 7 1]" do
+    let(:matrix_one) { PDF::Reader::TransformationMatrix.new(2,3,4,5,6,7)}
+
+    context "and a horizontal displacement" do
+      let(:displacement) { 10 }
+
+      it "should set the new matrix values" do
+        matrix_one.horizontal_displacement_multiply!(displacement)
+
+        matrix_one.to_a.should == [2,3,0,  4,5,0,  16,7,1]
+      end
+
+    end
+  end
 end
