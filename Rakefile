@@ -5,8 +5,6 @@ Bundler.setup
 require 'rake'
 require 'rdoc/task'
 require 'rspec/core/rake_task'
-require 'roodi'
-require 'roodi_task'
 
 # Cane requires ripper, which appears to only work on MRI 1.9
 if RUBY_VERSION >= "1.9" && RUBY_ENGINE == "ruby"
@@ -49,8 +47,6 @@ Rake::RDocTask.new("doc") do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
   rdoc.options << "--inline-source"
 end
-
-RoodiTask.new 'roodi', ['lib/**/*.rb']
 
 desc "Create a YAML file of integrity info for PDFs in the spec suite"
 task :integrity_yaml do
