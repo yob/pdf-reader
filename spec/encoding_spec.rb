@@ -129,7 +129,7 @@ describe PDF::Reader::Encoding, "#to_utf8" do
     end
   end
   context "when the encoding is MacExpert with differences" do
-    it "should correctly convert various mac expert strings when a differences table is specified" do
+    it "should correctly convert various mac expert strings" do
       e = PDF::Reader::Encoding.new(:MacExpertEncoding)
       e.differences = [0xEE, :A]
       [
