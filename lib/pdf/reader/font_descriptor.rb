@@ -10,23 +10,25 @@ class PDF::Reader
     attr_reader :font_name, :font_family, :font_stretch, :font_weight,
                 :font_bounding_box, :cap_height, :ascent, :descent, :leading,
                 :avg_width, :max_width, :missing_width, :italic_angle, :stem_v,
-                :x_height, :font_flag, :is_serif, :is_fixed_width, :is_symbolic,
-                :is_script, :is_italic, :is_all_caps, :is_small_caps
+                :x_height, :font_flags
 
     def initialize(ohash, fd_hash)
-      @ascent                = ohash.object(fd_hash[:Ascent])
-      @descent               = ohash.object(fd_hash[:Descent])
-      @missing_width         = ohash.object(fd_hash[:MissingWidth])
-      @font_bounding_box     = ohash.object(fd_hash[:FontBBox])
-      @avg_width             = ohash.object(fd_hash[:AvgWidth])
-      @cap_height            = ohash.object(fd_hash[:CapHeight])
-      @font_flags            = ohash.object(fd_hash[:Flags])
+      @ascent                = ohash.object(fd_hash[:Ascent])    || 0
+      @descent               = ohash.object(fd_hash[:Descent])   || 0
+      @missing_width         = ohash.object(fd_hash[:MissingWidth]) || 0
+      @font_bounding_box     = ohash.object(fd_hash[:FontBBox])  || [0,0,0,0]
+      @avg_width             = ohash.object(fd_hash[:AvgWidth])  || 0
+      @cap_height            = ohash.object(fd_hash[:CapHeight]) || 0
+      @font_flags            = ohash.object(fd_hash[:Flags])     || 0
       @italic_angle          = ohash.object(fd_hash[:ItalicAngle])
       @font_name             = ohash.object(fd_hash[:FontName]).to_s
-      @leading               = ohash.object(fd_hash[:Leading])
-      @max_width             = ohash.object(fd_hash[:MaxWidth])
+      @leading               = ohash.object(fd_hash[:Leading])   || 0
+      @max_width             = ohash.object(fd_hash[:MaxWidth])  || 0
       @stem_v                = ohash.object(fd_hash[:StemV])
       @x_height              = ohash.object(fd_hash[:XHeight])
+      @font_stretch          = ohash.object(fd_hash[:FontStretch]) || :Normal
+      @font_weight           = ohash.object(fd_hash[:FontWeight])  || 400
+      @font_family           = ohash.object(fd_hash[:FontFamily])
 
       # A FontDescriptor may have an embedded font program in FontFile
       # (Type 1 Font Program), FontFile2 (TrueType font program), or
@@ -39,39 +41,10 @@ class PDF::Reader
       @font_program_stream = ohash.object(fd_hash[:FontFile2])
       #TODO handle FontFile and FontFile3
 
-      if @font_name
-        @font_family         =  @font_name.gsub(/^[A-Z]+\+/, '')
-      else
-        @font_family         ||= "%Unknown Font Family%"
-      end
-      @font_name             ||= "%Unknown Font Name%"
-      @font_stretch          ||= "Normal"
-      @font_weight           ||= 0
-      @font_bounding_box     ||= [0, 0, 0,0]
-      @cap_height            ||= 0
-      @ascent                ||= 0
-      @descent               ||= 0
-      @avg_width             ||= 0
-      @leading               ||= 0
-      @max_width             ||= 0
-      @missing_width         ||= 0
-      @font_flags            ||= 0
-      @is_fixed_width        = (@font_flags & 0x00001) > 0
-      @is_serif              = (@font_flags & 0x00002) > 0
-      @is_symbolic           = (@font_flags & 0x00004) > 0
-      @is_script             = (@font_flags & 0x00008) > 0
-      @is_italic             = (@font_flags & 0x00040) > 0
-      @is_all_caps           = (@font_flags & 0x10000) > 0
-      @is_small_caps         = (@font_flags & 0x20000) > 0
-
       @is_ttf = true if @font_program_stream
     end
 
-    def ttf_program_stream
-      @ttf_program_stream ||= TTFunk::File.new(@font_program_stream.unfiltered_data)
-    end
-
-    def find_glyph_width(char_code)
+    def glyph_width(char_code)
       if @is_ttf
         if ttf_program_stream.cmap.unicode.length > 0
           glyph_id = ttf_program_stream.cmap.unicode.first[char_code]
@@ -95,6 +68,12 @@ class PDF::Reader
         @glyph_to_pdf_sf ||= 1.0
       end
       @glyph_to_pdf_sf
+    end
+
+    private
+
+    def ttf_program_stream
+      @ttf_program_stream ||= TTFunk::File.new(@font_program_stream.unfiltered_data)
     end
   end
 
