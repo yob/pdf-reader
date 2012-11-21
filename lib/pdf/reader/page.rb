@@ -68,14 +68,10 @@ module PDF
       # characters that can't be translated will be returned as a ▯
       #
       # options hash
-      # :verbosity            Integer    0      0 = no output, 3 = most output
       # :number_of_rows       Integer    100    number of rows to use for text layout
       # :number_of_cols       Integer    200    number of columns to use for text layout
       # :row_scale            Float      8.0    approximation of how much space a row uses
       # :col_scale            Float      3.0    approximation of how much space a column uses
-      # :strip_empty_lines    Boolean    true   compreses resultant text so it
-      #                                         is less akward, false may be more
-      #                                         representative of PDF
       #
       # number_of_rows and row_scale are linked and control how many lines are on a page.
       # They should be roughly equal to the height of the page (in points),
