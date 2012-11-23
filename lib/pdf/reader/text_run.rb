@@ -5,16 +5,15 @@ class PDF::Reader
   class TextRun
     include Comparable
 
-    MERGE_LIMIT = 12
-
-    attr_reader :x, :y, :width, :text
+    attr_reader :x, :y, :width, :font_size, :text
 
     alias :to_s :text
 
-    def initialize(x, y, width, text)
+    def initialize(x, y, width, font_size, text)
       @x = x
       @y = y
       @width = width
+      @font_size = font_size.floor
       @text = text
     end
 
@@ -39,23 +38,27 @@ class PDF::Reader
     end
 
     def mergable?(other)
-      y.to_i == other.y.to_i && mergable_range.include?(other.x)
+      y.to_i == other.y.to_i && font_size == other.font_size && mergable_range.include?(other.x)
     end
 
     def +(other)
       raise ArgumentError, "#{other} cannot be merged with this run" unless mergable?(other)
 
-      TextRun.new(x, y, other.endx - x, text + other.text)
+      if (other.x - endx) <( font_size * 0.2)
+        TextRun.new(x, y, other.endx - x, font_size, text + other.text)
+      else
+        TextRun.new(x, y, other.endx - x, font_size, "#{text} #{other.text}")
+      end
     end
 
     def inspect
-      "#{text} w:#{width} @#{x},#{y}"
+      "#{text} w:#{width} f:#{font_size} @#{x},#{y}"
     end
 
     private
 
     def mergable_range
-      @mergable_range ||= Range.new(endx - 3, endx + MERGE_LIMIT)
+      @mergable_range ||= Range.new(endx - 3, endx + font_size)
     end
   end
 end

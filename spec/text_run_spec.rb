@@ -7,9 +7,10 @@ describe PDF::Reader::TextRun, "#initilize" do
     let(:x)     { 10 }
     let(:y)     { 20 }
     let(:width) { 30 }
+    let(:font)  { 12 }
     let(:text)  { "Chunky" }
 
-    subject { PDF::Reader::TextRun.new(x, y, width, text)}
+    subject { PDF::Reader::TextRun.new(x, y, width, font, text)}
 
     it "should make x accessible" do
       subject.x.should == 10
@@ -23,6 +24,10 @@ describe PDF::Reader::TextRun, "#initilize" do
       subject.width.should == 30
     end
 
+    it "should make font_size accessible" do
+      subject.font_size.should == 12
+    end
+
     it "should make text accessible" do
       subject.text.should == "Chunky"
     end
@@ -34,9 +39,10 @@ describe PDF::Reader::TextRun, "#endx" do
     let(:x)     { 10 }
     let(:y)     { 20 }
     let(:width) { 30 }
+    let(:font)  { 12 }
     let(:text)  { "Chunky" }
 
-    subject { PDF::Reader::TextRun.new(x, y, width, text)}
+    subject { PDF::Reader::TextRun.new(x, y, width, font, text)}
 
     it "should equal x + width" do
       subject.endx.should == 40
@@ -48,31 +54,62 @@ describe PDF::Reader::TextRun, "#mergable?" do
   let(:x)     { 10 }
   let(:y)     { 20 }
   let(:width) { 30 }
+  let(:font)  { 12 }
 
-  context "when the two runs are within 10pts of each other" do
-    let(:one)   { PDF::Reader::TextRun.new(x,          y, width, "A")}
-    let(:two)   { PDF::Reader::TextRun.new(one.endx+9, y, width, "B")}
+  context "the font_sizes match" do
+    context "when the two runs are within 1x font_size of each other" do
+      let(:one)   { PDF::Reader::TextRun.new(x,           y, width, font, "A")}
+      let(:two)   { PDF::Reader::TextRun.new(one.endx+12, y, width, font, "B")}
 
-    it "should return true" do
-      one.mergable?(two).should be_true
+      it "should return true" do
+        one.mergable?(two).should be_true
+      end
+    end
+
+    context "when the two runs are over 1x font_size away from each other" do
+      let(:one)   { PDF::Reader::TextRun.new(x,           y, width, font, "A")}
+      let(:two)   { PDF::Reader::TextRun.new(one.endx+13, y, width, font, "B")}
+
+      it "should return false" do
+        one.mergable?(two).should be_false
+      end
+    end
+
+    context "when the two runs have identical X values but different Y" do
+      let(:one)   { PDF::Reader::TextRun.new(x, y,     width, font, "A")}
+      let(:two)   { PDF::Reader::TextRun.new(x, y + 1, width, font, "B")}
+
+      it "should return false" do
+        one.mergable?(two).should be_false
+      end
     end
   end
+  context "the font_sizes do not match" do
+    context "when the two runs are within 1x font_size of each other" do
+      let(:one)   { PDF::Reader::TextRun.new(x,           y, width, font,   "A")}
+      let(:two)   { PDF::Reader::TextRun.new(one.endx+12, y, width, font+1, "B")}
 
-  context "when the two runs are over 12pts away from each other" do
-    let(:one)   { PDF::Reader::TextRun.new(x,           y, width, "A")}
-    let(:two)   { PDF::Reader::TextRun.new(one.endx+13, y, width, "B")}
-
-    it "should return false" do
-      one.mergable?(two).should be_false
+      it "should return true" do
+        one.mergable?(two).should be_false
+      end
     end
-  end
 
-  context "when the two runs have identical X values but different Y" do
-    let(:one)   { PDF::Reader::TextRun.new(x, y,     width, "A")}
-    let(:two)   { PDF::Reader::TextRun.new(x, y + 1, width, "B")}
+    context "when the two runs are over 1x font_size away from each other" do
+      let(:one)   { PDF::Reader::TextRun.new(x,           y, width, font,   "A")}
+      let(:two)   { PDF::Reader::TextRun.new(one.endx+13, y, width, font+1, "B")}
 
-    it "should return false" do
-      one.mergable?(two).should be_false
+      it "should return false" do
+        one.mergable?(two).should be_false
+      end
+    end
+
+    context "when the two runs have identical X values but different Y" do
+      let(:one)   { PDF::Reader::TextRun.new(x, y,     width, font,   "A")}
+      let(:two)   { PDF::Reader::TextRun.new(x, y + 1, width, font+1, "B")}
+
+      it "should return false" do
+        one.mergable?(two).should be_false
+      end
     end
   end
 end
@@ -81,23 +118,37 @@ describe PDF::Reader::TextRun, "#+" do
   let(:x)     { 10 }
   let(:y)     { 20 }
   let(:width) { 30 }
+  let(:font)  { 12 }
 
-  context "when the two runs are within 10pts of each other" do
-    let(:one)   { PDF::Reader::TextRun.new(x,          y, width, "A")}
-    let(:two)   { PDF::Reader::TextRun.new(one.endx+9, y, width, "B")}
+  context "when the two runs are 0.5x font_size of each other" do
+    let(:one)   { PDF::Reader::TextRun.new(x,          y, width, font, "A")}
+    let(:two)   { PDF::Reader::TextRun.new(one.endx+5, y, width, font, "B")}
 
     it "should return a new TextRun with combined data" do
       result = one + two
       result.x.should     == 10
       result.y.should     == 20
-      result.width.should == 69
+      result.width.should == 65
       result.text.should  == "AB"
     end
   end
 
+  context "when the two runs are 1x font_size of each other" do
+    let(:one)   { PDF::Reader::TextRun.new(x,           y, width, font, "A")}
+    let(:two)   { PDF::Reader::TextRun.new(one.endx+12, y, width, font, "B")}
+
+    it "should return a new TextRun with combined data" do
+      result = one + two
+      result.x.should     == 10
+      result.y.should     == 20
+      result.width.should == 72
+      result.text.should  == "A B"
+    end
+  end
+
   context "when the two runs are over 12pts away from each other" do
-    let(:one)   { PDF::Reader::TextRun.new(x,           y, width, "A")}
-    let(:two)   { PDF::Reader::TextRun.new(one.endx+13, y, width, "B")}
+    let(:one)   { PDF::Reader::TextRun.new(x,           y, width, font, "A")}
+    let(:two)   { PDF::Reader::TextRun.new(one.endx+13, y, width, font, "B")}
 
     it "should raise an exception" do
       lambda {
@@ -109,11 +160,12 @@ end
 
 describe PDF::Reader::TextRun, "#<=>" do
   let(:width) { 30 }
+  let(:font)  { 12 }
   let(:text)  { "Chunky" }
 
   context "when comparing two runs in the same position" do
-    let!(:one) { PDF::Reader::TextRun.new(10, 20, width, text)}
-    let!(:two) { PDF::Reader::TextRun.new(10, 20, width, text)}
+    let!(:one) { PDF::Reader::TextRun.new(10, 20, width, font, text)}
+    let!(:two) { PDF::Reader::TextRun.new(10, 20, width, font, text)}
 
     it "should return 0" do
       (one <=> two).should == 0
@@ -121,8 +173,8 @@ describe PDF::Reader::TextRun, "#<=>" do
   end
 
   context "when run two is directly above run one" do
-    let!(:one) { PDF::Reader::TextRun.new(10, 10, width, text)}
-    let!(:two) { PDF::Reader::TextRun.new(10, 20, width, text)}
+    let!(:one) { PDF::Reader::TextRun.new(10, 10, width, font, text)}
+    let!(:two) { PDF::Reader::TextRun.new(10, 20, width, font, text)}
 
     it "should sort two before one" do
       [one, two].sort.should == [two, one]
@@ -130,8 +182,8 @@ describe PDF::Reader::TextRun, "#<=>" do
   end
 
   context "when run two is directly right of run one" do
-    let!(:one) { PDF::Reader::TextRun.new(10, 10, width, text)}
-    let!(:two) { PDF::Reader::TextRun.new(20, 10, width, text)}
+    let!(:one) { PDF::Reader::TextRun.new(10, 10, width, font, text)}
+    let!(:two) { PDF::Reader::TextRun.new(20, 10, width, font, text)}
 
     it "should sort one before two" do
       [one, two].sort.should == [one, two]
@@ -139,8 +191,8 @@ describe PDF::Reader::TextRun, "#<=>" do
   end
 
   context "when run two is directly below run one" do
-    let!(:one) { PDF::Reader::TextRun.new(10, 10, width, text)}
-    let!(:two) { PDF::Reader::TextRun.new(10, 05, width, text)}
+    let!(:one) { PDF::Reader::TextRun.new(10, 10, width, font, text)}
+    let!(:two) { PDF::Reader::TextRun.new(10, 05, width, font, text)}
 
     it "should sort one before two" do
       [one, two].sort.should == [one, two]
@@ -148,8 +200,8 @@ describe PDF::Reader::TextRun, "#<=>" do
   end
 
   context "when run two is directly left of run one" do
-    let!(:one) { PDF::Reader::TextRun.new(10, 10, width, text)}
-    let!(:two) { PDF::Reader::TextRun.new(5, 10, width, text)}
+    let!(:one) { PDF::Reader::TextRun.new(10, 10, width, font, text)}
+    let!(:two) { PDF::Reader::TextRun.new(5, 10, width, font, text)}
 
     it "should sort two before one" do
       [one, two].sort.should == [two, one]
