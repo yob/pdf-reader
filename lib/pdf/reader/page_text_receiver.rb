@@ -42,10 +42,11 @@ module PDF
         @state = PageState.new(page)
         @content = []
         @characters = []
+        @mediabox = page.attributes[:MediaBox]
       end
 
       def content
-        PageLayout.new(@characters).to_s
+        PageLayout.new(@characters, @mediabox).to_s
       end
 
       #####################################################

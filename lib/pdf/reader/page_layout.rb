@@ -4,13 +4,16 @@ class PDF::Reader
 
   # Takes a collection of TextRun objects and renders them into a single
   # string that best approximates the way they'd appear on a render PDF page.
+  #
+  # media box should be a 4 number array that describes the dimensions of the
+  # page to be rendered as described by the page's MediaBox attribute
   class PageLayout
-    def initialize(runs)
+    def initialize(runs, mediabox)
       @runs    = merge_runs(runs)
       @mean_font_size   = mean(@runs.map(&:font_size)) || 0
       @mean_glyph_width = mean(@runs.map(&:mean_character_width)) || 0
-      @page_width  = 595.28
-      @page_height = 841.89
+      @page_width  = mediabox[2] - mediabox[0]
+      @page_height = mediabox[3] - mediabox[1]
       @x_offset = @runs.map(&:x).sort.first
       @current_platform_is_rbx_19 = RUBY_DESCRIPTION =~ /\Arubinius 2.0.0/ &&
                                       RUBY_VERSION >= "1.9.0"
