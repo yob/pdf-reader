@@ -67,23 +67,8 @@ module PDF
       # been layed out in a manner somewhat reflecting the source. Any
       # characters that can't be translated will be returned as a ▯
       #
-      # options hash
-      # :number_of_rows       Integer    100    number of rows to use for text layout
-      # :number_of_cols       Integer    200    number of columns to use for text layout
-      # :row_scale            Float      8.0    approximation of how much space a row uses
-      # :col_scale            Float      3.0    approximation of how much space a column uses
-      #
-      # number_of_rows and row_scale are linked and control how many lines are on a page.
-      # They should be roughly equal to the height of the page (in points),
-      # 100 * 8 == 800 =~ 11 * 72 == 792
-      # likewise, number_of_cols and col_scale control how man characters can appear on a page.
-      # They should be roughly equal to the width of the page (in points),
-      # 200 * 3 == 600 =~ 8.5 * 72 = 612
-      #
-      # incorrect setting of these parameters may result in some text not being displayed
-      #
-      def text(options = {})
-        receiver = PDF::Reader::PageTextReceiver.new(options)
+      def text
+        receiver = PDF::Reader::PageTextReceiver.new
         walk receiver
         receiver.content
       end

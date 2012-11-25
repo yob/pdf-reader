@@ -5,11 +5,10 @@ class PDF::Reader
   # Takes a collection of TextRun objects and renders them into a single
   # string that best approximates the way they'd appear on a render PDF page.
   class PageLayout
-    def initialize(runs, options = {})
+    def initialize(runs)
       @mean_font_size   = mean(runs.map(&:font_size)) || 0
       @mean_glyph_width = mean(runs.map {|r| r.width / r.text.unpack("U*").size.to_f}) || 0
       @runs    = merge_runs(runs)
-      @options = options
       @current_platform_is_rbx_19 = RUBY_DESCRIPTION =~ /\Arubinius 2.0.0/ &&
                                       RUBY_VERSION >= "1.9.0"
     end

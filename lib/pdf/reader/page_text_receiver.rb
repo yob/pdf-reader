@@ -37,10 +37,6 @@ module PDF
       def_delegators :@state, :set_text_matrix_and_text_line_matrix, :move_to_start_of_next_line
       ##########  END FORWARDERS  ##########
 
-      def initialize(options = {})
-        @options = options
-      end
-
       # starting a new page
       def page=(page)
         @state = PageState.new(page)
@@ -49,7 +45,7 @@ module PDF
       end
 
       def content
-        PageLayout.new(@characters, @options).to_s
+        PageLayout.new(@characters).to_s
       end
 
       #####################################################
