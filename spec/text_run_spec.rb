@@ -120,15 +120,15 @@ describe PDF::Reader::TextRun, "#+" do
   let(:width) { 30 }
   let(:font)  { 12 }
 
-  context "when the two runs are 0.5x font_size of each other" do
-    let(:one)   { PDF::Reader::TextRun.new(x,          y, width, font, "A")}
-    let(:two)   { PDF::Reader::TextRun.new(one.endx+5, y, width, font, "B")}
+  context "when the two runs are 0.12x font_size of each other" do
+    let(:one)   { PDF::Reader::TextRun.new(x,            y, width, font, "A")}
+    let(:two)   { PDF::Reader::TextRun.new(one.endx+1.2, y, width, font, "B")}
 
     it "should return a new TextRun with combined data" do
       result = one + two
       result.x.should     == 10
       result.y.should     == 20
-      result.width.should == 65
+      result.width.should == 61.2
       result.text.should  == "AB"
     end
   end

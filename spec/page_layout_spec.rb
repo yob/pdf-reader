@@ -3,11 +3,23 @@
 require "spec_helper"
 
 describe PDF::Reader::PageLayout, "#to_s" do
-  context "with two runs with different Y values" do
+  context "with one word" do
     let!(:runs) do
       [
-        PDF::Reader::TextRun.new(30, 700, 50, "Hello"),
-        PDF::Reader::TextRun.new(30, 693, 50, "World"),
+        PDF::Reader::TextRun.new(30, 700, 50, 12, "Hello")
+      ]
+    end
+    subject { PDF::Reader::PageLayout.new(runs)}
+
+    it "should return a correct string" do
+      subject.to_s.should == "Hello"
+    end
+  end
+  context "with one run directly below another" do
+    let!(:runs) do
+      [
+        PDF::Reader::TextRun.new(30, 700, 50, 12, "Hello"),
+        PDF::Reader::TextRun.new(30, 687, 50, 12, "World"),
       ]
     end
     subject { PDF::Reader::PageLayout.new(runs)}
@@ -16,33 +28,87 @@ describe PDF::Reader::PageLayout, "#to_s" do
       subject.to_s.should == "Hello\nWorld"
     end
   end
-
-  context "with two runs with the same Y values and 10pts between X locations" do
+  context "with one two words on one line, separated by a font size gap" do
     let!(:runs) do
       [
-        PDF::Reader::TextRun.new(30, 700, 50, "Hello"),
-        PDF::Reader::TextRun.new(90, 700, 50, "World"),
+        PDF::Reader::TextRun.new(30, 700, 50, 12, "Hello"),
+        PDF::Reader::TextRun.new(92, 700, 50, 12, "World"),
       ]
     end
     subject { PDF::Reader::PageLayout.new(runs)}
 
     it "should return a correct string" do
-      subject.to_s.should == "HelloWorld"
+      subject.to_s.should == "Hello World"
     end
   end
 
-  context "with two runs with the same Y values and 20pts between X locations" do
+  context "with one two words on one line, separated just over a font size gap" do
     let!(:runs) do
       [
-        PDF::Reader::TextRun.new(30, 700, 50, "Hello"),
-        PDF::Reader::TextRun.new(100, 700, 50, "World"),
+        PDF::Reader::TextRun.new(30, 700, 50, 12, "Hello"),
+        PDF::Reader::TextRun.new(93, 700, 50, 12, "World"),
       ]
     end
     subject { PDF::Reader::PageLayout.new(runs)}
 
     it "should return a correct string" do
-      subject.to_s.should match(/Hello\s+World/)
+      subject.to_s.should == "Hello World"
     end
   end
 
+  context "with one two words on one line, separated just over two font size gaps" do
+    let!(:runs) do
+      [
+        PDF::Reader::TextRun.new(30, 700, 50, 12, "Hello"),
+        PDF::Reader::TextRun.new(105, 700, 50, 12, "World"),
+      ]
+    end
+    subject { PDF::Reader::PageLayout.new(runs)}
+
+    it "should return a correct string" do
+      subject.to_s.should == "Hello  World"
+    end
+  end
+
+  context "with one run directly below another and indented by just over 1 font size gap" do
+    let!(:runs) do
+      [
+        PDF::Reader::TextRun.new(30, 700, 50, 12, "Hello"),
+        PDF::Reader::TextRun.new(43, 687, 50, 12, "World"),
+      ]
+    end
+    subject { PDF::Reader::PageLayout.new(runs)}
+
+    it "should return a correct string" do
+      subject.to_s.should == "Hello\n World"
+    end
+  end
+
+  context "with one run directly below another and the first indented by just over 1x fs gap" do
+    let!(:runs) do
+      [
+        PDF::Reader::TextRun.new(43, 700, 50, 12, "Hello"),
+        PDF::Reader::TextRun.new(30, 687, 50, 12, "World"),
+      ]
+    end
+    subject { PDF::Reader::PageLayout.new(runs)}
+
+    it "should return a correct string" do
+      subject.to_s.should == " Hello\nWorld"
+    end
+  end
+
+  context "with one run directly below another with 1 font size gap" do
+    let!(:runs) do
+      [
+        PDF::Reader::TextRun.new(30, 700, 50, 12, "Hello"),
+        PDF::Reader::TextRun.new(30, 676, 50, 12, "World"),
+      ]
+    end
+    subject { PDF::Reader::PageLayout.new(runs)}
+
+    it "should return a correct string" do
+      subject.to_s.should == "Hello\n\nWorld"
+    end
+  end
 end

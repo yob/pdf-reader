@@ -6,6 +6,8 @@ class PDF::Reader
   # string that best approximates the way they'd appear on a render PDF page.
   class PageLayout
     def initialize(runs, options = {})
+      @mean_font_size   = mean(runs.map(&:font_size)) || 0
+      @mean_glyph_width = mean(runs.map {|r| r.width / r.text.unpack("U*").size.to_f}) || 0
       @runs    = merge_runs(runs)
       @options = options
       @current_platform_is_rbx_19 = RUBY_DESCRIPTION =~ /\Arubinius 2.0.0/ &&
@@ -13,10 +15,14 @@ class PDF::Reader
     end
 
     def to_s
-      row_count = @options.fetch(:number_of_rows, 100)
-      col_count = @options.fetch(:number_of_cols, 200)
-      row_multiplier = @options.fetch(:row_scale, 8.0) # 800
-      col_multiplier = @options.fetch(:col_scale, 3.0) # 600
+      return "" if @runs.empty?
+
+      page_width  = 595.28
+      page_height = 841.89
+      row_count   = (page_height / @mean_font_size).floor
+      col_count   = (page_width  / @mean_glyph_width).floor
+      row_multiplier = page_height / row_count
+      col_multiplier = page_width / col_count
       x_offset = @runs.map(&:x).sort.first
       page = row_count.times.map { |i| " " * col_count }
       @runs.each do |run|
@@ -26,10 +32,30 @@ class PDF::Reader
           local_string_insert(page[y_pos], run.text, x_pos)
         end
       end
-      page.map(&:strip).join("\n").strip
+      line_lengths = page.map { |l| l.strip.length }
+      first_line_with_text = line_lengths.index { |l| l > 0 }
+      last_line_with_text  = line_lengths.size - line_lengths.reverse.index { |l| l > 0 }
+      interesting_line_count = last_line_with_text - first_line_with_text
+      page[first_line_with_text, interesting_line_count].map(&:rstrip).join("\n")
     end
 
     private
+
+    def mean(collection)
+      if collection.size == 0
+        0
+      else
+        collection.inject(0) { |accum, v| accum + v} / collection.size.to_f
+      end
+    end
+
+    def each_line(&block)
+      @runs.sort.group_by { |run|
+        run.y.to_i
+      }.map { |y, collection|
+        yield y, collection
+      }
+    end
 
     # take a collection of TextRun objects and merge any that are in close
     # proximity
