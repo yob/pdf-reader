@@ -63,13 +63,12 @@ module PDF
         }
       end
 
-      # returns the plain text content of this page encoded as UTF-8 that has
-      # been layed out in a manner somewhat reflecting the source. Any
+      # returns the plain text content of this page encoded as UTF-8. Any
       # characters that can't be translated will be returned as a ▯
       #
       def text
-        receiver = PDF::Reader::PageTextReceiver.new
-        walk receiver
+        receiver = PageTextReceiver.new
+        walk(receiver)
         receiver.content
       end
       alias :to_s :text
