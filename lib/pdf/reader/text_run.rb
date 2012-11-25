@@ -37,6 +37,10 @@ class PDF::Reader
       @endx ||= x + width
     end
 
+    def mean_character_width
+      @width / character_count
+    end
+
     def mergable?(other)
       y.to_i == other.y.to_i && font_size == other.font_size && mergable_range.include?(other.x)
     end
@@ -59,6 +63,18 @@ class PDF::Reader
 
     def mergable_range
       @mergable_range ||= Range.new(endx - 3, endx + font_size)
+    end
+
+    def character_count
+      if @text.size == 1
+        1.0
+      elsif @text.respond_to?(:bytesize)
+        # M17N aware VM
+        # so we can trust String#size to return a character count
+        @text.size.to_f
+      else
+        text.unpack("U*").size.to_f
+      end
     end
   end
 end

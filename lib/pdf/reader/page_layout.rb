@@ -6,9 +6,12 @@ class PDF::Reader
   # string that best approximates the way they'd appear on a render PDF page.
   class PageLayout
     def initialize(runs)
-      @mean_font_size   = mean(runs.map(&:font_size)) || 0
-      @mean_glyph_width = mean(runs.map {|r| r.width / r.text.unpack("U*").size.to_f}) || 0
       @runs    = merge_runs(runs)
+      @mean_font_size   = mean(@runs.map(&:font_size)) || 0
+      @mean_glyph_width = mean(@runs.map(&:mean_character_width)) || 0
+      @page_width  = 595.28
+      @page_height = 841.89
+      @x_offset = @runs.map(&:x).sort.first
       @current_platform_is_rbx_19 = RUBY_DESCRIPTION =~ /\Arubinius 2.0.0/ &&
                                       RUBY_VERSION >= "1.9.0"
     end
@@ -16,16 +19,9 @@ class PDF::Reader
     def to_s
       return "" if @runs.empty?
 
-      page_width  = 595.28
-      page_height = 841.89
-      row_count   = (page_height / @mean_font_size).floor
-      col_count   = ((page_width  / @mean_glyph_width) * 1.05).floor
-      row_multiplier = page_height / row_count
-      col_multiplier = page_width / col_count
-      x_offset = @runs.map(&:x).sort.first
       page = row_count.times.map { |i| " " * col_count }
       @runs.each do |run|
-        x_pos = ((run.x - x_offset) / col_multiplier).round
+        x_pos = ((run.x - @x_offset) / col_multiplier).round
         y_pos = row_count - (run.y / row_multiplier).round
         if y_pos < row_count && y_pos >= 0 && x_pos < col_count && x_pos >= 0
           local_string_insert(page[y_pos], run.text, x_pos)
@@ -39,6 +35,22 @@ class PDF::Reader
     end
 
     private
+
+    def row_count
+      @row_count ||= (@page_height / @mean_font_size).floor
+    end
+
+    def col_count
+      @col_count ||= ((@page_width  / @mean_glyph_width) * 1.05).floor
+    end
+
+    def row_multiplier
+      @row_multiplier ||= @page_height / row_count
+    end
+
+    def col_multiplier
+      @col_multiplier ||= @page_width / col_count
+    end
 
     def mean(collection)
       if collection.size == 0

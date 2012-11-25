@@ -209,3 +209,17 @@ describe PDF::Reader::TextRun, "#<=>" do
   end
 
 end
+
+describe PDF::Reader::TextRun, "#mean_character_width" do
+  let(:width) { 30 }
+  let(:font)  { 12 }
+  let(:text)  { "Chunky" }
+
+  context "when the run is 30pts wide with 6 characters" do
+    subject { PDF::Reader::TextRun.new(10, 20, width, font, text)}
+
+    it "should return 5.0" do
+      subject.mean_character_width.should == 5.0
+    end
+  end
+end

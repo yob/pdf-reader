@@ -3,6 +3,13 @@
 require "spec_helper"
 
 describe PDF::Reader::PageLayout, "#to_s" do
+  context "with no words" do
+    subject { PDF::Reader::PageLayout.new([])}
+
+    it "should return a correct string" do
+      subject.to_s.should == ""
+    end
+  end
   context "with one word" do
     let!(:runs) do
       [
