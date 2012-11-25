@@ -27,14 +27,24 @@ class PDF::Reader
           local_string_insert(page[y_pos], run.text, x_pos)
         end
       end
-      line_lengths = page.map { |l| l.strip.length }
-      first_line_with_text = line_lengths.index { |l| l > 0 }
-      last_line_with_text  = line_lengths.size - line_lengths.reverse.index { |l| l > 0 }
-      interesting_line_count = last_line_with_text - first_line_with_text
-      page[first_line_with_text, interesting_line_count].map(&:rstrip).join("\n")
+      interesting_rows(page).map(&:rstrip).join("\n")
     end
 
     private
+
+    # given an array of strings, return a new array with empty rows from the
+    # beginning and end removed.
+    #
+    #   interesting_rows([ "", "one", "two", "" ])
+    #   => [ "one", "two" ]
+    #
+    def interesting_rows(rows)
+      line_lengths = rows.map { |l| l.strip.length }
+      first_line_with_text = line_lengths.index { |l| l > 0 }
+      last_line_with_text  = line_lengths.size - line_lengths.reverse.index { |l| l > 0 }
+      interesting_line_count = last_line_with_text - first_line_with_text
+      rows[first_line_with_text, interesting_line_count].map
+    end
 
     def row_count
       @row_count ||= (@page_height / @mean_font_size).floor
