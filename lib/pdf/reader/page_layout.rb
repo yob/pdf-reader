@@ -19,7 +19,7 @@ class PDF::Reader
       page_width  = 595.28
       page_height = 841.89
       row_count   = (page_height / @mean_font_size).floor
-      col_count   = (page_width  / @mean_glyph_width).floor
+      col_count   = ((page_width  / @mean_glyph_width) * 1.05).floor
       row_multiplier = page_height / row_count
       col_multiplier = page_width / col_count
       x_offset = @runs.map(&:x).sort.first

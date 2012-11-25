@@ -42,11 +42,11 @@ describe PDF::Reader::PageLayout, "#to_s" do
     end
   end
 
-  context "with one two words on one line, separated just over a font size gap" do
+  context "with two words on one line, separated just over the mean glyph width" do
     let!(:runs) do
       [
         PDF::Reader::TextRun.new(30, 700, 50, 12, "Hello"),
-        PDF::Reader::TextRun.new(93, 700, 50, 12, "World"),
+        PDF::Reader::TextRun.new(91, 700, 50, 12, "World"),
       ]
     end
     subject { PDF::Reader::PageLayout.new(runs)}
@@ -56,11 +56,11 @@ describe PDF::Reader::PageLayout, "#to_s" do
     end
   end
 
-  context "with one two words on one line, separated just over two font size gaps" do
+  context "with one two words on one line, separated just over 2x the mean glyph width" do
     let!(:runs) do
       [
         PDF::Reader::TextRun.new(30, 700, 50, 12, "Hello"),
-        PDF::Reader::TextRun.new(105, 700, 50, 12, "World"),
+        PDF::Reader::TextRun.new(101, 700, 50, 12, "World"),
       ]
     end
     subject { PDF::Reader::PageLayout.new(runs)}
