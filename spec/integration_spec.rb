@@ -335,4 +335,11 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  it "should correctly extract text from a pdf that uses a standatd font and a ligature" do
+    filename = pdf_spec_file("standard_font_with_a_difference")
+    PDF::Reader.open(filename) do |reader|
+      page = reader.page(1)
+      page.text.should == "The following word uses a ligature: ﬁve"
+    end
+  end
 end

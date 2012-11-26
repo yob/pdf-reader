@@ -104,6 +104,9 @@ data/content_stream_refers_to_invalid_font.pdf:
 data/surrogate_pair_integration_sample.pdf:
   :bytes: 1210387
   :md5: abc393e941d2aeb7a64f5e2ab1b58a92
+data/standard_font_with_a_difference.pdf:
+  :bytes: 993
+  :md5: 5e16bd7b80f97e0deea903cd9ea152c5
 data/split_params_and_operator.pdf:
   :bytes: 985
   :md5: c2444799b8d17d9d11a2702fdd55b56c
@@ -215,9 +218,9 @@ data/no_text_spaces.pdf:
 data/zeroed_xref_entry.pdf:
   :bytes: 955
   :md5: c951b17cfca59178fee1447643b512be
-data/cross_ref_stream.pdf:
-  :bytes: 1218187
-  :md5: d7a93c4f9b70145db05c0bbacbed7f44
 data/column_integration.pdf:
   :bytes: 57433
   :md5: c0b40f59ad663b80c5a234174639f680
+data/cross_ref_stream.pdf:
+  :bytes: 1218187
+  :md5: d7a93c4f9b70145db05c0bbacbed7f44
