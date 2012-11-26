@@ -190,7 +190,9 @@ class PDF::Reader
 
     def add_control_chars_to_mapping
       PDF::Reader::Encoding::CONTROL_CHARS.each do |byte|
-        @mapping[byte] = PDF::Reader::Encoding::UNKNOWN_CHAR
+        unless @mapping[byte]
+          @mapping[byte] = PDF::Reader::Encoding::UNKNOWN_CHAR
+        end
       end
       @mapping[nil] = PDF::Reader::Encoding::UNKNOWN_CHAR
     end
