@@ -111,6 +111,23 @@ class PDF::Reader
       @string_cache[glyph_code] ||= internal_int_to_utf8_string(glyph_code)
     end
 
+    # convert an integer glyph code into an Adobe glyph name.
+    #
+    #     int_to_name(65)
+    #     => :A
+    #
+    # TODO: this needs to be expanded to return the appropriate name for standard
+    #       glyph codes in the encoding. 65 to :A, etc. At the moment it only
+    #       handles glyphs in the difference table
+    #
+    def int_to_name(glyph_code)
+      if @enc_name == "Identity-H" || @enc_name == "Identity-V"
+        nil
+      else
+        @differences[glyph_code]
+      end
+    end
+
     private
 
     def internal_int_to_utf8_string(glyph_code)

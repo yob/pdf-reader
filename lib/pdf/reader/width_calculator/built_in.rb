@@ -3,6 +3,16 @@
 require 'afm'
 require 'pdf/reader/synchronized_cache'
 
+module AFM
+  # this is a monkey patch for the AFM gem. hopefully my patch will be accepted
+  # upstream and I can drop this
+  class Font
+    def metrics_for_name(name)
+      @char_metrics[name.to_s]
+    end
+  end
+end
+
 class PDF::Reader
   module WidthCalculator
 
@@ -28,6 +38,10 @@ class PDF::Reader
         return 0 if code_point.nil? || code_point < 0
 
         m = @metrics.metrics_for(code_point)
+        if m.nil?
+          name = @font.encoding.int_to_name(code_point)
+          m = @metrics.metrics_for_name(name)
+        end
         m[:wx]
       end
 
