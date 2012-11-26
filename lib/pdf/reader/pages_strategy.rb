@@ -58,9 +58,10 @@ class PDF::Reader
   # == Text Callbacks
   #
   # All text passed into these callbacks will be encoded as UTF-8. Depending on where (and when) the
-  # PDF was generated, there's a good chance the text is NOT stored as UTF-8 internally so be careful
-  # when doing a comparison on strings returned from PDF::Reader (when doing unit tests for example). The
-  # string may not be byte-by-byte identical with the string that was originally written to the PDF.
+  # PDF was generated, there's a good chance the text is NOT stored as UTF-8 internally so be
+  # careful when doing a comparison on strings returned from PDF::Reader (when doing unit tests for
+  # example). The string may not be byte-by-byte identical with the string that was originally
+  # written to the PDF.
   #
   # - end_text_object
   # - move_to_start_of_next_line
@@ -269,6 +270,16 @@ class PDF::Reader
     end
     private
     ################################################################################
+    def params_to_utf8(params, font)
+      if params.is_a?(String)
+        font.to_utf8(params)
+      elsif params.is_a?(Array)
+        params.map { |i| params_to_utf8(i, font)}
+      else
+        params
+      end
+    end
+    ################################################################################
     # Walk over all pages in the PDF file, calling the appropriate callbacks for each page and all
     # its content
     def walk_pages (page)
@@ -365,7 +376,7 @@ class PDF::Reader
             if options[:raw_text]
               callback("#{OPERATORS[token]}_raw".to_sym, params)
             end
-            params = fonts[current_font].to_utf8(params)
+            params = params_to_utf8(params, fonts[current_font])
           elsif token == "ID"
             # inline image data, first convert the current params into a more familiar hash
             map = {}

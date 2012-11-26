@@ -52,7 +52,7 @@ when "allocations"
   extract_text
   after = ObjectSpace.count_objects
   after.each do |key, val|
-    puts "#{key}: #{val - before[key]}"
+    puts "#{key}: #{val - before[key].to_i}"
   end
   GC.start
 

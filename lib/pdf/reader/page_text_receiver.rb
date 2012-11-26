@@ -1,7 +1,7 @@
 # coding: utf-8
 
-require 'matrix'
 require 'forwardable'
+require 'pdf/reader/page_layout'
 
 module PDF
   class Reader
@@ -12,6 +12,11 @@ module PDF
     class PageTextReceiver
       extend Forwardable
 
+      SPACE = " "
+
+      attr_reader :state, :content, :options
+
+      ########## BEGIN FORWARDERS ##########
       # Graphics State Operators
       def_delegators :@state, :save_graphics_state, :restore_graphics_state
 
@@ -30,41 +35,32 @@ module PDF
       # Text Positioning Operators
       def_delegators :@state, :move_text_position, :move_text_position_and_set_leading
       def_delegators :@state, :set_text_matrix_and_text_line_matrix, :move_to_start_of_next_line
+      ##########  END FORWARDERS  ##########
 
       # starting a new page
       def page=(page)
         @state = PageState.new(page)
-        @content = {}
+        @content = []
+        @characters = []
+        @mediabox = page.attributes[:MediaBox]
       end
 
       def content
-        keys = @content.keys.sort.reverse
-        keys.map { |key|
-          @content[key]
-        }.join("\n")
+        PageLayout.new(@characters, @mediabox).to_s
       end
 
       #####################################################
       # Text Showing Operators
       #####################################################
-
       # record text that is drawn on the page
-      def show_text(string) # Tj
-        raise PDF::Reader::MalformedPDFError, "current font is invalid" if @state.current_font.nil?
-        newy  = @state.trm_transform(0,0).last
-        @content[newy] ||= ""
-        @content[newy] << @state.current_font.to_utf8(string)
+      def show_text(string) # Tj (AWAY)
+        internal_show_text(string)
       end
 
-      def show_text_with_positioning(params) # TJ
-        params.each { |arg|
-          case arg
-          when String
-            show_text(arg)
-          when Fixnum, Float
-            show_text(" ") if arg > 1000
-          end
-        }
+      def show_text_with_positioning(params) # TJ [(A) 120 (WA) 20 (Y)]
+        params.each_slice(2).each do |string, kerning|
+          internal_show_text(string, kerning || 0)
+        end
       end
 
       def move_to_next_line_and_show_text(str) # '
@@ -87,6 +83,35 @@ module PDF
           when PDF::Reader::FormXObject then
             xobj.walk(self)
           end
+        end
+      end
+
+      private
+
+      def internal_show_text(string, kerning = 0)
+        if @state.current_font.nil?
+          raise PDF::Reader::MalformedPDFError, "current font is invalid"
+        end
+        glyphs = @state.current_font.unpack(string)
+        glyphs.each_with_index do |glyph_code, index|
+          # paint the current glyph
+          newx, newy = @state.trm_transform(0,0)
+          utf8_chars = @state.current_font.to_utf8(glyph_code)
+
+          # apply to glyph displacment for the current glyph so the next
+          # glyph will appear in the correct position
+          glyph_width = @state.current_font.glyph_width(glyph_code) / 1000.0
+          th = 1
+          if kerning != 0 && index == glyphs.size - 1
+            tj = kerning
+          else
+            tj = 0
+          end
+          scaled_glyph_width = glyph_width * @state.font_size * th
+          unless utf8_chars == SPACE
+            @characters << TextRun.new(newx, newy, scaled_glyph_width, @state.font_size, utf8_chars)
+          end
+          @state.process_glyph_displacement(glyph_width, tj, utf8_chars == SPACE)
         end
       end
 

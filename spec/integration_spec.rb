@@ -26,7 +26,7 @@ describe PDF::Reader, "integration specs" do
 
     PDF::Reader.open(filename) do |reader|
       page = reader.page(1)
-      page.text.should eql("V\ne\nr\nt\ni\nc\na\nl\n \nT\ne\nx\nt")
+      page.text.split.map(&:strip).should eql(%w{V e r t i c a l T e x t})
     end
   end
 
@@ -47,7 +47,8 @@ describe PDF::Reader, "integration specs" do
       reader.pages.size.should eql(3)
 
       page = reader.page(1)
-      page.text.should include("Dit\302\240is\302\240een\302\240pdf\302\240test\302\240van\302\240drie\302\240pagina’s.")
+      page.text.should include("Dit\302\240is\302\240een\302\240pdf\302\240test\302\240van\302\240drie\302\240pagina")
+      page.text.should include("’s")
       page.text.should include("Pagina\302\2401")
     end
   end
@@ -66,7 +67,7 @@ describe PDF::Reader, "integration specs" do
 
     PDF::Reader.open(filename) do |reader|
       page = reader.page(1)
-      page.text.should match(/\ATaxInvoice/)
+      page.text.should match(/Tax\s+Invoice/)
     end
   end
 
@@ -74,8 +75,8 @@ describe PDF::Reader, "integration specs" do
     filename = pdf_spec_file("content_stream_missing_final_operator")
 
     PDF::Reader.open(filename) do |reader|
-      reader.page(1).text.should match(/\ALocatrix/)
-      reader.page(2).text.should match(/\AUbuntu/)
+      reader.page(1).text.should match(/Locatrix/)
+      reader.page(2).text.should match(/Ubuntu/)
     end
   end
 
@@ -137,7 +138,7 @@ describe PDF::Reader, "integration specs" do
     filename = pdf_spec_file("ascii85_filter")
 
     PDF::Reader.open(filename) do |reader|
-      reader.page(1).text[0,11].should eql("Et Iunia se")
+      reader.page(1).text.should match(/Et Iunia se/)
     end
   end
 
@@ -230,7 +231,9 @@ describe PDF::Reader, "integration specs" do
     filename = pdf_spec_file("encrypted_with_user_pass_apples")
 
     PDF::Reader.open(filename, :password => "apples") do |reader|
-      reader.page(1).text.should eql("This sample file is encrypted with a user password.\nUser password: apples\nOwner password: password")
+      reader.page(1).text.should match(/^This sample file is encrypted with a user password.$/m)
+      reader.page(1).text.should match(/^User password: apples$/m)
+      reader.page(1).text.should match(/^Owner password: password$/m)
     end
   end
 
@@ -238,7 +241,9 @@ describe PDF::Reader, "integration specs" do
     filename = pdf_spec_file("encrypted_with_user_pass_apples")
 
     PDF::Reader.open(filename, :password => "password") do |reader|
-      reader.page(1).text.should eql("This sample file is encrypted with a user password.\nUser password: apples\nOwner password: password")
+      reader.page(1).text.should match(/^This sample file is encrypted with a user password.$/)
+      reader.page(1).text.should match(/^User password: apples$/m)
+      reader.page(1).text.should match(/^Owner password: password$/m)
     end
   end
 
@@ -330,4 +335,11 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  it "should correctly extract text from a pdf that uses a standatd font and a ligature" do
+    filename = pdf_spec_file("standard_font_with_a_difference")
+    PDF::Reader.open(filename) do |reader|
+      page = reader.page(1)
+      page.text.should == "The following word uses a ligature: ﬁve"
+    end
+  end
 end

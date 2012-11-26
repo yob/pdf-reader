@@ -25,14 +25,16 @@
 #
 ################################################################################
 
+require 'pdf/reader/width_calculator'
+
 class PDF::Reader
-  # Reprsents a single font PDF object and provides some useful methods
+  # Represents a single font PDF object and provides some useful methods
   # for extracting info. Mainly used for converting text to UTF-8.
   #
   class Font
-    attr_accessor :label, :subtype, :encoding, :descendantfonts, :tounicode
-    attr_reader :widths, :first_char, :ascent, :descent, :missing_width, :bbox
-    attr_reader :basefont
+    attr_accessor :subtype, :encoding, :descendantfonts, :tounicode
+    attr_reader :widths, :first_char, :last_char, :basefont, :font_descriptor,
+                :cid_widths, :cid_default_width
 
     def initialize(ohash = nil, obj = nil)
       if ohash.nil? || obj.nil?
@@ -45,6 +47,7 @@ class PDF::Reader
       extract_base_info(obj)
       extract_descriptor(obj)
       extract_descendants(obj)
+      @width_calc = build_width_calculator
 
       @encoding ||= PDF::Reader::Encoding.new(:StandardEncoding)
     end
@@ -71,13 +74,42 @@ class PDF::Reader
       end
     end
 
-    def glyph_width(c)
-      @missing_width ||= 0
-      @widths        ||= []
-      @widths.fetch(c - @first_char, @missing_width)
+    def unpack(data)
+      data.unpack(encoding.unpack)
+    end
+
+    # looks up the specified codepoint and returns a value that is in (pdf)
+    # glyph space, which is 1000 glyph units = 1 text space unit
+    def glyph_width(code_point)
+      if code_point.is_a?(String)
+        code_point = code_point.unpack(encoding.unpack).first
+      end
+
+      @cached_widths ||= {}
+      @cached_widths[code_point] ||= @width_calc.glyph_width(code_point)
     end
 
     private
+
+    def build_width_calculator
+      if @subtype == :Type0
+        PDF::Reader::WidthCalculator::TypeZero.new(self)
+      elsif @subtype == :Type1
+        if @font_descriptor.nil?
+          PDF::Reader::WidthCalculator::BuiltIn.new(self)
+        else
+          PDF::Reader::WidthCalculator::TypeOneOrThree .new(self)
+        end
+      elsif @subtype == :Type3
+        PDF::Reader::WidthCalculator::TypeOneOrThree.new(self)
+      elsif @subtype == :TrueType
+        PDF::Reader::WidthCalculator::TypeOneOrThree.new(self)
+      elsif @subtype == :CIDFontType0 || @subtype == :CIDFontType2
+        PDF::Reader::WidthCalculator::Composite.new(self)
+      else
+        PDF::Reader::WidthCalculator::TypeOneOrThree.new(self)
+      end
+    end
 
     def extract_base_info(obj)
       @subtype  = @ohash.object(obj[:Subtype])
@@ -85,25 +117,36 @@ class PDF::Reader
       @encoding = PDF::Reader::Encoding.new(@ohash.object(obj[:Encoding]))
       @widths   = @ohash.object(obj[:Widths]) || []
       @first_char = @ohash.object(obj[:FirstChar])
+      @last_char = @ohash.object(obj[:LastChar])
+
+      # CID Fonts are not required to have a W or DW entry, if they don't exist,
+      # the default cid width = 1000, see Section 9.7.4.1 PDF 32000-1:2008 pp 269
+      @cid_widths         = @ohash.object(obj[:W])  || []
+      @cid_default_width  = @ohash.object(obj[:DW]) || 1000
+
       if obj[:ToUnicode]
+        # ToUnicode is optional for Type1 and Type3
         stream = @ohash.object(obj[:ToUnicode])
         @tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
       end
     end
 
     def extract_descriptor(obj)
-      return unless obj[:FontDescriptor]
-
-      fd       = @ohash.object(obj[:FontDescriptor])
-      @ascent  = @ohash.object(fd[:Ascent])
-      @descent = @ohash.object(fd[:Descent])
-      @missing_width = @ohash.object(fd[:MissingWidth])
-      @bbox    = @ohash.object(fd[:FontBBox])
+      if obj[:FontDescriptor]
+        # create a font descriptor object if we can, in other words, unless this is
+        # a CID Font
+        fd = @ohash.object(obj[:FontDescriptor])
+        @font_descriptor = PDF::Reader::FontDescriptor.new(@ohash, fd)
+      else
+        @font_descriptor = nil
+      end
     end
 
     def extract_descendants(obj)
       return unless obj[:DescendantFonts]
-
+      # per PDF 32000-1:2008 pp. 280 :DescendentFonts is:
+      # A one-element array specifying the CIDFont dictionary that is the
+      # descendant of this Type 0 font.
       descendants = @ohash.object(obj[:DescendantFonts])
       @descendantfonts = descendants.map { |desc|
         PDF::Reader::Font.new(@ohash, @ohash.object(desc))
@@ -111,7 +154,11 @@ class PDF::Reader
     end
 
     def to_utf8_via_cmap(params)
-      if params.class == String
+      if params.class == Fixnum
+        [
+          @tounicode.decode(params) || PDF::Reader::Encoding::UNKNOWN_CHAR
+        ].flatten.pack("U*")
+      elsif params.class == String
         params.unpack(encoding.unpack).map { |c|
           @tounicode.decode(c) || PDF::Reader::Encoding::UNKNOWN_CHAR
         }.flatten.pack("U*")
@@ -127,7 +174,9 @@ class PDF::Reader
         raise UnsupportedFeatureError, "font encoding '#{encoding}' currently unsupported"
       end
 
-      if params.class == String
+      if params.class == Fixnum
+        encoding.int_to_utf8_string(params)
+      elsif params.class == String
         encoding.to_utf8(params)
       elsif params.class == Array
         params.collect { |param| to_utf8_via_encoding(param) }

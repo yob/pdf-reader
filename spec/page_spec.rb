@@ -25,51 +25,46 @@ end
 
 describe PDF::Reader::Page, "walk()" do
 
-  it "should call the special page= callback while walking content stream from cairo-basic.pdf page 1" do
-    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
-    @page    = @browser.page(1)
+  context "with page 1 of cairo-basic.pdf" do
+    let!(:browser) { PDF::Reader.new(pdf_spec_file("cairo-basic")) }
+    let!(:page)    { browser.page(1) }
 
-    receiver = PDF::Reader::RegisterReceiver.new
-    @page.walk(receiver)
+    it "should call the special page= callback while walking content stream" do
+      receiver = PDF::Reader::RegisterReceiver.new
+      page.walk(receiver)
 
-    callbacks = receiver.callbacks.map { |cb| cb[:name] }
+      callbacks = receiver.callbacks.map { |cb| cb[:name] }
 
-    callbacks.first.should eql(:page=)
+      callbacks.first.should eql(:page=)
+    end
+
+    it "should run callbacks while walking content stream" do
+      receiver = PDF::Reader::RegisterReceiver.new
+      page.walk(receiver)
+
+      callbacks = receiver.callbacks.map { |cb| cb[:name] }
+
+      callbacks.size.should eql(16)
+      callbacks[0].should eql(:page=)
+      callbacks[1].should eql(:save_graphics_state)
+    end
+
+    it "should run callbacks on multiple receivers while walking content stream" do
+      receiver_one = PDF::Reader::RegisterReceiver.new
+      receiver_two = PDF::Reader::RegisterReceiver.new
+      page.walk(receiver_one, receiver_two)
+
+      callbacks = receiver_one.callbacks.map { |cb| cb[:name] }
+
+      callbacks.size.should eql(16)
+      callbacks.first.should eql(:page=)
+
+      callbacks = receiver_two.callbacks.map { |cb| cb[:name] }
+
+      callbacks.size.should eql(16)
+      callbacks.first.should eql(:page=)
+    end
   end
-
-  it "should run callbacks while walking content stream from cairo-basic.pdf page 1" do
-    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
-    @page    = @browser.page(1)
-
-    receiver = PDF::Reader::RegisterReceiver.new
-    @page.walk(receiver)
-
-    callbacks = receiver.callbacks.map { |cb| cb[:name] }
-
-    callbacks.size.should eql(16)
-    callbacks[0].should eql(:page=)
-    callbacks[1].should eql(:save_graphics_state)
-  end
-
-  it "should run callbacks on multiple receivers while walking content stream from cairo-basic.pdf page 1" do
-    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
-    @page    = @browser.page(1)
-
-    receiver_one = PDF::Reader::RegisterReceiver.new
-    receiver_two = PDF::Reader::RegisterReceiver.new
-    @page.walk(receiver_one, receiver_two)
-
-    callbacks = receiver_one.callbacks.map { |cb| cb[:name] }
-
-    callbacks.size.should eql(16)
-    callbacks.first.should eql(:page=)
-
-    callbacks = receiver_two.callbacks.map { |cb| cb[:name] }
-
-    callbacks.size.should eql(16)
-    callbacks.first.should eql(:page=)
-  end
-
 end
 
 describe PDF::Reader::Page, "number()" do

@@ -165,8 +165,8 @@ describe PDF::Reader::PageState do
 
         state.trm_transform(0,0).should == [0,0]
         state.trm_transform(0,1).should == [0, 12]
-        state.trm_transform(1,0).should == [1200, 0]
-        state.trm_transform(1,1).should == [1200, 12]
+        state.trm_transform(1,0).should == [12, 0]
+        state.trm_transform(1,1).should == [12, 12]
       end
     end
   end
@@ -185,8 +185,8 @@ describe PDF::Reader::PageState do
         # external collaborators will use
         state.trm_transform(0,0).should == [5,10]
         state.trm_transform(0,1).should == [5, 22]
-        state.trm_transform(1,0).should == [1205, 10]
-        state.trm_transform(1,1).should == [1205, 22]
+        state.trm_transform(1,0).should == [17, 10]
+        state.trm_transform(1,1).should == [17, 22]
       end
     end
   end
@@ -205,8 +205,8 @@ describe PDF::Reader::PageState do
         # external collaborators will use
         state.trm_transform(0,0).should == [5, 10]
         state.trm_transform(0,1).should == [5, 22]
-        state.trm_transform(1,0).should == [1205, 10]
-        state.trm_transform(1,1).should == [1205, 22]
+        state.trm_transform(1,0).should == [17, 10]
+        state.trm_transform(1,1).should == [17, 22]
       end
 
       it "should correctly alter the text leading" do
@@ -233,8 +233,8 @@ describe PDF::Reader::PageState do
         # external collaborators will use
         state.trm_transform(0,0).should == [5, 6]
         state.trm_transform(0,1).should == [41, 54]
-        state.trm_transform(1,0).should == [1205, 2406]
-        state.trm_transform(1,1).should == [1241, 2454]
+        state.trm_transform(1,0).should == [17, 30]
+        state.trm_transform(1,1).should == [53.0, 78.0]
       end
     end
   end
@@ -254,8 +254,8 @@ describe PDF::Reader::PageState do
         # external collaborators will use
         state.trm_transform(0,0).should == [0, -15]
         state.trm_transform(0,1).should == [0, -3]
-        state.trm_transform(1,0).should == [1200, -15]
-        state.trm_transform(1,1).should == [1200, -3]
+        state.trm_transform(1,0).should == [12, -15]
+        state.trm_transform(1,1).should == [12, -3]
       end
     end
   end
@@ -275,8 +275,29 @@ describe PDF::Reader::PageState do
         # external collaborators will use
         state.trm_transform(0,0).should == [0, -15]
         state.trm_transform(0,1).should == [0, -3]
-        state.trm_transform(1,0).should == [1200, -15]
-        state.trm_transform(1,1).should == [1200, -3]
+        state.trm_transform(1,0).should == [12, -15]
+        state.trm_transform(1,1).should == [12, -3]
+      end
+    end
+  end
+
+  describe "#move_to_next_line_and_show_text" do
+    context "with an empty page" do
+      let!(:state)  {PDF::Reader::PageState.new(page) }
+
+      it "should correctly alter the text position" do
+        state.begin_text_object
+        state.set_text_font_and_size(:Test, 12)
+        state.set_text_leading(15)
+        state.move_to_next_line_and_show_text("Foo")
+
+        # how the matrix is stored and multiplied is really an implementation
+        # detail, so it's better to check the results indirectly via the API
+        # external collaborators will use
+        state.trm_transform(0,0).should == [0, -15]
+        state.trm_transform(0,1).should == [0, -3]
+        state.trm_transform(1,0).should == [12, -15]
+        state.trm_transform(1,1).should == [12, -3]
       end
     end
   end
@@ -307,8 +328,244 @@ describe PDF::Reader::PageState do
         # external collaborators will use
         state.trm_transform(0,0).should == [0, 0]
         state.trm_transform(0,1).should == [0, 12]
-        state.trm_transform(1,0).should == [1200, 0]
-        state.trm_transform(1,1).should == [1200, 12]
+        state.trm_transform(1,0).should == [12, 0]
+        state.trm_transform(1,1).should == [12, 12]
+      end
+    end
+  end
+
+  describe "#process_glyph_displacement" do
+    context "when the current state places 12pt text at (40, 700)" do
+      let!(:state)  {PDF::Reader::PageState.new(page) }
+
+      before do
+        state.begin_text_object
+        state.set_text_font_and_size(:Test, 12)
+        state.move_text_position(40, 700)
+
+        # how the matrix is stored and multiplied is really an implementation
+        # detail, so it's better to check the results indirectly via the API
+        # external collaborators will use
+        state.trm_transform(0,0).should == [40, 700]
+        state.trm_transform(0,1).should == [40, 712]
+        state.trm_transform(1,0).should == [52, 700]
+        state.trm_transform(1,1).should == [52, 712]
+      end
+
+      context "2pt glyph width" do
+        context "no character spacing" do
+          context "no word spacing" do
+            context "no kerning" do
+              context "not a word boundary" do
+
+                it "should correctly alter the text matrix" do
+                  state.process_glyph_displacement(2, 0, false)
+
+                  state.trm_transform(0,0).should == [64, 700]
+                  state.trm_transform(0,1).should == [64, 712]
+                  state.trm_transform(1,0).should == [76, 700]
+                  state.trm_transform(1,1).should == [76, 712]
+                end
+              end
+              context "a word boundary" do
+
+                it "should correctly alter the text matrix" do
+                  state.process_glyph_displacement(2, 0, true)
+
+                  state.trm_transform(0,0).should == [64, 700]
+                  state.trm_transform(0,1).should == [64, 712]
+                  state.trm_transform(1,0).should == [76, 700]
+                  state.trm_transform(1,1).should == [76, 712]
+                end
+              end
+            end
+            context "2pt kerning" do
+              context "not a word boundary" do
+
+                it "should correctly alter the text matrix" do
+                  state.process_glyph_displacement(2, 2, false)
+
+                  state.trm_transform(0,0).should == [63.976, 700]
+                  state.trm_transform(0,1).should == [63.976, 712]
+                  state.trm_transform(1,0).should == [75.976, 700]
+                  state.trm_transform(1,1).should == [75.976, 712]
+                end
+              end
+              context "a word boundary" do
+
+                it "should correctly alter the text matrix" do
+                  state.process_glyph_displacement(2, 2, true)
+
+                  state.trm_transform(0,0).should == [63.976, 700]
+                  state.trm_transform(0,1).should == [63.976, 712]
+                  state.trm_transform(1,0).should == [75.976, 700]
+                  state.trm_transform(1,1).should == [75.976, 712]
+                end
+              end
+            end
+          end
+          context "with word spacing" do
+            before do
+              state.set_word_spacing(1)
+            end
+            context "no kerning" do
+              context "not a word boundary" do
+
+                it "should correctly alter the text matrix" do
+                  state.process_glyph_displacement(2, 0, false)
+
+                  state.trm_transform(0,0).should == [64, 700]
+                  state.trm_transform(0,1).should == [64, 712]
+                  state.trm_transform(1,0).should == [76, 700]
+                  state.trm_transform(1,1).should == [76, 712]
+                end
+              end
+              context "a word boundary" do
+
+                it "should correctly alter the text matrix" do
+                  state.process_glyph_displacement(2, 0, true)
+
+                  state.trm_transform(0,0).should == [65, 700]
+                  state.trm_transform(0,1).should == [65, 712]
+                  state.trm_transform(1,0).should == [77, 700]
+                  state.trm_transform(1,1).should == [77, 712]
+                end
+              end
+            end
+            context "2pt kerning" do
+              context "not a word boundary" do
+
+                it "should correctly alter the text matrix" do
+                  state.process_glyph_displacement(2, 2, false)
+
+                  state.trm_transform(0,0).should == [63.976, 700]
+                  state.trm_transform(0,1).should == [63.976, 712]
+                  state.trm_transform(1,0).should == [75.976, 700]
+                  state.trm_transform(1,1).should == [75.976, 712]
+                end
+              end
+              context "a word boundary" do
+
+                it "should correctly alter the text matrix" do
+                  state.process_glyph_displacement(2, 2, true)
+
+                  state.trm_transform(0,0).should == [64.976, 700]
+                  state.trm_transform(0,1).should == [64.976, 712]
+                  state.trm_transform(1,0).should == [76.976, 700]
+                  state.trm_transform(1,1).should == [76.976, 712]
+                end
+              end
+            end
+          end
+        end
+        context "with character spacing" do
+          before do
+            state.set_character_spacing(1)
+          end
+          context "no word spacing" do
+            context "no kerning" do
+              context "not a word boundary" do
+
+                it "should correctly alter the text matrix" do
+                  state.process_glyph_displacement(2, 0, false)
+
+                  state.trm_transform(0,0).should == [65, 700]
+                  state.trm_transform(0,1).should == [65, 712]
+                  state.trm_transform(1,0).should == [77, 700]
+                  state.trm_transform(1,1).should == [77, 712]
+                end
+              end
+              context "a word boundary" do
+
+                it "should correctly alter the text matrix" do
+                  state.process_glyph_displacement(2, 0, true)
+
+                  state.trm_transform(0,0).should == [65, 700]
+                  state.trm_transform(0,1).should == [65, 712]
+                  state.trm_transform(1,0).should == [77, 700]
+                  state.trm_transform(1,1).should == [77, 712]
+                end
+              end
+            end
+            context "2pt kerning" do
+              context "not a word boundary" do
+
+                it "should correctly alter the text matrix" do
+                  state.process_glyph_displacement(2, 2, false)
+
+                  state.trm_transform(0,0).should == [64.976, 700]
+                  state.trm_transform(0,1).should == [64.976, 712]
+                  state.trm_transform(1,0).should == [76.976, 700]
+                  state.trm_transform(1,1).should == [76.976, 712]
+                end
+              end
+              context "a word boundary" do
+
+                it "should correctly alter the text matrix" do
+                  state.process_glyph_displacement(2, 2, true)
+
+                  state.trm_transform(0,0).should == [64.976, 700]
+                  state.trm_transform(0,1).should == [64.976, 712]
+                  state.trm_transform(1,0).should == [76.976, 700]
+                  state.trm_transform(1,1).should == [76.976, 712]
+                end
+              end
+            end
+          end
+          context "with word spacing" do
+            before do
+              state.set_word_spacing(1)
+            end
+            context "no kerning" do
+              context "not a word boundary" do
+
+                it "should correctly alter the text matrix" do
+                  state.process_glyph_displacement(2, 0, false)
+
+                  state.trm_transform(0,0).should == [65, 700]
+                  state.trm_transform(0,1).should == [65, 712]
+                  state.trm_transform(1,0).should == [77, 700]
+                  state.trm_transform(1,1).should == [77, 712]
+                end
+              end
+              context "a word boundary" do
+
+                it "should correctly alter the text matrix" do
+                  state.process_glyph_displacement(2, 0, true)
+
+                  state.trm_transform(0,0).should == [66, 700]
+                  state.trm_transform(0,1).should == [66, 712]
+                  state.trm_transform(1,0).should == [78, 700]
+                  state.trm_transform(1,1).should == [78, 712]
+                end
+              end
+            end
+            context "2pt kerning" do
+              context "not a word boundary" do
+
+                it "should correctly alter the text matrix" do
+                  state.process_glyph_displacement(2, 2, false)
+
+                  state.trm_transform(0,0).should == [64.976, 700]
+                  state.trm_transform(0,1).should == [64.976, 712]
+                  state.trm_transform(1,0).should == [76.976, 700]
+                  state.trm_transform(1,1).should == [76.976, 712]
+                end
+              end
+              context "a word boundary" do
+
+                it "should correctly alter the text matrix" do
+                  state.process_glyph_displacement(2, 2, true)
+
+                  state.trm_transform(0,0).should == [65.976, 700]
+                  state.trm_transform(0,1).should == [65.976, 712]
+                  state.trm_transform(1,0).should == [77.976, 700]
+                  state.trm_transform(1,1).should == [77.976, 712]
+                end
+              end
+            end
+          end
+        end
       end
     end
   end

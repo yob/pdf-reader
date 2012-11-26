@@ -3,7 +3,7 @@ require "bundler"
 Bundler.setup
 
 require 'rake'
-require 'rake/rdoctask'
+require 'rdoc/task'
 require 'rspec/core/rake_task'
 
 # Cane requires ripper, which appears to only work on MRI 1.9
@@ -19,7 +19,7 @@ if RUBY_VERSION >= "1.9" && RUBY_ENGINE == "ruby"
   Cane::RakeTask.new(:quality) do |cane|
     cane.abc_max = 20
     cane.style_measure = 100
-    cane.max_violations = 76
+    cane.max_violations = 94
 
     cane.use Morecane::EncodingCheck, :encoding_glob => "{app,lib,spec}/**/*.rb"
   end
