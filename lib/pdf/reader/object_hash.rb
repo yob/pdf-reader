@@ -41,8 +41,8 @@ class PDF::Reader
     #
     def initialize(input, opts = {})
       @io          = extract_io_from(input)
-      @pdf_version = read_version
       @xref        = PDF::Reader::XRef.new(@io)
+      @pdf_version = read_version
       @trailer     = @xref.trailer
       @cache       = opts[:cache] || PDF::Reader::ObjectCache.new
       @sec_handler = build_security_handler(opts)

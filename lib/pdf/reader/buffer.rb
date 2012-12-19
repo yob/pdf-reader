@@ -115,6 +115,9 @@ class PDF::Reader
     # return the byte offset where the first XRef table in th source can be found.
     #
     def find_first_xref_offset
+      if @io.size == 0
+        raise MalformedPDFError, "PDF file is empty"
+      end
       @io.seek(-1024, IO::SEEK_END) rescue @io.seek(0)
       data = @io.read(1024)
 

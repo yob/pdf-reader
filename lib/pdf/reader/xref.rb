@@ -237,6 +237,8 @@ class PDF::Reader
       end
       io.rewind
       offset < 50 ? offset : nil
+    rescue EOFError
+      return nil
     end
   end
   ################################################################################

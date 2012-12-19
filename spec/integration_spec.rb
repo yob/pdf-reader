@@ -134,6 +134,12 @@ describe PDF::Reader, "integration specs" do
     }.should raise_error(PDF::Reader::MalformedPDFError)
   end
 
+  it "should raise an exception if the file is empty" do
+    lambda {
+      PDF::Reader.new(StringIO.new(""))
+    }.should raise_error(PDF::Reader::MalformedPDFError)
+  end
+
   it "should correctly process a PDF that uses an ASCII85Decode filter" do
     filename = pdf_spec_file("ascii85_filter")
 
