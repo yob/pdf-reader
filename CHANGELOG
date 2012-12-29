@@ -1,5 +1,8 @@
-v1.3.0 (XXX)
+v1.3.0 (30th December 2012)
 - Numerous performance optimisations (thanks Alex Dowad)
+- Improved text extraction (thanks Nathaniel Madura)
+- Load less of the hashery gem to reduce core monkey patches
+- various bug fixes
 
 v1.2.0 (28th August 2012)
 - Feature: correctly extract text using surrogate pairs and ligatures
