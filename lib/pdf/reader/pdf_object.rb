@@ -29,7 +29,7 @@ class PDF::Reader
           str
         end
       when Array
-        "[" << obj.map { |e| PdfObject(e, in_content_stream) }.join(' ') << "]"
+        "[" << obj.map { |e| PdfObject.dump(e, in_content_stream) }.join(' ') << "]"
       when Time
         obj = obj.strftime("D:%Y%m%d%H%M%S%z").chop.chop + "'00'"
         obj = obj.gsub(/[\\\n\r\t\b\f\(\)]/n) { |m| "\\#{m}" }
@@ -51,8 +51,8 @@ class PDF::Reader
           unless String === k || Symbol === k
             raise "A PDF Dictionary must be keyed by names"
           end
-          output << PdfObject(k.to_sym, in_content_stream) << " " <<
-                    PdfObject(v, in_content_stream) << "\n"
+          output << PdfObject.dump(k.to_sym, in_content_stream) << " " <<
+                    PdfObject.dump(v, in_content_stream) << "\n"
         end
         output << ">>"
       when PDF::Reader::Reference

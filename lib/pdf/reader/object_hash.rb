@@ -31,7 +31,9 @@ class PDF::Reader
     extend Forwardable
     include Enumerable
 
-    def_delegators :@objects, :pdf_version, :trailer
+    attr_reader :io
+
+    def_delegators :@objects, :pdf_version
     def_delegators :@objects, :obj_type, :stream?, :[], :object, :deref, :deref!
     def_delegators :@objects, :fetch, :each, :each_pair, :each_key, :each_value
     def_delegators :@objects, :size, :length, :has_key?, :include?, :key?, :empty?
@@ -41,7 +43,6 @@ class PDF::Reader
 
     def initialize(input, opts = {})
       @io       = extract_io_from(input)
-      @pos_orig_xref = PDF::Reader::Buffer.new(@io).find_first_xref_offset
       @objects  = PDF::Reader::FileHash.new(@io, opts)
       @updated  = {}
     end
@@ -53,63 +54,37 @@ class PDF::Reader
       @updated[key] = value
     end
 
+    def has_updates?
+      @updated.size > 0
+    end
+
+    def each_updated(&block)
+      @updated.each do |key, obj|
+        yield key, obj
+      end
+    end
+
+    def trailer
+      if @updated.empty?
+        @objects.trailer
+      else
+        # deep copy the original trailer
+        dict = Marshal.load(Marshal.dump(@objects.trailer))
+        # and add a pointer to the previous xref table
+        dict[:Prev] = PDF::Reader::Buffer.new(@io).find_first_xref_offset
+        dict
+      end
+    end
+
     def save(writer)
-      @io.seek(0)
-      # write the original PDF
-      writer.write @io.read
-      writer.write "\n"
+      FileWriter.new(self).to_io(writer)
+    end
 
-      # now write the updated objects
-      offsets = {}
-      @updated.each do |key, value|
-        offsets[key] = writer.pos
-        writer.write "#{key.id} #{key.gen} obj\n"
-        writer.write PdfObject.dump(value)
-        writer.write "\nendobj\n"
-      end
-
-      # now the updated footer
-      updated_xref_pos = writer.pos
-      writer.write "xref\n"
-      each_offset_group(offsets) do |group|
-        starts_at = group.keys.sort_by(&:id).first.id
-        writer.write("#{starts_at} #{group.size}\n")
-        group.each do |key, offset|
-          writer.write("%010d 00000 n \n" % offset)
-        end
-      end
-      writer.write "trailer\n"
-      writer.write PdfObject.dump(new_trailer) << "\n"
-      writer.write "startxref\n"
-      writer.write "#{updated_xref_pos}\n"
-      writer.write "%%EOF"
+    def to_s
+      FileWriter.new(self).to_s
     end
 
     private
-
-    def new_trailer
-      # deep copy the original trailer
-      dict = Marshal.load(Marshal.dump(@objects.trailer))
-      # and add a pointer to the previous xref table
-      dict[:Prev] = @pos_orig_xref
-      dict
-    end
-
-    def each_offset_group(offsets, &block)
-      keys  = offsets.keys.sort_by(&:id)
-      accum = {}
-      keys.each do |key|
-        if accum.empty?
-          accum[key] = offsets[key]
-        elsif accum.keys.sort_by(&:id).last.id == key.id - 1
-          accum[key] = offsets[key]
-        else
-          yield accum
-          accum = {key => offsets[key]}
-        end
-      end
-      yield accum unless accum.empty?
-    end
 
     def extract_io_from(input)
       if input.respond_to?(:seek) && input.respond_to?(:read)
