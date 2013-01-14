@@ -77,17 +77,11 @@ of PDF::Reader::Page.
     receiver = RedGreenBlue.new
     page.walk(receiver)
 
-For low level access to the objects in a PDF file, use the ObjectHash class. You can
-build an ObjectHash instance directly:
-
-    puts PDF::Reader::ObjectHash.new("somefile.pdf")
-
-or via a PDF::Reader instance:
+For low level access to the objects in a PDF file, use the ObjectHash class like
+so:
 
     reader  = PDF::Reader.new("somefile.pdf")
-    puts reader.objects
-
-The second method is preferred to increase the effectiveness of internal caching.
+    puts reader.objects.inspect
 
 = Text Encoding
 
