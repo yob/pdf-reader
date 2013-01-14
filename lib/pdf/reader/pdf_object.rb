@@ -1,6 +1,8 @@
 # coding: utf-8
 
 class PDF::Reader
+  # Serializes Ruby objects to their PDF equivalents. Follow the standard API
+  # used by other ruby serializers (YAML, JSON, etc) with a #dump method.
   class PdfObject
     # Serializes Ruby objects to their PDF equivalents.  Most primitive objects
     # will work as expected, but please note that Name objects are represented

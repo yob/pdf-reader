@@ -322,7 +322,7 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
-  it "should correctly extract text from a pdf that has a cmap entry that contains surrogate pairs" do
+  it "should extract text from a pdf that has a cmap entry that contains surrogate pairs" do
     filename = pdf_spec_file("surrogate_pair_integration_sample")
     # the following pdf has a sequence in it that requires 32-bit Unicode, pdf requires
     # all text to be stored in 16-bit. To acheive this surrogate-pairs are used. cmap

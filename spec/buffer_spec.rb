@@ -347,7 +347,7 @@ describe PDF::Reader::Buffer, "token method" do
     buf.token.should eql("EI")
   end
 
-  it "should correctly tokenise an inline image that contains the letters 'EI' within the image data" do
+  it "should tokenise an inline image that contains the letters 'EI' within the image data" do
     io = StringIO.new(binary_string("BI ID aaa bbb ccc \xF0EI\xF0 EI"))
     buf = PDF::Reader::Buffer.new(io, :content_stream => true)
 
@@ -358,7 +358,7 @@ describe PDF::Reader::Buffer, "token method" do
     buf.token.should eql("EI")
   end
 
-  it "should correctly tokenise an inline image that contains the letters 'EI' within the image data" do
+  it "should tokenise an inline image that contains the letters 'EI' within the image data" do
     io = StringIO.new(binary_string("BI ID aaa bbb ccc \xF0EI\xF0\nEI"))
     buf = PDF::Reader::Buffer.new(io, :content_stream => true)
 

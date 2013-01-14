@@ -3,6 +3,8 @@
 require 'stringio'
 
 class PDF::Reader
+  # Converts an ObjectHash into a PDF file. The results can be returned as a string
+  # or written to a file.
   class FileWriter
     def initialize(objects)
       @objects = objects
@@ -31,12 +33,7 @@ class PDF::Reader
       writer.write @objects.io.read
     end
 
-    def incremental_save_to_io(writer)
-      @objects.io.seek(0)
-      # write the original PDF
-      writer.write @objects.io.read
-      writer.write "\n"
-
+    def add_updated_objects_and_xref(writer)
       # now write the updated objects
       offsets = {}
       @objects.each_updated do |key, value|
@@ -46,7 +43,6 @@ class PDF::Reader
         writer.write "\nendobj\n"
       end
 
-      # now the updated footer
       updated_xref_pos = writer.pos
       writer.write "xref\n"
       each_offset_group(offsets) do |group|
@@ -56,11 +52,25 @@ class PDF::Reader
           writer.write("%010d 00000 n \n" % offset)
         end
       end
+      updated_xref_pos
+    end
+
+    def add_new_trailer(writer, xref_offset)
       writer.write "trailer\n"
       writer.write PdfObject.dump(@objects.trailer) << "\n"
       writer.write "startxref\n"
-      writer.write "#{updated_xref_pos}\n"
+      writer.write "#{xref_offset}\n"
       writer.write "%%EOF"
+    end
+
+    def incremental_save_to_io(writer)
+      @objects.io.seek(0)
+      # write the original PDF
+      writer.write @objects.io.read
+      writer.write "\n"
+
+      xref_offset = add_updated_objects_and_xref(writer)
+      add_new_trailer(writer, xref_offset)
     end
 
     private
