@@ -50,7 +50,7 @@ class PDF::Reader
       updated_xref_pos = writer.pos
       writer.write "xref\n"
       each_offset_group(offsets) do |group|
-        starts_at = group.keys.sort_by(&:id).first.id
+        starts_at = group.keys.sort.first.id
         writer.write("#{starts_at} #{group.size}\n")
         group.each do |key, offset|
           writer.write("%010d 00000 n \n" % offset)
@@ -66,12 +66,12 @@ class PDF::Reader
     private
 
     def each_offset_group(offsets, &block)
-      keys  = offsets.keys.sort_by(&:id)
+      keys  = offsets.keys.sort
       accum = {}
       keys.each do |key|
         if accum.empty?
           accum[key] = offsets[key]
-        elsif accum.keys.sort_by(&:id).last.id == key.id - 1
+        elsif accum.keys.sort.last.id == key.id - 1
           accum[key] = offsets[key]
         else
           yield accum
