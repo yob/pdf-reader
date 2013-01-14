@@ -66,7 +66,11 @@ class PDF::Reader
     if "".respond_to?(:encode)
       # Ruby 1.9+
       def self.utf8_to_utf16(str)
-        utf16 = "\xFE\xFF".force_encoding("UTF-16BE") + str.encode("UTF-16BE")
+        if str.dup.force_encoding("UTF-16BE").valid_encoding?
+          str
+        else
+          "\xFE\xFF".force_encoding("UTF-16BE") + str.encode("UTF-16BE")
+        end
       end
 
       # encodes any string into a hex representation. The result is a string

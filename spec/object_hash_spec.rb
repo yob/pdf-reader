@@ -385,3 +385,15 @@ describe PDF::Reader::ObjectHash, "page_references method" do
     end
   end
 end
+
+describe PDF::Reader::ObjectHash, "to_s method" do
+
+  # only do a superficial test here, detailed testing of saving an ObjectHash
+  # to disk is done via the FileWriter class
+
+  it "should return a rendered PDF from an empty ObjectHash" do
+    filename = pdf_spec_file("indirect_kids_array")
+    h = PDF::Reader::ObjectHash.new(filename)
+    h.to_s[0,8].should == "%PDF-1.3"
+  end
+end

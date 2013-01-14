@@ -10,8 +10,10 @@ class PDF::Reader
 
     def to_s
       io = StringIO.new
-      save_to_io(io)
-      io.string
+      to_io(io)
+      str = io.string
+      str.force_encoding("binary") if str.respond_to?(:force_encoding)
+      str
     end
 
     def to_io(writer)
