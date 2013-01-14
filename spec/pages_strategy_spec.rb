@@ -8,7 +8,7 @@ end
 
 describe PDF::Reader::PagesStrategy do
 
-  let(:object_hash) { PDF::Reader::ObjectHash.allocate }
+  let(:object_hash) { PDF::Reader::ObjectHash.new(pdf_spec_file("adobe_sample")) }
   let(:font) { PDF::Reader::Font.new(object_hash, {}) }
 
   it "should send the correct callbacks when processing instructions containing a single text block" do

@@ -4,7 +4,7 @@ require File.dirname(__FILE__) + "/spec_helper"
 
 describe PDF::Reader::Font do
 
-  let(:object_hash) { PDF::Reader::ObjectHash.allocate }
+  let(:object_hash) { PDF::Reader::ObjectHash.new(pdf_spec_file("adobe_sample")) }
 
   describe "basefont=()" do
 

@@ -23,7 +23,7 @@ describe PDF::Reader::FontDescriptor, "initialisation" do
       :FontFamily   => :BoldItalic
     }
   end
-  let!(:objects) { PDF::Reader::ObjectHash.allocate }
+  let!(:objects) { PDF::Reader::ObjectHash.new(pdf_spec_file("adobe_sample")) }
   subject        { PDF::Reader::FontDescriptor.new(objects, dict)}
 
   it "should set the correct instance vars" do
