@@ -153,6 +153,26 @@ describe PDF::Reader::PageState do
         state.ctm_transform(1,1).should == [1, 3]
       end
     end
+
+    context "when applying a rotation followed by a translation" do
+      it "should correctly multiply the matrixes using pre-multiplication" do
+        angle = 90 * Math::PI / 180 # 90 degrees
+        state.concatenate_matrix( Math.cos(angle), Math.sin(angle),
+                                 -Math.sin(angle), Math.cos(angle),
+                                  0, 0)
+        state.concatenate_matrix(1, 0,
+                                 0, 1,
+                                 10, 10)
+
+        # how the matrix is stored and multiplied is really an implementation
+        # detail, so it's better to check the results indirectly via the API
+        # external collaborators will use
+        state.ctm_transform(0,0).should == [-10,10]
+        state.ctm_transform(0,1).should == [-11,10]
+        state.ctm_transform(1,0).should == [-10,11]
+        state.ctm_transform(1,1).should == [-11,11]
+      end
+    end
   end
 
   describe "#begin_text_object" do

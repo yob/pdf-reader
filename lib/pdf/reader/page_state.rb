@@ -63,7 +63,12 @@ class PDF::Reader
       #
       def concatenate_matrix(a, b, c, d, e, f)
         if state[:ctm]
-          state[:ctm].multiply!(a,b,c,d,e,f)
+          ctm = state[:ctm]
+          state[:ctm] = TransformationMatrix.new(a,b,c,d,e,f).multiply!(
+            ctm.a, ctm.b,
+            ctm.c, ctm.d,
+            ctm.e, ctm.f
+          )
         else
           state[:ctm] = TransformationMatrix.new(a,b,c,d,e,f)
         end
