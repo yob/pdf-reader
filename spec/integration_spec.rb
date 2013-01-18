@@ -359,4 +359,12 @@ describe PDF::Reader, "integration specs" do
       page.text.split("\n").map(&:strip).slice(0,2).should == ["°","9"]
     end
   end
+
+  it "should correctly extract text when a TJ operator receives an array starting with a number" do
+    filename = pdf_spec_file("TJ_starts_with_a_number")
+    PDF::Reader.open(filename) do |reader|
+      page = reader.page(1)
+      page.text[0,18].should == "This file has a TJ"
+    end
+  end
 end

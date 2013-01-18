@@ -58,8 +58,12 @@ module PDF
       end
 
       def show_text_with_positioning(params) # TJ [(A) 120 (WA) 20 (Y)]
-        params.each_slice(2).each do |string, kerning|
-          internal_show_text(string, kerning || 0)
+        params.each do |arg|
+          if arg.is_a?(String)
+            internal_show_text(arg)
+          else
+            @state.process_glyph_displacement(0, arg, false)
+          end
         end
       end
 
@@ -88,7 +92,7 @@ module PDF
 
       private
 
-      def internal_show_text(string, kerning = 0)
+      def internal_show_text(string)
         if @state.current_font.nil?
           raise PDF::Reader::MalformedPDFError, "current font is invalid"
         end
@@ -102,16 +106,11 @@ module PDF
           # glyph will appear in the correct position
           glyph_width = @state.current_font.glyph_width(glyph_code) / 1000.0
           th = 1
-          if kerning != 0 && index == glyphs.size - 1
-            tj = kerning
-          else
-            tj = 0
-          end
           scaled_glyph_width = glyph_width * @state.font_size * th
           unless utf8_chars == SPACE
             @characters << TextRun.new(newx, newy, scaled_glyph_width, @state.font_size, utf8_chars)
           end
-          @state.process_glyph_displacement(glyph_width, tj, utf8_chars == SPACE)
+          @state.process_glyph_displacement(glyph_width, 0, utf8_chars == SPACE)
         end
       end
 

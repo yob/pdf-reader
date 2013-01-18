@@ -14,6 +14,9 @@ data/vertical-text-in-identity-v.pdf:
 data/broken_string.pdf:
   :bytes: 929
   :md5: f717634f2e419e496e1e93a0cb5b7d18
+data/TJ_starts_with_a_number.pdf:
+  :bytes: 13119
+  :md5: 83501b5c507cdddbd9283ad2003c885b
 data/invalid/no_eof.pdf:
   :bytes: 9652
   :md5: a641e07a03b3cce7d6f43f5fe7f8695b
