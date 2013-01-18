@@ -58,11 +58,11 @@ class PDF::Reader
     end
 
     def row_multiplier
-      @row_multiplier ||= @page_height / row_count
+      @row_multiplier ||= @page_height.to_f / row_count.to_f
     end
 
     def col_multiplier
-      @col_multiplier ||= @page_width / col_count
+      @col_multiplier ||= @page_width.to_f / col_count.to_f
     end
 
     def mean(collection)
