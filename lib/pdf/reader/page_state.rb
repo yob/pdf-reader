@@ -107,7 +107,11 @@ class PDF::Reader
       end
 
       def font_size
-        @font_size ||= state[:text_font_size] * @text_matrix.a * ctm.a
+        @font_size ||= begin
+                         _, zero = trm_transform(0,0)
+                         _, one  = trm_transform(1,1)
+                         (zero - one).abs
+                       end
       end
 
       def set_text_leading(leading)
@@ -346,8 +350,8 @@ class PDF::Reader
       def text_rendering_matrix
         @text_rendering_matrix ||= begin
           state_matrix = TransformationMatrix.new(
-            font_size * state[:h_scaling], 0,
-            0, font_size,
+            state[:text_font_size] * state[:h_scaling], 0,
+            0, state[:text_font_size],
             0, state[:text_rise]
           )
           state_matrix.multiply!(

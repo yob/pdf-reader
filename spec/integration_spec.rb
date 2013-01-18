@@ -348,4 +348,15 @@ describe PDF::Reader, "integration specs" do
       page.text.should == "The following word uses a ligature: ﬁve"
     end
   end
+
+  # TODO this spec isn't ideal as our support for extracting rotated text is quite
+  #      rubbish. I've added this to ensure we don't throw an exception with
+  #      rotated text. It's a start.
+  it "should correctly extract text from a pdf with rotated text" do
+    filename = pdf_spec_file("rotated_text")
+    PDF::Reader.open(filename) do |reader|
+      page = reader.page(1)
+      page.text.split("\n").map(&:strip).slice(0,2).should == ["°","9"]
+    end
+  end
 end
