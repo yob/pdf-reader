@@ -5,6 +5,9 @@ data/dutch.pdf:
 data/indirect_page_count.pdf:
   :bytes: 957
   :md5: a84031df45b2431aabd2ca3107321c08
+data/rotated_text.pdf:
+  :bytes: 936
+  :md5: 86ba3d60315a0986c9a06d6d313dab6f
 data/vertical-text-in-identity-v.pdf:
   :bytes: 9785
   :md5: 8dba658e634fb19a66090607640540d1
