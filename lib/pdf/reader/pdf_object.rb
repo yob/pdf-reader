@@ -70,8 +70,10 @@ class PDF::Reader
       def self.utf8_to_utf16(str)
         if str.dup.force_encoding("UTF-16BE").valid_encoding?
           str
-        else
+        elsif str.valid_encoding? && str.encoding != ::Encoding::BINARY
           "\xFE\xFF".force_encoding("UTF-16BE") + str.encode("UTF-16BE")
+        else
+          str
         end
       end
 
