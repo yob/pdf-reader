@@ -39,7 +39,7 @@ class PDF::Reader
     def_delegators :@objects, :size, :length, :has_key?, :include?, :key?, :empty?
     def_delegators :@objects, :member?, :value?, :has_value?, :keys, :values
     def_delegators :@objects, :values_at, :page_references
-    def_delegators :encrypted?, :sec_handler?
+    def_delegators :@objects, :encrypted?, :sec_handler?, :traditional_xref?
 
     def initialize(input, opts = {})
       @io       = extract_io_from(input)

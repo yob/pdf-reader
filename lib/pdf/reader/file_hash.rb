@@ -264,6 +264,10 @@ class PDF::Reader
       !!sec_handler
     end
 
+    def traditional_xref?
+      @xref.traditional?
+    end
+
     private
 
     def build_security_handler(opts = {})

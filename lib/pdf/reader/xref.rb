@@ -57,6 +57,7 @@ class PDF::Reader
       @io = io
       @junk_offset = calc_junk_offset(io) || 0
       @xref = {}
+      @traditional = true
       @trailer = load_offsets
     end
 
@@ -83,6 +84,10 @@ class PDF::Reader
         gen = @xref[id].keys.sort[-1]
         yield PDF::Reader::Reference.new(id, gen)
       end
+    end
+    ################################################################################
+    def traditional?
+      @traditional
     end
     ################################################################################
     private
@@ -160,6 +165,7 @@ class PDF::Reader
       trailer = Hash[stream.hash.select { |key, value|
         [:Size, :Prev, :Root, :Encrypt, :Info, :ID].include?(key)
       }]
+      @traditional = false
 
       widths       = stream.hash[:W]
       entry_length = widths.inject(0) { |s, w| s + w }
