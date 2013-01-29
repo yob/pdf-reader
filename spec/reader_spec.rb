@@ -33,7 +33,7 @@ describe PDF::Reader do
       end
     end
 
-    context "with cairo-basic" do
+    context "with no_text_spaces" do
       it "should return the correct page_count" do
         PDF::Reader.new(no_text_spaces).page_count.should eql(6)
       end
