@@ -9,6 +9,8 @@ class PDF::Reader
   # page to be rendered as described by the page's MediaBox attribute
   class PageLayout
     def initialize(runs, mediabox)
+      raise ArgumentError, "a mediabox must be provided" if mediabox.nil?
+
       @runs    = merge_runs(runs)
       @mean_font_size   = mean(@runs.map(&:font_size)) || 0
       @mean_glyph_width = mean(@runs.map(&:mean_character_width)) || 0

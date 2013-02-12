@@ -140,6 +140,13 @@ describe PDF::Reader::Page, "attributes()" do
     attribs[:Type].should eql(:Page)
   end
 
+  it 'should assume 8.5" x 11" if MediaBox is missing (matches Acrobat behaviour)' do
+    @browser = PDF::Reader.new(pdf_spec_file("mediabox_missing"))
+    @page    = @browser.page(1)
+
+    attribs = @page.attributes
+    attribs[:MediaBox].should eql([0,0,612,792])
+  end
 end
 
 

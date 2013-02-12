@@ -367,4 +367,12 @@ describe PDF::Reader, "integration specs" do
       page.text[0,18].should == "This file has a TJ"
     end
   end
+
+  it "should correctly extract text when a page is missing the MediaBox attribute" do
+    filename = pdf_spec_file("mediabox_missing")
+    PDF::Reader.open(filename) do |reader|
+      page = reader.page(1)
+      page.text[0,54].should == "This page is missing the compulsory MediaBox attribute"
+    end
+  end
 end

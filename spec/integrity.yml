@@ -50,6 +50,9 @@ data/cmap_with_ligatures.txt:
 data/cmap_with_surrogate_pairs.txt:
   :bytes: 1340
   :md5: c0963a9329c749f28f070b71b21b656b
+data/mediabox_missing.pdf:
+  :bytes: 14875
+  :md5: 51560e94565ee1cd9583c388b5aa545a
 data/cairo-unicode.pdf:
   :bytes: 137432
   :md5: c9ad1b69ba65c4f3a6678f5a3363580c
