@@ -32,7 +32,9 @@ class PDF::Reader
   class GlyphHash # :nodoc:
     def initialize
       # only parse the glyph list once, and cache the results (for performance)
-      @adobe = @@cache ||= load_adobe_glyph_mapping
+      adobe = @@cache ||= load_adobe_glyph_mapping
+      @by_name      = adobe.first
+      @by_codepoint = adobe.last
     end
 
     # attempt to convert a PDF Name to a unicode codepoint. Returns nil
@@ -40,26 +42,26 @@ class PDF::Reader
     #
     #   h = GlyphHash.new
     #
-    #   h[:A]
+    #   h.name_to_unicode(:A)
     #   => 65
     #
-    #   h[:Euro]
+    #   h.name_to_unicode(:Euro)
     #   => 8364
     #
-    #   h[:G30]
+    #   h.name_to_unicode(:G30)
     #   => 48
     #
-    #   h[:34]
+    #   h.name_to_unicode(:34)
     #   => 34
     #
-    def [](name)
+    def name_to_unicode(name)
       return nil unless name.is_a?(Symbol)
 
       name = name.to_s.gsub('_', '').intern
       str = name.to_s
 
-      if @adobe.has_key?(name)
-        @adobe[name]
+      if @by_name.has_key?(name)
+        @by_name[name]
       elsif str.match(/\Auni[A-F\d]{4}\Z/)
         "0x#{str[3,4]}".hex
       elsif str.match(/\Au[A-F\d]{4,6}\Z/)
@@ -73,23 +75,47 @@ class PDF::Reader
       end
     end
 
+    # attempt to convert a Unicode code point to the equivilant PDF Name. Returns nil
+    # if no conversion is possible.
+    #
+    #   h = GlyphHash.new
+    #
+    #   h.unicode_to_name(65)
+    #   => :A
+    #
+    #   h.unicode_to_name(8364)
+    #   => :Euro
+    #
+    #   h.unicode_to_name(34)
+    #   => :34
+    #
+    def unicode_to_name(codepoint)
+      @by_codepoint[codepoint.to_i]
+    end
+
     private
 
     # returns a hash that maps glyph names to unicode codepoints. The mapping is based on
     # a text file supplied by Adobe at:
     # http://www.adobe.com/devnet/opentype/archives/glyphlist.txt
     def load_adobe_glyph_mapping
-      glyphs = {}
+      keyed_by_name      = {}
+      keyed_by_codepoint = {}
 
       RUBY_VERSION >= "1.9" ? mode = "r:BINARY" : mode = "r"
       File.open(File.dirname(__FILE__) + "/glyphlist.txt", mode) do |f|
         f.each do |l|
           m, name, code = *l.match(/([0-9A-Za-z]+);([0-9A-F]{4})/)
-          glyphs[name.to_sym] = "0x#{code}".hex if name
+          if name && code
+            cp = "0x#{code}".hex
+            keyed_by_name[name.to_sym]   = cp
+            keyed_by_codepoint[cp]     ||= []
+            keyed_by_codepoint[cp]     << name.to_sym
+          end
         end
       end
 
-      glyphs.freeze
+      [keyed_by_name.freeze, keyed_by_codepoint.freeze]
     end
 
   end
