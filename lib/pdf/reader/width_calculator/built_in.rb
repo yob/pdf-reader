@@ -39,8 +39,10 @@ class PDF::Reader
 
         m = @metrics.metrics_for(code_point)
         if m.nil?
-          name = @font.encoding.int_to_name(code_point)
-          m = @metrics.metrics_for_name(name)
+          names = @font.encoding.int_to_name(code_point)
+          m = names.map { |name|
+            @metrics.metrics_for_name(name)
+          }.compact.first
         end
 
         if m
@@ -48,7 +50,7 @@ class PDF::Reader
         elsif @font.widths[code_point - 1]
           @font.widths[code_point - 1]
         else
-          raise ArgumentError, "Unknown glyph width for #{codepoint}"
+          raise ArgumentError, "Unknown glyph width for #{code_point}"
         end
       end
 

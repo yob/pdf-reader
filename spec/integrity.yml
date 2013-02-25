@@ -233,3 +233,6 @@ data/column_integration.pdf:
 data/cross_ref_stream.pdf:
   :bytes: 1218187
   :md5: d7a93c4f9b70145db05c0bbacbed7f44
+data/standard_font_with_no_difference.pdf:
+  :bytes: 856
+  :md5: 1d59995aefe22d8a8859c1c217dddcc9

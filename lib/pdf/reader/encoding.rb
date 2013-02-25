@@ -76,7 +76,7 @@ class PDF::Reader
           byte = val.to_i
         else
           @differences[byte] = val
-          @mapping[byte] = names_to_unicode[val]
+          @mapping[byte] = glyphlist.name_to_unicode(val)
           byte += 1
         end
       end
@@ -116,15 +116,15 @@ class PDF::Reader
     #     int_to_name(65)
     #     => :A
     #
-    # TODO: this needs to be expanded to return the appropriate name for standard
-    #       glyph codes in the encoding. 65 to :A, etc. At the moment it only
-    #       handles glyphs in the difference table
-    #
     def int_to_name(glyph_code)
       if @enc_name == "Identity-H" || @enc_name == "Identity-V"
-        nil
+        []
+      elsif differences[glyph_code]
+        [differences[glyph_code]]
+      elsif @mapping[glyph_code]
+        glyphlist.unicode_to_name(@mapping[glyph_code])
       else
-        @differences[glyph_code]
+        []
       end
     end
 
@@ -189,8 +189,8 @@ class PDF::Reader
       @mapping.size > 0
     end
 
-    def names_to_unicode
-      @names_to_unicode ||= PDF::Reader::GlyphHash.new
+    def glyphlist
+      @glyphlist ||= PDF::Reader::GlyphHash.new
     end
 
     def load_mapping(file)

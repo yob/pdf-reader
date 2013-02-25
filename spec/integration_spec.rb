@@ -375,4 +375,12 @@ describe PDF::Reader, "integration specs" do
       page.text[0,54].should == "This page is missing the compulsory MediaBox attribute"
     end
   end
+
+  it "should correctly extract text from a standard font with no difference table" do
+    filename = pdf_spec_file("standard_font_with_no_difference")
+    PDF::Reader.open(filename) do |reader|
+      page = reader.page(1)
+      page.text.should == "This page uses contains a €"
+    end
+  end
 end
