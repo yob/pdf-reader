@@ -70,4 +70,13 @@ describe "PDF::Reader::CMap with a bfchar cmap" do
     map.decode(0x122C).should eql([0xFFFD])
   end
 
+  it "should correctly load a cmap that has a bfrange with > 255 characters" do
+    filename = File.dirname(__FILE__) + "/data/cmap_with_large_bfrange.txt"
+    map = PDF::Reader::CMap.new(binread(filename))
+
+    map.decode(0x00B7).should eql([0x00B7])
+    map.decode(0x00C0).should eql([0x00C0])
+    map.decode(0x00C1).should eql([0x00C1])
+  end
+
 end

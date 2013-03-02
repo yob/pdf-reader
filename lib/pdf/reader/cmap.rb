@@ -142,8 +142,6 @@ class PDF::Reader
       # add all values in the range to our mapping
       (start_code..end_code).each_with_index do |val, idx|
         @map[val] = dst.length == 1 ? [dst[0] + idx] : [dst[0], dst[1] + 1]
-        # ensure a single range does not exceed 255 chars
-        raise PDF::Reader::MalformedPDFError, "a CMap bfrange cann't exceed 255 chars" if idx > 255
       end
     end
 
