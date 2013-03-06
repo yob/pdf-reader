@@ -467,6 +467,14 @@ describe PDF::Reader::Buffer, "find_first_xref_offset method" do
     lambda { @buffer.find_first_xref_offset }.should raise_error(PDF::Reader::MalformedPDFError)
   end
 
+  it "should match EOF markers when they have a suffix" do
+    file   = File.new pdf_spec_file("extended_eof")
+    buffer = PDF::Reader::Buffer.new file
+
+    lambda {
+      buffer.find_first_xref_offset
+    }.should_not raise_error
+  end
 end
 
 describe PDF::Reader::Buffer, "read method" do

@@ -236,3 +236,6 @@ data/cross_ref_stream.pdf:
 data/standard_font_with_no_difference.pdf:
   :bytes: 856
   :md5: 1d59995aefe22d8a8859c1c217dddcc9
+data/extended_eof.pdf:
+  :bytes: 61721
+  :md5: 02bd4cfbc79b4a295754fda2705b6181
