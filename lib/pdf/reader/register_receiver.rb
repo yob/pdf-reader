@@ -34,18 +34,12 @@ class PDF::Reader
 
     # count the number of times a callback fired
     def count(methodname)
-      counter = 0
-      callbacks.each { |cb| counter += 1 if cb[:name] == methodname}
-      return counter
+      callbacks.count { |cb| cb[:name] == methodname}
     end
 
     # return the details for every time the specified callback was fired
     def all(methodname)
-      ret = []
-      callbacks.each do |cb|
-        ret << cb if cb[:name] == methodname
-      end
-      return ret
+      callbacks.select { |cb| cb[:name] == methodname }
     end
 
     def all_args(methodname)
@@ -54,19 +48,12 @@ class PDF::Reader
 
     # return the details for the first time the specified callback was fired
     def first_occurance_of(methodname)
-      callbacks.each do |cb|
-        return cb if cb[:name] == methodname
-      end
-      return nil
+      callbacks.find { |cb| cb[:name] == methodname }
     end
 
     # return the details for the final time the specified callback was fired
     def final_occurance_of(methodname)
-      returnme = nil
-      callbacks.each do |cb|
-        returnme = cb if cb[:name] == methodname
-      end
-      return returnme
+      all(methodname).last
     end
 
     # return the first occurance of a particular series of callbacks
