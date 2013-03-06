@@ -121,7 +121,7 @@ class PDF::Reader
 
       # the PDF 1.7 spec (section #3.4) says that EOL markers can be either \r, \n, or both.
       lines = data.split(/[\n\r]+/).reverse
-      eof_index = lines.index { |l| l.strip == "%%EOF" }
+      eof_index = lines.index { |l| l.strip[/^%%EOF/] }
 
       raise MalformedPDFError, "PDF does not contain EOF marker" if eof_index.nil?
       raise MalformedPDFError, "PDF EOF marker does not follow offset" if eof_index >= lines.size-1
