@@ -57,8 +57,7 @@ describe PDF::Reader::RegisterReceiver do
 
         it "matches series" do
           subject.series(:foo).should eq [ foo_bar ]
-          # fails?
-          # subject.series(:foo, :foo).should eq [ foo_bar, foo_baz ]
+          subject.series(:foo, :foo).should eq [ foo_bar, foo_baz ]
         end
       end
     end

@@ -62,23 +62,20 @@ class PDF::Reader
     def series(*methods)
       return nil if methods.empty?
 
-      indexes = (0..(callbacks.size-1-methods.size))
+      indexes = (0..(callbacks.size-1))
       method_indexes = (0..(methods.size-1))
       match = nil
 
       indexes.each do |idx|
         count = methods.size
         method_indexes.each do |midx|
-          count -= 1 if callbacks[idx+midx][:name] == methods[midx]
+          count -= 1 if callbacks[idx+midx] && callbacks[idx+midx][:name] == methods[midx]
         end
-        match = idx and break if count == 0
+        if count == 0
+          return callbacks[idx, methods.size]
+        end
       end
-
-      if match
-        return callbacks[match, methods.size]
-      else
-        return nil
-      end
+      nil
     end
   end
 end
