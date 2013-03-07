@@ -38,6 +38,14 @@ class PDF::Reader
   class Buffer
     TOKEN_WHITESPACE=[0x00, 0x09, 0x0A, 0x0C, 0x0D, 0x20]
 
+    # some strings for comparissons. Declaring them here avoids creating new
+    # strings that need GC over and over
+    LEFT_PAREN = "("
+    LESS_THAN = "<"
+    STREAM = "stream"
+    ID = "ID"
+    FWD_SLASH = "/"
+
     attr_reader :pos
 
     # Creates a new buffer.
@@ -176,11 +184,11 @@ class PDF::Reader
     #
     def state
       case @tokens.last
-      when "(" then :literal_string
-      when "<" then :hex_string
-      when "stream" then :stream
-      when "ID"
-        if in_content_stream?  && @tokens[-2] != "/"
+      when LEFT_PAREN then :literal_string
+      when LESS_THAN then :hex_string
+      when STREAM then :stream
+      when ID
+        if in_content_stream?  && @tokens[-2] != FWD_SLASH
           :inline
         else
           :regular
