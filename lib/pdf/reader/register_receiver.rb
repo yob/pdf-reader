@@ -11,10 +11,12 @@ class PDF::Reader
   #
   # Usage:
   #
-  #  receiver = PDF::Reader::RegisterReceiver.new
-  #  PDF::Reader.file("somefile.pdf", receiver)
-  #  callback = receiver.first_occurance_of(:show_text)
-  #  callback[:args].first.should == "Hellow World"
+  #     PDF::Reader.open("somefile.pdf") do |reader|
+  #       receiver = PDF::Reader::RegisterReceiver.new
+  #       reader.page(1).walk(receiver)
+  #       callback = receiver.first_occurance_of(:show_text)
+  #       callback[:args].first.should == "Hellow World"
+  #     end
   #
   class RegisterReceiver
 
