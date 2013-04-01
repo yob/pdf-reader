@@ -3,16 +3,6 @@
 require 'afm'
 require 'pdf/reader/synchronized_cache'
 
-module AFM
-  # this is a monkey patch for the AFM gem. hopefully my patch will be accepted
-  # upstream and I can drop this
-  class Font
-    def metrics_for_name(name)
-      @char_metrics[name.to_s]
-    end
-  end
-end
-
 class PDF::Reader
   module WidthCalculator
 
@@ -41,7 +31,7 @@ class PDF::Reader
         if m.nil?
           names = @font.encoding.int_to_name(code_point)
           m = names.map { |name|
-            @metrics.metrics_for_name(name)
+            @metrics.char_metrics[name.to_s]
           }.compact.first
         end
 
@@ -50,7 +40,7 @@ class PDF::Reader
         elsif @font.widths[code_point - 1]
           @font.widths[code_point - 1]
         else
-          raise ArgumentError, "Unknown glyph width for #{code_point}"
+          raise ArgumentError, "Unknown glyph width for #{code_point} #{@font.basefont}"
         end
       end
 
