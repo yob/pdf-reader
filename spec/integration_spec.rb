@@ -383,4 +383,20 @@ describe PDF::Reader, "integration specs" do
       page.text.should == "This page uses contains a €"
     end
   end
+
+  it "should correctly extract zapf dingbats text" do
+    filename = pdf_spec_file("zapf")
+    PDF::Reader.open(filename) do |reader|
+      page = reader.page(1)
+      page.text.should include("✄☎✇")
+    end
+  end
+
+  it "should correctly extract symbol text" do
+    filename = pdf_spec_file("symbol")
+    PDF::Reader.open(filename) do |reader|
+      page = reader.page(1)
+      page.text.should include("θρ")
+    end
+  end
 end
