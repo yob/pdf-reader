@@ -30,9 +30,9 @@ class PDF::Reader
   # Walks the pages of the PDF file and calls the appropriate callback methods when
   # something of interest is found.
   #
-  # The callback methods should exist on the receiver object passed into the constructor. Whenever
-  # some content is found that will trigger a callback, the receiver is checked to see if the callback
-  # is defined.
+  # The callback methods should exist on the receiver object passed into the constructor.
+  # Whenever some content is found that will trigger a callback, the receiver is checked
+  # to see if the callback is defined.
   #
   # If it is defined it will be called. If not, processing will continue.
   #
@@ -40,9 +40,9 @@ class PDF::Reader
   # The following callbacks are available and should be methods defined on your receiver class. Only
   # implement the ones you need - the rest will be ignored.
   #
-  # Some callbacks will include parameters which will be passed in as an array. For callbacks that supply no
-  # paramters, or where you don't need them, the *params argument can be left off. Some example callback
-  # method definitions are:
+  # Some callbacks will include parameters which will be passed in as an array. For callbacks
+  # that supply no paramters, or where you don't need them, the *params argument can be left off.
+  # Some example callback method definitions are:
   #
   #   def begin_document
   #   def end_page
