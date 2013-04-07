@@ -12,7 +12,7 @@ describe PDF::Reader::Font do
 
     it "should select a sensible encoding when set to a symbol font" do
       font.basefont = "Arial"
-      font.encoding.should be_nil
+      font.encoding.should be_a_kind_of(PDF::Reader::Encoding)
 
       font.basefont = "Symbol"
       font.encoding.should be_a_kind_of(PDF::Reader::Encoding)

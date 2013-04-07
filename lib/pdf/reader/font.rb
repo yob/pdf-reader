@@ -53,16 +53,7 @@ class PDF::Reader
     end
 
     def basefont=(font)
-      # setup a default encoding for the selected font. It can always be overridden
-      # with encoding= if required
-      case font
-      when "Symbol" then
-        @encoding = PDF::Reader::Encoding.new("SymbolEncoding")
-      when "ZapfDingbats" then
-        @encoding = PDF::Reader::Encoding.new("ZapfDingbatsEncoding")
-      else
-        @encoding = nil
-      end
+      @encoding ||= default_encoding(font)
       @basefont = font
     end
 
@@ -91,6 +82,17 @@ class PDF::Reader
 
     private
 
+    def default_encoding(font_name)
+      case font_name.to_s
+      when "Symbol" then
+        PDF::Reader::Encoding.new(:SymbolEncoding)
+      when "ZapfDingbats" then
+        PDF::Reader::Encoding.new(:ZapfDingbatsEncoding)
+      else
+        PDF::Reader::Encoding.new(:StandardEncoding)
+      end
+    end
+
     def build_width_calculator
       if @subtype == :Type0
         PDF::Reader::WidthCalculator::TypeZero.new(self)
@@ -114,7 +116,11 @@ class PDF::Reader
     def extract_base_info(obj)
       @subtype  = @ohash.object(obj[:Subtype])
       @basefont = @ohash.object(obj[:BaseFont])
-      @encoding = PDF::Reader::Encoding.new(@ohash.object(obj[:Encoding]))
+      if @ohash.object(obj[:Encoding])
+        @encoding = PDF::Reader::Encoding.new(@ohash.object(obj[:Encoding]))
+      else
+        @encoding = default_encoding(@basefont)
+      end
       @widths   = @ohash.object(obj[:Widths]) || []
       @first_char = @ohash.object(obj[:FirstChar])
       @last_char = @ohash.object(obj[:LastChar])
