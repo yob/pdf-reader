@@ -40,6 +40,7 @@ describe PDF::Reader::GlyphHash, "#name_to_unicode" do
     map.name_to_unicode(:G65).should     eql(65)
     map.name_to_unicode(:G655).should    eql(655)
     map.name_to_unicode(:G6555).should   eql(6555)
+    map.name_to_unicode(:G20000).should  eql(20000)
   end
 
   it "should correctly map a AAnn glyph to unicode" do
@@ -49,6 +50,7 @@ describe PDF::Reader::GlyphHash, "#name_to_unicode" do
     map.name_to_unicode(:GG65).should     eql(65)
     map.name_to_unicode(:GG655).should    eql(655)
     map.name_to_unicode(:GG6555).should   eql(6555)
+    map.name_to_unicode(:GG20000).should eql(20000)
   end
 
 end
