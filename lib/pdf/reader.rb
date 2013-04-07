@@ -115,6 +115,9 @@ module PDF
         @cache   = PDF::Reader::ObjectCache.new
         opts.merge!(:cache => @cache)
         @objects = PDF::Reader::ObjectHash.new(input, opts)
+      else
+        msg = "Calling PDF::Reader#new with no arguments is deprecated and will be removed in the 2.0 release"
+        $stderr.puts(msg)
       end
     end
 
@@ -167,6 +170,8 @@ module PDF
     # Parse the file with the given name, sending events to the given receiver.
     #
     def self.file(name, receivers, opts = {})
+      msg  = "PDF::Reader#file is deprecated and will be removed in the 2.0 release"
+      $stderr.puts(msg)
       File.open(name,"rb") do |f|
         new.parse(f, receivers, opts)
       end
@@ -178,6 +183,8 @@ module PDF
     # Parse the given string, sending events to the given receiver.
     #
     def self.string(str, receivers, opts = {})
+      msg  = "PDF::Reader#string is deprecated and will be removed in the 2.0 release"
+      $stderr.puts(msg)
       StringIO.open(str) do |s|
         new.parse(s, receivers, opts)
       end
@@ -190,6 +197,8 @@ module PDF
     # represents the requested pdf object
     #
     def self.object_file(name, id, gen = 0)
+      msg  = "PDF::Reader#object_file is deprecated and will be removed in the 2.0 release"
+      $stderr.puts(msg)
       File.open(name,"rb") { |f|
         new.object(f, id.to_i, gen.to_i)
       }
@@ -202,6 +211,8 @@ module PDF
     # the requested pdf object
     #
     def self.object_string(str, id, gen = 0)
+      msg  = "PDF::Reader#object_string is deprecated and will be removed in the 2.0 release"
+      $stderr.puts(msg)
       StringIO.open(str) { |s|
         new.object(s, id.to_i, gen.to_i)
       }
@@ -254,6 +265,8 @@ module PDF
     # Given an IO object that contains PDF data, parse it.
     #
     def parse(io, receivers, opts = {})
+      msg  = "PDF::Reader#parse is deprecated and will be removed in the 2.0 release"
+      $stderr.puts(msg)
       ohash    = ObjectHash.new(io)
 
       options = {:pages => true, :raw_text => false, :metadata => true}
@@ -272,6 +285,8 @@ module PDF
     # Given an IO object that contains PDF data, return the contents of a single object
     #
     def object (io, id, gen)
+      msg  = "PDF::Reader#object is deprecated and will be removed in the 2.0 release"
+      $stderr.puts(msg)
       @objects = ObjectHash.new(io)
 
       @objects.deref(Reference.new(id, gen))
