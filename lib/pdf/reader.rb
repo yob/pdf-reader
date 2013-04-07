@@ -116,7 +116,8 @@ module PDF
         opts.merge!(:cache => @cache)
         @objects = PDF::Reader::ObjectHash.new(input, opts)
       else
-        msg = "Calling PDF::Reader#new with no arguments is deprecated and will be removed in the 2.0 release"
+        msg  = "Calling PDF::Reader#new with no arguments is deprecated and will be removed "
+        msg += "in the 2.0 release"
         $stderr.puts(msg)
       end
     end
