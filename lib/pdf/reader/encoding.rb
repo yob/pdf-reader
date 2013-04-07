@@ -36,8 +36,7 @@ class PDF::Reader
     attr_reader :unpack
 
     def initialize(enc)
-      @mapping  = {} # maps from character codes to Unicode codepoints
-                     # also maps control and invalid chars to UNKNOWN_CHAR
+      @mapping  = default_mapping # maps from character codes to Unicode codepoints
       @string_cache  = {} # maps from character codes to UTF-8 strings.
 
       if enc.kind_of?(Hash)
@@ -54,7 +53,6 @@ class PDF::Reader
       @map_file = get_mapping_file(enc)
 
       load_mapping(@map_file) if @map_file
-      add_control_chars_to_mapping
     end
 
     # set the differences table for this encoding. should be an array in the following format:
@@ -130,6 +128,21 @@ class PDF::Reader
 
     private
 
+    # returns a hash that:
+    # - maps control chars and nil to the unicode "unknown character"
+    # - leaves all other bytes <= 255 unchaged
+    #
+    # Each specific encoding will change this default as required for their glyphs
+    def default_mapping
+      all_bytes = (0..255).to_a
+      tuples = all_bytes.map {|i|
+        CONTROL_CHARS.include?(i) ? [i, UNKNOWN_CHAR] : [i,i]
+      }
+      mapping = Hash[tuples]
+      mapping[nil] = UNKNOWN_CHAR
+      mapping
+    end
+
     def internal_int_to_utf8_string(glyph_code)
       ret = [
         @mapping[glyph_code.to_i] || glyph_code.to_i
@@ -194,8 +207,6 @@ class PDF::Reader
     end
 
     def load_mapping(file)
-      return if has_mapping?
-
       RUBY_VERSION >= "1.9" ? mode = "r:BINARY" : mode = "r"
       File.open(file, mode) do |f|
         f.each do |l|
@@ -205,13 +216,5 @@ class PDF::Reader
       end
     end
 
-    def add_control_chars_to_mapping
-      PDF::Reader::Encoding::CONTROL_CHARS.each do |byte|
-        unless @mapping[byte]
-          @mapping[byte] = PDF::Reader::Encoding::UNKNOWN_CHAR
-        end
-      end
-      @mapping[nil] = PDF::Reader::Encoding::UNKNOWN_CHAR
-    end
   end
 end
