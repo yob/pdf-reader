@@ -53,6 +53,7 @@ class PDF::Reader
     end
 
     def basefont=(font)
+      $stderr.puts "Font#basefont= is deprecated and will be removed in the 2.0 release"
       @encoding ||= default_encoding(font)
       @basefont = font
     end
