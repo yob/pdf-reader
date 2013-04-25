@@ -67,6 +67,18 @@ module PDF
         @attributes
       end
 
+      # Convenience method to identify the page's orientation.
+      #
+      def orientation
+        width,height = attributes[:MediaBox].slice(2,2)
+        rotation     = attributes[:Rotate].to_i
+        if width.to_i > height.to_i
+          [0,180].include?(rotation) ? 'landscape' : 'portrait'
+        else
+          [0,180].include?(rotation) ? 'portrait' : 'landscape'
+        end
+      end
+  
       # returns the plain text content of this page encoded as UTF-8. Any
       # characters that can't be translated will be returned as a ▯
       #
