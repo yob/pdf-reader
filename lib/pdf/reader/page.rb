@@ -78,7 +78,7 @@ module PDF
           [0,180].include?(rotation) ? 'portrait' : 'landscape'
         end
       end
-  
+
       # returns the plain text content of this page encoded as UTF-8. Any
       # characters that can't be translated will be returned as a ▯
       #
