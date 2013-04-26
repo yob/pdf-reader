@@ -47,9 +47,7 @@ describe PDF::Reader::PageTextReceiver do
   it "should correctly parse a page with nested Form XObjects" do
     @reader   = PDF::Reader.new(pdf_spec_file("nested_form_xobject"))
     @page     = @reader.page(1)
-    @receiver = PDF::Reader::PageTextReceiver.new
-
-    @page.walk(@receiver)
+    @receiver = @page.default_receiver
 
     @receiver.content.should eql("")
   end

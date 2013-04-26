@@ -25,6 +25,9 @@ module PDF
       # operations
       attr_reader :cache
 
+      # hash object for passing options onto the page layout system
+      attr_reader :page_layout_options
+
       # creates a new page wrapper.
       #
       # * objects - an ObjectHash instance that wraps a PDF file
@@ -34,6 +37,8 @@ module PDF
         @objects, @pagenum = objects, pagenum
         @page_object = objects.deref(objects.page_references[pagenum - 1])
         @cache       = options[:cache] || {}
+        @page_layout_options = options[:page_layout]
+        @default_receiver = nil
 
         unless @page_object.is_a?(::Hash)
           raise ArgumentError, "invalid page: #{pagenum}"
@@ -67,13 +72,19 @@ module PDF
         @attributes
       end
 
+      def default_receiver
+        if @default_receiver.nil?
+          @default_receiver = PageTextReceiver.new(@page_layout_options)
+          walk(@default_receiver)
+        end
+        @default_receiver
+      end
+
       # returns the plain text content of this page encoded as UTF-8. Any
       # characters that can't be translated will be returned as a ▯
       #
       def text
-        receiver = PageTextReceiver.new
-        walk(receiver)
-        receiver.content
+        default_receiver.content
       end
       alias :to_s :text
 
