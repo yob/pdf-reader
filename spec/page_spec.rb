@@ -194,6 +194,16 @@ describe PDF::Reader::Page, "graphic_states()" do
   end
 end
 
+describe PDF::Reader::Page, "orientation()" do
+
+  it "should return the orientation of cairo-basic.pdf page 1 as 'portrait'" do
+    @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
+    @page    = @browser.page(1)
+    @page.orientation.should eql("portrait")
+  end
+
+end
+
 describe PDF::Reader::Page, "patterns()" do
 
   it "should return an empty hash from cairo-basic.pdf page 1" do
