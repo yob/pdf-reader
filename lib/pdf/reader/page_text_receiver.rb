@@ -51,6 +51,9 @@ module PDF
       end
 
       def text_runs
+        if !@glyph_positions.empty?
+          dump_glyph_positions
+        end
         @merged_runs ||= merge_runs(@runs)
       end
 
@@ -105,6 +108,7 @@ module PDF
         if @state.current_font.nil?
           raise PDF::Reader::MalformedPDFError, "current font is invalid"
         end
+        @glyph_positions ||= []
         glyphs = @state.current_font.unpack(string)
         glyphs.each_with_index do |glyph_code, index|
           # paint the current glyph
@@ -116,9 +120,16 @@ module PDF
           glyph_width = @state.current_font.glyph_width(glyph_code) / 1000.0
           th = 1
           scaled_glyph_width = glyph_width * @state.font_size * th
-          unless utf8_chars == SPACE
-            @characters << TextRun.new(newx, newy, scaled_glyph_width, @state.font_size, utf8_chars)
+          gp = GlyphPosition.new(newx, newy, scaled_glyph_width, @state.font_size, 
+            @state.current_font.basefont, utf8_chars)
+          unless @glyph_positions.empty? || 
+            PDF::Reader::GlyphPosition::mergable?(@glyph_positions.last, gp)
+            # dump the glyph positions, assuming we have glyph positions to dump
+            # and the next glyph position isn't mergable with the last glyph
+            # position in the array.
+            dump_glyph_positions
           end
+          @glyph_positions << gp
           @state.process_glyph_displacement(glyph_width, 0, utf8_chars == SPACE)
         end
       end
