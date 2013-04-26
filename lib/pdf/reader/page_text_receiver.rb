@@ -46,12 +46,16 @@ module PDF
       def page=(page)
         @state = PageState.new(page)
         @content = []
-        @characters = []
+        @runs = []
         @mediabox = page.attributes[:MediaBox]
       end
 
+      def text_runs
+        @merged_runs ||= merge_runs(@runs)
+      end
+
       def content
-        PageLayout.new(@characters, @mediabox, @page_layout_opts).to_s
+        PageLayout.new(text_runs, @mediabox, @page_layout_opts).to_s
       end
 
       #####################################################
@@ -119,6 +123,37 @@ module PDF
         end
       end
 
+      # dump the glyph positions into a TextRun
+      def dump_glyph_positions
+        tr = TextRun.new(@glyph_positions)
+        @runs << tr
+        @glyph_positions = []
+      end
+
+      # take a collection of TextRun objects and merge any that are in close
+      # proximity
+      def merge_runs(runs)
+        runs.group_by { |run|
+          run.y.to_i
+        }.map { |y, runs|
+          group_runs(runs.sort)
+        }.flatten.sort
+      end
+
+      def group_runs(chars)
+        runs = []
+        while head = chars.shift
+          if runs.empty?
+            runs << head
+          elsif runs.last.mergable?(head)
+            # puts "Merging Head: #{runs.last.inspect} #{head.inspect}"
+            runs[-1] = runs.last + head
+          else
+            runs << head
+          end
+        end
+        runs
+      end
     end
   end
 end

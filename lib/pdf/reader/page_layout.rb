@@ -14,7 +14,7 @@ class PDF::Reader
     def initialize(runs, mediabox, page_layout_opts = {})
       raise ArgumentError, "a mediabox must be provided" if mediabox.nil?
 
-      @runs    = merge_runs(runs)
+      @runs    = runs
       @mean_font_size   = mean(@runs.map(&:font_size)) || 0
       @mean_glyph_width = mean(@runs.map(&:mean_character_width)) || 0
       @page_width  = mediabox[2] - mediabox[0]
@@ -85,30 +85,6 @@ class PDF::Reader
       }.map { |y, collection|
         yield y, collection
       }
-    end
-
-    # take a collection of TextRun objects and merge any that are in close
-    # proximity
-    def merge_runs(runs)
-      runs.group_by { |char|
-        char.y.to_i
-      }.map { |y, chars|
-        group_chars_into_runs(chars.sort)
-      }.flatten.sort
-    end
-
-    def group_chars_into_runs(chars)
-      runs = []
-      while head = chars.shift
-        if runs.empty?
-          runs << head
-        elsif runs.last.mergable?(head)
-          runs[-1] = runs.last + head
-        else
-          runs << head
-        end
-      end
-      runs
     end
 
     # This is a simple alternative to String#[]=. We can't use the string
