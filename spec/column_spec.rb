@@ -19,8 +19,9 @@ describe PDF::Reader, "column specs" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
         ft = page.text
+
         ft.should =~ /ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu/
-        ft.should =~ /Lorem ipsum dolor sit amet, consectetur adipisic -\s+adipisicing elit, sed do eiusmod tempor incididunt/
+        ft.should =~ /Lorem ipsum dolor sit amet, consectetur adipisic-\s+adipisicing elit, sed do eiusmod tempor incididunt/
         ft.should =~ /ing elit, sed do eiusmod tempor incididunt ut labore\s+ut labore et dolore magna aliqua. Ut enim ad minim/
         ft.should =~ /et dolore magna aliqua. Ut enim ad minim veniam,\s+veniam, quis nostrud exercitation ullamco laboris/
         ft.should =~ /quis nostrud exercitation ullamco laboris nisi ut\s+nisi ut aliquip ex ea commodo consequat. Duis aute/
@@ -34,6 +35,7 @@ describe PDF::Reader, "column specs" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
         ft = page.text
+
         # The following lines are in the second column, and their position with in the
         # string (from the left) should all be at the same spot
         match_pos_1 = find_position_of_match(ft, /adipisicing elit, sed do eiusmod tempor incididunt$/)
@@ -61,7 +63,7 @@ describe PDF::Reader, "column specs" do
         # The following lines are in the first column of the page prior to the interruption
         col1_1   = find_position_of_match(ft, /^tate velit esse cillum dolore eu/)
         col1_2   = find_position_of_match(ft, /^fugiat nulla pariatur. Excepteur/)
-        col1_3   = find_position_of_match(ft, /^sint occaecat cupidatat non proi -/)
+        col1_3   = find_position_of_match(ft, /^sint occaecat cupidatat non proi-/)
         col1_4   = find_position_of_match(ft, /^dent, sunt in culpa qui officia de-/)
 
         col1_1.should_not be_nil
@@ -79,8 +81,8 @@ describe PDF::Reader, "column specs" do
         # The following lines are in the second column of the page prior to the interruption
         col2_1   = find_position_of_match(ft, /occaecat cupidatat non proident,\s*anim/)
         col2_2   = find_position_of_match(ft, /sunt in culpa qui officia deserunt\s*sum/)
-        col2_3   = find_position_of_match(ft, /mollit anim id est laborum. Lo -\s*adipisicing/)
-        col2_4   = find_position_of_match(ft, /rem ipsum dolor sit amet, con -\s*tempor/)
+        col2_3   = find_position_of_match(ft, /mollit anim id est laborum. Lo-\s*adipisicing/)
+        col2_4   = find_position_of_match(ft, /rem ipsum dolor sit amet, con-\s*tempor/)
 
         col2_1.should_not be_nil
         col2_1.should eql(col2_2)
@@ -96,7 +98,7 @@ describe PDF::Reader, "column specs" do
         ft = reader.page(2).text
 
         # The following lines are in the third column of the page prior to the interruption
-        col3_a_1 = find_position_of_match(ft, /anim id est laborum. Lorem ip -$/)
+        col3_a_1 = find_position_of_match(ft, /anim id est laborum. Lorem ip-$/)
         col3_a_2 = find_position_of_match(ft, /sum dolor sit amet, consectetur$/)
         col3_a_3 = find_position_of_match(ft, /adipisicing elit, sed do eiusmod$/)
         col3_a_4 = find_position_of_match(ft, /tempor incididunt ut labore et$/)
