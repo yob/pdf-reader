@@ -8,14 +8,18 @@ class PDF::Reader
   # media box should be a 4 number array that describes the dimensions of the
   # page to be rendered as described by the page's MediaBox attribute
   class PageLayout
-    def initialize(runs, mediabox)
+
+    WHITE_SPACE_REGEX = /^\s*$/
+
+    def initialize(runs, mediabox, page_layout_opts = {})
       raise ArgumentError, "a mediabox must be provided" if mediabox.nil?
 
-      @runs    = merge_runs(runs)
+      @runs    = runs
       @mean_font_size   = mean(@runs.map(&:font_size)) || 0
       @mean_glyph_width = mean(@runs.map(&:mean_character_width)) || 0
       @page_width  = mediabox[2] - mediabox[0]
       @page_height = mediabox[3] - mediabox[1]
+      @layout_opts = {:col_multiplication_factor => 1.05}.merge page_layout_opts
       @x_offset = @runs.map(&:x).sort.first
       @current_platform_is_rbx_19 = RUBY_DESCRIPTION =~ /\Arubinius 2.0.0/ &&
                                       RUBY_VERSION >= "1.9.0"
@@ -56,7 +60,7 @@ class PDF::Reader
     end
 
     def col_count
-      @col_count ||= ((@page_width  / @mean_glyph_width) * 1.05).floor
+      @col_count ||= ((@page_width  / @mean_glyph_width) * @layout_opts[:col_multiplication_factor]).floor
     end
 
     def row_multiplier
@@ -83,35 +87,17 @@ class PDF::Reader
       }
     end
 
-    # take a collection of TextRun objects and merge any that are in close
-    # proximity
-    def merge_runs(runs)
-      runs.group_by { |char|
-        char.y.to_i
-      }.map { |y, chars|
-        group_chars_into_runs(chars.sort)
-      }.flatten.sort
-    end
-
-    def group_chars_into_runs(chars)
-      runs = []
-      while head = chars.shift
-        if runs.empty?
-          runs << head
-        elsif runs.last.mergable?(head)
-          runs[-1] = runs.last + head
-        else
-          runs << head
-        end
-      end
-      runs
-    end
-
     # This is a simple alternative to String#[]=. We can't use the string
     # method as it's buggy on rubinius 2.0rc1 (in 1.9 mode)
     #
     # See my bug report at https://github.com/rubinius/rubinius/issues/1985
     def local_string_insert(haystack, needle, index)
+      # hopefully String#[] is not buggy only String#[]=
+      if !(haystack[Range.new(index, index + needle.length - 1)] =~ WHITE_SPACE_REGEX)
+        $stderr.puts "Warning overwriting one or more characters while laying out text, " +
+          "col_multiplication_factor (currently #{@layout_opts[:col_multiplication_factor]}) " +
+          "should be increased to avoid this."
+      end
       if @current_platform_is_rbx_19
         char_count = needle.length
         haystack.replace(

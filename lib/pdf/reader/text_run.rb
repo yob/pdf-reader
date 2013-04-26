@@ -5,16 +5,34 @@ class PDF::Reader
   class TextRun
     include Comparable
 
-    attr_reader :x, :y, :width, :font_size, :text
+    attr_reader :text, :glyphs
 
     alias :to_s :text
 
-    def initialize(x, y, width, font_size, text)
-      @x = x
-      @y = y
-      @width = width
-      @font_size = font_size.floor
-      @text = text
+    def self.create_monospaced_run(x, y, font_size, text)
+      curr_x = x
+      glyphs = []
+      text.each_char do |char|
+        glyphs << GlyphPosition.new(curr_x, y, font_size, font_size, "courier", char)
+        curr_x += font_size
+      end
+      PDF::Reader::TextRun.new(glyphs)
+    end
+
+    def initialize(glyphs)
+      @glyphs = glyphs
+      # TODO: double check that all glyphs have same font size, y, are in increasing x order?
+      self.update_text
+    end
+
+    def update_text
+      s = ""
+      @glyphs.each do |glyph|
+        s << glyph.glyph
+      end
+      @text = s
+      # reset width
+      @width = nil
     end
 
     # Allows collections of TextRun objects to be sorted. They will be sorted
@@ -33,30 +51,46 @@ class PDF::Reader
       end
     end
 
+    def width
+      @width ||= @glyphs.last.endx - @glyphs.first.x
+    end
+
+    def x
+      @x ||= @glyphs.first.x
+    end
+
+    def y
+      @y ||= @glyphs.first.y
+    end
+
+    def font_size
+      @font_size ||= @glyphs.first.font_size
+    end
+
+    def font_name
+      @font_name ||= @glyphs.first.font_name
+    end
+
     def endx
       @endx ||= x + width
     end
 
     def mean_character_width
-      @width / character_count
+      width / character_count
     end
 
     def mergable?(other)
-      y.to_i == other.y.to_i && font_size == other.font_size && mergable_range.include?(other.x)
+      PDF::Reader::GlyphPosition.mergable?(@glyphs.last, other.glyphs.first)
     end
 
     def +(other)
       raise ArgumentError, "#{other} cannot be merged with this run" unless mergable?(other)
 
-      if (other.x - endx) <( font_size * 0.2)
-        TextRun.new(x, y, other.endx - x, font_size, text + other.text)
-      else
-        TextRun.new(x, y, other.endx - x, font_size, "#{text} #{other.text}")
-      end
+      TextRun.new(glyphs + other.glyphs)
     end
 
     def inspect
-      "#{text} w:#{width} f:#{font_size} @#{x},#{y}"
+      "'#{text}' (#{@glyphs.length} glyphs) w:%.2f f:#{font_size} @{%.2f, %.2f}" % [width, x, y]
     end
 
     private
@@ -66,12 +100,13 @@ class PDF::Reader
     end
 
     def character_count
-      if @text.size == 1
+      # TODO: can we just use a count of the glyph array?
+      if text.size == 1
         1.0
-      elsif @text.respond_to?(:bytesize)
+      elsif text.respond_to?(:bytesize)
         # M17N aware VM
         # so we can trust String#size to return a character count
-        @text.size.to_f
+        text.size.to_f
       else
         text.unpack("U*").size.to_f
       end

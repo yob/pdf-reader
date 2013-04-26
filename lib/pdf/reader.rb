@@ -115,6 +115,7 @@ module PDF
         @cache   = PDF::Reader::ObjectCache.new
         opts.merge!(:cache => @cache)
         @objects = PDF::Reader::ObjectHash.new(input, opts)
+        @page_layout_options = opts[:page_layout] || {}
       else
         msg  = "Calling PDF::Reader#new with no arguments is deprecated and will be removed "
         msg += "in the 2.0 release"
@@ -235,7 +236,7 @@ module PDF
     #
     def pages
       (1..self.page_count).map { |num|
-        PDF::Reader::Page.new(@objects, num, :cache => @cache)
+        PDF::Reader::Page.new(@objects, num, {:cache => @cache, :page_layout => @page_layout_options})
       }
     end
 
@@ -256,7 +257,7 @@ module PDF
       if num < 1 || num > self.page_count
         raise ArgumentError, "valid pages are 1 .. #{self.page_count}"
       end
-      PDF::Reader::Page.new(@objects, num, :cache => @cache)
+      PDF::Reader::Page.new(@objects, num, {:cache => @cache, :page_layout => @page_layout_options})
     end
 
 
@@ -369,6 +370,7 @@ require 'pdf/reader/font'
 require 'pdf/reader/font_descriptor'
 require 'pdf/reader/form_xobject'
 require 'pdf/reader/glyph_hash'
+require 'pdf/reader/glyph_position'
 require 'pdf/reader/lzw'
 require 'pdf/reader/metadata_strategy'
 require 'pdf/reader/object_cache'

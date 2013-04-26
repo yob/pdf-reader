@@ -53,7 +53,7 @@ class PDF::Reader
         end
         char_metric = ttf_program_stream.horizontal_metrics.metrics[glyph_id]
         if char_metric
-          puts "Char Code: #{char_code} -- Advance Width: #{char_metric.advance_width}" > 0
+          # puts "Char Code: #{char_code} -- Advance Width: #{char_metric.advance_width}"
           return char_metric.advance_width
         end
       end

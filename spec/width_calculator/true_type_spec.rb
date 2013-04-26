@@ -33,7 +33,7 @@ describe PDF::Reader::WidthCalculator::TrueType, "#glyph_width" do
   end
   context "when font#widths is undefined" do
     let!(:descriptor) { double(:missing_width => 50,
-                               :find_glyph_width => 60,
+                               :glyph_width => 60,
                                :glyph_to_pdf_scale_factor => 1) }
     let!(:font)       { double(:font_descriptor => descriptor,
                                :widths          => nil,

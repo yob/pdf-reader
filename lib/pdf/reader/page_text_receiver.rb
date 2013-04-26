@@ -37,16 +37,28 @@ module PDF
       def_delegators :@state, :set_text_matrix_and_text_line_matrix, :move_to_start_of_next_line
       ##########  END FORWARDERS  ##########
 
+      def initialize(page_layout_opts = {})
+        @page_layout_opts = page_layout_opts
+        @glyph_positions = []
+      end
+
       # starting a new page
       def page=(page)
         @state = PageState.new(page)
         @content = []
-        @characters = []
+        @runs = []
         @mediabox = page.attributes[:MediaBox]
       end
 
+      def text_runs
+        if !@glyph_positions.empty?
+          dump_glyph_positions
+        end
+        @merged_runs ||= merge_runs(@runs)
+      end
+
       def content
-        PageLayout.new(@characters, @mediabox).to_s
+        PageLayout.new(text_runs, @mediabox, @page_layout_opts).to_s
       end
 
       #####################################################
@@ -96,6 +108,7 @@ module PDF
         if @state.current_font.nil?
           raise PDF::Reader::MalformedPDFError, "current font is invalid"
         end
+        @glyph_positions ||= []
         glyphs = @state.current_font.unpack(string)
         glyphs.each_with_index do |glyph_code, index|
           # paint the current glyph
@@ -107,13 +120,51 @@ module PDF
           glyph_width = @state.current_font.glyph_width(glyph_code) / 1000.0
           th = 1
           scaled_glyph_width = glyph_width * @state.font_size * th
-          unless utf8_chars == SPACE
-            @characters << TextRun.new(newx, newy, scaled_glyph_width, @state.font_size, utf8_chars)
+          gp = GlyphPosition.new(newx, newy, scaled_glyph_width, @state.font_size, 
+            @state.current_font.basefont, utf8_chars)
+          unless @glyph_positions.empty? || 
+            PDF::Reader::GlyphPosition::mergable?(@glyph_positions.last, gp)
+            # dump the glyph positions, assuming we have glyph positions to dump
+            # and the next glyph position isn't mergable with the last glyph
+            # position in the array.
+            dump_glyph_positions
           end
+          @glyph_positions << gp
           @state.process_glyph_displacement(glyph_width, 0, utf8_chars == SPACE)
         end
       end
 
+      # dump the glyph positions into a TextRun
+      def dump_glyph_positions
+        tr = TextRun.new(@glyph_positions)
+        @runs << tr
+        @glyph_positions = []
+      end
+
+      # take a collection of TextRun objects and merge any that are in close
+      # proximity
+      def merge_runs(runs)
+        runs.group_by { |run|
+          run.y.to_i
+        }.map { |y, runs|
+          group_runs(runs.sort)
+        }.flatten.sort
+      end
+
+      def group_runs(chars)
+        runs = []
+        while head = chars.shift
+          if runs.empty?
+            runs << head
+          elsif runs.last.mergable?(head)
+            # puts "Merging Head: #{runs.last.inspect} #{head.inspect}"
+            runs[-1] = runs.last + head
+          else
+            runs << head
+          end
+        end
+        runs
+      end
     end
   end
 end

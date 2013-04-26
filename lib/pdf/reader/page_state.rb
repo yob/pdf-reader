@@ -312,21 +312,54 @@ class PDF::Reader
       #
       def process_glyph_displacement(w0, tj, word_boundary)
         fs = font_size # font size
-        tc = state[:char_spacing]
+        th = state[:h_scaling]
+
+        # there seems to be some discrepency in the PDF docs, the docs say
+        # that tc and tw are in "unscaled type space units."
+        # per Section 9.3.1, PDF 32000-1:2008, pp 243-244
+        #     This means that they shall be specified in a coordinate system that
+        #     shall be defined by the text matrix, Tm but shall not be scaled by the font size
+        #     parameter, Tfs
+        #
+        # Section 9.4.4, PDF 32000-1:2008, pp 252
+        #     The entire transformation of the glyph onto the current page can be represented by
+        #     a text rendering matrix, TRM :
+        #               Tfs × Th    0     0
+        #       TRM =      0       Tfs    0      × Tm × CTM
+        #                  0      Trise   1
+        #
+        # HOWEVER the following is also stated
+        #
+        # tx = (w0 – Tj / 1000) × Tfs + Tc + Tw) × Th
+        #
+        # where tx is used to update Tm
+        #
+        # if this were the case the TRM would end up multiplying the entire tx value by (Tfs x Th).
+        # Meaning that the width of the glyph would end up being multiplied by Tfs^2 and all
+        # the other parameters would be multiplied by Th^2
+        # I suspect that the tx value is defined incorrectly and should be in "unscaled text space units"
+        # this would make tx:
+        #
+        # tx = (w0 - Tj / 1000) + Tc + Tw
+        #
+        # tx would then get multiplied by Tfs and Th in the transformation to the rendering matrix
         if word_boundary
           tw = state[:word_spacing]
         else
           tw = 0
         end
-        th = state[:h_scaling]
+        if w0 > 0
+          tc = state[:char_spacing]
+        else
+          tc = 0
+        end
         # optimise the common path to reduce Float allocations
         if th == 1 && tj == 0 && tc == 0 && tw == 0
-          glyph_width = w0 * fs
-          tx = glyph_width
+          tx = w0
         else
-          glyph_width = ((w0 - (tj/1000.0)) * fs) * th
-          tx = glyph_width + ((tc + tw) * th)
+          tx = (w0 - (tj/1000.0)) + tc + tw
         end
+        tx = tx * fs * th
         ty = 0
 
         # TODO: I'm pretty sure that tx shouldn't need to be divided by

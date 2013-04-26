@@ -445,10 +445,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 0, true)
 
-                  state.trm_transform(0,0).should == [65, 700]
-                  state.trm_transform(0,1).should == [65, 712]
-                  state.trm_transform(1,0).should == [77, 700]
-                  state.trm_transform(1,1).should == [77, 712]
+                  state.trm_transform(0,0).should == [76, 700]
+                  state.trm_transform(0,1).should == [76, 712]
+                  state.trm_transform(1,0).should == [88, 700]
+                  state.trm_transform(1,1).should == [88, 712]
                 end
               end
             end
@@ -469,10 +469,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
-                  state.trm_transform(0,0).should == [64.976, 700]
-                  state.trm_transform(0,1).should == [64.976, 712]
-                  state.trm_transform(1,0).should == [76.976, 700]
-                  state.trm_transform(1,1).should == [76.976, 712]
+                  state.trm_transform(0,0).should == [75.976, 700]
+                  state.trm_transform(0,1).should == [75.976, 712]
+                  state.trm_transform(1,0).should == [87.976, 700]
+                  state.trm_transform(1,1).should == [87.976, 712]
                 end
               end
             end
@@ -489,10 +489,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 0, false)
 
-                  state.trm_transform(0,0).should == [65, 700]
-                  state.trm_transform(0,1).should == [65, 712]
-                  state.trm_transform(1,0).should == [77, 700]
-                  state.trm_transform(1,1).should == [77, 712]
+                  state.trm_transform(0,0).should == [76, 700]
+                  state.trm_transform(0,1).should == [76, 712]
+                  state.trm_transform(1,0).should == [88, 700]
+                  state.trm_transform(1,1).should == [88, 712]
                 end
               end
               context "a word boundary" do
@@ -500,10 +500,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 0, true)
 
-                  state.trm_transform(0,0).should == [65, 700]
-                  state.trm_transform(0,1).should == [65, 712]
-                  state.trm_transform(1,0).should == [77, 700]
-                  state.trm_transform(1,1).should == [77, 712]
+                  state.trm_transform(0,0).should == [76, 700]
+                  state.trm_transform(0,1).should == [76, 712]
+                  state.trm_transform(1,0).should == [88, 700]
+                  state.trm_transform(1,1).should == [88, 712]
                 end
               end
             end
@@ -513,10 +513,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 2, false)
 
-                  state.trm_transform(0,0).should == [64.976, 700]
-                  state.trm_transform(0,1).should == [64.976, 712]
-                  state.trm_transform(1,0).should == [76.976, 700]
-                  state.trm_transform(1,1).should == [76.976, 712]
+                  state.trm_transform(0,0).should == [75.976, 700]
+                  state.trm_transform(0,1).should == [75.976, 712]
+                  state.trm_transform(1,0).should == [87.976, 700]
+                  state.trm_transform(1,1).should == [87.976, 712]
                 end
               end
               context "a word boundary" do
@@ -524,17 +524,18 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
-                  state.trm_transform(0,0).should == [64.976, 700]
-                  state.trm_transform(0,1).should == [64.976, 712]
-                  state.trm_transform(1,0).should == [76.976, 700]
-                  state.trm_transform(1,1).should == [76.976, 712]
+                  state.trm_transform(0,0).should == [75.976, 700]
+                  state.trm_transform(0,1).should == [75.976, 712]
+                  state.trm_transform(1,0).should == [87.976, 700]
+                  state.trm_transform(1,1).should == [87.976, 712]
                 end
               end
             end
           end
-          context "with word spacing" do
+          context "with word spacing and character spacing" do
             before do
               state.set_word_spacing(1)
+              state.set_character_spacing(1)
             end
             context "no kerning" do
               context "not a word boundary" do
@@ -542,10 +543,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 0, false)
 
-                  state.trm_transform(0,0).should == [65, 700]
-                  state.trm_transform(0,1).should == [65, 712]
-                  state.trm_transform(1,0).should == [77, 700]
-                  state.trm_transform(1,1).should == [77, 712]
+                  state.trm_transform(0,0).should == [76, 700]
+                  state.trm_transform(0,1).should == [76, 712]
+                  state.trm_transform(1,0).should == [88, 700]
+                  state.trm_transform(1,1).should == [88, 712]
                 end
               end
               context "a word boundary" do
@@ -553,10 +554,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 0, true)
 
-                  state.trm_transform(0,0).should == [66, 700]
-                  state.trm_transform(0,1).should == [66, 712]
-                  state.trm_transform(1,0).should == [78, 700]
-                  state.trm_transform(1,1).should == [78, 712]
+                  state.trm_transform(0,0).should == [88, 700]
+                  state.trm_transform(0,1).should == [88, 712]
+                  state.trm_transform(1,0).should == [100, 700]
+                  state.trm_transform(1,1).should == [100, 712]
                 end
               end
             end
@@ -566,10 +567,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 2, false)
 
-                  state.trm_transform(0,0).should == [64.976, 700]
-                  state.trm_transform(0,1).should == [64.976, 712]
-                  state.trm_transform(1,0).should == [76.976, 700]
-                  state.trm_transform(1,1).should == [76.976, 712]
+                  state.trm_transform(0,0).should == [75.976, 700]
+                  state.trm_transform(0,1).should == [75.976, 712]
+                  state.trm_transform(1,0).should == [87.976, 700]
+                  state.trm_transform(1,1).should == [87.976, 712]
                 end
               end
               context "a word boundary" do
@@ -577,10 +578,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
-                  state.trm_transform(0,0).should == [65.976, 700]
-                  state.trm_transform(0,1).should == [65.976, 712]
-                  state.trm_transform(1,0).should == [77.976, 700]
-                  state.trm_transform(1,1).should == [77.976, 712]
+                  state.trm_transform(0,0).should == [87.976, 700]
+                  state.trm_transform(0,1).should == [87.976, 712]
+                  state.trm_transform(1,0).should == [99.976, 700]
+                  state.trm_transform(1,1).should == [99.976, 712]
                 end
               end
             end

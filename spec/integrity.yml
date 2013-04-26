@@ -254,3 +254,9 @@ data/indirect_kids_array.pdf:
 data/cmap_with_large_bfrange.txt:
   :bytes: 364
   :md5: b9247f9e5b76fb174d11acf4000db656
+data/characterspacing.pdf:
+  :bytes: 21943
+  :md5: 7a9c08b1a069d19344d7fa8af7b0a5be
+data/col_multiplication_factor.pdf:
+  :bytes: 188029
+  :md5: 4223b027f131d258a2833cae8e2e7366
