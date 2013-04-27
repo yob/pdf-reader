@@ -106,7 +106,7 @@ class PDF::Reader
       elsif @subtype == :Type3
         PDF::Reader::WidthCalculator::TypeOneOrThree.new(self)
       elsif @subtype == :TrueType
-        PDF::Reader::WidthCalculator::TypeOneOrThree.new(self)
+        PDF::Reader::WidthCalculator::TrueType.new(self)
       elsif @subtype == :CIDFontType0 || @subtype == :CIDFontType2
         PDF::Reader::WidthCalculator::Composite.new(self)
       else

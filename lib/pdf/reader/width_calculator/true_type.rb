@@ -43,7 +43,7 @@ class PDF::Reader
         # with-in a program inside the font descriptor, however the widths
         # may not be in standard PDF glyph widths (1000 units => 1 text space unit)
         # so this width will need to be scaled
-        w = @font.font_descriptor.find_glyph_width(code_point)
+        w = @font.font_descriptor.glyph_width(code_point)
         if w
           w.to_f * @font.font_descriptor.glyph_to_pdf_scale_factor
         else
