@@ -30,8 +30,8 @@ require 'marron/token'
 
 module Marron
   ################################################################################
-  # An internal PDF::Reader class that reads objects from the PDF file and converts
-  # them into useable ruby objects (hash's, arrays, true, false, etc)
+  # Reads objects from the PDF file and converts them into useable ruby objects
+  # (hash's, arrays, true, false, etc)
   class Parser
 
     TOKEN_STRATEGY = proc { |parser, token| Token.new(token) }

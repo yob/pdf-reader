@@ -29,9 +29,9 @@ require 'marron/filter'
 
 module Marron
   ################################################################################
-  # An internal PDF::Reader class that represents a stream object from a PDF. Stream
-  # objects have 2 components, a dictionary that describes the content (size,
-  # compression, etc) and a stream of bytes.
+  # Represents a stream object from a PDF. Stream objects have 2 components, a
+  # dictionary that describes the content (size, compression, etc) and a stream
+  # of bytes.
   #
   class Stream
     attr_accessor :hash, :data

@@ -28,8 +28,7 @@
 
 module Marron
   ################################################################################
-  # An internal PDF::Reader class that represents the XRef table in a PDF file as a
-  # hash-like object.
+  # Represents the XRef table in a PDF file as a hash-like object.
   #
   # An Xref table is a map of object identifiers and byte offsets. Any time a particular
   # object needs to be found, the Xref table is used to find where it is stored in the
