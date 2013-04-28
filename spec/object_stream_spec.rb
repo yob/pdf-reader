@@ -1,8 +1,8 @@
 # coding: utf-8
 
-require File.dirname(__FILE__) + "/spec_helper"
+require "spec_helper"
 
-describe PDF::Reader::ObjectStream, "[] method" do
+describe Marron::ObjectStream, "[] method" do
 
   before(:each) do
     @hash = {:N=>2, :Type=>:ObjStm, :First=>11}
@@ -10,8 +10,8 @@ describe PDF::Reader::ObjectStream, "[] method" do
   end
 
   it "should provide access to 2 embedded objects" do
-    stream = PDF::Reader::Stream.new(@hash, @data)
-    obj_stream = PDF::Reader::ObjectStream.new(stream)
+    stream = Marron::Stream.new(@hash, @data)
+    obj_stream = Marron::ObjectStream.new(stream)
 
     obj_stream[29].should be_a_kind_of(::Hash)
     obj_stream[30].should be_a_kind_of(::Hash)
@@ -21,15 +21,15 @@ describe PDF::Reader::ObjectStream, "[] method" do
   end
 
   it "should return nil for objects it doesn't contain" do
-    stream = PDF::Reader::Stream.new(@hash, @data)
-    obj_stream = PDF::Reader::ObjectStream.new(stream)
+    stream = Marron::Stream.new(@hash, @data)
+    obj_stream = Marron::ObjectStream.new(stream)
 
     obj_stream[1].should be_nil
   end
 
 end
 
-describe PDF::Reader::ObjectStream, "size method" do
+describe Marron::ObjectStream, "size method" do
 
   before(:each) do
     @hash = {:N=>2, :Type=>:ObjStm, :First=>11}
@@ -37,8 +37,8 @@ describe PDF::Reader::ObjectStream, "size method" do
   end
 
   it "should return the number of embedded objects" do
-    stream = PDF::Reader::Stream.new(@hash, @data)
-    obj_stream = PDF::Reader::ObjectStream.new(stream)
+    stream = Marron::Stream.new(@hash, @data)
+    obj_stream = Marron::ObjectStream.new(stream)
 
     obj_stream.size.should eql(2)
   end

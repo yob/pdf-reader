@@ -4,7 +4,7 @@ require "rubygems"
 require "bundler"
 Bundler.setup
 
-require 'pdf/reader'
+require 'marron'
 require 'timeout'
 require 'singleton'
 require 'digest/md5'

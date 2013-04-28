@@ -1,8 +1,8 @@
 # coding: utf-8
 
-require File.dirname(__FILE__) + "/spec_helper"
+require "spec_helper"
 
-describe PDF::Reader::Buffer, "token method" do
+describe Marron::Buffer, "token method" do
   include BufferHelper
   include EncodingHelper
 
@@ -168,7 +168,7 @@ describe PDF::Reader::Buffer, "token method" do
     buf = parse_string("aaa 1 0 R bbb")
 
     buf.token.should eql("aaa")
-    buf.token.should be_a_kind_of(PDF::Reader::Reference)
+    buf.token.should be_a_kind_of(Marron::Reference)
     buf.token.should eql("bbb")
     buf.token.should be_nil
   end
@@ -176,14 +176,14 @@ describe PDF::Reader::Buffer, "token method" do
   it "should correctly return two indirect references" do
     buf = parse_string("1 0 R 2 0 R")
 
-    buf.token.should be_a_kind_of(PDF::Reader::Reference)
-    buf.token.should be_a_kind_of(PDF::Reader::Reference)
+    buf.token.should be_a_kind_of(Marron::Reference)
+    buf.token.should be_a_kind_of(Marron::Reference)
     buf.token.should be_nil
   end
 
   it "should correctly seek to a particular byte of the IO - 1" do
     str = "aaa bbb ccc"
-    buf = PDF::Reader::Buffer.new(StringIO.new(str), :seek => 4)
+    buf = Marron::Buffer.new(StringIO.new(str), :seek => 4)
 
     buf.token.should eql("bbb")
     buf.token.should eql("ccc")
@@ -192,7 +192,7 @@ describe PDF::Reader::Buffer, "token method" do
 
   it "should correctly seek to a particular byte of the IO - 2" do
     str = "aaa bbb ccc"
-    buf = PDF::Reader::Buffer.new(StringIO.new(str), :seek => 5)
+    buf = Marron::Buffer.new(StringIO.new(str), :seek => 5)
 
     buf.token.should eql("bb")
     buf.token.should eql("ccc")
@@ -281,7 +281,7 @@ describe PDF::Reader::Buffer, "token method" do
     buf.token.should eql("<<")
     buf.token.should eql("/")
     buf.token.should eql("X")
-    buf.token.should be_a_kind_of(PDF::Reader::Reference)
+    buf.token.should be_a_kind_of(Marron::Reference)
     buf.token.should eql(">>")
   end
 
@@ -290,13 +290,13 @@ describe PDF::Reader::Buffer, "token method" do
     buf.token.should eql("<<")
     buf.token.should eql("/")
     buf.token.should eql("X")
-    buf.token.should be_a_kind_of(PDF::Reader::Reference)
+    buf.token.should be_a_kind_of(Marron::Reference)
     buf.token.should eql("/")
     buf.token.should eql("Y")
-    buf.token.should be_a_kind_of(PDF::Reader::Reference)
+    buf.token.should be_a_kind_of(Marron::Reference)
     buf.token.should eql("/")
     buf.token.should eql("Z")
-    buf.token.should be_a_kind_of(PDF::Reader::Reference)
+    buf.token.should be_a_kind_of(Marron::Reference)
     buf.token.should eql(">>")
   end
 
@@ -310,7 +310,7 @@ describe PDF::Reader::Buffer, "token method" do
 
   it "should restore io position if it's been changed on us" do
     io = StringIO.new("aaa bbb")
-    buf = PDF::Reader::Buffer.new(io)
+    buf = Marron::Buffer.new(io)
 
     buf.pos.should eql(0)
     buf.token
@@ -324,7 +324,7 @@ describe PDF::Reader::Buffer, "token method" do
 
   it "should correctly tokenise an inline image when inside a content stream" do
     io = StringIO.new(binary_string("BI ID aaa bbb ccc \xF0\xF0\xF0 EI"))
-    buf = PDF::Reader::Buffer.new(io, :content_stream => true)
+    buf = Marron::Buffer.new(io, :content_stream => true)
 
     buf.pos.should eql(0)
     buf.token.should eql("BI")
@@ -335,7 +335,7 @@ describe PDF::Reader::Buffer, "token method" do
 
   it "should correctly tokenise an inline image when outside a content stream" do
     io = StringIO.new(binary_string("BI ID aaa bbb ccc \xF0\xF0\xF0 EI"))
-    buf = PDF::Reader::Buffer.new(io, :content_stream => false)
+    buf = Marron::Buffer.new(io, :content_stream => false)
 
     buf.pos.should eql(0)
     buf.token.should eql("BI")
@@ -349,7 +349,7 @@ describe PDF::Reader::Buffer, "token method" do
 
   it "should correctly tokenise an inline image that contains the letters 'EI' within the image data" do
     io = StringIO.new(binary_string("BI ID aaa bbb ccc \xF0EI\xF0 EI"))
-    buf = PDF::Reader::Buffer.new(io, :content_stream => true)
+    buf = Marron::Buffer.new(io, :content_stream => true)
 
     buf.pos.should eql(0)
     buf.token.should eql("BI")
@@ -360,7 +360,7 @@ describe PDF::Reader::Buffer, "token method" do
 
   it "should correctly tokenise an inline image that contains the letters 'EI' within the image data" do
     io = StringIO.new(binary_string("BI ID aaa bbb ccc \xF0EI\xF0\nEI"))
-    buf = PDF::Reader::Buffer.new(io, :content_stream => true)
+    buf = Marron::Buffer.new(io, :content_stream => true)
 
     buf.pos.should eql(0)
     buf.token.should eql("BI")
@@ -371,7 +371,7 @@ describe PDF::Reader::Buffer, "token method" do
 
   it "should correctly tokenise a hash that has ID as a key" do
     io = StringIO.new("<</ID /S1 >> BDC")
-    buf = PDF::Reader::Buffer.new(io, :content_stream => true)
+    buf = Marron::Buffer.new(io, :content_stream => true)
 
     buf.pos.should eql(0)
     buf.token.should eql("<<")
@@ -384,7 +384,7 @@ describe PDF::Reader::Buffer, "token method" do
   end
 end
 
-describe PDF::Reader::Buffer, "empty? method" do
+describe Marron::Buffer, "empty? method" do
   include BufferHelper
 
   it "should correctly return false if there are remaining tokens" do
@@ -402,74 +402,74 @@ describe PDF::Reader::Buffer, "empty? method" do
   end
 end
 
-describe PDF::Reader::Buffer, "find_first_xref_offset method" do
+describe Marron::Buffer, "find_first_xref_offset method" do
 
   it "should find the first xref offset from cairo-basic.pdf correctly" do
     @file = File.new(pdf_spec_file("cairo-basic"))
-    @buffer = PDF::Reader::Buffer.new(@file)
+    @buffer = Marron::Buffer.new(@file)
 
     @buffer.find_first_xref_offset.should eql(9243)
   end
 
   it "should find the first xref offset from cairo-unicode.pdf correctly" do
     @file = File.new(pdf_spec_file("cairo-unicode"))
-    @buffer = PDF::Reader::Buffer.new(@file)
+    @buffer = Marron::Buffer.new(@file)
 
     @buffer.find_first_xref_offset.should eql(136174)
   end
 
   it "should find the first xref offset from prince1.pdf correctly" do
     @file = File.new(pdf_spec_file("prince1"))
-    @buffer = PDF::Reader::Buffer.new(@file)
+    @buffer = Marron::Buffer.new(@file)
 
     @buffer.find_first_xref_offset.should eql(678715)
   end
 
   it "should find the first xref offset from prince2.pdf correctly" do
     @file = File.new(pdf_spec_file("prince2"))
-    @buffer = PDF::Reader::Buffer.new(@file)
+    @buffer = Marron::Buffer.new(@file)
 
     @buffer.find_first_xref_offset.should eql(941440)
   end
 
   it "should find the first xref offset from pdfwriter-manual.pdf correctly" do
     @file = File.new(pdf_spec_file("pdfwriter-manual"))
-    @buffer = PDF::Reader::Buffer.new(@file)
+    @buffer = Marron::Buffer.new(@file)
 
     @buffer.find_first_xref_offset.should eql(275320)
   end
 
   it "should find the first xref offset from pdf-distiller.pdf correctly" do
     @file = File.new(pdf_spec_file("pdf-distiller"))
-    @buffer = PDF::Reader::Buffer.new(@file)
+    @buffer = Marron::Buffer.new(@file)
 
     @buffer.find_first_xref_offset.should eql(173)
   end
 
   it "should find the first xref offset from pdflatex.pdf correctly" do
     @file = File.new(pdf_spec_file("pdflatex"))
-    @buffer = PDF::Reader::Buffer.new(@file)
+    @buffer = Marron::Buffer.new(@file)
 
     @buffer.find_first_xref_offset.should eql(152898)
   end
 
   it "should find the first xref offset from openoffice-2.2.pdf correctly" do
     @file = File.new(pdf_spec_file("openoffice-2.2"))
-    @buffer = PDF::Reader::Buffer.new(@file)
+    @buffer = Marron::Buffer.new(@file)
 
     @buffer.find_first_xref_offset.should eql(36961)
   end
 
   it "should raise an exception when buffer doesn't contain an EOF marker" do
     @file = File.new(pdf_spec_file("no_eof"))
-    @buffer = PDF::Reader::Buffer.new(@file)
+    @buffer = Marron::Buffer.new(@file)
 
-    lambda { @buffer.find_first_xref_offset }.should raise_error(PDF::Reader::MalformedPDFError)
+    lambda { @buffer.find_first_xref_offset }.should raise_error(Marron::MalformedPDFError)
   end
 
   it "should match EOF markers when they have a suffix" do
     file   = File.new pdf_spec_file("extended_eof")
-    buffer = PDF::Reader::Buffer.new file
+    buffer = Marron::Buffer.new file
 
     lambda {
       buffer.find_first_xref_offset
@@ -477,7 +477,7 @@ describe PDF::Reader::Buffer, "find_first_xref_offset method" do
   end
 end
 
-describe PDF::Reader::Buffer, "read method" do
+describe Marron::Buffer, "read method" do
   include BufferHelper
 
   it "should return raw data from the underlying IO" do
