@@ -1,6 +1,6 @@
 # coding: utf-8
 
-describe PDF::Reader::Parser do
+describe Marron::Parser do
   include ParserHelper
   include EncodingHelper
 
@@ -121,7 +121,7 @@ describe PDF::Reader::Parser do
     it "raises an exception" do
       expect {
         parse_string("<48656C6C6F").parse_token
-      }.to raise_error(PDF::Reader::MalformedPDFError, "unterminated hex string")
+      }.to raise_error(Marron::MalformedPDFError, "unterminated hex string")
     end
   end
 
@@ -151,7 +151,7 @@ describe PDF::Reader::Parser do
     it "raises an exception" do
       expect {
         parse_string("<< /Registry (Adobe) ").parse_token
-      }.to raise_error(PDF::Reader::MalformedPDFError, "unterminated dict")
+      }.to raise_error(Marron::MalformedPDFError, "unterminated dict")
     end
   end
 
@@ -163,7 +163,7 @@ describe PDF::Reader::Parser do
     it "raises an exception" do
       expect {
         parse_string("[ 1 2 3").parse_token
-      }.to raise_error(PDF::Reader::MalformedPDFError, "unterminated array")
+      }.to raise_error(Marron::MalformedPDFError, "unterminated array")
     end
   end
 

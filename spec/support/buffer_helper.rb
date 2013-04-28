@@ -2,6 +2,6 @@
 
 module BufferHelper
   def parse_string(r)
-    PDF::Reader::Buffer.new(StringIO.new(r))
+    Marron::Buffer.new(StringIO.new(r))
   end
 end

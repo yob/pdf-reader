@@ -7,8 +7,8 @@ class CallbackHelper
     @registers ||= {}
     if @registers.empty?
       good_files.map { |filename|
-        receiver = PDF::Reader::RegisterReceiver.new
-        PDF::Reader.open(filename) do |reader|
+        receiver = Marron::RegisterReceiver.new
+        Marron.open(filename) do |reader|
           reader.pages.each do |page|
             page.walk(receiver)
           end
