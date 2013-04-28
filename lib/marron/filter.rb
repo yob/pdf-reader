@@ -45,7 +45,7 @@ module Marron
     # creates a new filter for decoding content.
     #
     # Filters that are only used to encode image data are accepted, but the data is
-    # returned untouched. At this stage PDF::Reader has no need to decode images.
+    # returned untouched. At this stage marron has no need to decode images.
     #
     def self.with(name, options = {})
       case name.to_sym

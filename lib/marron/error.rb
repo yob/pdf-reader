@@ -25,8 +25,7 @@
 #
 module Marron
   ################################################################################
-  # An internal PDF::Reader class that helps to verify various parts of the PDF file
-  # are valid
+  # helpers for verifying various parts of the PDF file are valid
   class Error # :nodoc:
     ################################################################################
     def self.str_assert (lvalue, rvalue, chars=nil)
