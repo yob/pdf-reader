@@ -51,15 +51,14 @@ file should be valid, or that a corrupt file didn't raise an exception, please
 forward a copy of the file to the maintainers (preferably via the google group)
 and we will attempt to improve the code.
 
-UnsupportedFeatureError - The PDF uses a feature that PDF::Reader doesn't currently
+UnsupportedFeatureError - The PDF uses a feature that Marron doesn't currently
 support. Again, we welcome submissions of PDF files that exhibit these features to help
 us with future code improvements.
 
 MalformedPDFError has some subclasses if you want to detect finer grained issues. If you
 don't, 'rescue MalformedPDFError' will catch all the subclassed errors as well.
 
-Any other exceptions should be considered bugs in either PDF::Reader (please
-report it!).
+Any other exceptions should be considered bugs in marron (please report it!).
 
 = Maintainers
 
