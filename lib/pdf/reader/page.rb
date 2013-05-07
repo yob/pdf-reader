@@ -70,9 +70,11 @@ module PDF
       # Convenience method to identify the page's orientation.
       #
       def orientation
-        width,height = attributes[:MediaBox].slice(2,2)
-        rotation     = attributes[:Rotate].to_i
-        if width.to_i > height.to_i
+        llx,lly,urx,ury = attributes[:MediaBox]
+        rotation        = attributes[:Rotate].to_i
+        width           = urx.to_i - llx.to_i
+        height          = ury.to_i - lly.to_i
+        if width > height
           [0,180].include?(rotation) ? 'landscape' : 'portrait'
         else
           [0,180].include?(rotation) ? 'portrait' : 'landscape'
