@@ -196,6 +196,9 @@ end
 
 describe PDF::Reader::Page, "orientation()" do
 
+  # this just checks that Page calls the PageOrientation class correctly. Extended specs
+  # to check the different orientations are correctly detected are over in the
+  # PageOrientation unit specs
   it "should return the orientation of portrait.pdf page 1 as 'portrait'" do
     @browser = PDF::Reader.new(pdf_spec_file("portrait"))
     @page    = @browser.page(1)
