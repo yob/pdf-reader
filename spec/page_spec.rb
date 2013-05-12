@@ -204,36 +204,6 @@ describe PDF::Reader::Page, "orientation()" do
 
 end
 
-describe PDF::Reader::Page, "orientation()" do
-
-  it "should return the orientation of portrait-rotated.pdf page 1 as 'landscape'" do
-    @browser = PDF::Reader.new(pdf_spec_file("portrait-rotated"))
-    @page    = @browser.page(1)
-    @page.orientation.should eql("landscape")
-  end
-
-end
-
-describe PDF::Reader::Page, "orientation()" do
-
-  it "should return the orientation of landscape.pdf page 1 as 'landscape'" do
-    @browser = PDF::Reader.new(pdf_spec_file("landscape"))
-    @page    = @browser.page(1)
-    @page.orientation.should eql("landscape")
-  end
-
-end
-
-describe PDF::Reader::Page, "orientation()" do
-
-  it "should return the orientation of landscape-rotated.pdf page 1 as 'portrait'" do
-    @browser = PDF::Reader.new(pdf_spec_file("landscape-rotated"))
-    @page    = @browser.page(1)
-    @page.orientation.should eql("portrait")
-  end
-
-end
-
 describe PDF::Reader::Page, "patterns()" do
 
   it "should return an empty hash from cairo-basic.pdf page 1" do
