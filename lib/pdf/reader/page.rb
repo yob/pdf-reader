@@ -67,6 +67,12 @@ module PDF
         @attributes
       end
 
+      # Convenience method to identify the page's orientation.
+      #
+      def orientation
+        OrientationDetector.new(attributes).orientation
+      end
+
       # returns the plain text content of this page encoded as UTF-8. Any
       # characters that can't be translated will be returned as a ▯
       #
