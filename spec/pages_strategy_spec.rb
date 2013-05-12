@@ -11,24 +11,26 @@ describe PDF::Reader::PagesStrategy do
   let(:object_hash) { PDF::Reader::ObjectHash.allocate }
   let(:font) { PDF::Reader::Font.new(object_hash, {}) }
 
-  it "should send the correct callbacks when processing instructions containing a single text block" do
+  context "processing instructions containing a single text block" do
+    it "should send the correct callbacks" do
 
-    # mock up an object that will be called with callbacks. This will test that
-    # the content class correctly recognises all instructions
-    receiver = mock("receiver")
-    receiver.should_receive(:begin_text_object).once             # BT
-    receiver.should_receive(:move_text_position).once            # Td
-    receiver.should_receive(:set_text_font_and_size).once        # Tf
-    receiver.should_receive(:set_text_rendering_mode).once       # Tr
-    receiver.should_receive(:show_text).once                     # Tj
-    receiver.should_receive(:end_text_object).once               # ET
+      # mock up an object that will be called with callbacks. This will test that
+      # the content class correctly recognises all instructions
+      receiver = mock("receiver")
+      receiver.should_receive(:begin_text_object).once             # BT
+      receiver.should_receive(:move_text_position).once            # Td
+      receiver.should_receive(:set_text_font_and_size).once        # Tf
+      receiver.should_receive(:set_text_rendering_mode).once       # Tr
+      receiver.should_receive(:show_text).once                     # Tj
+      receiver.should_receive(:end_text_object).once               # ET
 
-    # The instructions to test with
-    instructions = "BT\n 36.000 794.330 Td\n /F1 10.0 Tf\n 0 Tr\n (047174719X) Tj\n ET"
+      # The instructions to test with
+      instructions = "BT\n 36.000 794.330 Td\n /F1 10.0 Tf\n 0 Tr\n (047174719X) Tj\n ET"
 
-    # process the instructions
-    content = PDF::Reader::PagesStrategy.new(nil, receiver)
-    content.content_stream(instructions, {:F1 => font})
+      # process the instructions
+      content = PDF::Reader::PagesStrategy.new(nil, receiver)
+      content.content_stream(instructions, {:F1 => font})
+    end
   end
 
   it "should send the correct callbacks when processing instructions containing 2 text blocks" do
