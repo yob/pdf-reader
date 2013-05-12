@@ -263,6 +263,16 @@ describe PDF::Reader, "integration specs" do
     }.should raise_error(PDF::Reader::EncryptedPDFError)
   end
 
+  it "should correctly extract text from an encrypted PDF with no user pass or document ID" do
+    filename = pdf_spec_file("encrypted_with_no_doc_id")
+
+    PDF::Reader.open(filename) do |reader|
+      reader.page(1).text.should eql(
+        "This encryped file breaks compatability with the PDF spec because it has no document ID"
+      )
+    end
+  end
+
   it "should extract inline images correctly" do
     @browser = PDF::Reader.new(pdf_spec_file("inline_image"))
     @page    = @browser.page(1)

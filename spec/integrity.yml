@@ -95,6 +95,9 @@ data/split_params_and_operator.pdf:
 data/standard_font_with_no_difference.pdf:
   :bytes: 856
   :md5: 1d59995aefe22d8a8859c1c217dddcc9
+data/encrypted_with_no_doc_id.pdf:
+  :bytes: 1152
+  :md5: 8d2180b1c694dfe729ff8a8f6f77bb08
 data/cross_ref_stream.pdf:
   :bytes: 1218187
   :md5: d7a93c4f9b70145db05c0bbacbed7f44

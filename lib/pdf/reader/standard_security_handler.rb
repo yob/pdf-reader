@@ -63,7 +63,7 @@ class PDF::Reader
 
       @encryptMeta   = enc.has_key?(:EncryptMetadata)? enc[:EncryptMetadata].to_s == "true" : true;
 
-      @file_id       = file_id.first
+      @file_id       = (file_id || []).first || ""
 
       @encrypt_key   = build_standard_key(password)
     end
