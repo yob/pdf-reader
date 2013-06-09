@@ -91,7 +91,6 @@ class PDF::Reader
           @font.widths[code_point - 1]
         else
           raise UnknownGlyphWidthError, "Unknown glyph width for #{code_point} #{@font.basefont}"
-          #raise ArgumentError, "Unknown glyph width for #{code_point} #{@font.basefont}"
         end
       end
 
