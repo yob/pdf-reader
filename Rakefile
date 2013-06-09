@@ -57,7 +57,7 @@ task :integrity_yaml do
     path_without_spec = path.gsub("spec/","")
     data[path_without_spec] = {
       :bytes => File.size(path),
-      :md5 => Digest::MD5.hexdigest(File.read(path))
+      :md5 => Digest::MD5.file(path).hexdigest.encode('UTF-8')
     } if File.file?(path)
   end
   File.open("spec/integrity.yml","wb") { |f| f.write YAML.dump(data)}
