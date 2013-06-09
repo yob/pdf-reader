@@ -7,6 +7,8 @@ require 'rake'
 require 'rdoc/task'
 require 'rspec/core/rake_task'
 
+require 'digest/md5'
+
 # Cane requires ripper, which appears to only work on MRI 1.9
 if RUBY_VERSION >= "1.9" && RUBY_ENGINE == "ruby"
 
@@ -54,9 +56,10 @@ task :integrity_yaml do
   data = {}
   Dir.glob("spec/data/**/*.*").each do |path|
     path_without_spec = path.gsub("spec/","")
+
     data[path_without_spec] = {
       :bytes => File.size(path),
-      :md5   => `md5sum "#{path}"`.split.first
+      :md5 => Digest::MD5.hexdigest(File.read(path))
     } if File.file?(path)
   end
   File.open("spec/integrity.yml","wb") { |f| f.write YAML.dump(data)}
