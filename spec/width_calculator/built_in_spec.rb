@@ -9,6 +9,16 @@ describe PDF::Reader::WidthCalculator::BuiltIn do
   end
 end
 
+describe PDF::Reader::WidthCalculator::BuiltIn, "#glyph_width" do
+  it "should raise an UnknownGlyphWidthError if the glyph width is unknown" do
+    lambda {
+      file = File.new(pdf_spec_file("unknown_glyph_width_sample"))
+      pdf = PDF::Reader.new(file)
+      pdf.pages[1].text
+    }.should raise_error(PDF::Reader::UnknownGlyphWidthError)
+  end
+end
+
 describe PDF::Reader::WidthCalculator::BuiltIn, "#initialize" do
   context "when the basefont is one of the 14 standard fonts" do
     let!(:font)        { double(:basefont => :Helvetica) }
