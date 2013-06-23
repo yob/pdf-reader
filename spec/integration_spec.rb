@@ -414,7 +414,7 @@ describe PDF::Reader, "integration specs" do
     filename = pdf_spec_file("times-with-control-character")
     PDF::Reader.open(filename) do |reader|
       page = reader.page(1)
-      page.text.should include("This text includes an ASCII control c")
+      page.text.should include("This text includes an ASCII control")
     end
   end
 end
