@@ -260,3 +260,6 @@ data/cmap_with_large_bfrange.txt:
 data/portrait.pdf:
   :bytes: 288466
   :md5: dc2413fb949ee78fc1e2319ca4ffcd93
+data/times-with-control-character.pdf:
+  :bytes: 904
+  :md5: 4bd7309a3f190ede68a88bb2be8bf237

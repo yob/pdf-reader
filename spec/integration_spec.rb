@@ -409,4 +409,12 @@ describe PDF::Reader, "integration specs" do
       page.text.should include("θρ")
     end
   end
+
+  it "should correctly extract times text when it has a control char" do
+    filename = pdf_spec_file("times-with-control-character")
+    PDF::Reader.open(filename) do |reader|
+      page = reader.page(1)
+      page.text.should include("This text includes an ASCII control c")
+    end
+  end
 end
