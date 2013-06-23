@@ -89,9 +89,17 @@ class PDF::Reader
           m[:wx]
         elsif @font.widths[code_point - 1]
           @font.widths[code_point - 1]
+        elsif control_character?(code_point)
+          0
         else
           raise ArgumentError, "Unknown glyph width for #{code_point} #{@font.basefont}"
         end
+      end
+
+      private
+
+      def control_character?(code_point)
+        @font.encoding.int_to_name(code_point).first.to_s[/\Acontrol..\Z/]
       end
 
     end
