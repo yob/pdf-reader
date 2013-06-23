@@ -92,7 +92,7 @@ class PDF::Reader
         elsif control_character?(code_point)
           0
         else
-          raise ArgumentError, "Unknown glyph width for #{code_point} #{@font.basefont}"
+          raise MalformedPDFError, "Unknown glyph width for #{code_point} #{@font.basefont}"
         end
       end
 
