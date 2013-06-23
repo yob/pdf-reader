@@ -65,5 +65,9 @@ class PDF::Reader
   # an exception that is raised when a PDF is encrypted and we don't have the
   # necessary data to decrypt it
   class EncryptedPDFError < UnsupportedFeatureError; end
+
+  ################################################################################
+  # an exception that is raised when a PDF contains a glyph of unknown width
+  class UnknownGlyphWidthError < ArgumentError; end
 end
 ################################################################################

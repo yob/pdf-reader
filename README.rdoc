@@ -117,6 +117,8 @@ us with future code improvements.
 MalformedPDFError has some subclasses if you want to detect finer grained issues. If you
 don't, 'rescue MalformedPDFError' will catch all the subclassed errors as well.
 
+UnknownGlyphWidthError - Someone who knows more about glyphs and pdf reading should fill this in.
+
 Any other exceptions should be considered bugs in either PDF::Reader (please
 report it!).
 
