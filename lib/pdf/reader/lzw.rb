@@ -85,6 +85,7 @@ module PDF
         result = ''
         until (code = stream.read) == CODE_EOD
           if code == CODE_CLEAR_TABLE
+            stream.set_bits_in_chunk(9)
             string_table = StringTable.new
             code = stream.read
             break if code == CODE_EOD
