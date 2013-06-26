@@ -10,4 +10,10 @@ describe PDF::Reader::LZW do
 
     PDF::Reader::LZW.decode(content).should == '-----A---B'
   end
+
+  it "should correctly decode another lzw compressed string" do
+    content = binread(File.dirname(__FILE__) + "/data/lzw_compressed2.dat")
+
+    PDF::Reader::LZW.decode(content).should match(/\ABT/)
+  end
 end
