@@ -10,7 +10,7 @@ require 'rubygems'
 require 'pdf/reader'
 
 receiver = PDF::Reader::RegisterReceiver.new
-filename = File.expand_path(File.dirname(__FILE__)) + "/../spec/data/cairo-basic.pdf"
+filename = File.expand_path(File.dirname(__FILE__)) + "http://www.city.pittsburgh.pa.us/police/blotter/blotter_monday.pdf"
 
 PDF::Reader.open(filename) do |reader|
   reader.pages.each do |page|
