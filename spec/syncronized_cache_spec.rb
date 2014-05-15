@@ -17,7 +17,7 @@ describe PDF::Reader::SynchronizedCache, "#[]" do
 
   it "should return a stored value" do
     cache[:foo] = :bar
-    cache[:foo].should == :bar
+    expect(cache[:foo]).to eq(:bar)
   end
 
 end

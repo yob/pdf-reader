@@ -8,12 +8,12 @@ describe PDF::Reader::LZW do
       byte.to_i(16)
     }.pack("C*")
 
-    PDF::Reader::LZW.decode(content).should == '-----A---B'
+    expect(PDF::Reader::LZW.decode(content)).to eq('-----A---B')
   end
 
   it "should correctly decode another lzw compressed string" do
     content = binread(File.dirname(__FILE__) + "/data/lzw_compressed2.dat")
 
-    PDF::Reader::LZW.decode(content).should match(/\ABT/)
+    expect(PDF::Reader::LZW.decode(content)).to match(/\ABT/)
   end
 end

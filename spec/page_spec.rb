@@ -7,7 +7,7 @@ describe PDF::Reader::Page, "raw_content()" do
     @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
-    @page.raw_content.should be_a_kind_of(String)
+    expect(@page.raw_content).to be_a_kind_of(String)
   end
 end
 
@@ -18,7 +18,7 @@ describe PDF::Reader::Page, "text()" do
     @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
-    @page.text.should eql("Hello James")
+    expect(@page.text).to eql("Hello James")
   end
 
 end
@@ -35,7 +35,7 @@ describe PDF::Reader::Page, "walk()" do
 
       callbacks = receiver.callbacks.map { |cb| cb[:name] }
 
-      callbacks.first.should eql(:page=)
+      expect(callbacks.first).to eql(:page=)
     end
 
     it "should run callbacks while walking content stream" do
@@ -44,9 +44,9 @@ describe PDF::Reader::Page, "walk()" do
 
       callbacks = receiver.callbacks.map { |cb| cb[:name] }
 
-      callbacks.size.should eql(16)
-      callbacks[0].should eql(:page=)
-      callbacks[1].should eql(:save_graphics_state)
+      expect(callbacks.size).to eql(16)
+      expect(callbacks[0]).to eql(:page=)
+      expect(callbacks[1]).to eql(:save_graphics_state)
     end
 
     it "should run callbacks on multiple receivers while walking content stream" do
@@ -56,13 +56,13 @@ describe PDF::Reader::Page, "walk()" do
 
       callbacks = receiver_one.callbacks.map { |cb| cb[:name] }
 
-      callbacks.size.should eql(16)
-      callbacks.first.should eql(:page=)
+      expect(callbacks.size).to eql(16)
+      expect(callbacks.first).to eql(:page=)
 
       callbacks = receiver_two.callbacks.map { |cb| cb[:name] }
 
-      callbacks.size.should eql(16)
-      callbacks.first.should eql(:page=)
+      expect(callbacks.size).to eql(16)
+      expect(callbacks.first).to eql(:page=)
     end
   end
 end
@@ -73,7 +73,7 @@ describe PDF::Reader::Page, "number()" do
     @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
-    @page.number.should eql(1)
+    expect(@page.number).to eql(1)
   end
 
 end
@@ -84,7 +84,7 @@ describe PDF::Reader::Page, "number()" do
     @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
-    @page.number.should eql(1)
+    expect(@page.number).to eql(1)
   end
 
 end
@@ -96,8 +96,8 @@ describe PDF::Reader::Page, "attributes()" do
     @page    = @browser.page(1)
 
     attribs = @page.attributes
-    attribs[:Resources].should      be_a_kind_of(Hash)
-    attribs[:Resources].size.should eql(2)
+    expect(attribs[:Resources]).to      be_a_kind_of(Hash)
+    expect(attribs[:Resources].size).to eql(2)
   end
 
   it "should contain inherited attributes" do
@@ -105,7 +105,7 @@ describe PDF::Reader::Page, "attributes()" do
     @page    = @browser.page(1)
 
     attribs = @page.attributes
-    attribs[:MediaBox].should eql([0.0, 0.0, 595.276, 841.89])
+    expect(attribs[:MediaBox]).to eql([0.0, 0.0, 595.276, 841.89])
   end
 
   it "should allow Page to override inherited attributes" do
@@ -113,7 +113,7 @@ describe PDF::Reader::Page, "attributes()" do
     @page    = @browser.page(1)
 
     attribs = @page.attributes
-    attribs[:MediaBox].should eql([0, 0, 200, 200])
+    expect(attribs[:MediaBox]).to eql([0, 0, 200, 200])
   end
 
   it "should not include attributes from the Pages object that don't belong on a Page" do
@@ -121,7 +121,7 @@ describe PDF::Reader::Page, "attributes()" do
     @page    = @browser.page(1)
 
     attribs = @page.attributes
-    attribs[:Kids].should be_nil
+    expect(attribs[:Kids]).to be_nil
   end
 
   it "should not include attributes from the Pages object that don't belong on a Page" do
@@ -129,7 +129,7 @@ describe PDF::Reader::Page, "attributes()" do
     @page    = @browser.page(1)
 
     attribs = @page.attributes
-    attribs[:TrimBox].should be_nil
+    expect(attribs[:TrimBox]).to be_nil
   end
 
   it "should always include Type => Page" do
@@ -137,7 +137,7 @@ describe PDF::Reader::Page, "attributes()" do
     @page    = @browser.page(1)
 
     attribs = @page.attributes
-    attribs[:Type].should eql(:Page)
+    expect(attribs[:Type]).to eql(:Page)
   end
 
   it 'should assume 8.5" x 11" if MediaBox is missing (matches Acrobat behaviour)' do
@@ -145,7 +145,7 @@ describe PDF::Reader::Page, "attributes()" do
     @page    = @browser.page(1)
 
     attribs = @page.attributes
-    attribs[:MediaBox].should eql([0,0,612,792])
+    expect(attribs[:MediaBox]).to eql([0,0,612,792])
   end
 end
 
@@ -156,18 +156,18 @@ describe PDF::Reader::Page, "fonts()" do
     @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
-    @page.fonts.should      be_a_kind_of(Hash)
-    @page.fonts.size.should eql(1)
-    @page.fonts.keys.should eql([:"CairoFont-0-0"])
+    expect(@page.fonts).to      be_a_kind_of(Hash)
+    expect(@page.fonts.size).to eql(1)
+    expect(@page.fonts.keys).to eql([:"CairoFont-0-0"])
   end
 
   it "should contain inherited resources" do
     @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
-    @page.fonts.should      be_a_kind_of(Hash)
-    @page.fonts.size.should eql(1)
-    @page.fonts.keys.should eql([:"CairoFont-0-0"])
+    expect(@page.fonts).to      be_a_kind_of(Hash)
+    expect(@page.fonts.size).to eql(1)
+    expect(@page.fonts.keys).to eql([:"CairoFont-0-0"])
   end
 
 end
@@ -178,8 +178,8 @@ describe PDF::Reader::Page, "color_spaces()" do
     @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
-    @page.color_spaces.should      be_a_kind_of(Hash)
-    @page.color_spaces.size.should eql(0)
+    expect(@page.color_spaces).to      be_a_kind_of(Hash)
+    expect(@page.color_spaces.size).to eql(0)
   end
 end
 
@@ -189,8 +189,8 @@ describe PDF::Reader::Page, "graphic_states()" do
     @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
-    @page.graphic_states.should      be_a_kind_of(Hash)
-    @page.graphic_states.size.should eql(1)
+    expect(@page.graphic_states).to      be_a_kind_of(Hash)
+    expect(@page.graphic_states.size).to eql(1)
   end
 end
 
@@ -202,7 +202,7 @@ describe PDF::Reader::Page, "orientation()" do
   it "should return the orientation of portrait.pdf page 1 as 'portrait'" do
     @browser = PDF::Reader.new(pdf_spec_file("portrait"))
     @page    = @browser.page(1)
-    @page.orientation.should eql("portrait")
+    expect(@page.orientation).to eql("portrait")
   end
 
 end
@@ -213,8 +213,8 @@ describe PDF::Reader::Page, "patterns()" do
     @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
-    @page.patterns.should      be_a_kind_of(Hash)
-    @page.patterns.size.should eql(0)
+    expect(@page.patterns).to      be_a_kind_of(Hash)
+    expect(@page.patterns.size).to eql(0)
   end
 end
 
@@ -224,8 +224,8 @@ describe PDF::Reader::Page, "procedure_sets()" do
     @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
-    @page.procedure_sets.should      be_a_kind_of(Array)
-    @page.procedure_sets.size.should eql(0)
+    expect(@page.procedure_sets).to      be_a_kind_of(Array)
+    expect(@page.procedure_sets.size).to eql(0)
   end
 end
 
@@ -235,8 +235,8 @@ describe PDF::Reader::Page, "properties()" do
     @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
-    @page.properties.should      be_a_kind_of(Hash)
-    @page.properties.size.should eql(0)
+    expect(@page.properties).to      be_a_kind_of(Hash)
+    expect(@page.properties.size).to eql(0)
   end
 end
 
@@ -246,8 +246,8 @@ describe PDF::Reader::Page, "shadings()" do
     @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
-    @page.shadings.should      be_a_kind_of(Hash)
-    @page.shadings.size.should eql(0)
+    expect(@page.shadings).to      be_a_kind_of(Hash)
+    expect(@page.shadings.size).to eql(0)
   end
 end
 
@@ -257,7 +257,7 @@ describe PDF::Reader::Page, "xobjects()" do
     @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
     @page    = @browser.page(1)
 
-    @page.xobjects.should      be_a_kind_of(Hash)
-    @page.xobjects.size.should eql(0)
+    expect(@page.xobjects).to      be_a_kind_of(Hash)
+    expect(@page.xobjects.size).to eql(0)
   end
 end

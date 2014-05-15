@@ -9,7 +9,7 @@ describe PDF::Reader::Filter::Flate do
     filter = PDF::Reader::Filter::Flate.new(:Columns => 5, :Predictor => 12)
     deflated_data    = binread(File.dirname(__FILE__) + "/../../data/deflated_with_predictors.dat")
     depredicted_data = binread(File.dirname(__FILE__) + "/../../data/deflated_with_predictors_result.dat")
-    filter.filter(deflated_data).should eql(depredicted_data)
+    expect(filter.filter(deflated_data)).to eql(depredicted_data)
   end
 
   it "should inflate a deflated stream with tiff predictors correctly" do
@@ -18,7 +18,7 @@ describe PDF::Reader::Filter::Flate do
     predicted_data = "abc\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00abc\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
     deflated_data  = Zlib::Deflate.deflate(predicted_data)
 
-    filter.filter(deflated_data).should eql(original_data)
+    expect(filter.filter(deflated_data)).to eql(original_data)
   end
 
 end

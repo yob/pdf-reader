@@ -22,12 +22,12 @@ describe PDF::Reader::WidthCalculator::TrueType, "#glyph_width" do
 
     context "when the glyph code is less than font#first_char" do
       it "should return the missing width" do
-        subject.glyph_width(9).should == 50
+        expect(subject.glyph_width(9)).to eq(50)
       end
     end
     context "when the glyph code is equal to greater than font#first_char" do
       it "should return the correct width" do
-        subject.glyph_width(10).should == 20
+        expect(subject.glyph_width(10)).to eq(20)
       end
     end
   end
@@ -41,7 +41,7 @@ describe PDF::Reader::WidthCalculator::TrueType, "#glyph_width" do
     subject           { PDF::Reader::WidthCalculator::TrueType.new(font)}
 
     it "should fetch the width from the descriptor" do
-      subject.glyph_width(10).should == 60
+      expect(subject.glyph_width(10)).to eq(60)
     end
   end
 end
