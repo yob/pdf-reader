@@ -30,3 +30,20 @@ describe PDF::Reader::WidthCalculator::BuiltIn, "#initialize" do
     end
   end
 end
+
+describe PDF::Reader::WidthCalculator::BuiltIn, "#glyph_width" do
+    let!(:encoding)     { PDF::Reader::Encoding.new(:StandardEncoding) }
+    let!(:font)         { double(:basefont => :Helvetica,
+                                 :subtype => :TrueType,
+                                 :encoding => encoding) }
+
+    subject(:width_calculator) {
+      PDF::Reader::WidthCalculator::BuiltIn.new(font)
+    }
+
+    it "should not raise an error for code point 160 (non breaking space)" do
+      lambda {
+        width_calculator.glyph_width(160)
+      }.should_not raise_error
+    end
+end
