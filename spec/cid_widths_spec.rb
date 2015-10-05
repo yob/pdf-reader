@@ -7,7 +7,7 @@ describe PDF::Reader::CidWidths, "#initilize" do
     subject { PDF::Reader::CidWidths.new(500, [])}
 
     it "should return the default width" do
-      subject[1].should == 500
+      expect(subject[1]).to eq(500)
     end
   end
 
@@ -15,19 +15,19 @@ describe PDF::Reader::CidWidths, "#initilize" do
     subject { PDF::Reader::CidWidths.new(500, [1, [10, 20, 30]])}
 
     it "should return correct width for index 1" do
-      subject[1].should == 10
+      expect(subject[1]).to eq(10)
     end
 
     it "should return correct width for index 2" do
-      subject[2].should == 20
+      expect(subject[2]).to eq(20)
     end
 
     it "should return correct width for index 3" do
-      subject[3].should == 30
+      expect(subject[3]).to eq(30)
     end
 
     it "should return correct width for index 4" do
-      subject[4].should == 500
+      expect(subject[4]).to eq(500)
     end
   end
 
@@ -35,19 +35,19 @@ describe PDF::Reader::CidWidths, "#initilize" do
     subject { PDF::Reader::CidWidths.new(500, [1, 3, 10])}
 
     it "should return correct width for index 1" do
-      subject[1].should == 10
+      expect(subject[1]).to eq(10)
     end
 
     it "should return correct width for index 2" do
-      subject[2].should == 10
+      expect(subject[2]).to eq(10)
     end
 
     it "should return correct width for index 3" do
-      subject[3].should == 10
+      expect(subject[3]).to eq(10)
     end
 
     it "should return correct width for index 4" do
-      subject[4].should == 500
+      expect(subject[4]).to eq(500)
     end
   end
 
@@ -61,31 +61,31 @@ describe PDF::Reader::CidWidths, "#initilize" do
     subject       { PDF::Reader::CidWidths.new(500, widths)}
 
     it "should return correct width for index 1" do
-      subject[1].should == 10
+      expect(subject[1]).to eq(10)
     end
 
     it "should return correct width for index 2" do
-      subject[2].should == 20
+      expect(subject[2]).to eq(20)
     end
 
     it "should return correct width for index 3" do
-      subject[3].should == 30
+      expect(subject[3]).to eq(30)
     end
 
     it "should return correct width for index 4" do
-      subject[4].should == 40
+      expect(subject[4]).to eq(40)
     end
 
     it "should return correct width for index 5" do
-      subject[5].should == 40
+      expect(subject[5]).to eq(40)
     end
 
     it "should return correct width for index 6" do
-      subject[6].should == 40
+      expect(subject[6]).to eq(40)
     end
 
     it "should return correct width for index 7" do
-      subject[7].should == 500
+      expect(subject[7]).to eq(500)
     end
   end
 

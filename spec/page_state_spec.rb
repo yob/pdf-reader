@@ -3,7 +3,7 @@
 require File.dirname(__FILE__) + "/spec_helper"
 
 describe PDF::Reader::PageState do
-  let!(:page)   { mock(:cache => {},
+  let!(:page)   { double(:cache => {},
                         :objects => {},
                         :fonts => {},
                         :xobjects => {},
@@ -24,7 +24,7 @@ describe PDF::Reader::PageState do
       end
 
       it "should not mutate" do
-        should eql(expect)
+        is_expected.to eql(expect)
       end
     end
   end
@@ -34,9 +34,9 @@ describe PDF::Reader::PageState do
       let!(:state)  {PDF::Reader::PageState.new(page) }
 
       it "should increase the stack depth by one" do
-        lambda {
+        expect {
           state.save_graphics_state
-        }.should change(state, :stack_depth).from(1).to(2)
+        }.to change(state, :stack_depth).from(1).to(2)
       end
     end
   end
@@ -48,9 +48,9 @@ describe PDF::Reader::PageState do
       it "should reduce the stack depth by one" do
         state.save_graphics_state
 
-        lambda {
+        expect {
           state.restore_graphics_state
-        }.should change(state, :stack_depth).from(2).to(1)
+        }.to change(state, :stack_depth).from(2).to(1)
       end
     end
   end
@@ -67,10 +67,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        state.ctm_transform(0,0).should == [0, 0]
-        state.ctm_transform(0,1).should == [0, 1]
-        state.ctm_transform(1,0).should == [2, 0]
-        state.ctm_transform(1,1).should == [2, 1]
+        expect(state.ctm_transform(0,0)).to eq([0, 0])
+        expect(state.ctm_transform(0,1)).to eq([0, 1])
+        expect(state.ctm_transform(1,0)).to eq([2, 0])
+        expect(state.ctm_transform(1,1)).to eq([2, 1])
       end
     end
 
@@ -83,10 +83,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        state.ctm_transform(0,0).should == [0, 0]
-        state.ctm_transform(0,1).should == [0, 1]
-        state.ctm_transform(1,0).should == [1, 2]
-        state.ctm_transform(1,1).should == [1, 3]
+        expect(state.ctm_transform(0,0)).to eq([0, 0])
+        expect(state.ctm_transform(0,1)).to eq([0, 1])
+        expect(state.ctm_transform(1,0)).to eq([1, 2])
+        expect(state.ctm_transform(1,1)).to eq([1, 3])
       end
     end
 
@@ -99,10 +99,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        state.ctm_transform(0,0).should == [0, 0]
-        state.ctm_transform(0,1).should == [2, 1]
-        state.ctm_transform(1,0).should == [1, 0]
-        state.ctm_transform(1,1).should == [3, 1]
+        expect(state.ctm_transform(0,0)).to eq([0, 0])
+        expect(state.ctm_transform(0,1)).to eq([2, 1])
+        expect(state.ctm_transform(1,0)).to eq([1, 0])
+        expect(state.ctm_transform(1,1)).to eq([3, 1])
       end
     end
 
@@ -115,10 +115,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        state.ctm_transform(0,0).should == [0, 0]
-        state.ctm_transform(0,1).should == [0, 2]
-        state.ctm_transform(1,0).should == [1, 0]
-        state.ctm_transform(1,1).should == [1, 2]
+        expect(state.ctm_transform(0,0)).to eq([0, 0])
+        expect(state.ctm_transform(0,1)).to eq([0, 2])
+        expect(state.ctm_transform(1,0)).to eq([1, 0])
+        expect(state.ctm_transform(1,1)).to eq([1, 2])
       end
     end
 
@@ -131,10 +131,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        state.ctm_transform(0,0).should == [2, 0]
-        state.ctm_transform(0,1).should == [2, 1]
-        state.ctm_transform(1,0).should == [3, 0]
-        state.ctm_transform(1,1).should == [3, 1]
+        expect(state.ctm_transform(0,0)).to eq([2, 0])
+        expect(state.ctm_transform(0,1)).to eq([2, 1])
+        expect(state.ctm_transform(1,0)).to eq([3, 0])
+        expect(state.ctm_transform(1,1)).to eq([3, 1])
       end
     end
 
@@ -147,10 +147,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        state.ctm_transform(0,0).should == [0, 2]
-        state.ctm_transform(0,1).should == [0, 3]
-        state.ctm_transform(1,0).should == [1, 2]
-        state.ctm_transform(1,1).should == [1, 3]
+        expect(state.ctm_transform(0,0)).to eq([0, 2])
+        expect(state.ctm_transform(0,1)).to eq([0, 3])
+        expect(state.ctm_transform(1,0)).to eq([1, 2])
+        expect(state.ctm_transform(1,1)).to eq([1, 3])
       end
     end
 
@@ -167,10 +167,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        state.ctm_transform(0,0).should == [-10,10]
-        state.ctm_transform(0,1).should == [-11,10]
-        state.ctm_transform(1,0).should == [-10,11]
-        state.ctm_transform(1,1).should == [-11,11]
+        expect(state.ctm_transform(0,0)).to eq([-10,10])
+        expect(state.ctm_transform(0,1)).to eq([-11,10])
+        expect(state.ctm_transform(1,0)).to eq([-10,11])
+        expect(state.ctm_transform(1,1)).to eq([-11,11])
       end
     end
   end
@@ -183,10 +183,10 @@ describe PDF::Reader::PageState do
         state.begin_text_object
         state.set_text_font_and_size(:Test, 12)
 
-        state.trm_transform(0,0).should == [0,0]
-        state.trm_transform(0,1).should == [0, 12]
-        state.trm_transform(1,0).should == [12, 0]
-        state.trm_transform(1,1).should == [12, 12]
+        expect(state.trm_transform(0,0)).to eq([0,0])
+        expect(state.trm_transform(0,1)).to eq([0, 12])
+        expect(state.trm_transform(1,0)).to eq([12, 0])
+        expect(state.trm_transform(1,1)).to eq([12, 12])
       end
     end
   end
@@ -203,10 +203,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        state.trm_transform(0,0).should == [5,10]
-        state.trm_transform(0,1).should == [5, 22]
-        state.trm_transform(1,0).should == [17, 10]
-        state.trm_transform(1,1).should == [17, 22]
+        expect(state.trm_transform(0,0)).to eq([5,10])
+        expect(state.trm_transform(0,1)).to eq([5, 22])
+        expect(state.trm_transform(1,0)).to eq([17, 10])
+        expect(state.trm_transform(1,1)).to eq([17, 22])
       end
     end
   end
@@ -223,10 +223,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        state.trm_transform(0,0).should == [5, 10]
-        state.trm_transform(0,1).should == [5, 22]
-        state.trm_transform(1,0).should == [17, 10]
-        state.trm_transform(1,1).should == [17, 22]
+        expect(state.trm_transform(0,0)).to eq([5, 10])
+        expect(state.trm_transform(0,1)).to eq([5, 22])
+        expect(state.trm_transform(1,0)).to eq([17, 10])
+        expect(state.trm_transform(1,1)).to eq([17, 22])
       end
 
       it "should correctly alter the text leading" do
@@ -234,7 +234,7 @@ describe PDF::Reader::PageState do
         state.set_text_font_and_size(:Test, 12)
         state.move_text_position_and_set_leading(5, 10)
 
-        state.clone_state[:text_leading].should == -10
+        expect(state.clone_state[:text_leading]).to eq(-10)
       end
     end
   end
@@ -251,10 +251,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        state.trm_transform(0,0).should == [5, 6]
-        state.trm_transform(0,1).should == [41, 54]
-        state.trm_transform(1,0).should == [17, 30]
-        state.trm_transform(1,1).should == [53.0, 78.0]
+        expect(state.trm_transform(0,0)).to eq([5, 6])
+        expect(state.trm_transform(0,1)).to eq([41, 54])
+        expect(state.trm_transform(1,0)).to eq([17, 30])
+        expect(state.trm_transform(1,1)).to eq([53.0, 78.0])
       end
     end
   end
@@ -272,10 +272,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        state.trm_transform(0,0).should == [0, -15]
-        state.trm_transform(0,1).should == [0, -3]
-        state.trm_transform(1,0).should == [12, -15]
-        state.trm_transform(1,1).should == [12, -3]
+        expect(state.trm_transform(0,0)).to eq([0, -15])
+        expect(state.trm_transform(0,1)).to eq([0, -3])
+        expect(state.trm_transform(1,0)).to eq([12, -15])
+        expect(state.trm_transform(1,1)).to eq([12, -3])
       end
     end
   end
@@ -293,10 +293,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        state.trm_transform(0,0).should == [0, -15]
-        state.trm_transform(0,1).should == [0, -3]
-        state.trm_transform(1,0).should == [12, -15]
-        state.trm_transform(1,1).should == [12, -3]
+        expect(state.trm_transform(0,0)).to eq([0, -15])
+        expect(state.trm_transform(0,1)).to eq([0, -3])
+        expect(state.trm_transform(1,0)).to eq([12, -15])
+        expect(state.trm_transform(1,1)).to eq([12, -3])
       end
     end
   end
@@ -314,10 +314,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        state.trm_transform(0,0).should == [0, -15]
-        state.trm_transform(0,1).should == [0, -3]
-        state.trm_transform(1,0).should == [12, -15]
-        state.trm_transform(1,1).should == [12, -3]
+        expect(state.trm_transform(0,0)).to eq([0, -15])
+        expect(state.trm_transform(0,1)).to eq([0, -3])
+        expect(state.trm_transform(1,0)).to eq([12, -15])
+        expect(state.trm_transform(1,1)).to eq([12, -3])
       end
     end
   end
@@ -329,13 +329,13 @@ describe PDF::Reader::PageState do
       it "should set word spacing" do
         state.begin_text_object
         state.set_spacing_next_line_show_text(10, 20, "test")
-        state.clone_state[:word_spacing].should == 10
+        expect(state.clone_state[:word_spacing]).to eq(10)
       end
 
       it "should set character spacing" do
         state.begin_text_object
         state.set_spacing_next_line_show_text(10, 20, "test")
-        state.clone_state[:char_spacing].should == 20
+        expect(state.clone_state[:char_spacing]).to eq(20)
       end
 
       it "should correctly alter the text position" do
@@ -346,10 +346,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        state.trm_transform(0,0).should == [0, 0]
-        state.trm_transform(0,1).should == [0, 12]
-        state.trm_transform(1,0).should == [12, 0]
-        state.trm_transform(1,1).should == [12, 12]
+        expect(state.trm_transform(0,0)).to eq([0, 0])
+        expect(state.trm_transform(0,1)).to eq([0, 12])
+        expect(state.trm_transform(1,0)).to eq([12, 0])
+        expect(state.trm_transform(1,1)).to eq([12, 12])
       end
     end
   end
@@ -366,10 +366,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        state.trm_transform(0,0).should == [40, 700]
-        state.trm_transform(0,1).should == [40, 712]
-        state.trm_transform(1,0).should == [52, 700]
-        state.trm_transform(1,1).should == [52, 712]
+        expect(state.trm_transform(0,0)).to eq([40, 700])
+        expect(state.trm_transform(0,1)).to eq([40, 712])
+        expect(state.trm_transform(1,0)).to eq([52, 700])
+        expect(state.trm_transform(1,1)).to eq([52, 712])
       end
 
       context "2pt glyph width" do
@@ -381,10 +381,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 0, false)
 
-                  state.trm_transform(0,0).should == [64, 700]
-                  state.trm_transform(0,1).should == [64, 712]
-                  state.trm_transform(1,0).should == [76, 700]
-                  state.trm_transform(1,1).should == [76, 712]
+                  expect(state.trm_transform(0,0)).to eq([64, 700])
+                  expect(state.trm_transform(0,1)).to eq([64, 712])
+                  expect(state.trm_transform(1,0)).to eq([76, 700])
+                  expect(state.trm_transform(1,1)).to eq([76, 712])
                 end
               end
               context "a word boundary" do
@@ -392,10 +392,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 0, true)
 
-                  state.trm_transform(0,0).should == [64, 700]
-                  state.trm_transform(0,1).should == [64, 712]
-                  state.trm_transform(1,0).should == [76, 700]
-                  state.trm_transform(1,1).should == [76, 712]
+                  expect(state.trm_transform(0,0)).to eq([64, 700])
+                  expect(state.trm_transform(0,1)).to eq([64, 712])
+                  expect(state.trm_transform(1,0)).to eq([76, 700])
+                  expect(state.trm_transform(1,1)).to eq([76, 712])
                 end
               end
             end
@@ -405,10 +405,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 2, false)
 
-                  state.trm_transform(0,0).should == [63.976, 700]
-                  state.trm_transform(0,1).should == [63.976, 712]
-                  state.trm_transform(1,0).should == [75.976, 700]
-                  state.trm_transform(1,1).should == [75.976, 712]
+                  expect(state.trm_transform(0,0)).to eq([63.976, 700])
+                  expect(state.trm_transform(0,1)).to eq([63.976, 712])
+                  expect(state.trm_transform(1,0)).to eq([75.976, 700])
+                  expect(state.trm_transform(1,1)).to eq([75.976, 712])
                 end
               end
               context "a word boundary" do
@@ -416,10 +416,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
-                  state.trm_transform(0,0).should == [63.976, 700]
-                  state.trm_transform(0,1).should == [63.976, 712]
-                  state.trm_transform(1,0).should == [75.976, 700]
-                  state.trm_transform(1,1).should == [75.976, 712]
+                  expect(state.trm_transform(0,0)).to eq([63.976, 700])
+                  expect(state.trm_transform(0,1)).to eq([63.976, 712])
+                  expect(state.trm_transform(1,0)).to eq([75.976, 700])
+                  expect(state.trm_transform(1,1)).to eq([75.976, 712])
                 end
               end
             end
@@ -434,10 +434,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 0, false)
 
-                  state.trm_transform(0,0).should == [64, 700]
-                  state.trm_transform(0,1).should == [64, 712]
-                  state.trm_transform(1,0).should == [76, 700]
-                  state.trm_transform(1,1).should == [76, 712]
+                  expect(state.trm_transform(0,0)).to eq([64, 700])
+                  expect(state.trm_transform(0,1)).to eq([64, 712])
+                  expect(state.trm_transform(1,0)).to eq([76, 700])
+                  expect(state.trm_transform(1,1)).to eq([76, 712])
                 end
               end
               context "a word boundary" do
@@ -445,10 +445,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 0, true)
 
-                  state.trm_transform(0,0).should == [65, 700]
-                  state.trm_transform(0,1).should == [65, 712]
-                  state.trm_transform(1,0).should == [77, 700]
-                  state.trm_transform(1,1).should == [77, 712]
+                  expect(state.trm_transform(0,0)).to eq([65, 700])
+                  expect(state.trm_transform(0,1)).to eq([65, 712])
+                  expect(state.trm_transform(1,0)).to eq([77, 700])
+                  expect(state.trm_transform(1,1)).to eq([77, 712])
                 end
               end
             end
@@ -458,10 +458,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 2, false)
 
-                  state.trm_transform(0,0).should == [63.976, 700]
-                  state.trm_transform(0,1).should == [63.976, 712]
-                  state.trm_transform(1,0).should == [75.976, 700]
-                  state.trm_transform(1,1).should == [75.976, 712]
+                  expect(state.trm_transform(0,0)).to eq([63.976, 700])
+                  expect(state.trm_transform(0,1)).to eq([63.976, 712])
+                  expect(state.trm_transform(1,0)).to eq([75.976, 700])
+                  expect(state.trm_transform(1,1)).to eq([75.976, 712])
                 end
               end
               context "a word boundary" do
@@ -469,10 +469,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
-                  state.trm_transform(0,0).should == [64.976, 700]
-                  state.trm_transform(0,1).should == [64.976, 712]
-                  state.trm_transform(1,0).should == [76.976, 700]
-                  state.trm_transform(1,1).should == [76.976, 712]
+                  expect(state.trm_transform(0,0)).to eq([64.976, 700])
+                  expect(state.trm_transform(0,1)).to eq([64.976, 712])
+                  expect(state.trm_transform(1,0)).to eq([76.976, 700])
+                  expect(state.trm_transform(1,1)).to eq([76.976, 712])
                 end
               end
             end
@@ -489,10 +489,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 0, false)
 
-                  state.trm_transform(0,0).should == [65, 700]
-                  state.trm_transform(0,1).should == [65, 712]
-                  state.trm_transform(1,0).should == [77, 700]
-                  state.trm_transform(1,1).should == [77, 712]
+                  expect(state.trm_transform(0,0)).to eq([65, 700])
+                  expect(state.trm_transform(0,1)).to eq([65, 712])
+                  expect(state.trm_transform(1,0)).to eq([77, 700])
+                  expect(state.trm_transform(1,1)).to eq([77, 712])
                 end
               end
               context "a word boundary" do
@@ -500,10 +500,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 0, true)
 
-                  state.trm_transform(0,0).should == [65, 700]
-                  state.trm_transform(0,1).should == [65, 712]
-                  state.trm_transform(1,0).should == [77, 700]
-                  state.trm_transform(1,1).should == [77, 712]
+                  expect(state.trm_transform(0,0)).to eq([65, 700])
+                  expect(state.trm_transform(0,1)).to eq([65, 712])
+                  expect(state.trm_transform(1,0)).to eq([77, 700])
+                  expect(state.trm_transform(1,1)).to eq([77, 712])
                 end
               end
             end
@@ -513,10 +513,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 2, false)
 
-                  state.trm_transform(0,0).should == [64.976, 700]
-                  state.trm_transform(0,1).should == [64.976, 712]
-                  state.trm_transform(1,0).should == [76.976, 700]
-                  state.trm_transform(1,1).should == [76.976, 712]
+                  expect(state.trm_transform(0,0)).to eq([64.976, 700])
+                  expect(state.trm_transform(0,1)).to eq([64.976, 712])
+                  expect(state.trm_transform(1,0)).to eq([76.976, 700])
+                  expect(state.trm_transform(1,1)).to eq([76.976, 712])
                 end
               end
               context "a word boundary" do
@@ -524,10 +524,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
-                  state.trm_transform(0,0).should == [64.976, 700]
-                  state.trm_transform(0,1).should == [64.976, 712]
-                  state.trm_transform(1,0).should == [76.976, 700]
-                  state.trm_transform(1,1).should == [76.976, 712]
+                  expect(state.trm_transform(0,0)).to eq([64.976, 700])
+                  expect(state.trm_transform(0,1)).to eq([64.976, 712])
+                  expect(state.trm_transform(1,0)).to eq([76.976, 700])
+                  expect(state.trm_transform(1,1)).to eq([76.976, 712])
                 end
               end
             end
@@ -542,10 +542,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 0, false)
 
-                  state.trm_transform(0,0).should == [65, 700]
-                  state.trm_transform(0,1).should == [65, 712]
-                  state.trm_transform(1,0).should == [77, 700]
-                  state.trm_transform(1,1).should == [77, 712]
+                  expect(state.trm_transform(0,0)).to eq([65, 700])
+                  expect(state.trm_transform(0,1)).to eq([65, 712])
+                  expect(state.trm_transform(1,0)).to eq([77, 700])
+                  expect(state.trm_transform(1,1)).to eq([77, 712])
                 end
               end
               context "a word boundary" do
@@ -553,10 +553,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 0, true)
 
-                  state.trm_transform(0,0).should == [66, 700]
-                  state.trm_transform(0,1).should == [66, 712]
-                  state.trm_transform(1,0).should == [78, 700]
-                  state.trm_transform(1,1).should == [78, 712]
+                  expect(state.trm_transform(0,0)).to eq([66, 700])
+                  expect(state.trm_transform(0,1)).to eq([66, 712])
+                  expect(state.trm_transform(1,0)).to eq([78, 700])
+                  expect(state.trm_transform(1,1)).to eq([78, 712])
                 end
               end
             end
@@ -566,10 +566,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 2, false)
 
-                  state.trm_transform(0,0).should == [64.976, 700]
-                  state.trm_transform(0,1).should == [64.976, 712]
-                  state.trm_transform(1,0).should == [76.976, 700]
-                  state.trm_transform(1,1).should == [76.976, 712]
+                  expect(state.trm_transform(0,0)).to eq([64.976, 700])
+                  expect(state.trm_transform(0,1)).to eq([64.976, 712])
+                  expect(state.trm_transform(1,0)).to eq([76.976, 700])
+                  expect(state.trm_transform(1,1)).to eq([76.976, 712])
                 end
               end
               context "a word boundary" do
@@ -577,10 +577,10 @@ describe PDF::Reader::PageState do
                 it "should correctly alter the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
-                  state.trm_transform(0,0).should == [65.976, 700]
-                  state.trm_transform(0,1).should == [65.976, 712]
-                  state.trm_transform(1,0).should == [77.976, 700]
-                  state.trm_transform(1,1).should == [77.976, 712]
+                  expect(state.trm_transform(0,0)).to eq([65.976, 700])
+                  expect(state.trm_transform(0,1)).to eq([65.976, 712])
+                  expect(state.trm_transform(1,0)).to eq([77.976, 700])
+                  expect(state.trm_transform(1,1)).to eq([77.976, 712])
                 end
               end
             end

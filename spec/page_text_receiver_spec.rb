@@ -11,7 +11,7 @@ describe PDF::Reader::PageTextReceiver do
 
     @page.walk(@receiver)
 
-    @receiver.content.should eql("Hello James")
+    expect(@receiver.content).to eql("Hello James")
   end
 
   it "should return the text content from cairo-multiline.pdf page 1" do
@@ -21,7 +21,7 @@ describe PDF::Reader::PageTextReceiver do
 
     @page.walk(@receiver)
 
-    @receiver.content.should match(/\AHello World$.+^From James\Z/m)
+    expect(@receiver.content).to match(/\AHello World$.+^From James\Z/m)
   end
 
   it "should return the text content from Form XObjects" do
@@ -31,7 +31,7 @@ describe PDF::Reader::PageTextReceiver do
 
     @page.walk(@receiver)
 
-    @receiver.content.should eql("James Healy")
+    expect(@receiver.content).to eql("James Healy")
   end
 
   it "should return merged text content from the regular page and a Form XObjects" do
@@ -41,7 +41,7 @@ describe PDF::Reader::PageTextReceiver do
 
     @page.walk(@receiver)
 
-    @receiver.content.should match(/\AJames Healy$.+^Some regular content\Z/m)
+    expect(@receiver.content).to match(/\AJames Healy$.+^Some regular content\Z/m)
   end
 
   it "should correctly parse a page with nested Form XObjects" do
@@ -51,7 +51,7 @@ describe PDF::Reader::PageTextReceiver do
 
     @page.walk(@receiver)
 
-    @receiver.content.should eql("")
+    expect(@receiver.content).to eql("")
   end
 
   it "should correctly parse a page with nested Form XObjects" do
@@ -61,7 +61,7 @@ describe PDF::Reader::PageTextReceiver do
 
     @page.walk(@receiver)
 
-    @receiver.content.should match(/\Aone$.+^two$.+^three$.+^four\Z/m)
+    expect(@receiver.content).to match(/\Aone$.+^two$.+^three$.+^four\Z/m)
   end
 
 end

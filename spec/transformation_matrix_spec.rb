@@ -25,13 +25,13 @@ describe PDF::Reader::TransformationMatrix, "#multiply!" do
       it "should leave the values unchanged" do
         matrix_one.multiply_with_an_object!(matrix_two)
 
-        matrix_one.to_a.should == [2,3,0,  4,5,0,  6,7,1]
+        expect(matrix_one.to_a).to eq([2,3,0,  4,5,0,  6,7,1])
       end
 
       it "should leave the values unchanged when reversed" do
         matrix_two.multiply_with_an_object!(matrix_one)
 
-        matrix_two.to_a.should == [2,3,0,  4,5,0,  6,7,1]
+        expect(matrix_two.to_a).to eq([2,3,0,  4,5,0,  6,7,1])
       end
     end
 
@@ -41,13 +41,13 @@ describe PDF::Reader::TransformationMatrix, "#multiply!" do
       it "should set the new matrix values" do
         matrix_one.multiply_with_an_object!(matrix_two)
 
-        matrix_one.to_a.should == [2,3,0,  4,5,0,  16,7,1]
+        expect(matrix_one.to_a).to eq([2,3,0,  4,5,0,  16,7,1])
       end
 
       it "should set the new matrix values when reversed" do
         matrix_two.multiply_with_an_object!(matrix_one)
 
-        matrix_two.to_a.should == [2,3,0,  4,5,0,  26,37,1]
+        expect(matrix_two.to_a).to eq([2,3,0,  4,5,0,  26,37,1])
       end
     end
 
@@ -57,13 +57,13 @@ describe PDF::Reader::TransformationMatrix, "#multiply!" do
       it "should set the new matrix values" do
         matrix_one.multiply_with_an_object!(matrix_two)
 
-        matrix_one.to_a.should == [2,3,0,  4,5,0,  6,17,1]
+        expect(matrix_one.to_a).to eq([2,3,0,  4,5,0,  6,17,1])
       end
 
       it "should set the new matrix values when reversed" do
         matrix_two.multiply_with_an_object!(matrix_one)
 
-        matrix_two.to_a.should == [2,3,0,  4,5,0,  46,57,1]
+        expect(matrix_two.to_a).to eq([2,3,0,  4,5,0,  46,57,1])
       end
     end
 
@@ -73,13 +73,13 @@ describe PDF::Reader::TransformationMatrix, "#multiply!" do
       it "should set the new matrix values" do
         matrix_one.multiply_with_an_object!(matrix_two)
 
-        matrix_one.to_a.should == [2,3,0,  4,5,0,  16,17,1]
+        expect(matrix_one.to_a).to eq([2,3,0,  4,5,0,  16,17,1])
       end
 
       it "should set the new matrix values when reversed" do
         matrix_two.multiply_with_an_object!(matrix_one)
 
-        matrix_two.to_a.should == [2,3,0,  4,5,0,  66,87,1]
+        expect(matrix_two.to_a).to eq([2,3,0,  4,5,0,  66,87,1])
       end
     end
 
@@ -89,13 +89,13 @@ describe PDF::Reader::TransformationMatrix, "#multiply!" do
       it "should set the new matrix values" do
         matrix_one.multiply_with_an_object!(matrix_two)
 
-        matrix_one.to_a.should == [20,3,0,  40,5,0,  60,7,1]
+        expect(matrix_one.to_a).to eq([20,3,0,  40,5,0,  60,7,1])
       end
 
       it "should set the new matrix values when reversed" do
         matrix_two.multiply_with_an_object!(matrix_one)
 
-        matrix_two.to_a.should == [20,30,0,  4,5,0,  6,7,1]
+        expect(matrix_two.to_a).to eq([20,30,0,  4,5,0,  6,7,1])
       end
     end
 
@@ -105,13 +105,13 @@ describe PDF::Reader::TransformationMatrix, "#multiply!" do
       it "should set the new matrix values" do
         matrix_one.multiply_with_an_object!(matrix_two)
 
-        matrix_one.to_a.should == [2,30,0,  4,50,0,  6,70,1]
+        expect(matrix_one.to_a).to eq([2,30,0,  4,50,0,  6,70,1])
       end
 
       it "should set the new matrix values when reversed" do
         matrix_two.multiply_with_an_object!(matrix_one)
 
-        matrix_two.to_a.should == [2,3,0,  40,50,0,  6,7,1]
+        expect(matrix_two.to_a).to eq([2,3,0,  40,50,0,  6,7,1])
       end
     end
 
@@ -121,13 +121,13 @@ describe PDF::Reader::TransformationMatrix, "#multiply!" do
       it "should set the new matrix values" do
         matrix_one.multiply_with_an_object!(matrix_two)
 
-        matrix_one.to_a.should == [20,30,0,  40,50,0,  60,70,1]
+        expect(matrix_one.to_a).to eq([20,30,0,  40,50,0,  60,70,1])
       end
 
       it "should set the new matrix values when reversed" do
         matrix_two.multiply_with_an_object!(matrix_one)
 
-        matrix_two.to_a.should == [20,30,0,  40,50,0,  6,7,1]
+        expect(matrix_two.to_a).to eq([20,30,0,  40,50,0,  6,7,1])
       end
     end
 
@@ -144,24 +144,24 @@ describe PDF::Reader::TransformationMatrix, "#multiply!" do
         matrix_one.multiply_with_an_object!(matrix_two)
 
         # we can't use #to_a in this test because of all the floating point nums
-        ( "%.3f" % matrix_one.a).should ==  "3.273"
-        ( "%.3f" % matrix_one.b).should == "-1.513"
-        ( "%.3f" % matrix_one.c).should ==  "5.557"
-        ( "%.3f" % matrix_one.d).should == "-3.181"
-        ( "%.3f" % matrix_one.e).should ==  "7.842"
-        ( "%.3f" % matrix_one.f).should == "-4.848"
+        expect( "%.3f" % matrix_one.a).to eq("3.273")
+        expect( "%.3f" % matrix_one.b).to eq("-1.513")
+        expect( "%.3f" % matrix_one.c).to eq("5.557")
+        expect( "%.3f" % matrix_one.d).to eq("-3.181")
+        expect( "%.3f" % matrix_one.e).to eq("7.842")
+        expect( "%.3f" % matrix_one.f).to eq("-4.848")
       end
 
       it "should set the new matrix values when reversed" do
         matrix_two.multiply_with_an_object!(matrix_one)
 
         # we can't use #to_a in this test because of all the floating point nums
-        ( "%.3f" % matrix_two.a).should == "-3.644"
-        ( "%.3f" % matrix_two.b).should == "-4.477"
-        ( "%.3f" % matrix_two.c).should ==  "2.593"
-        ( "%.3f" % matrix_two.d).should ==  "3.735"
-        ( "%.3f" % matrix_two.e).should ==  "6.000"
-        ( "%.3f" % matrix_two.f).should ==  "7.000"
+        expect( "%.3f" % matrix_two.a).to eq("-3.644")
+        expect( "%.3f" % matrix_two.b).to eq("-4.477")
+        expect( "%.3f" % matrix_two.c).to eq("2.593")
+        expect( "%.3f" % matrix_two.d).to eq("3.735")
+        expect( "%.3f" % matrix_two.e).to eq("6.000")
+        expect( "%.3f" % matrix_two.f).to eq("7.000")
       end
     end
   end
@@ -178,7 +178,7 @@ describe PDF::Reader::TransformationMatrix, "#horizontal_displacement_multiply!"
       it "should set the new matrix values" do
         matrix_one.horizontal_displacement_multiply!(displacement)
 
-        matrix_one.to_a.should == [2,3,0,  4,5,0,  16,7,1]
+        expect(matrix_one.to_a).to eq([2,3,0,  4,5,0,  16,7,1])
       end
 
     end

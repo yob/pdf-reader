@@ -10,7 +10,7 @@ describe PDF::Reader::PageLayout, "#to_s" do
       subject { PDF::Reader::PageLayout.new([], mediabox)}
 
       it "should return a correct string" do
-        subject.to_s.should == ""
+        expect(subject.to_s).to eq("")
       end
     end
     context "with one word" do
@@ -22,7 +22,7 @@ describe PDF::Reader::PageLayout, "#to_s" do
       subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
       it "should return a correct string" do
-        subject.to_s.should == "Hello"
+        expect(subject.to_s).to eq("Hello")
       end
     end
     context "with one run directly below another" do
@@ -35,7 +35,7 @@ describe PDF::Reader::PageLayout, "#to_s" do
       subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
       it "should return a correct string" do
-        subject.to_s.should == "Hello\nWorld"
+        expect(subject.to_s).to eq("Hello\nWorld")
       end
     end
     context "with one two words on one line, separated by a font size gap" do
@@ -48,7 +48,7 @@ describe PDF::Reader::PageLayout, "#to_s" do
       subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
       it "should return a correct string" do
-        subject.to_s.should == "Hello World"
+        expect(subject.to_s).to eq("Hello World")
       end
     end
 
@@ -62,7 +62,7 @@ describe PDF::Reader::PageLayout, "#to_s" do
       subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
       it "should return a correct string" do
-        subject.to_s.should == "Hello World"
+        expect(subject.to_s).to eq("Hello World")
       end
     end
 
@@ -76,7 +76,7 @@ describe PDF::Reader::PageLayout, "#to_s" do
       subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
       it "should return a correct string" do
-        subject.to_s.should == "Hello  World"
+        expect(subject.to_s).to eq("Hello  World")
       end
     end
 
@@ -90,7 +90,7 @@ describe PDF::Reader::PageLayout, "#to_s" do
       subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
       it "should return a correct string" do
-        subject.to_s.should == "Hello\n World"
+        expect(subject.to_s).to eq("Hello\n World")
       end
     end
 
@@ -104,7 +104,7 @@ describe PDF::Reader::PageLayout, "#to_s" do
       subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
       it "should return a correct string" do
-        subject.to_s.should == " Hello\nWorld"
+        expect(subject.to_s).to eq(" Hello\nWorld")
       end
     end
 
@@ -118,7 +118,7 @@ describe PDF::Reader::PageLayout, "#to_s" do
       subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
       it "should return a correct string" do
-        subject.to_s.should == "Hello\n\nWorld"
+        expect(subject.to_s).to eq("Hello\n\nWorld")
       end
     end
   end

@@ -10,7 +10,7 @@ describe PDF::Reader, "column specs" do
 
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
-        page.text.should =~ /Some Headline/
+        expect(page.text).to match(/Some Headline/)
       end
     end
     it "should correctly extract the first few lines" do
@@ -19,12 +19,12 @@ describe PDF::Reader, "column specs" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
         ft = page.text
-        ft.should =~ /ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu/
-        ft.should =~ /Lorem ipsum dolor sit amet, consectetur adipisic -\s+adipisicing elit, sed do eiusmod tempor incididunt/
-        ft.should =~ /ing elit, sed do eiusmod tempor incididunt ut labore\s+ut labore et dolore magna aliqua. Ut enim ad minim/
-        ft.should =~ /et dolore magna aliqua. Ut enim ad minim veniam,\s+veniam, quis nostrud exercitation ullamco laboris/
-        ft.should =~ /quis nostrud exercitation ullamco laboris nisi ut\s+nisi ut aliquip ex ea commodo consequat. Duis aute/
-        ft.should =~ /aliquip ex ea commodo consequat. Duis aute irure\s+irure dolor in reprehenderit in voluptate velit esse/
+        expect(ft).to match(/ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu/)
+        expect(ft).to match(/Lorem ipsum dolor sit amet, consectetur adipisic -\s+adipisicing elit, sed do eiusmod tempor incididunt/)
+        expect(ft).to match(/ing elit, sed do eiusmod tempor incididunt ut labore\s+ut labore et dolore magna aliqua. Ut enim ad minim/)
+        expect(ft).to match(/et dolore magna aliqua. Ut enim ad minim veniam,\s+veniam, quis nostrud exercitation ullamco laboris/)
+        expect(ft).to match(/quis nostrud exercitation ullamco laboris nisi ut\s+nisi ut aliquip ex ea commodo consequat. Duis aute/)
+        expect(ft).to match(/aliquip ex ea commodo consequat. Duis aute irure\s+irure dolor in reprehenderit in voluptate velit esse/)
       end
     end
 
@@ -42,11 +42,11 @@ describe PDF::Reader, "column specs" do
         match_pos_4 = find_position_of_match(ft, /nisi ut aliquip ex ea commodo consequat. Duis aute$/)
         match_pos_5 = find_position_of_match(ft, /irure dolor in reprehenderit in voluptate velit esse$/)
 
-        match_pos_1.should_not be_nil
-        match_pos_1.should eql(match_pos_2)
-        match_pos_1.should eql(match_pos_3)
-        match_pos_1.should eql(match_pos_4)
-        match_pos_1.should eql(match_pos_5)
+        expect(match_pos_1).not_to be_nil
+        expect(match_pos_1).to eql(match_pos_2)
+        expect(match_pos_1).to eql(match_pos_3)
+        expect(match_pos_1).to eql(match_pos_4)
+        expect(match_pos_1).to eql(match_pos_5)
       end
     end
   end
@@ -64,10 +64,10 @@ describe PDF::Reader, "column specs" do
         col1_3   = find_position_of_match(ft, /^sint occaecat cupidatat non proi -/)
         col1_4   = find_position_of_match(ft, /^dent, sunt in culpa qui officia de-/)
 
-        col1_1.should_not be_nil
-        col1_1.should eql(col1_2)
-        col1_1.should eql(col1_3)
-        col1_1.should eql(col1_4)
+        expect(col1_1).not_to be_nil
+        expect(col1_1).to eql(col1_2)
+        expect(col1_1).to eql(col1_3)
+        expect(col1_1).to eql(col1_4)
       end
     end
     it "should correctly align text in column 2" do
@@ -82,10 +82,10 @@ describe PDF::Reader, "column specs" do
         col2_3   = find_position_of_match(ft, /mollit anim id est laborum. Lo -\s*adipisicing/)
         col2_4   = find_position_of_match(ft, /rem ipsum dolor sit amet, con -\s*tempor/)
 
-        col2_1.should_not be_nil
-        col2_1.should eql(col2_2)
-        col2_1.should eql(col2_3)
-        col2_1.should eql(col2_4)
+        expect(col2_1).not_to be_nil
+        expect(col2_1).to eql(col2_2)
+        expect(col2_1).to eql(col2_3)
+        expect(col2_1).to eql(col2_4)
       end
     end
 
@@ -101,10 +101,10 @@ describe PDF::Reader, "column specs" do
         col3_a_3 = find_position_of_match(ft, /adipisicing elit, sed do eiusmod$/)
         col3_a_4 = find_position_of_match(ft, /tempor incididunt ut labore et$/)
 
-        col3_a_1.should_not be_nil
-        col3_a_1.should eql(col3_a_2)
-        col3_a_1.should eql(col3_a_3)
-        col3_a_1.should eql(col3_a_4)
+        expect(col3_a_1).not_to be_nil
+        expect(col3_a_1).to eql(col3_a_2)
+        expect(col3_a_1).to eql(col3_a_3)
+        expect(col3_a_1).to eql(col3_a_4)
       end
     end
 
@@ -120,10 +120,10 @@ describe PDF::Reader, "column specs" do
         col3_b_3 = find_position_of_match(ft, /\s{10}quis nostrud exercitation$/)
         col3_b_4 = find_position_of_match(ft, /\s{10}ullamco laboris nisi ut$/)
 
-        col3_b_1.should_not be_nil
-        col3_b_1.should eql(col3_b_2)
-        col3_b_1.should eql(col3_b_3)
-        col3_b_1.should eql(col3_b_4)
+        expect(col3_b_1).not_to be_nil
+        expect(col3_b_1).to eql(col3_b_2)
+        expect(col3_b_1).to eql(col3_b_3)
+        expect(col3_b_1).to eql(col3_b_4)
       end
     end
   end

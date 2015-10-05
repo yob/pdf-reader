@@ -63,7 +63,7 @@ describe PDF::Reader do
         receiver.all_args(:page_count).each do |args|
           assert_equal 1, args.size
           assert args[0].is_a?(Fixnum)
-          (args[0] > 0).should  be_true
+          expect(args[0] > 0).to  be_truthy
         end
 
       end
