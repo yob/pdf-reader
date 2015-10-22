@@ -13,6 +13,20 @@ describe PDF::Reader::PageLayout, "#to_s" do
         subject.to_s.should == ""
       end
     end
+
+    context "with only blank word(s)" do
+      let!(:runs) do
+        [
+          PDF::Reader::TextRun.new(30, 700, 50, 12, "")
+        ]
+      end
+      subject { PDF::Reader::PageLayout.new(runs, mediabox)}
+
+      it "should return a correct string" do
+        subject.to_s.should == ""
+      end
+    end
+
     context "with one word" do
       let!(:runs) do
         [
