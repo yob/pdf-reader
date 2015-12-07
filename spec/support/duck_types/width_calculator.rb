@@ -5,6 +5,6 @@
 
 shared_examples "a WidthCalculator duck type" do
   it "should implement the glyph_width method" do
-    subject.should respond_to(:glyph_width)
+    expect(subject).to respond_to(:glyph_width)
   end
 end

@@ -11,8 +11,8 @@ describe PDF::Reader::Stream do
     io    = File.new(pdf_spec_file("pdfwriter-manual"))
     ohash = PDF::Reader::ObjectHash.new(io)
     obj   = ohash.object(PDF::Reader::Reference.new(7, 0))
-    obj.should be_a_kind_of(PDF::Reader::Stream)
-    obj.unfiltered_data.should eql(binary_string(decoded_stream))
+    expect(obj).to be_a_kind_of(PDF::Reader::Stream)
+    expect(obj.unfiltered_data).to eql(binary_string(decoded_stream))
   end
 
   it "should be able to decode streams that use FlateDecode with something funny about them"
@@ -90,7 +90,7 @@ EOF
       ohash = PDF::Reader::ObjectHash.new(io)
       ref   = PDF::Reader::Reference.new(30,0)
       obj   = ohash.object(ref)
-      lambda { obj.unfiltered_data }.should raise_error(PDF::Reader::MalformedPDFError)
+      expect { obj.unfiltered_data }.to raise_error(PDF::Reader::MalformedPDFError)
 
       # TODO: resolve why the zlib shippedwith ruby can't decompress this stream correctly
       #       then replace the the above raise_error check with the following 2 checks

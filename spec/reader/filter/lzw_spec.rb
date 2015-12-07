@@ -7,7 +7,7 @@ describe PDF::Reader::Filter::Lzw do
     filter = PDF::Reader::Filter::Lzw.new
     compressed_data   = binread(File.dirname(__FILE__) + "/../../data/lzw_compressed.dat")
     decompressed_data = binread(File.dirname(__FILE__) + "/../../data/lzw_decompressed.dat")
-    filter.filter(compressed_data).should eql(decompressed_data)
+    expect(filter.filter(compressed_data)).to eql(decompressed_data)
   end
 
 end

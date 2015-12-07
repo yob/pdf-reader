@@ -14,9 +14,9 @@ describe PDF::Reader::WidthCalculator::BuiltIn, "#initialize" do
     let!(:font)        { double(:basefont => :Helvetica) }
 
     it "should initialize with no errors" do
-      lambda {
+      expect {
         PDF::Reader::WidthCalculator::BuiltIn.new(font)
-      }.should_not raise_error
+      }.not_to raise_error
     end
   end
 
@@ -24,9 +24,9 @@ describe PDF::Reader::WidthCalculator::BuiltIn, "#initialize" do
     let!(:font)        { double(:basefont => :Foo) }
 
     it "should raise an error" do
-      lambda {
+      expect {
         PDF::Reader::WidthCalculator::BuiltIn.new(font)
-      }.should raise_error(ArgumentError)
+      }.to raise_error(ArgumentError)
     end
   end
 end
