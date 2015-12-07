@@ -7,16 +7,16 @@ describe PDF::Reader::Parser do
   include EncodingHelper
 
   it "should parse a name correctly" do
-    parse_string("/James").parse_token.should eql(:James)
-    parse_string("/A;Name_With-Various***Characters?").parse_token.should eql(:"A;Name_With-Various***Characters?")
-    parse_string("/1.2").parse_token.should eql(:"1.2")
-    parse_string("/$$").parse_token.should eql(:"$$")
-    parse_string("/@pattern").parse_token.should eql(:"@pattern")
-    parse_string("/.notdef").parse_token.should eql(:".notdef")
-    parse_string("/James#20Healy").parse_token.should eql(:"James Healy")
-    parse_string("/James#23Healy").parse_token.should eql(:"James#Healy")
-    parse_string("/Ja#6des").parse_token.should eql(:"James")
-    parse_string("/Ja#6des").parse_token.should eql(:"James")
+    expect(parse_string("/James").parse_token).to eql(:James)
+    expect(parse_string("/A;Name_With-Various***Characters?").parse_token).to eql(:"A;Name_With-Various***Characters?")
+    expect(parse_string("/1.2").parse_token).to eql(:"1.2")
+    expect(parse_string("/$$").parse_token).to eql(:"$$")
+    expect(parse_string("/@pattern").parse_token).to eql(:"@pattern")
+    expect(parse_string("/.notdef").parse_token).to eql(:".notdef")
+    expect(parse_string("/James#20Healy").parse_token).to eql(:"James Healy")
+    expect(parse_string("/James#23Healy").parse_token).to eql(:"James#Healy")
+    expect(parse_string("/Ja#6des").parse_token).to eql(:"James")
+    expect(parse_string("/Ja#6des").parse_token).to eql(:"James")
   end
 
   # '/' is a valid PDF name, but :"" is only a valid ruby symbol in 1.9
@@ -25,65 +25,65 @@ describe PDF::Reader::Parser do
   # Names as a syntax error
   if RUBY_VERSION >= "1.9"
     it "should parse an empty name correctly" do
-      parse_string("/").parse_token.should eql("".to_sym)
+      expect(parse_string("/").parse_token).to eql("".to_sym)
       parser = parse_string("/\n/")
-      parser.parse_token.should eql("".to_sym)
-      parser.parse_token.should eql("".to_sym)
+      expect(parser.parse_token).to eql("".to_sym)
+      expect(parser.parse_token).to eql("".to_sym)
     end
 
     it "should parse two empty names correctly" do
       parser = parse_string("/ /")
-      parser.parse_token.should eql("".to_sym)
-      parser.parse_token.should eql("".to_sym)
+      expect(parser.parse_token).to eql("".to_sym)
+      expect(parser.parse_token).to eql("".to_sym)
     end
   else
     it "should parse an empty name correctly" do
-      parse_string("/").parse_token.should eql(:" ")
+      expect(parse_string("/").parse_token).to eql(:" ")
       parser = parse_string("/\n/")
-      parser.parse_token.should eql(:" ")
-      parser.parse_token.should eql(:" ")
+      expect(parser.parse_token).to eql(:" ")
+      expect(parser.parse_token).to eql(:" ")
     end
 
     it "should parse two empty names correctly" do
       parser = parse_string("/ /")
-      parser.parse_token.should eql(:" ")
-      parser.parse_token.should eql(:" ")
+      expect(parser.parse_token).to eql(:" ")
+      expect(parser.parse_token).to eql(:" ")
     end
   end
 
   it "should parse booleans correctly" do
-    parse_string("true").parse_token.should be_true
-    parse_string("false").parse_token.should be_false
+    expect(parse_string("true").parse_token).to be_true
+    expect(parse_string("false").parse_token).to be_false
   end
 
   it "should parse null and nil correctly" do
-    parse_string("").parse_token.should be_nil
-    parse_string("null").parse_token.should be_nil
+    expect(parse_string("").parse_token).to be_nil
+    expect(parse_string("null").parse_token).to be_nil
   end
 
   it "should parse a string correctly" do
-    parse_string("()").parse_token.should eql("")
-    parse_string("(this is a string)").parse_token.should eql("this is a string")
-    parse_string("(this \\n is a string)").parse_token.should eql("this \n is a string")
-    parse_string("(x \\t x)").parse_token.should eql("x \t x")
-    parse_string("(x \\101 x)").parse_token.should eql("x A x")
-    parse_string("(x \\61 x)").parse_token.should eql("x 1 x")
-    parse_string("(x \\1 x)").parse_token.should eql("x \x01 x")
-    parse_string("(x \\( x)").parse_token.should eql("x ( x")
-    parse_string("((x)))").parse_token.should eql("(x)")
-    parse_string("(Adobe)").parse_token.should eql("Adobe")
-    parse_string("(!\"%1)").parse_token.should eql("!\"%1")
-    parse_string("(James\\ Healy)").parse_token.should eql("James Healy")
-    parse_string("(x\nx)").parse_token.should eql("x\nx")
-    parse_string("(x\rx)").parse_token.should eql("x\nx")
-    parse_string("(x\r\nx)").parse_token.should eql("x\nx")
-    parse_string("(x\\rx)").parse_token.should eql("x\rx")
-    parse_string("(\\rx)").parse_token.should eql("\rx")
-    parse_string("(\\r)").parse_token.should eql("\r")
-    parse_string("(x\n\rx)").parse_token.should eql("x\nx")
-    parse_string("(x \\\nx)").parse_token.should eql("x x")
-    parse_string("(\\\\f)").parse_token.should eql("\\f")
-    parse_string("([test])").parse_token.should eql("[test]")
+    expect(parse_string("()").parse_token).to eql("")
+    expect(parse_string("(this is a string)").parse_token).to eql("this is a string")
+    expect(parse_string("(this \\n is a string)").parse_token).to eql("this \n is a string")
+    expect(parse_string("(x \\t x)").parse_token).to eql("x \t x")
+    expect(parse_string("(x \\101 x)").parse_token).to eql("x A x")
+    expect(parse_string("(x \\61 x)").parse_token).to eql("x 1 x")
+    expect(parse_string("(x \\1 x)").parse_token).to eql("x \x01 x")
+    expect(parse_string("(x \\( x)").parse_token).to eql("x ( x")
+    expect(parse_string("((x)))").parse_token).to eql("(x)")
+    expect(parse_string("(Adobe)").parse_token).to eql("Adobe")
+    expect(parse_string("(!\"%1)").parse_token).to eql("!\"%1")
+    expect(parse_string("(James\\ Healy)").parse_token).to eql("James Healy")
+    expect(parse_string("(x\nx)").parse_token).to eql("x\nx")
+    expect(parse_string("(x\rx)").parse_token).to eql("x\nx")
+    expect(parse_string("(x\r\nx)").parse_token).to eql("x\nx")
+    expect(parse_string("(x\\rx)").parse_token).to eql("x\rx")
+    expect(parse_string("(\\rx)").parse_token).to eql("\rx")
+    expect(parse_string("(\\r)").parse_token).to eql("\r")
+    expect(parse_string("(x\n\rx)").parse_token).to eql("x\nx")
+    expect(parse_string("(x \\\nx)").parse_token).to eql("x x")
+    expect(parse_string("(\\\\f)").parse_token).to eql("\\f")
+    expect(parse_string("([test])").parse_token).to eql("[test]")
   end
 
   it "should parse a Unicode string correctly" do
@@ -115,62 +115,62 @@ describe PDF::Reader::Parser do
     seq.each_value do |(src, exp)|
       src = binary_string("(#{bom}#{src})")
       exp = binary_string("#{bom}#{exp}")
-      parse_string(src).parse_token.should eql(exp)
+      expect(parse_string(src).parse_token).to eql(exp)
     end
 
     mixed = [ seq[:straddle_seq_5c6e], seq[:char_5c08], seq[:char_5c0a], seq[:char_5c02], seq[:char_contain_0a] ]
     mixed_src = binary_string("(" + bom + mixed.map {|x| x[0]}.join + ")")
     mixed_exp = binary_string(bom + mixed.map {|x| x[1]}.join)
-    parse_string(mixed_src).parse_token.should eql(mixed_exp)
+    expect(parse_string(mixed_src).parse_token).to eql(mixed_exp)
   end
 
   it "should not leave the closing literal string delimiter in the buffer after parsing a string" do
     parser = parse_string("(this is a string) /James")
-    parser.parse_token.should eql("this is a string")
-    parser.parse_token.should eql(:James)
+    expect(parser.parse_token).to eql("this is a string")
+    expect(parser.parse_token).to eql(:James)
   end
 
   it "should parse a hex string correctly" do
-    parse_string("<48656C6C6F>").parse_token.should eql("Hello")
+    expect(parse_string("<48656C6C6F>").parse_token).to eql("Hello")
   end
 
   it "should ignore whitespace when parsing a hex string" do
-    parse_string("<48656C6C6F20\n4A616D6573>").parse_token.should eql("Hello James")
+    expect(parse_string("<48656C6C6F20\n4A616D6573>").parse_token).to eql("Hello James")
   end
 
   it "should parse dictionary with embedded hex string correctly" do
     dict = parse_string("<< /X <48656C6C6F> >>").parse_token
-    dict.size.should eql(1)
-    dict[:X].should eql("Hello")
+    expect(dict.size).to eql(1)
+    expect(dict[:X]).to eql("Hello")
   end
 
   it "should parse various dictionaries correctly" do
     str = "<< /Registry (Adobe) /Ordering (Japan1) /Supplement 5 >>"
     dict = parse_string(str).parse_token
 
-    dict.size.should eql(3)
-    dict[:Registry].should    eql("Adobe")
-    dict[:Ordering].should    eql("Japan1")
-    dict[:Supplement].should  eql(5)
+    expect(dict.size).to eql(3)
+    expect(dict[:Registry]).to    eql("Adobe")
+    expect(dict[:Ordering]).to    eql("Japan1")
+    expect(dict[:Supplement]).to  eql(5)
   end
 
   it "should parse dictionary with extra space ok" do
     str = "<<\r\n/Type /Pages\r\n/Count 3\r\n/Kids [ 25 0 R 27 0 R]\r\n                                                      \r\n>>"
     dict = parse_string(str).parse_token
-    dict.size.should == 3
+    expect(dict.size).to eq(3)
   end
 
   it "should parse an array correctly" do
-    parse_string("[ 10 0 R 12 0 R ]").parse_token.size.should eql(2)
+    expect(parse_string("[ 10 0 R 12 0 R ]").parse_token.size).to eql(2)
   end
 
   it "should parse numbers correctly" do
     parser = parse_string("1 2 -3 4.5 -5")
-    parser.parse_token.should eql( 1)
-    parser.parse_token.should eql( 2)
-    parser.parse_token.should eql(-3)
-    parser.parse_token.should eql( 4.5)
-    parser.parse_token.should eql(-5)
+    expect(parser.parse_token).to eql( 1)
+    expect(parser.parse_token).to eql( 2)
+    expect(parser.parse_token).to eql(-3)
+    expect(parser.parse_token).to eql( 4.5)
+    expect(parser.parse_token).to eql(-5)
   end
 
 end
