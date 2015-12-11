@@ -7,8 +7,3 @@ rvm:
   - 2.3.0-preview1
   - rbx-19mode
   - jruby-19mode
-
-matrix:
-  allow_failures:
-    - rvm: 2.2
-    - rvm: 2.3.0-preview1

@@ -21,8 +21,8 @@ module EncodingHelper
         check_utf8(value)
       }
     when String
-      assert_equal Encoding.find("utf-8"), obj.encoding
-      assert obj.valid_encoding?
+      expect(obj.encoding).to eq Encoding.find("utf-8")
+      expect(obj.valid_encoding?).to eq true
     else
       return
     end
@@ -43,8 +43,8 @@ module EncodingHelper
         check_utf8(value)
       }
     when String
-      assert_equal obj.encoding, Encoding.find("binary")
-      assert obj.valid_encoding?
+      expect(obj.encoding).to eq Encoding.find("binary")
+      expect(obj.valid_encoding?).to eq true
     else
       return
     end
