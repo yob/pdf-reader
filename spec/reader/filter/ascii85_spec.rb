@@ -6,12 +6,12 @@ describe PDF::Reader::Filter::Ascii85 do
   it "should filter a ASCII85 stream correctly" do
     filter = PDF::Reader::Filter::Ascii85.new
     encoded_data = Ascii85::encode("Ruby")
-    filter.filter(encoded_data).should eql("Ruby")
+    expect(filter.filter(encoded_data)).to eql("Ruby")
   end
 
   it "should filter a ASCII85 stream missing <~ correctly" do
     filter = PDF::Reader::Filter::Ascii85.new
     encoded_data = Ascii85::encode("Ruby")[2,100]
-    filter.filter(encoded_data).should eql("Ruby")
+    expect(filter.filter(encoded_data)).to eql("Ruby")
   end
 end

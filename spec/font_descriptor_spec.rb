@@ -27,30 +27,30 @@ describe PDF::Reader::FontDescriptor, "initialisation" do
   subject        { PDF::Reader::FontDescriptor.new(objects, dict)}
 
   it "should set the correct instance vars" do
-    subject.ascent.should            == 10
-    subject.descent.should           == 10
-    subject.missing_width.should     == 500
-    subject.font_bounding_box.should == [0,0, 10, 10]
-    subject.avg_width.should         == 40
-    subject.cap_height.should        == 30
-    subject.font_flags.should        == 1
-    subject.italic_angle.should      == 0
-    subject.font_name.should         == "Helvetica"
-    subject.leading.should           == 0
-    subject.max_width.should         == 500
-    subject.stem_v.should            == 0
-    subject.x_height.should          == 0
-    subject.font_stretch.should      == :Condensed
-    subject.font_weight.should       == 500
-    subject.font_family.should       == :BoldItalic
+    expect(subject.ascent).to            eq(10)
+    expect(subject.descent).to           eq(10)
+    expect(subject.missing_width).to     eq(500)
+    expect(subject.font_bounding_box).to eq([0,0, 10, 10])
+    expect(subject.avg_width).to         eq(40)
+    expect(subject.cap_height).to        eq(30)
+    expect(subject.font_flags).to        eq(1)
+    expect(subject.italic_angle).to      eq(0)
+    expect(subject.font_name).to         eq("Helvetica")
+    expect(subject.leading).to           eq(0)
+    expect(subject.max_width).to         eq(500)
+    expect(subject.stem_v).to            eq(0)
+    expect(subject.x_height).to          eq(0)
+    expect(subject.font_stretch).to      eq(:Condensed)
+    expect(subject.font_weight).to       eq(500)
+    expect(subject.font_family).to       eq(:BoldItalic)
   end
 
 end
 
 describe PDF::Reader::FontDescriptor, "#glyph_width" do
-  pending
+  skip
 end
 
 describe PDF::Reader::FontDescriptor, "#glyph_to_pdf_scale_factor" do
-  pending
+  skip
 end
