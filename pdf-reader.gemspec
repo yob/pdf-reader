@@ -27,7 +27,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency("morecane")
   spec.add_development_dependency("ir_b")
   spec.add_development_dependency("rdoc")
-  spec.add_development_dependency("minitest")
 
   spec.add_dependency('Ascii85', '~> 1.0.0')
   spec.add_dependency('ruby-rc4')
