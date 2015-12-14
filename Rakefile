@@ -1,12 +1,8 @@
-require "rubygems"
-require "bundler"
-Bundler.setup
-
-require 'yaml'
-require 'rake'
-require 'rdoc/task'
-require 'rspec/core/rake_task'
-require 'digest/md5'
+require "bundler/gem_tasks"
+require "digest/md5"
+require "rdoc/task"
+require "rspec/core/rake_task"
+require "yaml"
 
 # Cane requires ripper, which appears to only work on MRI 1.9
 if RUBY_VERSION >= "1.9" && RUBY_ENGINE == "ruby"
@@ -32,7 +28,7 @@ else
 end
 
 desc "Run all rspec files"
-RSpec::Core::RakeTask.new("spec") do |t|
+RSpec::Core::RakeTask.new(:spec) do |t|
   t.rspec_opts  = ["--color", "--format progress"]
   t.ruby_opts = "-w"
 end

@@ -13,18 +13,18 @@ describe PDF::Reader::ObjectStream, "[] method" do
     stream = PDF::Reader::Stream.new(@hash, @data)
     obj_stream = PDF::Reader::ObjectStream.new(stream)
 
-    obj_stream[29].should be_a_kind_of(::Hash)
-    obj_stream[30].should be_a_kind_of(::Hash)
+    expect(obj_stream[29]).to be_a_kind_of(::Hash)
+    expect(obj_stream[30]).to be_a_kind_of(::Hash)
 
-    obj_stream[29][:Type].should eql(:StructTreeRoot)
-    obj_stream[30][:S].should eql(:Document)
+    expect(obj_stream[29][:Type]).to eql(:StructTreeRoot)
+    expect(obj_stream[30][:S]).to eql(:Document)
   end
 
   it "should return nil for objects it doesn't contain" do
     stream = PDF::Reader::Stream.new(@hash, @data)
     obj_stream = PDF::Reader::ObjectStream.new(stream)
 
-    obj_stream[1].should be_nil
+    expect(obj_stream[1]).to be_nil
   end
 
 end
@@ -40,7 +40,7 @@ describe PDF::Reader::ObjectStream, "size method" do
     stream = PDF::Reader::Stream.new(@hash, @data)
     obj_stream = PDF::Reader::ObjectStream.new(stream)
 
-    obj_stream.size.should eql(2)
+    expect(obj_stream.size).to eql(2)
   end
 
 end

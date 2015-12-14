@@ -21,9 +21,9 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">=1.9.3"
 
   spec.add_development_dependency("rake")
-  spec.add_development_dependency("rspec", "~>2.3")
-  spec.add_development_dependency("ZenTest", "~>4.4.2")
-  spec.add_development_dependency("cane", "~>2.2.3")
+  spec.add_development_dependency("rspec", "~> 3.4")
+  spec.add_development_dependency("ZenTest", "~> 4.4.2")
+  spec.add_development_dependency("cane", "~> 2.6")
   spec.add_development_dependency("morecane")
   spec.add_development_dependency("ir_b")
   spec.add_development_dependency("rdoc")

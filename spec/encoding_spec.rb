@@ -6,15 +6,15 @@ describe PDF::Reader::Encoding, "initialisation" do
 
   context "when the encoding is unrecognised" do
     it "should return a new encoding object" do
-      PDF::Reader::Encoding.new("FakeEncoding").should be_a_kind_of(PDF::Reader::Encoding)
-      PDF::Reader::Encoding.new(nil).should be_a_kind_of(PDF::Reader::Encoding)
+      expect(PDF::Reader::Encoding.new("FakeEncoding")).to be_a_kind_of(PDF::Reader::Encoding)
+      expect(PDF::Reader::Encoding.new(nil)).to be_a_kind_of(PDF::Reader::Encoding)
     end
   end
 
   context "when the encoding is WinAnsi" do
     it "should return a new encoding object" do
       win =  {:Encoding => :WinAnsiEncoding}
-      PDF::Reader::Encoding.new(win).should  be_a_kind_of(PDF::Reader::Encoding)
+      expect(PDF::Reader::Encoding.new(win)).to  be_a_kind_of(PDF::Reader::Encoding)
     end
   end
 
@@ -25,12 +25,12 @@ describe PDF::Reader::Encoding, "initialisation" do
                                )
     end
     it "should return a new encoding object" do
-      enc.should be_a_kind_of(PDF::Reader::Encoding)
+      expect(enc).to be_a_kind_of(PDF::Reader::Encoding)
     end
     it "should record the differences" do
-      enc.differences.should be_a_kind_of(Hash)
-      enc.differences[25].should eql(:A)
-      enc.differences[26].should eql(:B)
+      expect(enc.differences).to be_a_kind_of(Hash)
+      expect(enc.differences[25]).to eql(:A)
+      expect(enc.differences[26]).to eql(:B)
     end
   end
 
@@ -41,12 +41,12 @@ describe PDF::Reader::Encoding, "initialisation" do
                                )
     end
     it "should return a new encoding object" do
-      enc.should be_a_kind_of(PDF::Reader::Encoding)
+      expect(enc).to be_a_kind_of(PDF::Reader::Encoding)
     end
     it "should record the differences" do
-      enc.differences.should be_a_kind_of(Hash)
-      enc.differences[25].should eql(:A)
-      enc.differences[26].should eql(:B)
+      expect(enc.differences).to be_a_kind_of(Hash)
+      expect(enc.differences[25]).to eql(:A)
+      expect(enc.differences[26]).to eql(:B)
     end
   end
 
@@ -61,11 +61,10 @@ describe PDF::Reader::Encoding, "#to_utf8" do
                                )
     end
     it "should convert recognised characters from the differences to utf-8" do
-      pending
-      enc.to_utf8("\001").should eql("A")
+      expect(enc.to_utf8("\001")).to eql("A")
     end
     it "should convert unknown characters with 'unknown char'" do
-      enc.to_utf8("\002").should eql("▯")
+      expect(enc.to_utf8("\002")).to eql("▯")
     end
   end
 
@@ -79,11 +78,11 @@ describe PDF::Reader::Encoding, "#to_utf8" do
       ].each do |vals|
         result = e.to_utf8(vals[:expert])
         if RUBY_VERSION >= "1.9"
-          result.encoding.to_s.should eql("UTF-8")
+          expect(result.encoding.to_s).to eql("UTF-8")
           vals[:utf8].force_encoding("UTF-8")
         end
 
-        result.should eql(vals[:utf8])
+        expect(result).to eql(vals[:utf8])
       end
     end
   end
@@ -99,11 +98,11 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         result = e.to_utf8(vals[:expert])
 
         if RUBY_VERSION >= "1.9"
-          result.encoding.to_s.should eql("UTF-8")
+          expect(result.encoding.to_s).to eql("UTF-8")
           vals[:utf8].force_encoding("UTF-8")
         end
 
-        result.should eql(vals[:utf8])
+        expect(result).to eql(vals[:utf8])
       end
     end
   end
@@ -120,11 +119,11 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         result = e.to_utf8(vals[:expert])
 
         if RUBY_VERSION >= "1.9"
-          result.encoding.to_s.should eql("UTF-8")
+          expect(result.encoding.to_s).to eql("UTF-8")
           vals[:utf8].force_encoding("UTF-8")
         end
 
-        result.should eql(vals[:utf8])
+        expect(result).to eql(vals[:utf8])
       end
     end
   end
@@ -139,11 +138,11 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         result = e.to_utf8(vals[:mac])
 
         if RUBY_VERSION >= "1.9"
-          result.encoding.to_s.should eql("UTF-8")
+          expect(result.encoding.to_s).to eql("UTF-8")
           vals[:utf8].force_encoding("UTF-8")
         end
 
-        result.should eql(vals[:utf8])
+        expect(result).to eql(vals[:utf8])
 
       end
     end
@@ -162,10 +161,10 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         {:mac => "\xFD", :utf8 => "\xCB\x9D"}      # ˝ sign
       ].each do |vals|
         result = e.to_utf8(vals[:mac])
-        result.should eql(vals[:utf8])
+        expect(result).to eql(vals[:utf8])
 
         if RUBY_VERSION >= "1.9"
-          result.encoding.to_s.should eql("UTF-8")
+          expect(result.encoding.to_s).to eql("UTF-8")
         end
       end
     end
@@ -182,11 +181,11 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         result = e.to_utf8(vals[:mac])
 
         if RUBY_VERSION >= "1.9"
-          result.encoding.to_s.should eql("UTF-8")
+          expect(result.encoding.to_s).to eql("UTF-8")
           vals[:utf8].force_encoding("UTF-8")
         end
 
-        result.should eql(vals[:utf8])
+        expect(result).to eql(vals[:utf8])
 
       end
     end
@@ -204,11 +203,11 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         result = e.to_utf8(vals[:pdf])
 
         if RUBY_VERSION >= "1.9"
-          result.encoding.to_s.should eql("UTF-8")
+          expect(result.encoding.to_s).to eql("UTF-8")
           vals[:utf8].force_encoding("UTF-8")
         end
 
-        result.should eql(vals[:utf8])
+        expect(result).to eql(vals[:utf8])
       end
     end
   end
@@ -223,11 +222,11 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         result = e.to_utf8(vals[:pdf])
 
         if RUBY_VERSION >= "1.9"
-          result.encoding.to_s.should eql("UTF-8")
+          expect(result.encoding.to_s).to eql("UTF-8")
           vals[:utf8].force_encoding("UTF-8")
         end
 
-        result.should eql(vals[:utf8])
+        expect(result).to eql(vals[:utf8])
 
       end
     end
@@ -247,11 +246,11 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         result = e.to_utf8(vals[:standard])
 
         if RUBY_VERSION >= "1.9"
-          result.encoding.to_s.should eql("UTF-8")
+          expect(result.encoding.to_s).to eql("UTF-8")
           vals[:utf8].force_encoding("UTF-8")
         end
 
-        result.should eql(vals[:utf8])
+        expect(result).to eql(vals[:utf8])
 
       end
     end
@@ -267,11 +266,11 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         result = e.to_utf8(vals[:std])
 
         if RUBY_VERSION >= "1.9"
-          result.encoding.to_s.should eql("UTF-8")
+          expect(result.encoding.to_s).to eql("UTF-8")
           vals[:utf8].force_encoding("UTF-8")
         end
 
-        result.should eql(vals[:utf8])
+        expect(result).to eql(vals[:utf8])
 
       end
     end
@@ -289,11 +288,11 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         result = e.to_utf8(vals[:symbol])
 
         if RUBY_VERSION >= "1.9"
-          result.encoding.to_s.should eql("UTF-8")
+          expect(result.encoding.to_s).to eql("UTF-8")
           vals[:utf8].force_encoding("UTF-8")
         end
 
-        result.should eql(vals[:utf8])
+        expect(result).to eql(vals[:utf8])
 
       end
     end
@@ -309,11 +308,11 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         result = e.to_utf8(vals[:symbol])
 
         if RUBY_VERSION >= "1.9"
-          result.encoding.to_s.should eql("UTF-8")
+          expect(result.encoding.to_s).to eql("UTF-8")
           vals[:utf8].force_encoding("UTF-8")
         end
 
-        result.should eql(vals[:utf8])
+        expect(result).to eql(vals[:utf8])
 
       end
     end
@@ -332,10 +331,10 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         {:win => "\x9F", :utf8 => "\xC5\xB8"}      # Ÿ sign
       ].each do |vals|
         result = e.to_utf8(vals[:win])
-        result.should eql(vals[:utf8])
+        expect(result).to eql(vals[:utf8])
 
         if RUBY_VERSION >= "1.9"
-          result.encoding.to_s.should eql("UTF-8")
+          expect(result.encoding.to_s).to eql("UTF-8")
         end
       end
     end
@@ -351,10 +350,10 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         {:win => "ABC\xEE", :utf8 => "ABCA"}
       ].each do |vals|
         result = e.to_utf8(vals[:win])
-        result.should eql(vals[:utf8])
+        expect(result).to eql(vals[:utf8])
 
         if RUBY_VERSION >= "1.9"
-          result.encoding.to_s.should eql("UTF-8")
+          expect(result.encoding.to_s).to eql("UTF-8")
         end
       end
     end
@@ -371,11 +370,11 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         result = e.to_utf8(vals[:dingbats])
 
         if RUBY_VERSION >= "1.9"
-          result.encoding.to_s.should eql("UTF-8")
+          expect(result.encoding.to_s).to eql("UTF-8")
           vals[:utf8].force_encoding("UTF-8")
         end
 
-        result.should eql(vals[:utf8])
+        expect(result).to eql(vals[:utf8])
 
       end
     end
@@ -391,11 +390,11 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         result = e.to_utf8(vals[:dingbats])
 
         if RUBY_VERSION >= "1.9"
-          result.encoding.to_s.should eql("UTF-8")
+          expect(result.encoding.to_s).to eql("UTF-8")
           vals[:utf8].force_encoding("UTF-8")
         end
 
-        result.should eql(vals[:utf8])
+        expect(result).to eql(vals[:utf8])
 
       end
     end
@@ -413,11 +412,11 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         result = e.to_utf8(vals[:utf16])
 
         if RUBY_VERSION >= "1.9"
-          result.encoding.to_s.should eql("UTF-8")
+          expect(result.encoding.to_s).to eql("UTF-8")
           vals[:utf8].force_encoding("UTF-8")
         end
 
-        result.should eql(vals[:utf8])
+        expect(result).to eql(vals[:utf8])
       end
     end
   end
@@ -430,7 +429,7 @@ describe PDF::Reader::Encoding, "#int_to_utf8_string" do
       PDF::Reader::Encoding.new(:Encoding => :WinAnsiEncoding)
     }
     it "should convert a int glyph code to the relevant utf-8 string" do
-      enc.int_to_utf8_string(65).should == "A"
+      expect(enc.int_to_utf8_string(65)).to eq("A")
     end
   end
 end
