@@ -7,3 +7,5 @@ rvm:
   - 2.3.0-preview1
   - rbx-19mode
   - jruby-19mode
+before_install:
+  - gem update bundler
