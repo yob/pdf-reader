@@ -1,3 +1,11 @@
+v1.4.0 (22nd February 2016)
+- raise minimum ruby version to 1.9.3
+- print warnings to stderr when deprecated methods are used. These methods have been
+  deprecated for 4 years, so hopefully few people are depending on them
+- Fix exception when a npn-breakng space (character 160) is used with a
+  built-in fint (helvetica, etc)
+- various bug fixes
+
 v1.3.3 (7th April 2013)
 - various bug fixes
 
