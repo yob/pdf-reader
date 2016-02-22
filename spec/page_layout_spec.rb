@@ -23,7 +23,7 @@ describe PDF::Reader::PageLayout, "#to_s" do
       subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
       it "should return a correct string" do
-        subject.to_s.should == ""
+        expect(subject.to_s).to eq("")
       end
     end
 
