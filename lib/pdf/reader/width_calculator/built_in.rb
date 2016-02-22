@@ -27,6 +27,8 @@ class PDF::Reader
       def glyph_width(code_point)
         return 0 if code_point.nil? || code_point < 0
 
+        code_point = 32 if code_point == 160
+
         m = @metrics.char_metrics_by_code[code_point]
         if m.nil?
           names = @font.encoding.int_to_name(code_point)
