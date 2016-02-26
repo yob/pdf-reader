@@ -46,5 +46,9 @@ describe PDF::Reader::WidthCalculator::BuiltIn, "#glyph_width" do
     it "should return width 0 for code point 160(non breaking space)" do
       expect(width_calculator.glyph_width(160)).to eq(0)
     end
+
+    it "should return width 0 for code point 157(unknown)" do
+      expect(width_calculator.glyph_width(157)).to eq(0)
+    end
   end
 end
