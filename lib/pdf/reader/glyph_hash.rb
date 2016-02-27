@@ -90,7 +90,7 @@ class PDF::Reader
     #   => :34
     #
     def unicode_to_name(codepoint)
-      @by_codepoint[codepoint.to_i]
+      @by_codepoint[codepoint.to_i] || []
     end
 
     private
