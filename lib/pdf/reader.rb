@@ -91,7 +91,7 @@ module PDF
   #       else
   #         paragraph += " #{line}"
   #         paragraphs << paragraph
-  #         paragraph == ""
+  #         paragraph = ""
   #       end
   #     end
   #   end
