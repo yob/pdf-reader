@@ -31,10 +31,6 @@ class PDF::Reader
         if m.nil?
           names = @font.encoding.int_to_name(code_point)
 
-          if names.nil?
-            return 0
-          end
-
           m = names.map { |name|
             @metrics.char_metrics[name.to_s]
           }.compact.first
