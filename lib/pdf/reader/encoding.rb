@@ -112,7 +112,7 @@ class PDF::Reader
     # convert an integer glyph code into an Adobe glyph name.
     #
     #     int_to_name(65)
-    #     => :A
+    #     => [:A]
     #
     def int_to_name(glyph_code)
       if @enc_name == "Identity-H" || @enc_name == "Identity-V"

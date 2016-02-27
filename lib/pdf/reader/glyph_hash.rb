@@ -81,16 +81,16 @@ class PDF::Reader
     #   h = GlyphHash.new
     #
     #   h.unicode_to_name(65)
-    #   => :A
+    #   => [:A]
     #
     #   h.unicode_to_name(8364)
-    #   => :Euro
+    #   => [:Euro]
     #
     #   h.unicode_to_name(34)
-    #   => :34
+    #   => [:34]
     #
     def unicode_to_name(codepoint)
-      @by_codepoint[codepoint.to_i]
+      @by_codepoint[codepoint.to_i] || []
     end
 
     private

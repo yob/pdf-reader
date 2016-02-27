@@ -69,5 +69,6 @@ describe PDF::Reader::GlyphHash, "#unicode_to_name" do
     )
     expect(map.unicode_to_name(0x20AC)).to eql([:Euro, :euro])
     expect(map.unicode_to_name(0x30BA)).to eql([:zukatakana])
+    expect(map.unicode_to_name(157)).to eql([])
   end
 end
