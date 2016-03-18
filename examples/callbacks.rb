@@ -9,12 +9,13 @@
 require 'rubygems'
 require 'pdf/reader'
 
-receiver = PDF::Reader::RegisterReceiver.new
 filename = File.expand_path(File.dirname(__FILE__)) + "/../spec/data/cairo-basic.pdf"
 
 PDF::Reader.open(filename) do |reader|
   reader.pages.each do |page|
+    receiver = PDF::Reader::RegisterReceiver.new
     page.walk(receiver)
+    
     receiver.callbacks.each do |cb|
       puts cb
     end
