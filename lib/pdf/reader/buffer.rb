@@ -227,7 +227,7 @@ class PDF::Reader
 
       buffer = []
 
-      until buffer[0] =~ /\s/ && buffer[1, 2] == ["E", "I"]
+      until buffer[0] =~ /\s|\0/ && buffer[1, 2] == ["E", "I"]
         chr = @io.read(1)
         buffer << chr
 
@@ -236,7 +236,9 @@ class PDF::Reader
         end
       end
 
-      @tokens << string_token(str.strip)
+      str << "\x00" if buffer.first == "\x00"
+
+      @tokens << string_token(str)
       @io.seek(-3, IO::SEEK_CUR) unless chr.nil?
     end
 
