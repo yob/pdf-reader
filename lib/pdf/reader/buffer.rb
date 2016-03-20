@@ -45,6 +45,7 @@ class PDF::Reader
     STREAM = "stream"
     ID = "ID"
     FWD_SLASH = "/"
+    NULL_BYTE = "\x00"
 
     attr_reader :pos
 
@@ -236,7 +237,7 @@ class PDF::Reader
         end
       end
 
-      str << "\x00" if buffer.first == "\x00"
+      str << NULL_BYTE if buffer.first == NULL_BYTE
 
       @tokens << string_token(str)
       @io.seek(-3, IO::SEEK_CUR) unless chr.nil?
