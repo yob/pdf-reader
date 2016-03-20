@@ -369,6 +369,17 @@ describe PDF::Reader::Buffer, "token method" do
     expect(buf.token).to eql("EI")
   end
 
+  it "should correctly tokenise an inline image with no whitespace before the letters 'EI'" do
+    io = StringIO.new(binary_string("BI ID aaa bbb ccc \xF0\xF0\xF0\x00EI"))
+    buf = PDF::Reader::Buffer.new(io, :content_stream => true)
+
+    expect(buf.pos).to eql(0)
+    expect(buf.token).to eql("BI")
+    expect(buf.token).to eql("ID")
+    expect(buf.token).to eql(binary_string("aaa bbb ccc \xF0\xF0\xF0\x00"))
+    expect(buf.token).to eql("EI")
+  end
+
   it "should correctly tokenise a hash that has ID as a key" do
     io = StringIO.new("<</ID /S1 >> BDC")
     buf = PDF::Reader::Buffer.new(io, :content_stream => true)

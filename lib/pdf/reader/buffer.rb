@@ -45,6 +45,7 @@ class PDF::Reader
     STREAM = "stream"
     ID = "ID"
     FWD_SLASH = "/"
+    NULL_BYTE = "\x00"
 
     attr_reader :pos
 
@@ -227,7 +228,7 @@ class PDF::Reader
 
       buffer = []
 
-      until buffer[0] =~ /\s/ && buffer[1, 2] == ["E", "I"]
+      until buffer[0] =~ /\s|\0/ && buffer[1, 2] == ["E", "I"]
         chr = @io.read(1)
         buffer << chr
 
@@ -236,7 +237,9 @@ class PDF::Reader
         end
       end
 
-      @tokens << string_token(str.strip)
+      str << NULL_BYTE if buffer.first == NULL_BYTE
+
+      @tokens << string_token(str)
       @io.seek(-3, IO::SEEK_CUR) unless chr.nil?
     end
 
