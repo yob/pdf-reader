@@ -316,7 +316,7 @@ class PDF::Reader
 
       if obj[:Type] == :Page
         ref
-      elsif obj[:Type] == :Pages
+      elsif obj[:Kids]
         deref(obj[:Kids]).map { |kid| get_page_objects(kid) }
       end
     end
