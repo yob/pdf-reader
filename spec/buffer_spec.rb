@@ -43,6 +43,7 @@ describe PDF::Reader::Buffer, "token method" do
     expect(buf.token).to eql("[")
     expect(buf.token).to eql("{")
     expect(buf.token).to eql("/")
+    expect(buf.token).to eql("")  # auto adds empty name token
     expect(buf.token).to eql("(")
     expect(buf.token).to eql(")") # auto adds closing literal string delim
     expect(buf.token).to be_nil
@@ -103,6 +104,18 @@ describe PDF::Reader::Buffer, "token method" do
     expect(buf.token).to eql("")
     expect(buf.token).to eql("/")
     expect(buf.token).to eql("")
+    expect(buf.token).to be_nil
+  end
+
+  it "should correctly tokenize dict with an empty name" do
+    buf = parse_string("<</V/>>")
+
+    expect(buf.token).to eql("<<")
+    expect(buf.token).to eql("/")
+    expect(buf.token).to eql("V")
+    expect(buf.token).to eql("/")
+    expect(buf.token).to eql("")
+    expect(buf.token).to eql(">>")
     expect(buf.token).to be_nil
   end
 
