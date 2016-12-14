@@ -14,7 +14,7 @@ module PDF
 
       SPACE = " "
 
-      attr_reader :state, :content, :options
+      attr_reader :state, :options
 
       ########## BEGIN FORWARDERS ##########
       # Graphics State Operators
