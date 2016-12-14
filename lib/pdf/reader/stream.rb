@@ -37,7 +37,7 @@ class PDF::Reader
     ################################################################################
     # Creates a new stream with the specified dictionary and data. The dictionary
     # should be a standard ruby hash, the data should be a standard ruby string.
-    def initialize (hash, data)
+    def initialize(hash, data)
       @hash = hash
       @data = data
       @udata = nil

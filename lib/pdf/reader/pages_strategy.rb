@@ -282,7 +282,7 @@ class PDF::Reader
     ################################################################################
     # Walk over all pages in the PDF file, calling the appropriate callbacks for each page and all
     # its content
-    def walk_pages (page)
+    def walk_pages(page)
 
       # extract page content
       if page[:Type] == :Pages
@@ -351,7 +351,7 @@ class PDF::Reader
     # Reads a PDF content stream and calls all the appropriate callback methods for the operators
     # it contains
     #
-    def content_stream (instructions, fonts = {})
+    def content_stream(instructions, fonts = {})
       instructions = [instructions] unless instructions.kind_of?(Array)
       instructions = instructions.map { |ins|
         ins.is_a?(PDF::Reader::Stream) ? ins.unfiltered_data : ins.to_s

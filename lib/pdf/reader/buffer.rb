@@ -61,7 +61,7 @@ class PDF::Reader
     #   :content_stream - set to true if buffer will be tokenising a
     #                     content stream. Defaults to false
     #
-    def initialize (io, opts = {})
+    def initialize(io, opts = {})
       @io = io
       @tokens = []
       @in_content_stream = opts[:content_stream]

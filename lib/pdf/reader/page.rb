@@ -155,7 +155,7 @@ module PDF
 
       # calls the name callback method on each receiver object with params as the arguments
       #
-      def callback (receivers, name, params=[])
+      def callback(receivers, name, params=[])
         receivers.each do |receiver|
           receiver.send(name, *params) if receiver.respond_to?(name)
         end

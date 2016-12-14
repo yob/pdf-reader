@@ -33,7 +33,7 @@ class PDF::Reader
   class Token < String # :nodoc:
     ################################################################################
     # Creates a new token with the specified value
-    def initialize (val)
+    def initialize(val)
       super
     end
     ################################################################################

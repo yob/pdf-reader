@@ -29,19 +29,19 @@ class PDF::Reader
   # are valid
   class Error # :nodoc:
     ################################################################################
-    def self.str_assert (lvalue, rvalue, chars=nil)
+    def self.str_assert(lvalue, rvalue, chars=nil)
       raise MalformedPDFError, "PDF malformed, expected string but found #{lvalue.class} instead" if chars and !lvalue.kind_of?(String)
       lvalue = lvalue[0,chars] if chars
       raise MalformedPDFError, "PDF malformed, expected '#{rvalue}' but found #{lvalue} instead"  if lvalue != rvalue
     end
     ################################################################################
-    def self.str_assert_not (lvalue, rvalue, chars=nil)
+    def self.str_assert_not(lvalue, rvalue, chars=nil)
       raise MalformedPDFError, "PDF malformed, expected string but found #{lvalue.class} instead" if chars and !lvalue.kind_of?(String)
       lvalue = lvalue[0,chars] if chars
       raise MalformedPDFError, "PDF malformed, expected '#{rvalue}' but found #{lvalue} instead"  if lvalue == rvalue
     end
     ################################################################################
-    def self.assert_equal (lvalue, rvalue)
+    def self.assert_equal(lvalue, rvalue)
       raise MalformedPDFError, "PDF malformed, expected #{rvalue} but found #{lvalue} instead" if lvalue != rvalue
     end
     ################################################################################

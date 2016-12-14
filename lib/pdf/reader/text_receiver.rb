@@ -39,13 +39,13 @@ class PDF::Reader
   class TextReceiver
     ################################################################################
     # Initialize with the library user's receiver
-    def initialize (main_receiver)
+    def initialize(main_receiver)
       @main_receiver = main_receiver
       @upper_corners = []
     end
     ################################################################################
     # Called when the document parsing begins
-    def begin_document (root)
+    def begin_document(root)
       @upper_corners = []
     end
     ################################################################################
@@ -54,7 +54,7 @@ class PDF::Reader
       @state.clear
     end
     ################################################################################
-    def begin_page_container (page)
+    def begin_page_container(page)
       @upper_corners.push(media_box_check(page))
     end
     ################################################################################
@@ -63,7 +63,7 @@ class PDF::Reader
     end
     ################################################################################
     # Called when new page parsing begins
-    def begin_page (info)
+    def begin_page(info)
       @page = info
 
       @state = [{
@@ -101,29 +101,29 @@ class PDF::Reader
     end
     ################################################################################
     # PDF operator Tm
-    def set_text_matrix_and_text_line_matrix (*args)
+    def set_text_matrix_and_text_line_matrix(*args)
       # these variable names look bad, but they're from the PDF spec
       a, b, c, d, e, f = *args
       calculate_line_and_location(f)
     end
     ################################################################################
     # PDF operator Tc
-    def set_character_spacing (n)
+    def set_character_spacing(n)
       @state.last[:char_spacing] = n
     end
     ################################################################################
     # PDF operator Tw
-    def set_word_spacing (n)
+    def set_word_spacing(n)
       @state.last[:word_spacing] = n
     end
     ################################################################################
     # PDF operator Tz
-    def set_horizontal_text_scaling (n)
+    def set_horizontal_text_scaling(n)
       @state.last[:hori_scaling] = n/100
     end
     ################################################################################
     # PDF operator TL
-    def set_text_leading (n)
+    def set_text_leading(n)
       @state.last[:leading] = n
     end
     ################################################################################
@@ -133,19 +133,19 @@ class PDF::Reader
     end
     ################################################################################
     # PDF operator Td
-    def move_text_position (tx, ty)
+    def move_text_position(tx, ty)
       #puts "#{tx} #{ty} Td"
       calculate_line_and_location(@location + ty)
     end
     ################################################################################
     # PDF operator TD
-    def move_text_position_and_set_leading (tx, ty)
+    def move_text_position_and_set_leading(tx, ty)
       set_text_leading(ty)# * -1)
       move_text_position(tx, ty)
     end
     ################################################################################
     # PDF operator Tj
-    def show_text (string)
+    def show_text(string)
       #puts "getting line #@line"
 
       place = (@output[@line] ||= "")
@@ -157,7 +157,7 @@ class PDF::Reader
       #puts "place is now: #{place}"
       @written_to = true
     end
-    def super_show_text (string)
+    def super_show_text(string)
       urx = @upper_corners.last[:urx]/TS_UNITS_PER_H_CHAR
       ury = @upper_corners.last[:ury]/TS_UNITS_PER_V_CHAR
 
@@ -193,7 +193,7 @@ class PDF::Reader
     end
     ################################################################################
     # PDF operator TJ
-    def show_text_with_positioning (params)
+    def show_text_with_positioning(params)
       prev_adjustment = @state.last[:tj_adjustment]
 
       params.each do |p|
@@ -209,19 +209,19 @@ class PDF::Reader
     end
     ################################################################################
     # PDF operator '
-    def move_to_next_line_and_show_text (string)
+    def move_to_next_line_and_show_text(string)
       move_to_start_of_next_line
       show_text(string)
     end
     ################################################################################
     # PDF operator "
-    def set_spacing_next_line_show_text (aw, ac, string)
+    def set_spacing_next_line_show_text(aw, ac, string)
       set_word_spacing(aw)
       set_character_spacing(ac)
       move_to_next_line_and_show_text(string)
     end
     ################################################################################
-    def media_box_check (dict)
+    def media_box_check(dict)
       corners = (@upper_corners.last || {:urx => 0, :ury => 0}).dup
 
       if dict.has_key?(:MediaBox)
@@ -233,7 +233,7 @@ class PDF::Reader
       corners
     end
     ################################################################################
-    def calculate_line_and_location (new_loc)
+    def calculate_line_and_location(new_loc)
       ##puts "calculate_line_and_location(#{new_loc})"
       key = new_loc; key.freeze
 

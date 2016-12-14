@@ -32,7 +32,7 @@ class PDF::Reader
     attr_reader :id, :gen
     ################################################################################
     # Create a new Reference to an object with the specified id and revision number
-    def initialize (id, gen)
+    def initialize(id, gen)
       @id, @gen = id, gen
     end
     ################################################################################
