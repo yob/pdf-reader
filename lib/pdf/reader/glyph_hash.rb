@@ -105,7 +105,7 @@ class PDF::Reader
       RUBY_VERSION >= "1.9" ? mode = "r:BINARY" : mode = "r"
       File.open(File.dirname(__FILE__) + "/glyphlist.txt", mode) do |f|
         f.each do |l|
-          m, name, code = *l.match(/([0-9A-Za-z]+);([0-9A-F]{4})/)
+          _m, name, code = *l.match(/([0-9A-Za-z]+);([0-9A-F]{4})/)
           if name && code
             cp = "0x#{code}".hex
             keyed_by_name[name.to_sym]   = cp

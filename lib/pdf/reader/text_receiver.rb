@@ -103,7 +103,7 @@ class PDF::Reader
     # PDF operator Tm
     def set_text_matrix_and_text_line_matrix(*args)
       # these variable names look bad, but they're from the PDF spec
-      a, b, c, d, e, f = *args
+      _a, _b, _c, _d, _e, f = *args
       calculate_line_and_location(f)
     end
     ################################################################################

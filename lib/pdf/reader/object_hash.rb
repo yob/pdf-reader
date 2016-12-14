@@ -323,7 +323,7 @@ class PDF::Reader
 
     def read_version
       @io.seek(0)
-      m, version = *@io.read(10).match(/PDF-(\d.\d)/)
+      _m, version = *@io.read(10).match(/PDF-(\d.\d)/)
       @io.seek(0)
       version.to_f
     end
