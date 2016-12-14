@@ -68,11 +68,11 @@ class PDF::Reader
 
     # Convert a glyph code into one or more Codepoints.
     #
-    # Returns an array of Fixnums.
+    # Returns an array of Integers.
     #
     def decode(c)
       # TODO: implement the conversion
-      return c unless c.class == Fixnum
+      return c unless Integer === c
       @map[c]
     end
 

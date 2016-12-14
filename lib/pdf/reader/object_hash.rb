@@ -78,7 +78,7 @@ class PDF::Reader
 
       if @cache.has_key?(key)
         @cache[key]
-      elsif xref[key].is_a?(Fixnum)
+      elsif xref[key].is_a?(Integer)
         buf = new_buffer(xref[key])
         @cache[key] = decrypt(key, Parser.new(buf, self).object(key.id, key.gen))
       elsif xref[key].is_a?(PDF::Reader::Reference)
