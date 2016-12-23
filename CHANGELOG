@@ -1,3 +1,7 @@
+v1.4.1 (XXX)
+- improve compatability with ruby 2.4 (thanks Akira Matsuda)
+- various bug fixes
+
 v1.4.0 (22nd February 2016)
 - raise minimum ruby version to 1.9.3
 - print warnings to stderr when deprecated methods are used. These methods have been
