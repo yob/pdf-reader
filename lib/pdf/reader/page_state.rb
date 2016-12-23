@@ -327,7 +327,6 @@ class PDF::Reader
           glyph_width = ((w0 - (tj/1000.0)) * fs) * th
           tx = glyph_width + ((tc + tw) * th)
         end
-        ty = 0
 
         # TODO: I'm pretty sure that tx shouldn't need to be divided by
         #       ctm[0] here, but this gets my tests green and I'm out of

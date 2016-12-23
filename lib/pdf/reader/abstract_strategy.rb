@@ -23,7 +23,7 @@ class PDF::Reader
 
     # calls the name callback method on the receiver class with params as the arguments
     #
-    def callback (name, params=[])
+    def callback(name, params=[])
       @receivers.each do |receiver|
         receiver.send(name, *params) if receiver.respond_to?(name)
       end

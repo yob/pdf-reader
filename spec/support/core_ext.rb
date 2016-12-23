@@ -3,5 +3,5 @@
 class Array
   def to_h
     Hash[*self.flatten]
-  end
+  end unless defined? :to_h
 end

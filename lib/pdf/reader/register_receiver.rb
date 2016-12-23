@@ -64,7 +64,6 @@ class PDF::Reader
 
       indexes = (0..(callbacks.size-1))
       method_indexes = (0..(methods.size-1))
-      match = nil
 
       indexes.each do |idx|
         count = methods.size

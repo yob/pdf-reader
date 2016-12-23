@@ -285,7 +285,7 @@ module PDF
     #
     # Given an IO object that contains PDF data, return the contents of a single object
     #
-    def object (io, id, gen)
+    def object(io, id, gen)
       msg  = "PDF::Reader#object is deprecated and will be removed in the 2.0 release"
       $stderr.puts(msg)
       @objects = ObjectHash.new(io)

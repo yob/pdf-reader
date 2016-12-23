@@ -53,7 +53,7 @@ class PDF::Reader
     #
     # io - must be an IO object, generally either a file or a StringIO
     #
-    def initialize (io)
+    def initialize(io)
       @io = io
       @junk_offset = calc_junk_offset(io) || 0
       @xref = {}
@@ -219,7 +219,7 @@ class PDF::Reader
     ################################################################################
     # Stores an offset value for a particular PDF object ID and revision number
     #
-    def store (id, gen, offset)
+    def store(id, gen, offset)
       (@xref[id] ||= {})[gen] ||= offset
     end
     ################################################################################

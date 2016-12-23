@@ -21,7 +21,7 @@ describe PDF::Reader::ObjectHash do
   end
 
   it "should raise an ArgumentError if passed a non filename and non IO" do
-    filename = pdf_spec_file("cairo-unicode")
+    pdf_spec_file("cairo-unicode")
      expect {PDF::Reader::ObjectHash.new(10)}.to raise_error(ArgumentError)
   end
 
@@ -342,9 +342,6 @@ describe PDF::Reader::ObjectHash, "trailer method" do
     filename = pdf_spec_file("cairo-unicode")
     h = PDF::Reader::ObjectHash.new(filename)
 
-    expected = {:Size => 58,
-                :Root => PDF::Reader::Reference.new(57,0),
-                :Info => PDF::Reader::Reference.new(56,0)}
     expect(h.trailer[:Size]).to eql(58)
     expect(h.trailer[:Root]).to eql(PDF::Reader::Reference.new(57,0))
     expect(h.trailer[:Info]).to eql(PDF::Reader::Reference.new(56,0))

@@ -210,7 +210,7 @@ class PDF::Reader
       RUBY_VERSION >= "1.9" ? mode = "r:BINARY" : mode = "r"
       File.open(file, mode) do |f|
         f.each do |l|
-          m, single_byte, unicode = *l.match(/([0-9A-Za-z]+);([0-9A-F]{4})/)
+          _m, single_byte, unicode = *l.match(/([0-9A-Za-z]+);([0-9A-F]{4})/)
           @mapping["0x#{single_byte}".hex] = "0x#{unicode}".hex if single_byte
         end
       end
