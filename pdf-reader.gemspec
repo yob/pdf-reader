@@ -22,7 +22,6 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency("rake")
   spec.add_development_dependency("rspec", "~> 3.4")
-  spec.add_development_dependency("ZenTest", "~> 4.4.2")
   spec.add_development_dependency("cane", "~> 3.0")
   spec.add_development_dependency("morecane")
   spec.add_development_dependency("ir_b")
