@@ -2,7 +2,7 @@
 
 module EncodingHelper
   def binary_string(str)
-    str = str.force_encoding("binary") if str.respond_to?(:force_encoding)
+    str = str.force_encoding("binary")
     str
   end
 

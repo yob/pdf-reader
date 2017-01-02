@@ -127,7 +127,7 @@ module PDF
         nil
       else
         xml = stream.unfiltered_data
-        xml.force_encoding("utf-8") if xml.respond_to?(:force_encoding)
+        xml.force_encoding("utf-8")
         xml
       end
     end
@@ -226,7 +226,7 @@ module PDF
     # TODO find a PDF I can use to spec this behaviour
     #
     def pdfdoc_to_utf8(obj)
-      obj.force_encoding("utf-8") if obj.respond_to?(:force_encoding)
+      obj.force_encoding("utf-8")
       obj
     end
 
@@ -236,7 +236,7 @@ module PDF
     def utf16_to_utf8(obj)
       str = obj[2, obj.size]
       str = str.unpack("n*").pack("U*")
-      str.force_encoding("utf-8") if str.respond_to?(:force_encoding)
+      str.force_encoding("utf-8")
       str
     end
 
