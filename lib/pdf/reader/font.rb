@@ -48,12 +48,6 @@ class PDF::Reader
       @encoding ||= PDF::Reader::Encoding.new(:StandardEncoding)
     end
 
-    def basefont=(font)
-      $stderr.puts "Font#basefont= is deprecated and will be removed in the 2.0 release"
-      @encoding ||= default_encoding(font)
-      @basefont = font
-    end
-
     def to_utf8(params)
       if @tounicode
         to_utf8_via_cmap(params)
