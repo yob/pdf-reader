@@ -46,6 +46,7 @@ class PDF::Reader
       when :CCITTFaxDecode  then PDF::Reader::Filter::Null.new(options)
       when :DCTDecode       then PDF::Reader::Filter::Null.new(options)
       when :FlateDecode     then PDF::Reader::Filter::Flate.new(options)
+      when :Fl              then PDF::Reader::Filter::Flate.new(options)
       when :JBIG2Decode     then PDF::Reader::Filter::Null.new(options)
       when :JPXDecode       then PDF::Reader::Filter::Null.new(options)
       when :LZWDecode       then PDF::Reader::Filter::Lzw.new(options)
