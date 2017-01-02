@@ -17,8 +17,6 @@ class PDF::Reader
       @page_width  = mediabox[2] - mediabox[0]
       @page_height = mediabox[3] - mediabox[1]
       @x_offset = @runs.map(&:x).sort.first
-      @current_platform_is_rbx_19 = RUBY_DESCRIPTION =~ /\Arubinius 2.0.0/ &&
-                                      RUBY_VERSION >= "1.9.0"
     end
 
     def to_s
@@ -110,21 +108,8 @@ class PDF::Reader
       runs
     end
 
-    # This is a simple alternative to String#[]=. We can't use the string
-    # method as it's buggy on rubinius 2.0rc1 (in 1.9 mode)
-    #
-    # See my bug report at https://github.com/rubinius/rubinius/issues/1985
     def local_string_insert(haystack, needle, index)
-      if @current_platform_is_rbx_19
-        char_count = needle.length
-        haystack.replace(
-          (haystack[0,index] || "") +
-          needle +
-          (haystack[index+char_count,500] || "")
-        )
-      else
-        haystack[Range.new(index, index + needle.length - 1)] = String.new(needle)
-      end
+      haystack[Range.new(index, index + needle.length - 1)] = String.new(needle)
     end
   end
 end
