@@ -36,11 +36,11 @@ module EncodingHelper
 
     case obj
     when Array
-      obj.each { |item| check_utf8(item) }
+      obj.each { |item| check_binary(item) }
     when Hash
       obj.each { |key, value|
-        check_utf8(key)
-        check_utf8(value)
+        check_binary(key)
+        check_binary(value)
       }
     when String
       expect(obj.encoding).to eq Encoding.find("binary")
