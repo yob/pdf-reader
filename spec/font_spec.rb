@@ -6,28 +6,6 @@ describe PDF::Reader::Font do
 
   let(:object_hash) { PDF::Reader::ObjectHash.allocate }
 
-  describe "basefont=()" do
-
-    let(:font) { PDF::Reader::Font.new(object_hash, {}) }
-
-    it "should select a sensible encoding when set to a symbol font" do
-      font.basefont = "Arial"
-      expect(font.encoding).to be_a_kind_of(PDF::Reader::Encoding)
-
-      font.basefont = "Symbol"
-      expect(font.encoding).to be_a_kind_of(PDF::Reader::Encoding)
-
-      font.basefont = "ZapfDingbats"
-      expect(font.encoding).to be_a_kind_of(PDF::Reader::Encoding)
-    end
-
-    it "should correctly store the font BaseFont" do
-      font.basefont = :Helvetica
-      expect(font.basefont).to eql(:Helvetica)
-    end
-
-  end
-
   describe "to_utf8()" do
     context "with no ToUnicode CMap" do
       let(:font) { PDF::Reader::Font.new(object_hash, {}) }

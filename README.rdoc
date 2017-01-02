@@ -96,9 +96,8 @@ M17N aware VMs.
 Version 1.0.0 of PDF::Reader introduced a new page-based API that provides
 efficient and easy access to any page.
 
-The previous API is marked as deprecated but will continue to work for the
-time being. Eventually calls to the old API will begin triggering deprecation
-warnings before it is completely removed in version 2.0.0.
+The pre-1.0 API was deprecated during the 1.x release series, and has been
+removed from 2.0.0.
 
 = Exceptions
 

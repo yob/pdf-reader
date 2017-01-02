@@ -33,21 +33,4 @@ Gem::Specification.new do |spec|
   spec.add_dependency('hashery', '~> 2.0')
   spec.add_dependency('ttfunk')
   spec.add_dependency('afm', '~> 0.2.1')
-
-  spec.post_install_message = <<END_DESC
-
-  ********************************************
-
-  v1.0.0 of PDF::Reader introduced a new page-based API. There are extensive
-  examples showing how to use it in the README and examples directory.
-
-  For detailed documentation, check the rdocs for the PDF::Reader,
-  PDF::Reader::Page and PDF::Reader::ObjectHash classes.
-
-  The old API is marked as deprecated but will continue to work with no
-  visible warnings for now.
-
-  ********************************************
-
-END_DESC
 end
