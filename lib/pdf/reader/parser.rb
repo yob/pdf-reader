@@ -163,7 +163,7 @@ class PDF::Reader
 
       # add a missing digit if required, as required by the spec
       str << "0" unless str.size % 2 == 0
-      str.scan(/../).map {|i| i.hex.chr}.join
+      str.scan(/../).map {|i| i.hex.chr}.join.force_encoding("binary")
     end
     ################################################################################
     # Reads a PDF String from the buffer and converts it to a Ruby String
@@ -175,7 +175,7 @@ class PDF::Reader
       str.gsub!(/\\([nrtbf()\\\n]|\d{1,3})?|\r\n?|\n\r/m) do |match|
         MAPPING[match] || ""
       end
-      str
+      str.force_encoding("binary")
     end
 
     MAPPING = {
