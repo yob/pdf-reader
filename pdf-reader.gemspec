@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency("rake")
   spec.add_development_dependency("rspec", "~> 3.5")
   spec.add_development_dependency("cane", "~> 3.0")
-  spec.add_development_dependency("morecane")
+  spec.add_development_dependency("morecane", "~> 0.2")
   spec.add_development_dependency("ir_b")
   spec.add_development_dependency("rdoc")
 
