@@ -65,16 +65,10 @@ class PDF::Reader
       @mergable_range ||= Range.new(endx - 3, endx + font_size)
     end
 
+    # Assume string encoding is marked correctly and we can trust String#size to return a
+    # character count
     def character_count
-      if @text.size == 1
-        1.0
-      elsif @text.respond_to?(:bytesize)
-        # M17N aware VM
-        # so we can trust String#size to return a character count
-        @text.size.to_f
-      else
-        text.unpack("U*").size.to_f
-      end
+      @text.size.to_f
     end
   end
 end
