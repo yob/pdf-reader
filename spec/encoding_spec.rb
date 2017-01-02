@@ -77,10 +77,8 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         {:expert => "\x22\xF7\x22\xF7", :utf8 => [0x25AF,0x25AF].pack("U*")}
       ].each do |vals|
         result = e.to_utf8(vals[:expert])
-        if RUBY_VERSION >= "1.9"
-          expect(result.encoding.to_s).to eql("UTF-8")
-          vals[:utf8].force_encoding("UTF-8")
-        end
+        expect(result.encoding.to_s).to eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
 
         expect(result).to eql(vals[:utf8])
       end
@@ -97,10 +95,8 @@ describe PDF::Reader::Encoding, "#to_utf8" do
       ].each do |vals|
         result = e.to_utf8(vals[:expert])
 
-        if RUBY_VERSION >= "1.9"
-          expect(result.encoding.to_s).to eql("UTF-8")
-          vals[:utf8].force_encoding("UTF-8")
-        end
+        expect(result.encoding.to_s).to eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
 
         expect(result).to eql(vals[:utf8])
       end
@@ -118,10 +114,8 @@ describe PDF::Reader::Encoding, "#to_utf8" do
       ].each do |vals|
         result = e.to_utf8(vals[:expert])
 
-        if RUBY_VERSION >= "1.9"
-          expect(result.encoding.to_s).to eql("UTF-8")
-          vals[:utf8].force_encoding("UTF-8")
-        end
+        expect(result.encoding.to_s).to eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
 
         expect(result).to eql(vals[:utf8])
       end
@@ -137,10 +131,8 @@ describe PDF::Reader::Encoding, "#to_utf8" do
 
         result = e.to_utf8(vals[:mac])
 
-        if RUBY_VERSION >= "1.9"
-          expect(result.encoding.to_s).to eql("UTF-8")
-          vals[:utf8].force_encoding("UTF-8")
-        end
+        expect(result.encoding.to_s).to eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
 
         expect(result).to eql(vals[:utf8])
 
@@ -163,9 +155,7 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         result = e.to_utf8(vals[:mac])
         expect(result).to eql(vals[:utf8])
 
-        if RUBY_VERSION >= "1.9"
-          expect(result.encoding.to_s).to eql("UTF-8")
-        end
+        expect(result.encoding.to_s).to eql("UTF-8")
       end
     end
   end
@@ -180,10 +170,8 @@ describe PDF::Reader::Encoding, "#to_utf8" do
 
         result = e.to_utf8(vals[:mac])
 
-        if RUBY_VERSION >= "1.9"
-          expect(result.encoding.to_s).to eql("UTF-8")
-          vals[:utf8].force_encoding("UTF-8")
-        end
+        expect(result.encoding.to_s).to eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
 
         expect(result).to eql(vals[:utf8])
 
@@ -202,10 +190,8 @@ describe PDF::Reader::Encoding, "#to_utf8" do
       ].each do |vals|
         result = e.to_utf8(vals[:pdf])
 
-        if RUBY_VERSION >= "1.9"
-          expect(result.encoding.to_s).to eql("UTF-8")
-          vals[:utf8].force_encoding("UTF-8")
-        end
+        expect(result.encoding.to_s).to eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
 
         expect(result).to eql(vals[:utf8])
       end
@@ -221,10 +207,8 @@ describe PDF::Reader::Encoding, "#to_utf8" do
 
         result = e.to_utf8(vals[:pdf])
 
-        if RUBY_VERSION >= "1.9"
-          expect(result.encoding.to_s).to eql("UTF-8")
-          vals[:utf8].force_encoding("UTF-8")
-        end
+        expect(result.encoding.to_s).to eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
 
         expect(result).to eql(vals[:utf8])
 
@@ -245,10 +229,8 @@ describe PDF::Reader::Encoding, "#to_utf8" do
       ].each do |vals|
         result = e.to_utf8(vals[:standard])
 
-        if RUBY_VERSION >= "1.9"
-          expect(result.encoding.to_s).to eql("UTF-8")
-          vals[:utf8].force_encoding("UTF-8")
-        end
+        expect(result.encoding.to_s).to eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
 
         expect(result).to eql(vals[:utf8])
 
@@ -265,10 +247,8 @@ describe PDF::Reader::Encoding, "#to_utf8" do
 
         result = e.to_utf8(vals[:std])
 
-        if RUBY_VERSION >= "1.9"
-          expect(result.encoding.to_s).to eql("UTF-8")
-          vals[:utf8].force_encoding("UTF-8")
-        end
+        expect(result.encoding.to_s).to eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
 
         expect(result).to eql(vals[:utf8])
 
@@ -287,10 +267,8 @@ describe PDF::Reader::Encoding, "#to_utf8" do
       ].each do |vals|
         result = e.to_utf8(vals[:symbol])
 
-        if RUBY_VERSION >= "1.9"
-          expect(result.encoding.to_s).to eql("UTF-8")
-          vals[:utf8].force_encoding("UTF-8")
-        end
+        expect(result.encoding.to_s).to eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
 
         expect(result).to eql(vals[:utf8])
 
@@ -307,10 +285,8 @@ describe PDF::Reader::Encoding, "#to_utf8" do
 
         result = e.to_utf8(vals[:symbol])
 
-        if RUBY_VERSION >= "1.9"
-          expect(result.encoding.to_s).to eql("UTF-8")
-          vals[:utf8].force_encoding("UTF-8")
-        end
+        expect(result.encoding.to_s).to eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
 
         expect(result).to eql(vals[:utf8])
 
@@ -333,9 +309,7 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         result = e.to_utf8(vals[:win])
         expect(result).to eql(vals[:utf8])
 
-        if RUBY_VERSION >= "1.9"
-          expect(result.encoding.to_s).to eql("UTF-8")
-        end
+        expect(result.encoding.to_s).to eql("UTF-8")
       end
     end
   end
@@ -352,9 +326,7 @@ describe PDF::Reader::Encoding, "#to_utf8" do
         result = e.to_utf8(vals[:win])
         expect(result).to eql(vals[:utf8])
 
-        if RUBY_VERSION >= "1.9"
-          expect(result.encoding.to_s).to eql("UTF-8")
-        end
+        expect(result.encoding.to_s).to eql("UTF-8")
       end
     end
   end
@@ -369,10 +341,8 @@ describe PDF::Reader::Encoding, "#to_utf8" do
       ].each do |vals|
         result = e.to_utf8(vals[:dingbats])
 
-        if RUBY_VERSION >= "1.9"
-          expect(result.encoding.to_s).to eql("UTF-8")
-          vals[:utf8].force_encoding("UTF-8")
-        end
+        expect(result.encoding.to_s).to eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
 
         expect(result).to eql(vals[:utf8])
 
@@ -389,10 +359,8 @@ describe PDF::Reader::Encoding, "#to_utf8" do
 
         result = e.to_utf8(vals[:dingbats])
 
-        if RUBY_VERSION >= "1.9"
-          expect(result.encoding.to_s).to eql("UTF-8")
-          vals[:utf8].force_encoding("UTF-8")
-        end
+        expect(result.encoding.to_s).to eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
 
         expect(result).to eql(vals[:utf8])
 
@@ -411,10 +379,8 @@ describe PDF::Reader::Encoding, "#to_utf8" do
       ].each do |vals|
         result = e.to_utf8(vals[:utf16])
 
-        if RUBY_VERSION >= "1.9"
-          expect(result.encoding.to_s).to eql("UTF-8")
-          vals[:utf8].force_encoding("UTF-8")
-        end
+        expect(result.encoding.to_s).to eql("UTF-8")
+        vals[:utf8].force_encoding("UTF-8")
 
         expect(result).to eql(vals[:utf8])
       end

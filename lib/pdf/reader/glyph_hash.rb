@@ -102,8 +102,7 @@ class PDF::Reader
       keyed_by_name      = {}
       keyed_by_codepoint = {}
 
-      RUBY_VERSION >= "1.9" ? mode = "r:BINARY" : mode = "r"
-      File.open(File.dirname(__FILE__) + "/glyphlist.txt", mode) do |f|
+      File.open(File.dirname(__FILE__) + "/glyphlist.txt", "r:BINARY") do |f|
         f.each do |l|
           _m, name, code = *l.match(/([0-9A-Za-z]+);([0-9A-F]{4})/)
           if name && code
