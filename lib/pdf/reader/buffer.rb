@@ -367,7 +367,7 @@ class PDF::Reader
           # PDF name, start of new token
           @tokens << tok if tok.size > 0
           @tokens << byte.chr
-          @tokens << "" if byte == 0x2F && ([nil, 0x20, 0x0A].include?(peek_byte) || TOKEN_DELIMITER.include?(peek_byte))
+          @tokens << "" if byte == 0x2F && ([nil, 0x20, 0x0A] + TOKEN_DELIMITER).include?(peek_byte)
           tok = ""
           break
         else
