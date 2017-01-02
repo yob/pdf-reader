@@ -37,6 +37,7 @@ class PDF::Reader
   #
   class Buffer
     TOKEN_WHITESPACE=[0x00, 0x09, 0x0A, 0x0C, 0x0D, 0x20]
+    TOKEN_DELIMITER=[0x25, 0x3C, 0x3E, 0x28, 0x5B, 0x7B, 0x29, 0x5D, 0x7D, 0x2F]
 
     # some strings for comparissons. Declaring them here avoids creating new
     # strings that need GC over and over
@@ -366,7 +367,7 @@ class PDF::Reader
           # PDF name, start of new token
           @tokens << tok if tok.size > 0
           @tokens << byte.chr
-          @tokens << "" if byte == 0x2F && [nil, 0x20, 0x0A].include?(peek_byte)
+          @tokens << "" if byte == 0x2F && ([nil, 0x20, 0x0A].include?(peek_byte) || TOKEN_DELIMITER.include?(peek_byte))
           tok = ""
           break
         else
