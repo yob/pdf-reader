@@ -15,11 +15,7 @@ class PDF::Reader # :nodoc:
         out = ""
 
         while pos < data.length
-          if data.respond_to?(:getbyte)
-            length = data.getbyte(pos)
-          else
-            length = data[pos]
-          end
+          length = data.getbyte(pos)
           pos += 1
 
           case

@@ -147,7 +147,7 @@ class PDF::Reader
       ret = [
         @mapping[glyph_code.to_i] || glyph_code.to_i
       ].pack("U*")
-      ret.force_encoding("UTF-8") if ret.respond_to?(:force_encoding)
+      ret.force_encoding("UTF-8")
       ret
     end
 
@@ -158,13 +158,13 @@ class PDF::Reader
     def little_boxes(times)
       codepoints = [ PDF::Reader::Encoding::UNKNOWN_CHAR ] * times
       ret = codepoints.pack("U*")
-      ret.force_encoding("UTF-8") if ret.respond_to?(:force_encoding)
+      ret.force_encoding("UTF-8")
       ret
     end
 
     def convert_to_utf8(str)
       ret = str.unpack(unpack).map! { |c| @mapping[c] || c }.pack("U*")
-      ret.force_encoding("UTF-8") if ret.respond_to?(:force_encoding)
+      ret.force_encoding("UTF-8")
       ret
     end
 

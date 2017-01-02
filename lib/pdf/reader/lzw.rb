@@ -22,7 +22,7 @@ module PDF
 
         def initialize(data, bits_in_chunk)
           @data = data
-          @data.force_encoding("BINARY") if @data.respond_to?(:force_encoding)
+          @data.force_encoding("BINARY")
           @bits_in_chunk = bits_in_chunk
           @current_pos = 0
           @bits_left_in_byte = 8
