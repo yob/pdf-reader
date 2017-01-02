@@ -2,15 +2,8 @@
 
 require File.dirname(__FILE__) + "/spec_helper"
 
-# These specs are a safety net to ensure all of our callbacks provide a consistant
+# These specs are an integration safety net to ensure all of our callbacks provide a consistant
 # interface across as many files as possible.
-#
-# Current principles for callback arguments:
-#
-# * All strings with text will be UTF-8 encoded and marked as such on
-#   M17N aware VMs
-# * All binary strings will be marked as such on M17N aware
-#
 
 describe PDF::Reader do
   include EncodingHelper
@@ -18,8 +11,6 @@ describe PDF::Reader do
   describe  "begin_inline_image callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
-        pending
-        fail
         receiver.all_args(:begin_inline_image).each do |args|
           expect(args).to eq([])
         end
@@ -29,36 +20,10 @@ describe PDF::Reader do
 
   describe  "begin_inline_image_data callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return a Hash and binary string argument on #{filename}" do
-        pending
-        fail
+      it "should return an even number of arguments on #{filename}" do
         receiver.all_args(:begin_inline_image_data).each do |args|
-          expect(args.size).to eq 2
-          expect(args[0]).to be_a(Hash)
-          expect(args[1]).to be_a(String)
-          check_utf8(args[0])
-          check_binary(args[1])
+          expect(args.size).to be_even
         end
-
-      end
-      it "should return a string with a length that matches the specified dimensions on #{filename}" do
-        pending
-        fail
-        receiver.all_args(:begin_inline_image_data).each do |args|
-          width  = args[0][:W]
-          height = args[0][:H]
-          bits   = args[0][:BPC] || 1
-          case args[0][:CS]
-          when :RGB  then bytes_per_pixel = bits * 3 / 8.0
-          when :G    then bytes_per_pixel = bits * 1 / 8.0
-          when :CMYK then bytes_per_pixel = bits * 4 / 8.0
-          else
-            bytes_per_pixel = bits / 8.0
-          end
-          length = (width * height * bytes_per_pixel).to_i
-          expect(args[1].size).to eq length
-        end
-
       end
     end
   end
@@ -66,8 +31,6 @@ describe PDF::Reader do
   describe  "begin_text_object callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
-        pending
-        fail
         receiver.all_args(:begin_text_object).each do |args|
           expect(args).to eq([])
         end
@@ -78,8 +41,6 @@ describe PDF::Reader do
   describe  "end_document callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
-        pending
-        fail
         receiver.all_args(:end_document).each do |args|
           expect(args).to eq([])
         end
@@ -89,14 +50,11 @@ describe PDF::Reader do
 
   describe  "end_inline_image callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return no arguments on #{filename}" do
-        pending
-        fail
-
+      it "should return a binary string on #{filename}" do
         receiver.all_args(:end_inline_image).each do |args|
-          expect(args).to eq([])
+          expect(args.size).to eq 1
+          check_binary(args)
         end
-
       end
     end
   end
@@ -104,8 +62,6 @@ describe PDF::Reader do
   describe  "end_page callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
-        pending
-        fail
         receiver.all_args(:end_page).each do |args|
           expect(args).to eq([])
         end
@@ -116,8 +72,6 @@ describe PDF::Reader do
   describe  "end_page_container callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
-        pending
-        fail
         receiver.all_args(:end_page_container).each do |args|
           expect(args).to eq([])
         end
@@ -128,8 +82,6 @@ describe PDF::Reader do
   describe  "end_text_object callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
-        pending
-        fail
         receiver.all_args(:end_text_object).each do |args|
           expect(args).to eq([])
         end
@@ -140,12 +92,10 @@ describe PDF::Reader do
   describe  "move_to_next_line_and_show_text callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return a single UTF-8 strings on #{filename}" do
-        pending
-        fail
         receiver.all_args(:move_to_next_line_and_show_text).each do |args|
           expect(args.size).to eq 1
           expect(args[0]).to be_a(String)
-          check_utf8(args)
+          check_binary(args)
         end
       end
     end
@@ -154,8 +104,6 @@ describe PDF::Reader do
   describe  "restore_graphics_state callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
-        pending
-        fail
         receiver.all_args(:restore_graphics_state).each do |args|
           expect(args).to eq([])
         end
@@ -166,8 +114,6 @@ describe PDF::Reader do
   describe  "save_graphics_state callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
-        pending
-        fail
         receiver.all_args(:save_graphics_state).each do |args|
           expect(args).to eq([])
         end
@@ -178,8 +124,6 @@ describe PDF::Reader do
   describe  "set_text_font_and_size callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return no arguments on #{filename}" do
-        pending
-        fail
         receiver.all_args(:set_text_font_and_size).each do |args|
           expect(args.size).to eq 2
           expect(args[0]).to be_a(Symbol)
@@ -192,12 +136,10 @@ describe PDF::Reader do
   describe  "show_text callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return a single UTF-8 string argument on #{filename}" do
-        pending
-        fail
         receiver.all_args(:show_text).each do |args|
           expect(args.size).to eq 1
           expect(args[0]).to be_a(String)
-          check_utf8(args)
+          check_binary(args)
         end
       end
     end
@@ -206,13 +148,11 @@ describe PDF::Reader do
   describe  "show_text_with_positioning callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return an array of Numbers and UTF-8 strings on #{filename}" do
-        pending
-        fail
         receiver.all_args(:show_text_with_positioning).each do |args|
           args[0].each do |arg|
             expect(String === arg || Integer === arg || Float === arg).to eq true
           end
-          check_utf8(args)
+          check_binary(args)
         end
       end
     end
@@ -221,14 +161,12 @@ describe PDF::Reader do
   describe  "set_spacing_next_line_show_text callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
       it "should return a single UTF-8 strings on #{filename}" do
-        pending
-        fail
         receiver.all_args(:set_spacing_next_line_show_text).each do |args|
           expect(args.size).to eq 3
           expect(args[0]).to be_a(Numeric)
           expect(args[1]).to be_a(Numeric)
           expect(args[2]).to be_a(String)
-          check_utf8(args)
+          check_binary(args)
         end
       end
     end
