@@ -36,11 +36,7 @@ class PDF::Reader
     attr_reader :widths, :first_char, :last_char, :basefont, :font_descriptor,
                 :cid_widths, :cid_default_width
 
-    def initialize(ohash = nil, obj = nil)
-      if ohash.nil? || obj.nil?
-        $stderr.puts "DEPREACTION WARNING - PDF::Reader::Font.new should be called with 2 args"
-        return
-      end
+    def initialize(ohash, obj)
       @ohash = ohash
       @tounicode = nil
 
