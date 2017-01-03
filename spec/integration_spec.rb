@@ -86,11 +86,7 @@ describe PDF::Reader, "integration specs" do
     filename = pdf_spec_file("hard_lock_under_osx")
 
     PDF::Reader.open(filename) do |reader|
-      if RUBY_VERSION >= "1.9"
-        expect(reader.page(1).text[0,1]).to eql("’")
-      else
-        expect(reader.page(1).text[0,3]).to eql("’")
-      end
+      expect(reader.page(1).text[0,1]).to eql("’")
     end
   end
 

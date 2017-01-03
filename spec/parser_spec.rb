@@ -19,36 +19,17 @@ describe PDF::Reader::Parser do
     expect(parse_string("/Ja#6des").parse_token).to eql(:"James")
   end
 
-  # '/' is a valid PDF name, but :"" is only a valid ruby symbol in 1.9
-  # On 1.8 VMs the best I can do is a string with a single space. This
-  # is bound to cause trouble but it's better than treating empty PDF
-  # Names as a syntax error
-  if RUBY_VERSION >= "1.9"
-    it "should parse an empty name correctly" do
-      expect(parse_string("/").parse_token).to eql("".to_sym)
-      parser = parse_string("/\n/")
-      expect(parser.parse_token).to eql("".to_sym)
-      expect(parser.parse_token).to eql("".to_sym)
-    end
+  it "should parse an empty name correctly" do
+    expect(parse_string("/").parse_token).to eql("".to_sym)
+    parser = parse_string("/\n/")
+    expect(parser.parse_token).to eql("".to_sym)
+    expect(parser.parse_token).to eql("".to_sym)
+  end
 
-    it "should parse two empty names correctly" do
-      parser = parse_string("/ /")
-      expect(parser.parse_token).to eql("".to_sym)
-      expect(parser.parse_token).to eql("".to_sym)
-    end
-  else
-    it "should parse an empty name correctly" do
-      expect(parse_string("/").parse_token).to eql(:" ")
-      parser = parse_string("/\n/")
-      expect(parser.parse_token).to eql(:" ")
-      expect(parser.parse_token).to eql(:" ")
-    end
-
-    it "should parse two empty names correctly" do
-      parser = parse_string("/ /")
-      expect(parser.parse_token).to eql(:" ")
-      expect(parser.parse_token).to eql(:" ")
-    end
+  it "should parse two empty names correctly" do
+    parser = parse_string("/ /")
+    expect(parser.parse_token).to eql("".to_sym)
+    expect(parser.parse_token).to eql("".to_sym)
   end
 
   it "should parse booleans correctly" do
