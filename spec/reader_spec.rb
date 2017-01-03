@@ -70,14 +70,12 @@ describe PDF::Reader do
       expect(info[:CreationDate]).to eql "D:20101113071546-06'00'"
     end
 
-    if RUBY_VERSION >= "1.9.2"
-      it "should return an info hash with strings marked as UTF-8" do
-        info = PDF::Reader.new(oo3).info
+    it "should return an info hash with strings marked as UTF-8" do
+      info = PDF::Reader.new(oo3).info
 
-        expect(info[:Creator].encoding).to      eql Encoding::UTF_8
-        expect(info[:Producer].encoding).to     eql Encoding::UTF_8
-        expect(info[:CreationDate].encoding).to eql Encoding::UTF_8
-      end
+      expect(info[:Creator].encoding).to      eql Encoding::UTF_8
+      expect(info[:Producer].encoding).to     eql Encoding::UTF_8
+      expect(info[:CreationDate].encoding).to eql Encoding::UTF_8
     end
   end
 
@@ -93,12 +91,10 @@ describe PDF::Reader do
       expect(metadata).to include("<x:xmpmeta")
     end
 
-    if RUBY_VERSION >= "1.9.2"
-      it "should return the metadata string marked as UTF-8" do
-        metadata = PDF::Reader.new(no_text_spaces).metadata
+    it "should return the metadata string marked as UTF-8" do
+      metadata = PDF::Reader.new(no_text_spaces).metadata
 
-        expect(metadata.encoding).to eql Encoding::UTF_8
-      end
+      expect(metadata.encoding).to eql Encoding::UTF_8
     end
   end
 
