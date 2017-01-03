@@ -41,7 +41,7 @@ end
 desc "Create a YAML file of integrity info for PDFs in the spec suite"
 task :integrity_yaml do
   data = {}
-  Dir.glob("spec/data/**/*.*").each do |path|
+  Dir.glob("spec/data/**/*.*").sort.each do |path|
     path_without_spec = path.gsub("spec/","")
     data[path_without_spec] = {
       :bytes => File.size(path),
