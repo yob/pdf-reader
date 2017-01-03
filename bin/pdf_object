@@ -25,7 +25,10 @@ gen = gen.to_i
 
 # make magic happen
 begin
-  obj = PDF::Reader.object_file(filename, id, gen)
+  obj = nil
+  PDF::Reader.open(filename) do |pdf|
+    obj = pdf.objects[PDF::Reader::Reference.new(id, gen)]
+  end
 
   case obj
   when Hash, Array
