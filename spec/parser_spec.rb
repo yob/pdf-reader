@@ -145,6 +145,14 @@ describe PDF::Reader::Parser do
     expect(parse_string("[ 10 0 R 12 0 R ]").parse_token.size).to eql(2)
   end
 
+  context "with an unclosed array" do
+    it "raises an exception" do
+      expect {
+        parse_string("[ 1 2 3").parse_token
+      }.to raise_error(PDF::Reader::MalformedPDFError, "unterminated array")
+    end
+  end
+
   it "should parse numbers correctly" do
     parser = parse_string("1 2 -3 4.5 -5")
     expect(parser.parse_token).to eql( 1)
