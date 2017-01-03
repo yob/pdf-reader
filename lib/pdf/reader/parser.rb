@@ -144,6 +144,7 @@ class PDF::Reader
       loop do
         item = parse_token
         break if item.kind_of?(Token) and item == "]"
+        raise MalformedPDFError, "unterminated array" if @buffer.empty?
         a << item
       end
 
