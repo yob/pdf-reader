@@ -14,7 +14,7 @@ desc "Run cane to check quality metrics"
 Cane::RakeTask.new(:quality) do |cane|
   cane.abc_max = 20
   cane.style_measure = 100
-  cane.max_violations = 44
+  cane.max_violations = 38
 
   cane.use Morecane::EncodingCheck, :encoding_glob => "{app,lib,spec}/**/*.rb"
 end

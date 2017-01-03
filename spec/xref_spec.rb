@@ -9,27 +9,39 @@ end
 
 describe PDF::Reader::XRef, "initilisation" do
   context "with cairo-basic.pdf" do
-    it "should load all xrefs correctly from a File" do
-      filename = File.new(pdf_spec_file("cairo-basic"))
-      tbl      = PDF::Reader::XRef.new(filename)
-      expect(tbl.xref.keys.size).to eql(15) # 1 xref table with 16 items (ignore the first)
+    context "as a File" do
+      it "should load all xrefs correctly" do
+        filename = File.new(pdf_spec_file("cairo-basic"))
+        tbl      = PDF::Reader::XRef.new(filename)
+        # 1 xref table with 16 items (ignore the first)
+        expect(tbl.xref.keys.size).to eql(15)
+      end
     end
-    it "should load all xrefs correctly from a StringIO" do
-      data = StringIO.new(binread(pdf_spec_file("cairo-basic")))
-      tbl  = PDF::Reader::XRef.new(data)
-      expect(tbl.xref.keys.size).to eql(15) # 1 xref table with 16 items (ignore the first)
+    context "as a StringIO" do
+      it "should load all xrefs correctly" do
+        data = StringIO.new(binread(pdf_spec_file("cairo-basic")))
+        tbl  = PDF::Reader::XRef.new(data)
+        # 1 xref table with 16 items (ignore the first)
+        expect(tbl.xref.keys.size).to eql(15)
+      end
     end
   end
   context "with cairo-unicode.pdf" do
-    it "should load all xrefs correctly" do
-      file = File.new(pdf_spec_file("cairo-unicode"))
-      tbl  = PDF::Reader::XRef.new(file)
-      expect(tbl.xref.keys.size).to eql(57) # 1 xref table with 58 items (ignore the first)
+    context "as a File" do
+      it "should load all xrefs correctly" do
+        file = File.new(pdf_spec_file("cairo-unicode"))
+        tbl  = PDF::Reader::XRef.new(file)
+        # 1 xref table with 58 items (ignore the first)
+        expect(tbl.xref.keys.size).to eql(57)
+      end
     end
-    it "should load all xrefs correctly from a StringIO" do
-      data = StringIO.new(binread(pdf_spec_file("cairo-unicode")))
-      tbl  = PDF::Reader::XRef.new(data)
-      expect(tbl.xref.keys.size).to eql(57) # 1 xref table with 58 items (ignore the first)
+    context "as a StringIO" do
+      it "should load all xrefs correctly from a StringIO" do
+        data = StringIO.new(binread(pdf_spec_file("cairo-unicode")))
+        tbl  = PDF::Reader::XRef.new(data)
+        # 1 xref table with 58 items (ignore the first)
+        expect(tbl.xref.keys.size).to eql(57)
+      end
     end
   end
 
@@ -37,7 +49,8 @@ describe PDF::Reader::XRef, "initilisation" do
     it "should load all xrefs correctly" do
       @file = File.new(pdf_spec_file("openoffice-2.2"))
       @tbl = PDF::Reader::XRef.new(@file)
-      expect(@tbl.xref.keys.size).to eql(28) # 1 xref table with 29 items (ignore the first)
+      # 1 xref table with 29 items (ignore the first)
+      expect(@tbl.xref.keys.size).to eql(28)
     end
   end
 
@@ -45,15 +58,18 @@ describe PDF::Reader::XRef, "initilisation" do
     it "should load all xrefs correctly" do
       @file = File.new(pdf_spec_file("pdflatex"))
       @tbl = PDF::Reader::XRef.new(@file)
-      expect(@tbl.xref.keys.size).to eql(353) # 1 xref table with 360 items (but a bunch are ignored)
+      # 1 xref table with 360 items (but a bunch are ignored)
+      expect(@tbl.xref.keys.size).to eql(353)
     end
   end
 
   context "with xref_subsecetions.pdf" do
-    it "should load all xrefs correctly from a PDF that has multiple xref sections with subsections and xref streams" do
-      @file = File.new(pdf_spec_file("xref_subsections"))
-      @tbl = PDF::Reader::XRef.new(@file)
-      expect(@tbl.xref.keys.size).to eql(539)
+    context "with multiple xref sections with subsections and xref streams" do
+      it "loads all xrefs correctly" do
+        @file = File.new(pdf_spec_file("xref_subsections"))
+        @tbl = PDF::Reader::XRef.new(@file)
+        expect(@tbl.xref.keys.size).to eql(539)
+      end
     end
   end
 
@@ -80,7 +96,8 @@ describe PDF::Reader::XRef, "initilisation" do
     subject     { PDF::Reader::XRef.new(file)}
 
     it "should correctly load all object locations" do
-      expect(subject.xref.keys.size).to eql(327) # 1 xref stream with 344 items (ignore the 17 free objects)
+      # 1 xref stream with 344 items (ignore the 17 free objects)
+      expect(subject.xref.keys.size).to eql(327)
     end
 
     it "should load type 1 objects references" do
@@ -117,7 +134,8 @@ describe PDF::Reader::XRef, "initilisation" do
     it "should load all xrefs correctly from a File" do
       File.open(pdf_spec_file("junk_prefix")) do |file|
         tbl      = PDF::Reader::XRef.new(file)
-        expect(tbl.xref.keys.size).to eql(6) # 1 xref table with 6 items (ignore the first)
+        # 1 xref table with 6 items (ignore the first)
+        expect(tbl.xref.keys.size).to eql(6)
       end
     end
 
