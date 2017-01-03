@@ -417,4 +417,13 @@ describe PDF::Reader, "integration specs" do
       expect(page.text).to include("This text includes an ASCII control")
     end
   end
+
+  it "should correctly extract text when the top-level Pages object has no Type" do
+    filename = pdf_spec_file("pages_object_missing_type")
+    PDF::Reader.open(filename) do |reader|
+      page = reader.page(1)
+      expect(page.text).to include("The top level Pages object has no Type")
+    end
+  end
+
 end
