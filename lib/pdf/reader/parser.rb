@@ -118,6 +118,7 @@ class PDF::Reader
       loop do
         key = parse_token
         break if key.kind_of?(Token) and key == ">>"
+        raise MalformedPDFError, "unterminated dict" if @buffer.empty?
         raise MalformedPDFError, "Dictionary key (#{key.inspect}) is not a name" unless key.kind_of?(Symbol)
 
         value = parse_token
@@ -158,6 +159,7 @@ class PDF::Reader
       loop do
         token = @buffer.token
         break if token == ">"
+        raise MalformedPDFError, "unterminated hex string" if @buffer.empty?
         str << token
       end
 

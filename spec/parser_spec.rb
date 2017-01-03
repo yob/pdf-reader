@@ -119,6 +119,14 @@ describe PDF::Reader::Parser do
     expect(parse_string("<48656C6C6F20\n4A616D6573>").parse_token).to eql("Hello James")
   end
 
+  context "with an unclosed hex string" do
+    it "raises an exception" do
+      expect {
+        parse_string("<48656C6C6F").parse_token
+      }.to raise_error(PDF::Reader::MalformedPDFError, "unterminated hex string")
+    end
+  end
+
   it "should parse dictionary with embedded hex string correctly" do
     dict = parse_string("<< /X <48656C6C6F> >>").parse_token
     expect(dict.size).to eql(1)
@@ -139,6 +147,14 @@ describe PDF::Reader::Parser do
     str = "<<\r\n/Type /Pages\r\n/Count 3\r\n/Kids [ 25 0 R 27 0 R]\r\n                                                      \r\n>>"
     dict = parse_string(str).parse_token
     expect(dict.size).to eq(3)
+  end
+
+  context "with an unclosed dict" do
+    it "raises an exception" do
+      expect {
+        parse_string("<< /Registry (Adobe) ").parse_token
+      }.to raise_error(PDF::Reader::MalformedPDFError, "unterminated dict")
+    end
   end
 
   it "should parse an array correctly" do
