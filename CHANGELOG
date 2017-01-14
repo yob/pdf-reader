@@ -1,5 +1,7 @@
 v2.0.0 (XXX)
 - remove all methods that were deprecated in 1.0.0
+- Bug: Support extra encrypted PDF variants (thanks to Gyuchang Jun)
+- various bug fixes
 
 v1.4.1 (2nd January 2017)
 - improve compatability with ruby 2.4 (thanks Akira Matsuda)
