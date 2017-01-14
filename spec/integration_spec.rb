@@ -229,23 +229,136 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
-  it "should correctly extract text from an encrypted PDF with a user password" do
-    filename = pdf_spec_file("encrypted_with_user_pass_apples")
+  context "encrypted_with_user_pass_apples" do
+    let(:filename) { pdf_spec_file("encrypted_with_user_pass_apples") }
 
-    PDF::Reader.open(filename, :password => "apples") do |reader|
-      expect(reader.page(1).text).to match(/^This sample file is encrypted with a user password.$/m)
-      expect(reader.page(1).text).to match(/^User password: apples$/m)
-      expect(reader.page(1).text).to match(/^Owner password: password$/m)
+    context "with the user pass" do
+      let(:pass) { "apples" }
+
+      it "should correctly extract text" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.page(1).text).to include("This sample file is encrypted")
+        end
+      end
+
+      it "should correctly extract info" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.info).to eq(
+            :Creator=>"Writer",
+            :Producer=>"LibreOffice 3.3",
+            :CreationDate=>"D:20110814231057+10'00'"
+          )
+        end
+      end
+    end
+
+    context "with the owner pass" do
+      let(:pass) { "password" }
+
+      it "should correctly extract text" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.page(1).text).to include("This sample file is encrypted")
+        end
+      end
+
+      it "should correctly extract info" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.info).to eq(
+            :Creator=>"Writer",
+            :Producer=>"LibreOffice 3.3",
+            :CreationDate=>"D:20110814231057+10'00'"
+          )
+        end
+      end
     end
   end
 
-  it "should correctly extract text from an encrypted PDF with an owner password" do
-    filename = pdf_spec_file("encrypted_with_user_pass_apples")
+  context "encrypted_with_user_pass_apples_rev4_enc_metadata" do
+    let(:filename) { pdf_spec_file("encrypted_with_user_pass_apples_rev4_enc_metadata") }
 
-    PDF::Reader.open(filename, :password => "password") do |reader|
-      expect(reader.page(1).text).to match(/^This sample file is encrypted with a user password.$/)
-      expect(reader.page(1).text).to match(/^User password: apples$/m)
-      expect(reader.page(1).text).to match(/^Owner password: password$/m)
+    context "with the user pass" do
+      let(:pass) { "apples" }
+
+      it "should correctly extract text" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.page(1).text).to include("This sample file is encrypted")
+        end
+      end
+
+      it "should correctly extract info" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.info).to eq(
+            :Creator=>"Writer",
+            :Producer=>"LibreOffice 3.3",
+            :CreationDate=>"D:20110814231057+10'00'",
+            :ModDate=>"D:20170114125054+11'00'"
+          )
+        end
+      end
+    end
+    context "with the owner pass" do
+      let(:pass) { "password" }
+
+      it "should correctly extract text" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.page(1).text).to include("This sample file is encrypted")
+        end
+      end
+
+      it "should correctly extract info" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.info).to eq(
+            :Creator=>"Writer",
+            :Producer=>"LibreOffice 3.3",
+            :CreationDate=>"D:20110814231057+10'00'",
+            :ModDate=>"D:20170114125054+11'00'"
+          )
+        end
+      end
+    end
+  end
+
+  context "encrypted_with_user_pass_apples_rev4_unenc_metadata" do
+    let(:filename) { pdf_spec_file("encrypted_with_user_pass_apples_rev4_unenc_metadata") }
+
+    context "with the user pass" do
+      let(:pass) { "apples" }
+      it "should correctly extract text" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.page(1).text).to include("This sample file is encrypted")
+        end
+      end
+
+      it "should correctly extract info" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.info).to eq(
+            :Creator=>"Writer",
+            :Producer=>"LibreOffice 3.3",
+            :CreationDate=>"D:20110814231057+10'00'",
+            :ModDate => "D:20170114125141+11'00'"
+          )
+        end
+      end
+    end
+    context "with the owner pass" do
+      let(:pass) { "password" }
+
+      it "should correctly extract text" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.page(1).text).to include("This sample file is encrypted")
+        end
+      end
+
+      it "should correctly extract info" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.info).to eq(
+            :Creator=>"Writer",
+            :Producer=>"LibreOffice 3.3",
+            :CreationDate=>"D:20110814231057+10'00'",
+            :ModDate => "D:20170114125141+11'00'"
+          )
+        end
+      end
     end
   end
 
