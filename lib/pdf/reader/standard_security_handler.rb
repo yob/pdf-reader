@@ -146,7 +146,7 @@ class PDF::Reader
         #initialize out for first iteration
         out = Digest::MD5.digest(PassPadBytes.pack("C*") + @file_id)
         #zero doesn't matter -> so from 0-19
-        20.times{ |i| out=RC4.new(xor_each_byte(keyBegins, i)).decrypt(out) }
+        20.times{ |i| out=RC4.new(xor_each_byte(keyBegins, i)).encrypt(out) }
         pass = @user_key[(0...16)] == out
       else
         pass = RC4.new(keyBegins).encrypt(PassPadBytes.pack("C*")) == @user_key
