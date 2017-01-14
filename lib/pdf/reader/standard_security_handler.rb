@@ -82,7 +82,7 @@ class PDF::Reader
       (0..2).each { |e| objKey << (ref.id >> e*8 & 0xFF ) }
       (0..1).each { |e| objKey << (ref.gen >> e*8 & 0xFF ) }
       length = objKey.length < 16 ? objKey.length : 16
-      rc4 = RC4.new( Digest::MD5.digest(objKey)[(0...length)] )
+      rc4 = RC4.new( Digest::MD5.digest(objKey)[0,length] )
       rc4.decrypt(buf)
     end
 
@@ -94,7 +94,7 @@ class PDF::Reader
       if p.nil? || p.empty?
         PassPadBytes.pack('C*')
       else
-        p[(0...32)] + PassPadBytes[0...(32-p.length)].pack('C*')
+        p[0, 32] + PassPadBytes[0, 32-p.length].pack('C*')
       end
     end
 
@@ -118,13 +118,13 @@ class PDF::Reader
       md5 = Digest::MD5.digest(pad_pass(pass))
       if @revision > 2 then
         50.times { md5 = Digest::MD5.digest(md5) }
-        keyBegins = md5[(0...@key_length)]
+        keyBegins = md5[0, key_length]
         #first itteration decrypt owner_key
         out = @owner_key
         #RC4 keyed with (keyBegins XOR with itteration #) to decrypt previous out
         19.downto(0).each { |i| out=RC4.new(xor_each_byte(keyBegins,i)).decrypt(out) }
       else
-        out = RC4.new( md5[(0...5)] ).decrypt( @owner_key )
+        out = RC4.new( md5[0, 5] ).decrypt( @owner_key )
       end
       # c) check output as user password
       auth_user_pass( out )
@@ -142,12 +142,12 @@ class PDF::Reader
     #
     def auth_user_pass(pass)
       keyBegins = make_file_key(pass)
-      if @revision > 2
+      if @revision >= 3
         #initialize out for first iteration
         out = Digest::MD5.digest(PassPadBytes.pack("C*") + @file_id)
         #zero doesn't matter -> so from 0-19
         20.times{ |i| out=RC4.new(xor_each_byte(keyBegins, i)).encrypt(out) }
-        pass = @user_key[(0...16)] == out
+        pass = @user_key[0, 16] == out
       else
         pass = RC4.new(keyBegins).encrypt(PassPadBytes.pack("C*")) == @user_key
       end
@@ -170,13 +170,17 @@ class PDF::Reader
       # b) init MD5 digest + g) finish the hash
       md5 = Digest::MD5.digest(@buf)
       # h) spin hash 50 times
-      if @revision > 2
+      if @revision >= 3
         50.times {
-          md5 = Digest::MD5.digest(md5[(0...@key_length)])
+          md5 = Digest::MD5.digest(md5[0, @key_length])
         }
       end
-      # i) n = key_length revision > 3, n = 5 revision == 2
-      md5[(0...((@revision < 3) ? 5 : @key_length))]
+      # i) n = key_length revision >= 3, n = 5 revision == 2
+      if @revision < 3
+        md5[0, 5]
+      else
+        md5[0, @key_length]
+      end
     end
 
     def build_standard_key(pass)
