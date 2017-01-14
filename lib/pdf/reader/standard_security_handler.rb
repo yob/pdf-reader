@@ -164,8 +164,8 @@ class PDF::Reader
       # e) add the file ID
       @buf << @file_id
       # f) if revision > 4 then if encryptMetadata add 4 bytes of 0x00 else add 4 bytes of 0xFF
-      if @revision > 4
-        @buf << [ @encryptMetadata ? 0x00 : 0xFF ].pack('C')*4
+      if @revision >= 4 && !@encryptMeta
+        @buf << [0xFF,0xFF,0xFF,0xFF].pack('C*')
       end
       # b) init MD5 digest + g) finish the hash
       md5 = Digest::MD5.digest(@buf)
