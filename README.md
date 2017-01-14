@@ -102,8 +102,7 @@ so:
 Regardless of the internal encoding used in the PDF all text will be converted
 to UTF-8 before it is passed back from PDF::Reader.
 
-Strings that contain binary data (like font blobs) will be marked as such on
-M17N aware VMs.
+Strings that contain binary data (like font blobs) will be marked as such.
 
 # Former API
 
