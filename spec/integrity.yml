@@ -107,12 +107,24 @@ data/encrypted_version2_revision3_128bit_rc4_blank_user_pass.pdf:
 data/encrypted_version2_revision3_128bit_rc4_user_pass_apples.pdf:
   :bytes: 19262
   :md5: 127b2384faf0e7cd13725f130dc5c959
+data/encrypted_version4_revision4_128bit_aes_user_pass_apples_enc_metadata.pdf:
+  :bytes: 22916
+  :md5: d8f24a2d511a8bdeb207444b24e1feae
+data/encrypted_version4_revision4_128bit_aes_user_pass_apples_unenc_metadata.pdf:
+  :bytes: 22927
+  :md5: 34b9df213cda366a570e8fce544ba0e3
 data/encrypted_version4_revision4_128bit_rc4_user_pass_apples_enc_metadata.pdf:
   :bytes: 22600
   :md5: 9d7b13af0cc56e43807fe9d601f69be4
 data/encrypted_version4_revision4_128bit_rc4_user_pass_apples_unenc_metadata.pdf:
   :bytes: 22633
   :md5: e0877c01f132e40d451b3c3d8a7acce7
+data/encrypted_version5_revision6_256bit_aes_user_pass_apples_enc_metadata.pdf:
+  :bytes: 23273
+  :md5: afb2de4ebe4bcdfbded287bbbdd7f51b
+data/encrypted_version5_revision6_256bit_aes_user_pass_apples_unenc_metadata.pdf:
+  :bytes: 23286
+  :md5: ce451e03d0044f412c76a5fc5368f7af
 data/extended_eof.pdf:
   :bytes: 61721
   :md5: 02bd4cfbc79b4a295754fda2705b6181

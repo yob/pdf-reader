@@ -213,6 +213,52 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "encrypted_version1_revision2_40bit_rc4_user_pass_apples" do
+    let(:filename) { pdf_spec_file("encrypted_version1_revision2_40bit_rc4_user_pass_apples") }
+
+    context "with the user pass" do
+      let(:pass) { "apples" }
+
+      it "correctly extracts text" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.page(1).text).to include("This sample file is encrypted")
+        end
+      end
+
+      it "correctly extracts info" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.info).to eq(
+            :Creator=>"Writer",
+            :Producer=>"LibreOffice 3.3",
+            :CreationDate=>"D:20110814231057+10'00'",
+            :ModDate=>"D:20170115142929+11'00'"
+          )
+        end
+      end
+    end
+
+    context "with the owner pass" do
+      let(:pass) { "password" }
+
+      it "correctly extracts text" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.page(1).text).to include("This sample file is encrypted")
+        end
+      end
+
+      it "correctly extracts info" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.info).to eq(
+            :Creator=>"Writer",
+            :Producer=>"LibreOffice 3.3",
+            :CreationDate=>"D:20110814231057+10'00'",
+            :ModDate=>"D:20170115142929+11'00'"
+          )
+        end
+      end
+    end
+  end
+
   context "encrypted_version1_revision2_128bit_rc4_blank_user_password" do
     let(:filename) { pdf_spec_file("encrypted_version1_revision2_128bit_rc4_blank_user_password") }
 
@@ -367,7 +413,9 @@ describe PDF::Reader, "integration specs" do
   end
 
   context "encrypted_version4_revision4_128bit_rc4_user_pass_apples_unenc_metadata" do
-    let(:filename) { pdf_spec_file("encrypted_version4_revision4_128bit_rc4_user_pass_apples_unenc_metadata") }
+    let(:filename) {
+      pdf_spec_file("encrypted_version4_revision4_128bit_rc4_user_pass_apples_unenc_metadata")
+    }
 
     context "with the user pass" do
       let(:pass) { "apples" }
@@ -407,6 +455,70 @@ describe PDF::Reader, "integration specs" do
           )
         end
       end
+    end
+  end
+
+  context "encrypted_version4_revision4_128bit_aes_user_pass_apples_enc_metadata" do
+    let(:filename) {
+      pdf_spec_file("encrypted_version4_revision4_128bit_aes_user_pass_apples_enc_metadata")
+    }
+
+    context "with the user pass" do
+      it "correctly extracts text"
+      it "correctly extracts info"
+    end
+
+    context "with the owner pass" do
+      it "correctly extracts text"
+      it "correctly extracts info"
+    end
+  end
+
+  context "encrypted_version4_revision4_128bit_aes_user_pass_apples_unenc_metadata" do
+    let(:filename) {
+      pdf_spec_file("encrypted_version4_revision4_128bit_aes_user_pass_apples_unenc_metadata")
+    }
+
+    context "with the user pass" do
+      it "correctly extracts text"
+      it "correctly extracts info"
+    end
+
+    context "with the owner pass" do
+      it "correctly extracts text"
+      it "correctly extracts info"
+    end
+  end
+
+  context "encrypted_version4_revision4_256bit_aes_user_pass_apples_enc_metadata" do
+    let(:filename) {
+      pdf_spec_file("encrypted_version4_revision4_256bit_aes_user_pass_apples_enc_metadata")
+    }
+
+    context "with the user pass" do
+      it "correctly extracts text"
+      it "correctly extracts info"
+    end
+
+    context "with the owner pass" do
+      it "correctly extracts text"
+      it "correctly extracts info"
+    end
+  end
+
+  context "encrypted_version4_revision4_256bit_aes_user_pass_apples_unenc_metadata" do
+    let(:filename) {
+      pdf_spec_file("encrypted_version4_revision4_256bit_aes_user_pass_apples_unenc_metadata")
+    }
+
+    context "with the user pass" do
+      it "correctly extracts text"
+      it "correctly extracts info"
+    end
+
+    context "with the owner pass" do
+      it "correctly extracts text"
+      it "correctly extracts info"
     end
   end
 
