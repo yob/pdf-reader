@@ -230,11 +230,19 @@ describe PDF::Reader, "integration specs" do
 
   end
 
-  it "should correctly extract text from an encrypted PDF with no user password and revision 1" do
-    filename = pdf_spec_file("encrypted_version1_revision2_blank_user_password")
+  context "encrypted_version1_revision2_blank_user_password" do
+    let(:filename) { pdf_spec_file("encrypted_version1_revision2_blank_user_password") }
 
-    PDF::Reader.open(filename) do |reader|
-      expect(reader.page(1).text).to eql("WOOOOO DOCUMENT!")
+    context "with no user pass" do
+      it "correctly extracts text" do
+        PDF::Reader.open(filename) do |reader|
+          expect(reader.page(1).text).to eql("WOOOOO DOCUMENT!")
+        end
+      end
+    end
+
+    context "with the owner pass" do
+      it "correctly extracts text"
     end
   end
 
