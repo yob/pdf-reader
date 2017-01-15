@@ -271,6 +271,16 @@ describe PDF::Reader, "integration specs" do
         end
       end
     end
+
+    context "with no pass" do
+      it "raises an exception" do
+        expect {
+          PDF::Reader.open(filename) do |reader|
+            reader.page(1).text
+          end
+        }.to raise_error(PDF::Reader::EncryptedPDFError)
+      end
+    end
   end
 
   context "encrypted_version4_revision_4user_pass_apples_enc_metadata" do
@@ -360,16 +370,6 @@ describe PDF::Reader, "integration specs" do
         end
       end
     end
-  end
-
-  it "should raise an exception from an encrypted PDF that requires a user password and none is provided" do
-    filename = pdf_spec_file("encrypted_version2_revision3_user_pass_apples")
-
-    expect {
-      PDF::Reader.open(filename) do |reader|
-        reader.page(1).text
-      end
-    }.to raise_error(PDF::Reader::EncryptedPDFError)
   end
 
   it "should correctly extract text from an encrypted PDF with no user pass or document ID" do
