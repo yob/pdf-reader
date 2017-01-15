@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require File.dirname(__FILE__) + "/../../spec_helper"
+
 
 describe PDF::Reader::Filter::Flate do
   it "should inflate a RFC1950 (zlib) deflated stream correctly"

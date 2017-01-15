@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require File.dirname(__FILE__) + "/spec_helper"
+
 
 # These specs are a kind of integration spec. They're not unit testing small pieces
 # of code, it's just parsing a range of PDF files and ensuring the result is

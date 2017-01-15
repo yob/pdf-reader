@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require "spec_helper"
+
 
 describe PDF::Reader::PageLayout, "#to_s" do
   context "with an A4 page" do

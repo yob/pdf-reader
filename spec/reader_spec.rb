@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require File.dirname(__FILE__) + "/spec_helper"
+
 
 describe PDF::Reader do
   let(:cairo_basic)   { pdf_spec_file("cairo-basic")}

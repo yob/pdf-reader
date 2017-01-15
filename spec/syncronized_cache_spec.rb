@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require File.dirname(__FILE__) + "/spec_helper"
+
 require 'pdf/reader/synchronized_cache'
 
 describe PDF::Reader::SynchronizedCache, "#[]=" do

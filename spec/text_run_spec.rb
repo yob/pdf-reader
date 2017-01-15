@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require File.dirname(__FILE__) + "/spec_helper"
+
 
 describe PDF::Reader::TextRun, "#initilize" do
   context "when initialized with valid values" do

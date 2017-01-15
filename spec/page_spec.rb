@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require File.dirname(__FILE__) + "/spec_helper"
+
 
 describe PDF::Reader::Page, "raw_content()" do
   it "should return a string from raw_content() from cairo-basic.pdf page 1" do
