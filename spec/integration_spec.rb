@@ -253,7 +253,8 @@ describe PDF::Reader, "integration specs" do
       it "correctly extracts text" do
         PDF::Reader.open(filename) do |reader|
           expect(reader.page(1).text).to eql(
-            "This encryped file breaks compatability with the PDF spec because it has no document ID"
+            "This encryped file breaks compatability with the PDF spec " \
+            "because it has no document ID"
           )
         end
       end
@@ -319,7 +320,9 @@ describe PDF::Reader, "integration specs" do
   end
 
   context "encrypted_version4_revision_4user_pass_apples_enc_metadata" do
-    let(:filename) { pdf_spec_file("encrypted_version4_revision4_128bit_rc4_user_pass_apples_enc_metadata") }
+    let(:filename) {
+      pdf_spec_file("encrypted_version4_revision4_128bit_rc4_user_pass_apples_enc_metadata")
+    }
 
     context "with the user pass" do
       let(:pass) { "apples" }
