@@ -92,22 +92,25 @@ data/distiller_unicode.pdf:
 data/dutch.pdf:
   :bytes: 14163
   :md5: cbe0d3075d4474a221cd0b3800c5a0e4
-data/encrypted_version1_revision2_blank_user_password.pdf:
+data/encrypted_version1_revision2_128bit_rc4_blank_user_password.pdf:
   :bytes: 15674
   :md5: 88a9b78341fa55879fa94930bd4d33af
-data/encrypted_version1_revision2_no_doc_id.pdf:
+data/encrypted_version1_revision2_128bit_rc4_no_doc_id.pdf:
   :bytes: 1152
   :md5: 8d2180b1c694dfe729ff8a8f6f77bb08
-data/encrypted_version2_revision3_blank_user_pass.pdf:
+data/encrypted_version1_revision2_40bit_rc4_user_pass_apples.pdf:
+  :bytes: 22529
+  :md5: 9ad59fb12b9bc50e1fe73e5be0173bff
+data/encrypted_version2_revision3_128bit_rc4_blank_user_pass.pdf:
   :bytes: 18445
   :md5: 32af1167d842ae937befa4de24bc80b5
-data/encrypted_version2_revision3_user_pass_apples.pdf:
+data/encrypted_version2_revision3_128bit_rc4_user_pass_apples.pdf:
   :bytes: 19262
   :md5: 127b2384faf0e7cd13725f130dc5c959
-data/encrypted_version4_revision4_user_pass_apples_enc_metadata.pdf:
+data/encrypted_version4_revision4_128bit_rc4_user_pass_apples_enc_metadata.pdf:
   :bytes: 22600
   :md5: 9d7b13af0cc56e43807fe9d601f69be4
-data/encrypted_version4_revision4_user_pass_apples_unenc_metadata.pdf:
+data/encrypted_version4_revision4_128bit_rc4_user_pass_apples_unenc_metadata.pdf:
   :bytes: 22633
   :md5: e0877c01f132e40d451b3c3d8a7acce7
 data/extended_eof.pdf:

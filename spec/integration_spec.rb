@@ -213,8 +213,8 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
-  context "encrypted_version1_revision2_blank_user_password" do
-    let(:filename) { pdf_spec_file("encrypted_version1_revision2_blank_user_password") }
+  context "encrypted_version1_revision2_128bit_rc4_blank_user_password" do
+    let(:filename) { pdf_spec_file("encrypted_version1_revision2_128bit_rc4_blank_user_password") }
 
     context "with no user pass" do
       it "correctly extracts text" do
@@ -229,8 +229,8 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
-  context "encrypted_version2_revision3_blank_user_pass" do
-    let(:filename) { pdf_spec_file("encrypted_version2_revision3_blank_user_pass") }
+  context "encrypted_version2_revision3_128bit_rc4_blank_user_pass" do
+    let(:filename) { pdf_spec_file("encrypted_version2_revision3_128bit_rc4_blank_user_pass") }
 
     context "with no user pass" do
       it "correctly extracts text" do
@@ -246,8 +246,8 @@ describe PDF::Reader, "integration specs" do
 
   end
 
-  context "encrypted_version1_revision2_no_doc_id" do
-    let(:filename) {pdf_spec_file("encrypted_version1_revision2_no_doc_id") }
+  context "encrypted_version1_revision2_128bit_rc4_no_doc_id" do
+    let(:filename) {pdf_spec_file("encrypted_version1_revision2_128bit_rc4_no_doc_id") }
 
     context "with no user pass" do
       it "correctly extracts text" do
@@ -264,8 +264,8 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
-  context "encrypted_version2_revision3_user_pass_apples" do
-    let(:filename) { pdf_spec_file("encrypted_version2_revision3_user_pass_apples") }
+  context "encrypted_version2_revision3_128bit_rc4_user_pass_apples" do
+    let(:filename) { pdf_spec_file("encrypted_version2_revision3_128bit_rc4_user_pass_apples") }
 
     context "with the user pass" do
       let(:pass) { "apples" }
@@ -319,7 +319,7 @@ describe PDF::Reader, "integration specs" do
   end
 
   context "encrypted_version4_revision_4user_pass_apples_enc_metadata" do
-    let(:filename) { pdf_spec_file("encrypted_version4_revision4_user_pass_apples_enc_metadata") }
+    let(:filename) { pdf_spec_file("encrypted_version4_revision4_128bit_rc4_user_pass_apples_enc_metadata") }
 
     context "with the user pass" do
       let(:pass) { "apples" }
@@ -363,8 +363,8 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
-  context "encrypted_version4_revision4_user_pass_apples_unenc_metadata" do
-    let(:filename) { pdf_spec_file("encrypted_version4_revision4_user_pass_apples_unenc_metadata") }
+  context "encrypted_version4_revision4_128bit_rc4_user_pass_apples_unenc_metadata" do
+    let(:filename) { pdf_spec_file("encrypted_version4_revision4_128bit_rc4_user_pass_apples_unenc_metadata") }
 
     context "with the user pass" do
       let(:pass) { "apples" }
