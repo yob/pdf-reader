@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require File.dirname(__FILE__) + "/../../spec_helper"
+
 
 describe PDF::Reader::Filter::Lzw do
   it "should filter a lzw stream with no predictors correctly" do

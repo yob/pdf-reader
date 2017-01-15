@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require "spec_helper"
+
 
 describe PDF::Reader::WidthCalculator::TypeZero do
   it_behaves_like "a WidthCalculator duck type" do

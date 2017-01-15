@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require File.dirname(__FILE__) + "/spec_helper"
+
 
 # These specs are an integration safety net to ensure all of our callbacks provide a consistant
 # interface across as many files as possible.

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require "spec_helper"
+
 
 describe PDF::Reader::OrientationDetector, "#orientation" do
 

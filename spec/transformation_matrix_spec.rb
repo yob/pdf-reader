@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require File.dirname(__FILE__) + "/spec_helper"
+
 
 # The results in these specs were generated at
 # http://www.calcul.com/matrix-multiply-3x3-3x3 to ensure correctness.

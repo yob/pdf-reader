@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-require File.dirname(__FILE__) + "/../spec_helper"
-
 describe PDF::Reader::RegisterReceiver do
   subject { PDF::Reader::RegisterReceiver.new }
 
