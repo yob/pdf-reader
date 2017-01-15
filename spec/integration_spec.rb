@@ -214,7 +214,7 @@ describe PDF::Reader, "integration specs" do
   end
 
   it "should correctly extract text from an encrypted PDF with no user password" do
-    filename = pdf_spec_file("encrypted_no_user_pass")
+    filename = pdf_spec_file("encrypted_version2_revision3_blank_user_pass")
 
     PDF::Reader.open(filename) do |reader|
       expect(reader.page(1).text).to eql("This sample file is encrypted with no user password")
@@ -222,15 +222,15 @@ describe PDF::Reader, "integration specs" do
   end
 
   it "should correctly extract text from an encrypted PDF with no user password and revision 1" do
-    filename = pdf_spec_file("encrypted_with_no_user_pass_and_revision_one")
+    filename = pdf_spec_file("encrypted_version1_revision2_blank_user_password")
 
     PDF::Reader.open(filename) do |reader|
       expect(reader.page(1).text).to eql("WOOOOO DOCUMENT!")
     end
   end
 
-  context "encrypted_with_user_pass_apples" do
-    let(:filename) { pdf_spec_file("encrypted_with_user_pass_apples") }
+  context "encrypted_version2_revision3_user_pass_apples" do
+    let(:filename) { pdf_spec_file("encrypted_version2_revision3_user_pass_apples") }
 
     context "with the user pass" do
       let(:pass) { "apples" }
@@ -273,8 +273,8 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
-  context "encrypted_with_user_pass_apples_rev4_enc_metadata" do
-    let(:filename) { pdf_spec_file("encrypted_with_user_pass_apples_rev4_enc_metadata") }
+  context "encrypted_version4_revision_4user_pass_apples_enc_metadata" do
+    let(:filename) { pdf_spec_file("encrypted_version4_revision4_user_pass_apples_enc_metadata") }
 
     context "with the user pass" do
       let(:pass) { "apples" }
@@ -318,8 +318,8 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
-  context "encrypted_with_user_pass_apples_rev4_unenc_metadata" do
-    let(:filename) { pdf_spec_file("encrypted_with_user_pass_apples_rev4_unenc_metadata") }
+  context "encrypted_version4_revision4_user_pass_apples_unenc_metadata" do
+    let(:filename) { pdf_spec_file("encrypted_version4_revision4_user_pass_apples_unenc_metadata") }
 
     context "with the user pass" do
       let(:pass) { "apples" }
@@ -363,7 +363,7 @@ describe PDF::Reader, "integration specs" do
   end
 
   it "should raise an exception from an encrypted PDF that requires a user password and none is provided" do
-    filename = pdf_spec_file("encrypted_with_user_pass_apples")
+    filename = pdf_spec_file("encrypted_version2_revision3_user_pass_apples")
 
     expect {
       PDF::Reader.open(filename) do |reader|
@@ -373,7 +373,7 @@ describe PDF::Reader, "integration specs" do
   end
 
   it "should correctly extract text from an encrypted PDF with no user pass or document ID" do
-    filename = pdf_spec_file("encrypted_with_no_doc_id")
+    filename = pdf_spec_file("encrypted_version1_revision2_no_doc_id")
 
     PDF::Reader.open(filename) do |reader|
       expect(reader.page(1).text).to eql(
