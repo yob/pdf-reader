@@ -163,7 +163,7 @@ class PDF::Reader
       (0..24).step(8){|e| @buf << (@permissions >> e & 0xFF)}
       # e) add the file ID
       @buf << @file_id
-      # f) if revision > 4 then if encryptMetadata add 4 bytes of 0x00 else add 4 bytes of 0xFF
+      # f) if revision >= 4 and metadata not encrypted then add 4 bytes of 0xFF
       if @revision >= 4 && !@encryptMeta
         @buf << [0xFF,0xFF,0xFF,0xFF].pack('C*')
       end
