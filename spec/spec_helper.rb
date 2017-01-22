@@ -15,6 +15,14 @@ require 'digest/md5'
 Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f }
 
 RSpec.configure do |config|
-  config.expect_with :rspec
+  # Only allow expect syntax
+  config.expect_with :rspec do |c|
+    c.syntax = [:expect]
+  end
+
+  # Only allow expect syntax
+  config.mock_with :rspec do |mocks|
+    mocks.syntax = [:expect]
+  end
   config.include ReaderSpecHelper
 end
