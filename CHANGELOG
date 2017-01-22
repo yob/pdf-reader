@@ -4,7 +4,7 @@ v2.0.0 (XXX)
 - various bug fixes
 
 v1.4.1 (2nd January 2017)
-- improve compatability with ruby 2.4 (thanks Akira Matsuda)
+- improve compatibility with ruby 2.4 (thanks Akira Matsuda)
 - various bug fixes
 
 v1.4.0 (22nd February 2016)
@@ -96,10 +96,10 @@ v0.9.2 (24th April 2011)
 
 v0.9.1 (21st December 2010)
 - force gem to only install on ruby 1.8.7 or higher
-  - maintaining supprot for earlier versions takes more time than I have
+  - maintaining support for earlier versions takes more time than I have
     available at the moment
 - bug: fix parsing of obscure pdf name format
-- bug: fix behaviour when loaded in confunction with htmldoc gem
+- bug: fix behaviour when loaded in conjunction with htmldoc gem
 
 v0.9.0 (19th November 2010)
 - support for pdf 1.5+ files that use object and xref streams
