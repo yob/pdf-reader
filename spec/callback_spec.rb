@@ -91,7 +91,7 @@ describe PDF::Reader do
 
   describe  "move_to_next_line_and_show_text callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return a single UTF-8 strings on #{filename}" do
+      it "should return a single binary strings on #{filename}" do
         receiver.all_args(:move_to_next_line_and_show_text).each do |args|
           expect(args.size).to eq 1
           expect(args[0]).to be_a(String)
@@ -135,7 +135,7 @@ describe PDF::Reader do
 
   describe  "show_text callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return a single UTF-8 string argument on #{filename}" do
+      it "should return a single binary string argument on #{filename}" do
         receiver.all_args(:show_text).each do |args|
           expect(args.size).to eq 1
           expect(args[0]).to be_a(String)
@@ -147,7 +147,7 @@ describe PDF::Reader do
 
   describe  "show_text_with_positioning callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return an array of Numbers and UTF-8 strings on #{filename}" do
+      it "should return an array of Numbers and binary strings on #{filename}" do
         receiver.all_args(:show_text_with_positioning).each do |args|
           args[0].each do |arg|
             expect(String === arg || Integer === arg || Float === arg).to eq true
@@ -160,7 +160,7 @@ describe PDF::Reader do
 
   describe  "set_spacing_next_line_show_text callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return a single UTF-8 strings on #{filename}" do
+      it "should return a single binary strings on #{filename}" do
         receiver.all_args(:set_spacing_next_line_show_text).each do |args|
           expect(args.size).to eq 3
           expect(args[0]).to be_a(Numeric)
