@@ -16,12 +16,12 @@ describe PDF::Reader::WidthCalculator::Composite do
       subject           { PDF::Reader::WidthCalculator::Composite.new(font)}
 
       context "when the glyph code is provided in cid_widths" do
-        it "should return the correct width" do
+        it "returns the correct width" do
           expect(subject.glyph_width(10)).to eq(30)
         end
       end
       context "when the glyph code is equal to greater than font#first_char" do
-        it "should return the default width" do
+        it "returns the default width" do
           expect(subject.glyph_width(9)).to eq(50)
         end
       end

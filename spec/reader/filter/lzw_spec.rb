@@ -2,7 +2,7 @@
 
 describe PDF::Reader::Filter::Lzw do
   describe "#filter" do
-    it "should filter a lzw stream with no predictors correctly" do
+    it "filters a lzw stream with no predictors correctly" do
       filter = PDF::Reader::Filter::Lzw.new
       compressed_data   = binread(File.dirname(__FILE__) + "/../../data/lzw_compressed.dat")
       decompressed_data = binread(File.dirname(__FILE__) + "/../../data/lzw_decompressed.dat")

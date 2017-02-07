@@ -2,7 +2,7 @@
 
 describe PDF::Reader::ObjectHash do
   describe "mixins" do
-    it "should have enumerable mixed in" do
+    it "has enumerable mixed in" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -11,7 +11,7 @@ describe PDF::Reader::ObjectHash do
   end
 
   describe "initialisation" do
-    it "should correctly load a PDF from a StringIO object" do
+    it "correctly loads a PDF from a StringIO object" do
       filename = pdf_spec_file("cairo-unicode")
       io = StringIO.new(binread(filename))
       h = PDF::Reader::ObjectHash.new(io)
@@ -19,7 +19,7 @@ describe PDF::Reader::ObjectHash do
       expect(h.map { |ref, obj| obj.class }.size).to eql(57)
     end
 
-    it "should raise an ArgumentError if passed a non filename and non IO" do
+    it "raises an ArgumentError if passed a non filename and non IO" do
       pdf_spec_file("cairo-unicode")
       expect {PDF::Reader::ObjectHash.new(10)}.to raise_error(ArgumentError)
     end
@@ -27,7 +27,7 @@ describe PDF::Reader::ObjectHash do
 
   describe "#[]" do
 
-    it "should return nil for any invalid hash key" do
+    it "returns nil for any invalid hash key" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -36,14 +36,14 @@ describe PDF::Reader::ObjectHash do
       expect(h["James"]).to be_nil
     end
 
-    it "should return nil for any hash key that doesn't exist" do
+    it "returns nil for any hash key that doesn't exist" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
       expect(h[10000]).to be_nil
     end
 
-    it "should correctly extract an int object using int or string keys" do
+    it "correctly extracts an int object using int or string keys" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -52,7 +52,7 @@ describe PDF::Reader::ObjectHash do
       expect(h["3james"]).to eql(3649)
     end
 
-    it "should correctly extract an int object using PDF::Reference as a key" do
+    it "correctly extracts an int object using PDF::Reference as a key" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
       ref = PDF::Reader::Reference.new(3,0)
@@ -63,7 +63,7 @@ describe PDF::Reader::ObjectHash do
 
   describe "#object" do
 
-    it "should return regular objects unchanged" do
+    it "returns regular objects unchanged" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -72,7 +72,7 @@ describe PDF::Reader::ObjectHash do
       expect(h.object("James")).to eql("James")
     end
 
-    it "should translate reference objects into an extracted PDF object" do
+    it "translates reference objects into an extracted PDF object" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -86,40 +86,40 @@ describe PDF::Reader::ObjectHash do
       PDF::Reader::ObjectHash.new pdf_spec_file("cairo-unicode")
     end
 
-    it "should return regular objects unchanged" do
+    it "returns regular objects unchanged" do
       expect(hash.deref!(-1)).to      eql(-1)
       expect(hash.deref!(nil)).to     be_nil
       expect(hash.deref!("James")).to eql("James")
     end
 
-    it "should translate reference objects into an extracted PDF object" do
+    it "translates reference objects into an extracted PDF object" do
       expect(hash.deref!(PDF::Reader::Reference.new(3,0))).to eq 3649
     end
 
-    it "should recursively dereference references within hashes" do
+    it "recursively dereferences references within hashes" do
       font_descriptor = hash.deref! PDF::Reader::Reference.new(17, 0)
       expect(font_descriptor[:FontFile3]).to be_an_instance_of \
         PDF::Reader::Stream
     end
 
-    it "should recursively dereference references within stream hashes" do
+    it "recursively dereferences references within stream hashes" do
       font_file = hash.deref! PDF::Reader::Reference.new(15, 0)
       expect(font_file.hash[:Length]).to eq 2103
     end
 
-    it "should recursively dereference references within arrays" do
+    it "recursively dereferences references within arrays" do
       font = hash.deref! PDF::Reader::Reference.new(19, 0)
       expect(font[:DescendantFonts][0][:Subtype]).to eq :CIDFontType0
     end
 
-    it "should return a new Hash, not mutate the provided Hash" do
+    it "returns a new Hash, not mutate the provided Hash" do
       orig_collection = {}
       new_collection  = hash.deref!(orig_collection)
 
       expect(orig_collection.object_id).not_to eq(new_collection.object_id)
     end
 
-    it "should return a new Array, not mutate the provided Array" do
+    it "returns a new Array, not mutate the provided Array" do
       orig_collection = []
       new_collection  = hash.deref!(orig_collection)
 
@@ -130,7 +130,7 @@ describe PDF::Reader::ObjectHash do
 
   describe "#fetch" do
 
-    it "should raise IndexError for any invalid hash key when no default is provided" do
+    it "raises IndexError for any invalid hash key when no default is provided" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -139,14 +139,14 @@ describe PDF::Reader::ObjectHash do
       expect { h.fetch("James") }.to raise_error(IndexError)
     end
 
-    it "should return default for any hash key that doesn't exist when a default is provided" do
+    it "returns default for any hash key that doesn't exist when a default is provided" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
       expect(h.fetch(10000, "default")).to eql("default")
     end
 
-    it "should correctly extract an int object using int or string keys" do
+    it "correctly extracts an int object using int or string keys" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -155,7 +155,7 @@ describe PDF::Reader::ObjectHash do
       expect(h.fetch("3james")).to eql(3649)
     end
 
-    it "should correctly extract an int object using PDF::Reader::Reference keys" do
+    it "correctly extracts an int object using PDF::Reader::Reference keys" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
       ref = PDF::Reader::Reference.new(3,0)
@@ -166,7 +166,7 @@ describe PDF::Reader::ObjectHash do
 
   describe "#each" do
 
-    it "should iterate 57 times when using cairo-unicode PDF" do
+    it "iterates 57 times when using cairo-unicode PDF" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -177,7 +177,7 @@ describe PDF::Reader::ObjectHash do
       expect(count).to eql(57)
     end
 
-    it "should provide a PDF::Reader::Reference to each iteration" do
+    it "provides a PDF::Reader::Reference to each iteration" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -190,7 +190,7 @@ describe PDF::Reader::ObjectHash do
 
   describe "#each_key" do
 
-    it "should iterate 57 times when using cairo-unicode PDF" do
+    it "iterates 57 times when using cairo-unicode PDF" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -201,7 +201,7 @@ describe PDF::Reader::ObjectHash do
       expect(count).to eql(57)
     end
 
-    it "should provide a PDF::Reader::Reference to each iteration" do
+    it "provides a PDF::Reader::Reference to each iteration" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -213,7 +213,7 @@ describe PDF::Reader::ObjectHash do
 
   describe "#each_value" do
 
-    it "should iterate 57 times when using cairo-unicode PDF" do
+    it "iterates 57 times when using cairo-unicode PDF" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -227,7 +227,7 @@ describe PDF::Reader::ObjectHash do
 
   describe "#size" do
 
-    it "should return 57 when using cairo-unicode PDF" do
+    it "returns 57 when using cairo-unicode PDF" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -237,7 +237,7 @@ describe PDF::Reader::ObjectHash do
 
   describe "#empty?" do
 
-    it "should return false when using cairo-unicode PDF" do
+    it "returns false when using cairo-unicode PDF" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -247,7 +247,7 @@ describe PDF::Reader::ObjectHash do
 
   describe "#has_key?" do
 
-    it "should return true when called with a valid ID" do
+    it "returns true when called with a valid ID" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -255,7 +255,7 @@ describe PDF::Reader::ObjectHash do
       expect(h.has_key?(PDF::Reader::Reference.new(1,0))).to be_truthy
     end
 
-    it "should return false when called with an invalid ID" do
+    it "returns false when called with an invalid ID" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -268,14 +268,14 @@ describe PDF::Reader::ObjectHash do
 
   describe "#has_value?" do
 
-    it "should return true when called with a valid object" do
+    it "returns true when called with a valid object" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
       expect(h.has_value?(3649)).to be_truthy
     end
 
-    it "should return false when called with an invalid object" do
+    it "returns false when called with an invalid object" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -287,7 +287,7 @@ describe PDF::Reader::ObjectHash do
 
   describe "#keys" do
 
-    it "should return an array of keys" do
+    it "returns an array of keys" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -299,7 +299,7 @@ describe PDF::Reader::ObjectHash do
 
   describe "#values" do
 
-    it "should return an array of object" do
+    it "returns an array of object" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -311,7 +311,7 @@ describe PDF::Reader::ObjectHash do
 
   describe "#values_at" do
 
-    it "should return an array of object" do
+    it "returns an array of object" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
       ref3 = PDF::Reader::Reference.new(3,0)
@@ -324,7 +324,7 @@ describe PDF::Reader::ObjectHash do
 
   describe "#to_a" do
 
-    it "should return an array of 57 arrays" do
+    it "returns an array of 57 arrays" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -336,7 +336,7 @@ describe PDF::Reader::ObjectHash do
 
   describe "#trailer" do
 
-    it "should return the document trailer dictionary" do
+    it "returns the document trailer dictionary" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -348,7 +348,7 @@ describe PDF::Reader::ObjectHash do
 
   describe "#pdf_version" do
 
-    it "should return the document PDF version dictionary" do
+    it "returns the document PDF version dictionary" do
       filename = pdf_spec_file("cairo-unicode")
       h = PDF::Reader::ObjectHash.new(filename)
 
@@ -359,7 +359,7 @@ describe PDF::Reader::ObjectHash do
   describe "#page_references" do
 
     context "with cairo-unicode.pdf" do
-      it "should return an ordered array of references to page objects" do
+      it "returns an ordered array of references to page objects" do
         filename = pdf_spec_file("cairo-unicode")
         h = PDF::Reader::ObjectHash.new(filename)
 
@@ -370,7 +370,7 @@ describe PDF::Reader::ObjectHash do
     end
 
     context "with indirect_kids_array.pdf" do
-      it "should return an ordered array of references to page objects" do
+      it "returns an ordered array of references to page objects" do
         filename = pdf_spec_file("indirect_kids_array")
         h = PDF::Reader::ObjectHash.new(filename)
 

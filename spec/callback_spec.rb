@@ -8,7 +8,7 @@ describe PDF::Reader do
 
   describe  "begin_inline_image callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return no arguments on #{filename}" do
+      it "returns no arguments on #{filename}" do
         receiver.all_args(:begin_inline_image).each do |args|
           expect(args).to eq([])
         end
@@ -18,7 +18,7 @@ describe PDF::Reader do
 
   describe  "begin_inline_image_data callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return an even number of arguments on #{filename}" do
+      it "returns an even number of arguments on #{filename}" do
         receiver.all_args(:begin_inline_image_data).each do |args|
           expect(args.size).to be_even
         end
@@ -28,7 +28,7 @@ describe PDF::Reader do
 
   describe  "begin_text_object callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return no arguments on #{filename}" do
+      it "returns no arguments on #{filename}" do
         receiver.all_args(:begin_text_object).each do |args|
           expect(args).to eq([])
         end
@@ -38,7 +38,7 @@ describe PDF::Reader do
 
   describe  "end_document callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return no arguments on #{filename}" do
+      it "returns no arguments on #{filename}" do
         receiver.all_args(:end_document).each do |args|
           expect(args).to eq([])
         end
@@ -48,7 +48,7 @@ describe PDF::Reader do
 
   describe  "end_inline_image callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return a binary string on #{filename}" do
+      it "returns a binary string on #{filename}" do
         receiver.all_args(:end_inline_image).each do |args|
           expect(args.size).to eq 1
           check_binary(args)
@@ -59,7 +59,7 @@ describe PDF::Reader do
 
   describe  "end_page callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return no arguments on #{filename}" do
+      it "returns no arguments on #{filename}" do
         receiver.all_args(:end_page).each do |args|
           expect(args).to eq([])
         end
@@ -69,7 +69,7 @@ describe PDF::Reader do
 
   describe  "end_page_container callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return no arguments on #{filename}" do
+      it "returns no arguments on #{filename}" do
         receiver.all_args(:end_page_container).each do |args|
           expect(args).to eq([])
         end
@@ -79,7 +79,7 @@ describe PDF::Reader do
 
   describe  "end_text_object callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return no arguments on #{filename}" do
+      it "returns no arguments on #{filename}" do
         receiver.all_args(:end_text_object).each do |args|
           expect(args).to eq([])
         end
@@ -89,7 +89,7 @@ describe PDF::Reader do
 
   describe  "move_to_next_line_and_show_text callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return a single binary strings on #{filename}" do
+      it "returns a single binary strings on #{filename}" do
         receiver.all_args(:move_to_next_line_and_show_text).each do |args|
           expect(args.size).to eq 1
           expect(args[0]).to be_a(String)
@@ -101,7 +101,7 @@ describe PDF::Reader do
 
   describe  "restore_graphics_state callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return no arguments on #{filename}" do
+      it "returns no arguments on #{filename}" do
         receiver.all_args(:restore_graphics_state).each do |args|
           expect(args).to eq([])
         end
@@ -111,7 +111,7 @@ describe PDF::Reader do
 
   describe  "save_graphics_state callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return no arguments on #{filename}" do
+      it "returns no arguments on #{filename}" do
         receiver.all_args(:save_graphics_state).each do |args|
           expect(args).to eq([])
         end
@@ -121,7 +121,7 @@ describe PDF::Reader do
 
   describe  "set_text_font_and_size callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return no arguments on #{filename}" do
+      it "returns no arguments on #{filename}" do
         receiver.all_args(:set_text_font_and_size).each do |args|
           expect(args.size).to eq 2
           expect(args[0]).to be_a(Symbol)
@@ -133,7 +133,7 @@ describe PDF::Reader do
 
   describe  "show_text callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return a single binary string argument on #{filename}" do
+      it "returns a single binary string argument on #{filename}" do
         receiver.all_args(:show_text).each do |args|
           expect(args.size).to eq 1
           expect(args[0]).to be_a(String)
@@ -145,7 +145,7 @@ describe PDF::Reader do
 
   describe  "show_text_with_positioning callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return an array of Numbers and binary strings on #{filename}" do
+      it "returns an array of Numbers and binary strings on #{filename}" do
         receiver.all_args(:show_text_with_positioning).each do |args|
           args[0].each do |arg|
             expect(String === arg || Integer === arg || Float === arg).to eq true
@@ -158,7 +158,7 @@ describe PDF::Reader do
 
   describe  "set_spacing_next_line_show_text callback" do
     CallbackHelper.instance.good_receivers.each do |filename, receiver|
-      it "should return a single binary strings on #{filename}" do
+      it "returns a single binary strings on #{filename}" do
         receiver.all_args(:set_spacing_next_line_show_text).each do |args|
           expect(args.size).to eq 3
           expect(args[0]).to be_a(Numeric)

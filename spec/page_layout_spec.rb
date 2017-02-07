@@ -8,7 +8,7 @@ describe PDF::Reader::PageLayout do
       context "with no words" do
         subject { PDF::Reader::PageLayout.new([], mediabox)}
 
-        it "should return a correct string" do
+        it "returns a correct string" do
           expect(subject.to_s).to eq("")
         end
       end
@@ -21,7 +21,7 @@ describe PDF::Reader::PageLayout do
         end
         subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
-        it "should return a correct string" do
+        it "returns a correct string" do
           expect(subject.to_s).to eq("")
         end
       end
@@ -34,7 +34,7 @@ describe PDF::Reader::PageLayout do
         end
         subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
-        it "should return a correct string" do
+        it "returns a correct string" do
           expect(subject.to_s).to eq("Hello")
         end
       end
@@ -47,7 +47,7 @@ describe PDF::Reader::PageLayout do
         end
         subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
-        it "should return a correct string" do
+        it "returns a correct string" do
           expect(subject.to_s).to eq("Hello\nWorld")
         end
       end
@@ -60,7 +60,7 @@ describe PDF::Reader::PageLayout do
         end
         subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
-        it "should return a correct string" do
+        it "returns a correct string" do
           expect(subject.to_s).to eq("Hello World")
         end
       end
@@ -74,7 +74,7 @@ describe PDF::Reader::PageLayout do
         end
         subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
-        it "should return a correct string" do
+        it "returns a correct string" do
           expect(subject.to_s).to eq("Hello World")
         end
       end
@@ -88,7 +88,7 @@ describe PDF::Reader::PageLayout do
         end
         subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
-        it "should return a correct string" do
+        it "returns a correct string" do
           expect(subject.to_s).to eq("Hello  World")
         end
       end
@@ -102,7 +102,7 @@ describe PDF::Reader::PageLayout do
         end
         subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
-        it "should return a correct string" do
+        it "returns a correct string" do
           expect(subject.to_s).to eq("Hello\n World")
         end
       end
@@ -116,7 +116,7 @@ describe PDF::Reader::PageLayout do
         end
         subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
-        it "should return a correct string" do
+        it "returns a correct string" do
           expect(subject.to_s).to eq(" Hello\nWorld")
         end
       end
@@ -130,7 +130,7 @@ describe PDF::Reader::PageLayout do
         end
         subject { PDF::Reader::PageLayout.new(runs, mediabox)}
 
-        it "should return a correct string" do
+        it "returns a correct string" do
           expect(subject.to_s).to eq("Hello\n\nWorld")
         end
       end

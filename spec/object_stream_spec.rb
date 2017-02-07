@@ -8,7 +8,7 @@ describe PDF::Reader::ObjectStream do
       @data = "29 0 30 48 <</K 30 0 R/RoleMap 31 0 R/Type/StructTreeRoot>><</P 29 0 R/S/Document>>"
     end
 
-    it "should provide access to 2 embedded objects" do
+    it "provides access to 2 embedded objects" do
       stream = PDF::Reader::Stream.new(@hash, @data)
       obj_stream = PDF::Reader::ObjectStream.new(stream)
 
@@ -19,7 +19,7 @@ describe PDF::Reader::ObjectStream do
       expect(obj_stream[30][:S]).to eql(:Document)
     end
 
-    it "should return nil for objects it doesn't contain" do
+    it "returns nil for objects it doesn't contain" do
       stream = PDF::Reader::Stream.new(@hash, @data)
       obj_stream = PDF::Reader::ObjectStream.new(stream)
 
@@ -35,7 +35,7 @@ describe PDF::Reader::ObjectStream do
       @data = "29 0 30 48 <</K 30 0 R/RoleMap 31 0 R/Type/StructTreeRoot>><</P 29 0 R/S/Document>>"
     end
 
-    it "should return the number of embedded objects" do
+    it "returns the number of embedded objects" do
       stream = PDF::Reader::Stream.new(@hash, @data)
       obj_stream = PDF::Reader::ObjectStream.new(stream)
 

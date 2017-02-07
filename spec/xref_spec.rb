@@ -9,7 +9,7 @@ describe PDF::Reader::XRef do
   describe "initilisation" do
     context "with cairo-basic.pdf" do
       context "as a File" do
-        it "should load all xrefs correctly" do
+        it "loads all xrefs correctly" do
           filename = File.new(pdf_spec_file("cairo-basic"))
           tbl      = PDF::Reader::XRef.new(filename)
           # 1 xref table with 16 items (ignore the first)
@@ -17,7 +17,7 @@ describe PDF::Reader::XRef do
         end
       end
       context "as a StringIO" do
-        it "should load all xrefs correctly" do
+        it "loads all xrefs correctly" do
           data = StringIO.new(binread(pdf_spec_file("cairo-basic")))
           tbl  = PDF::Reader::XRef.new(data)
           # 1 xref table with 16 items (ignore the first)
@@ -27,7 +27,7 @@ describe PDF::Reader::XRef do
     end
     context "with cairo-unicode.pdf" do
       context "as a File" do
-        it "should load all xrefs correctly" do
+        it "loads all xrefs correctly" do
           file = File.new(pdf_spec_file("cairo-unicode"))
           tbl  = PDF::Reader::XRef.new(file)
           # 1 xref table with 58 items (ignore the first)
@@ -35,7 +35,7 @@ describe PDF::Reader::XRef do
         end
       end
       context "as a StringIO" do
-        it "should load all xrefs correctly from a StringIO" do
+        it "loads all xrefs correctly from a StringIO" do
           data = StringIO.new(binread(pdf_spec_file("cairo-unicode")))
           tbl  = PDF::Reader::XRef.new(data)
           # 1 xref table with 58 items (ignore the first)
@@ -45,7 +45,7 @@ describe PDF::Reader::XRef do
     end
 
     context "with openoffice-2.2.pdf" do
-      it "should load all xrefs correctly" do
+      it "loads all xrefs correctly" do
         @file = File.new(pdf_spec_file("openoffice-2.2"))
         @tbl = PDF::Reader::XRef.new(@file)
         # 1 xref table with 29 items (ignore the first)
@@ -54,7 +54,7 @@ describe PDF::Reader::XRef do
     end
 
     context "with pdflatex.pdf" do
-      it "should load all xrefs correctly" do
+      it "loads all xrefs correctly" do
         @file = File.new(pdf_spec_file("pdflatex"))
         @tbl = PDF::Reader::XRef.new(@file)
         # 1 xref table with 360 items (but a bunch are ignored)
@@ -73,7 +73,7 @@ describe PDF::Reader::XRef do
     end
 
     context "with no_trailer.pdf" do
-      it "should raise an error when attempting to locate the xref table" do
+      it "raises an error when attempting to locate the xref table" do
         @file = File.new(pdf_spec_file("no_trailer"))
         expect {
           PDF::Reader::XRef.new(@file)
@@ -82,7 +82,7 @@ describe PDF::Reader::XRef do
     end
 
     context "with trailer_is_not_a_dict.pdf" do
-      it "should raise an error when attempting to locate the xref table" do
+      it "raises an error when attempting to locate the xref table" do
         @file = File.new(pdf_spec_file("trailer_is_not_a_dict"))
         expect {
           PDF::Reader::XRef.new(@file)
@@ -94,16 +94,16 @@ describe PDF::Reader::XRef do
       let!(:file) { File.new(pdf_spec_file("cross_ref_stream"))}
       subject     { PDF::Reader::XRef.new(file)}
 
-      it "should correctly load all object locations" do
+      it "correctly loads all object locations" do
         # 1 xref stream with 344 items (ignore the 17 free objects)
         expect(subject.xref.keys.size).to eql(327)
       end
 
-      it "should load type 1 objects references" do
+      it "loads type 1 objects references" do
         expect(subject.xref[66][0]).to eql(298219)
       end
 
-      it "should load type 2 objects references" do
+      it "loads type 2 objects references" do
         expect(subject.xref[281][0]).to eql(PDF::Reader::Reference.new(341,0))
       end
     end
@@ -112,7 +112,7 @@ describe PDF::Reader::XRef do
       let!(:file) { File.new(pdf_spec_file("cross_ref_stream"))}
       subject     { PDF::Reader::XRef.new(file)}
 
-      it "should raise an error when attempting to load an invalid xref stream" do
+      it "raises an error when attempting to load an invalid xref stream" do
         expect do
           subject.send(:load_xref_stream, {:Subject=>"\xFE\xFF"})
         end.to raise_exception(PDF::Reader::MalformedPDFError)
@@ -123,14 +123,14 @@ describe PDF::Reader::XRef do
       let!(:file) { File.new(pdf_spec_file("zeroed_xref_entry"))}
       subject     { PDF::Reader::XRef.new(file)}
 
-      it "should ignore non-free entries in the xref stream that point to offset 0" do
+      it "ignores non-free entries in the xref stream that point to offset 0" do
         expect(subject.size).to eql(6)
         expect(subject.xref.keys).not_to include(7)
       end
     end
 
     context "with junk_prefix.pdf" do
-      it "should load all xrefs correctly from a File" do
+      it "loads all xrefs correctly from a File" do
         File.open(pdf_spec_file("junk_prefix")) do |file|
           tbl      = PDF::Reader::XRef.new(file)
           # 1 xref table with 6 items (ignore the first)
@@ -138,7 +138,7 @@ describe PDF::Reader::XRef do
         end
       end
 
-      it "should load all xrefs with an offset to skip junk at the beginning of the file" do
+      it "loads all xrefs with an offset to skip junk at the beginning of the file" do
         File.open(pdf_spec_file("junk_prefix")) do |file|
           tbl      = PDF::Reader::XRef.new(file)
           expect(tbl.xref[1][0]).to eq(36)

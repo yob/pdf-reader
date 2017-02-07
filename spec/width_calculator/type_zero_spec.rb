@@ -13,7 +13,7 @@ describe PDF::Reader::WidthCalculator::TypeZero do
       let!(:font)        { double(:descendantfonts => descendants) }
       subject            { PDF::Reader::WidthCalculator::TypeZero.new(font)}
 
-      it "should delegate the width calculation to the first descendant font" do
+      it "delegates the width calculation to the first descendant font" do
         expect(subject.glyph_width(10)).to eq(50)
       end
     end

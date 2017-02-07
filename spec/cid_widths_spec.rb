@@ -4,7 +4,7 @@ describe PDF::Reader::CidWidths, "#initilize" do
   context "with an empty array" do
     subject { PDF::Reader::CidWidths.new(500, [])}
 
-    it "should return the default width" do
+    it "returns the default width" do
       expect(subject[1]).to eq(500)
     end
   end
@@ -12,19 +12,19 @@ describe PDF::Reader::CidWidths, "#initilize" do
   context "with an array using the first form" do
     subject { PDF::Reader::CidWidths.new(500, [1, [10, 20, 30]])}
 
-    it "should return correct width for index 1" do
+    it "returns correct width for index 1" do
       expect(subject[1]).to eq(10)
     end
 
-    it "should return correct width for index 2" do
+    it "returns correct width for index 2" do
       expect(subject[2]).to eq(20)
     end
 
-    it "should return correct width for index 3" do
+    it "returns correct width for index 3" do
       expect(subject[3]).to eq(30)
     end
 
-    it "should return correct width for index 4" do
+    it "returns correct width for index 4" do
       expect(subject[4]).to eq(500)
     end
   end
@@ -32,19 +32,19 @@ describe PDF::Reader::CidWidths, "#initilize" do
   context "with an array using the second form" do
     subject { PDF::Reader::CidWidths.new(500, [1, 3, 10])}
 
-    it "should return correct width for index 1" do
+    it "returns correct width for index 1" do
       expect(subject[1]).to eq(10)
     end
 
-    it "should return correct width for index 2" do
+    it "returns correct width for index 2" do
       expect(subject[2]).to eq(10)
     end
 
-    it "should return correct width for index 3" do
+    it "returns correct width for index 3" do
       expect(subject[3]).to eq(10)
     end
 
-    it "should return correct width for index 4" do
+    it "returns correct width for index 4" do
       expect(subject[4]).to eq(500)
     end
   end
@@ -58,31 +58,31 @@ describe PDF::Reader::CidWidths, "#initilize" do
     }
     subject       { PDF::Reader::CidWidths.new(500, widths)}
 
-    it "should return correct width for index 1" do
+    it "returns correct width for index 1" do
       expect(subject[1]).to eq(10)
     end
 
-    it "should return correct width for index 2" do
+    it "returns correct width for index 2" do
       expect(subject[2]).to eq(20)
     end
 
-    it "should return correct width for index 3" do
+    it "returns correct width for index 3" do
       expect(subject[3]).to eq(30)
     end
 
-    it "should return correct width for index 4" do
+    it "returns correct width for index 4" do
       expect(subject[4]).to eq(40)
     end
 
-    it "should return correct width for index 5" do
+    it "returns correct width for index 5" do
       expect(subject[5]).to eq(40)
     end
 
-    it "should return correct width for index 6" do
+    it "returns correct width for index 6" do
       expect(subject[6]).to eq(40)
     end
 
-    it "should return correct width for index 7" do
+    it "returns correct width for index 7" do
       expect(subject[7]).to eq(500)
     end
   end

@@ -21,13 +21,13 @@ describe PDF::Reader::TransformationMatrix do
       context "and the identity matrix" do
         let(:matrix_two) { PDF::Reader::TransformationMatrix.new(1,0,0,1,0,0)}
 
-        it "should leave the values unchanged" do
+        it "leaves the values unchanged" do
           matrix_one.multiply_with_an_object!(matrix_two)
 
           expect(matrix_one.to_a).to eq([2,3,0,  4,5,0,  6,7,1])
         end
 
-        it "should leave the values unchanged when reversed" do
+        it "leaves the values unchanged when reversed" do
           matrix_two.multiply_with_an_object!(matrix_one)
 
           expect(matrix_two.to_a).to eq([2,3,0,  4,5,0,  6,7,1])
@@ -37,13 +37,13 @@ describe PDF::Reader::TransformationMatrix do
       context "and a horizontal displacement" do
         let(:matrix_two) { PDF::Reader::TransformationMatrix.new(1,0, 0,1, 10,0)}
 
-        it "should set the new matrix values" do
+        it "sets the new matrix values" do
           matrix_one.multiply_with_an_object!(matrix_two)
 
           expect(matrix_one.to_a).to eq([2,3,0,  4,5,0,  16,7,1])
         end
 
-        it "should set the new matrix values when reversed" do
+        it "sets the new matrix values when reversed" do
           matrix_two.multiply_with_an_object!(matrix_one)
 
           expect(matrix_two.to_a).to eq([2,3,0,  4,5,0,  26,37,1])
@@ -53,13 +53,13 @@ describe PDF::Reader::TransformationMatrix do
       context "and applying a vertical displacement" do
         let(:matrix_two) { PDF::Reader::TransformationMatrix.new(1,0, 0,1, 0,10)}
 
-        it "should set the new matrix values" do
+        it "sets the new matrix values" do
           matrix_one.multiply_with_an_object!(matrix_two)
 
           expect(matrix_one.to_a).to eq([2,3,0,  4,5,0,  6,17,1])
         end
 
-        it "should set the new matrix values when reversed" do
+        it "sets the new matrix values when reversed" do
           matrix_two.multiply_with_an_object!(matrix_one)
 
           expect(matrix_two.to_a).to eq([2,3,0,  4,5,0,  46,57,1])
@@ -69,13 +69,13 @@ describe PDF::Reader::TransformationMatrix do
       context "and applying a horizontal and vertical displacement" do
         let(:matrix_two) { PDF::Reader::TransformationMatrix.new(1,0, 0,1, 10,10)}
 
-        it "should set the new matrix values" do
+        it "sets the new matrix values" do
           matrix_one.multiply_with_an_object!(matrix_two)
 
           expect(matrix_one.to_a).to eq([2,3,0,  4,5,0,  16,17,1])
         end
 
-        it "should set the new matrix values when reversed" do
+        it "sets the new matrix values when reversed" do
           matrix_two.multiply_with_an_object!(matrix_one)
 
           expect(matrix_two.to_a).to eq([2,3,0,  4,5,0,  66,87,1])
@@ -85,13 +85,13 @@ describe PDF::Reader::TransformationMatrix do
       context "and applying a horizontal scale" do
         let(:matrix_two) { PDF::Reader::TransformationMatrix.new(10,0, 0,1, 0,0)}
 
-        it "should set the new matrix values" do
+        it "sets the new matrix values" do
           matrix_one.multiply_with_an_object!(matrix_two)
 
           expect(matrix_one.to_a).to eq([20,3,0,  40,5,0,  60,7,1])
         end
 
-        it "should set the new matrix values when reversed" do
+        it "sets the new matrix values when reversed" do
           matrix_two.multiply_with_an_object!(matrix_one)
 
           expect(matrix_two.to_a).to eq([20,30,0,  4,5,0,  6,7,1])
@@ -101,13 +101,13 @@ describe PDF::Reader::TransformationMatrix do
       context "and applying a vertical scale" do
         let(:matrix_two) { PDF::Reader::TransformationMatrix.new(1,0, 0,10, 0,0)}
 
-        it "should set the new matrix values" do
+        it "sets the new matrix values" do
           matrix_one.multiply_with_an_object!(matrix_two)
 
           expect(matrix_one.to_a).to eq([2,30,0,  4,50,0,  6,70,1])
         end
 
-        it "should set the new matrix values when reversed" do
+        it "sets the new matrix values when reversed" do
           matrix_two.multiply_with_an_object!(matrix_one)
 
           expect(matrix_two.to_a).to eq([2,3,0,  40,50,0,  6,7,1])
@@ -117,13 +117,13 @@ describe PDF::Reader::TransformationMatrix do
       context "and applying a horizontal and vertical scale" do
         let(:matrix_two) { PDF::Reader::TransformationMatrix.new(10,0, 0,10, 0,0)}
 
-        it "should set the new matrix values" do
+        it "sets the new matrix values" do
           matrix_one.multiply_with_an_object!(matrix_two)
 
           expect(matrix_one.to_a).to eq([20,30,0,  40,50,0,  60,70,1])
         end
 
-        it "should set the new matrix values when reversed" do
+        it "sets the new matrix values when reversed" do
           matrix_two.multiply_with_an_object!(matrix_one)
 
           expect(matrix_two.to_a).to eq([20,30,0,  40,50,0,  6,7,1])
@@ -139,7 +139,7 @@ describe PDF::Reader::TransformationMatrix do
           )
         }
 
-        it "should set the new matrix values" do
+        it "sets the new matrix values" do
           matrix_one.multiply_with_an_object!(matrix_two)
 
           # we can't use #to_a in this test because of all the floating point nums
@@ -151,7 +151,7 @@ describe PDF::Reader::TransformationMatrix do
           expect( "%.3f" % matrix_one.f).to eq("-4.848")
         end
 
-        it "should set the new matrix values when reversed" do
+        it "sets the new matrix values when reversed" do
           matrix_two.multiply_with_an_object!(matrix_one)
 
           # we can't use #to_a in this test because of all the floating point nums
@@ -174,7 +174,7 @@ describe PDF::Reader::TransformationMatrix do
       context "and a horizontal displacement" do
         let(:displacement) { 10 }
 
-        it "should set the new matrix values" do
+        it "sets the new matrix values" do
           matrix_one.horizontal_displacement_multiply!(displacement)
 
           expect(matrix_one.to_a).to eq([2,3,0,  4,5,0,  16,7,1])

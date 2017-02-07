@@ -25,7 +25,7 @@ describe PDF::Reader::FontDescriptor do
     let!(:objects) { PDF::Reader::ObjectHash.allocate }
     subject        { PDF::Reader::FontDescriptor.new(objects, dict)}
 
-    it "should set the correct instance vars" do
+    it "sets the correct instance vars" do
       expect(subject.ascent).to            eq(10)
       expect(subject.descent).to           eq(10)
       expect(subject.missing_width).to     eq(500)

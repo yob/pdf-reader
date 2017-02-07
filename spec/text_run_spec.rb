@@ -11,23 +11,23 @@ describe PDF::Reader::TextRun do
 
       subject { PDF::Reader::TextRun.new(x, y, width, font, text)}
 
-      it "should make x accessible" do
+      it "makes x accessible" do
         expect(subject.x).to eq(10)
       end
 
-      it "should make y accessible" do
+      it "makes y accessible" do
         expect(subject.y).to eq(20)
       end
 
-      it "should make width accessible" do
+      it "makes width accessible" do
         expect(subject.width).to eq(30)
       end
 
-      it "should make font_size accessible" do
+      it "makes font_size accessible" do
         expect(subject.font_size).to eq(12)
       end
 
-      it "should make text accessible" do
+      it "makes text accessible" do
         expect(subject.text).to eq("Chunky")
       end
     end
@@ -43,7 +43,7 @@ describe PDF::Reader::TextRun do
 
       subject { PDF::Reader::TextRun.new(x, y, width, font, text)}
 
-      it "should equal x + width" do
+      it "equals x + width" do
         expect(subject.endx).to eq(40)
       end
     end
@@ -60,7 +60,7 @@ describe PDF::Reader::TextRun do
         let(:one)   { PDF::Reader::TextRun.new(x,           y, width, font, "A")}
         let(:two)   { PDF::Reader::TextRun.new(one.endx+12, y, width, font, "B")}
 
-        it "should return true" do
+        it "returns true" do
           expect(one.mergable?(two)).to be_truthy
         end
       end
@@ -69,7 +69,7 @@ describe PDF::Reader::TextRun do
         let(:one)   { PDF::Reader::TextRun.new(x,           y, width, font, "A")}
         let(:two)   { PDF::Reader::TextRun.new(one.endx+13, y, width, font, "B")}
 
-        it "should return false" do
+        it "returns false" do
           expect(one.mergable?(two)).to be_falsey
         end
       end
@@ -78,7 +78,7 @@ describe PDF::Reader::TextRun do
         let(:one)   { PDF::Reader::TextRun.new(x, y,     width, font, "A")}
         let(:two)   { PDF::Reader::TextRun.new(x, y + 1, width, font, "B")}
 
-        it "should return false" do
+        it "returns false" do
           expect(one.mergable?(two)).to be_falsey
         end
       end
@@ -88,7 +88,7 @@ describe PDF::Reader::TextRun do
         let(:one)   { PDF::Reader::TextRun.new(x,           y, width, font,   "A")}
         let(:two)   { PDF::Reader::TextRun.new(one.endx+12, y, width, font+1, "B")}
 
-        it "should return true" do
+        it "returns true" do
           expect(one.mergable?(two)).to be_falsey
         end
       end
@@ -97,7 +97,7 @@ describe PDF::Reader::TextRun do
         let(:one)   { PDF::Reader::TextRun.new(x,           y, width, font,   "A")}
         let(:two)   { PDF::Reader::TextRun.new(one.endx+13, y, width, font+1, "B")}
 
-        it "should return false" do
+        it "returns false" do
           expect(one.mergable?(two)).to be_falsey
         end
       end
@@ -106,7 +106,7 @@ describe PDF::Reader::TextRun do
         let(:one)   { PDF::Reader::TextRun.new(x, y,     width, font,   "A")}
         let(:two)   { PDF::Reader::TextRun.new(x, y + 1, width, font+1, "B")}
 
-        it "should return false" do
+        it "returns false" do
           expect(one.mergable?(two)).to be_falsey
         end
       end
@@ -123,7 +123,7 @@ describe PDF::Reader::TextRun do
       let(:one)   { PDF::Reader::TextRun.new(x,            y, width, font, "A")}
       let(:two)   { PDF::Reader::TextRun.new(one.endx+1.2, y, width, font, "B")}
 
-      it "should return a new TextRun with combined data" do
+      it "returns a new TextRun with combined data" do
         result = one + two
         expect(result.x).to     eq(10)
         expect(result.y).to     eq(20)
@@ -136,7 +136,7 @@ describe PDF::Reader::TextRun do
       let(:one)   { PDF::Reader::TextRun.new(x,           y, width, font, "A")}
       let(:two)   { PDF::Reader::TextRun.new(one.endx+12, y, width, font, "B")}
 
-      it "should return a new TextRun with combined data" do
+      it "returns a new TextRun with combined data" do
         result = one + two
         expect(result.x).to     eq(10)
         expect(result.y).to     eq(20)
@@ -149,7 +149,7 @@ describe PDF::Reader::TextRun do
       let(:one)   { PDF::Reader::TextRun.new(x,           y, width, font, "A")}
       let(:two)   { PDF::Reader::TextRun.new(one.endx+13, y, width, font, "B")}
 
-      it "should raise an exception" do
+      it "raises an exception" do
         expect {
           one + two
         }.to raise_error(ArgumentError)
@@ -166,7 +166,7 @@ describe PDF::Reader::TextRun do
       let!(:one) { PDF::Reader::TextRun.new(10, 20, width, font, text)}
       let!(:two) { PDF::Reader::TextRun.new(10, 20, width, font, text)}
 
-      it "should return 0" do
+      it "returns 0" do
         expect(one <=> two).to eq(0)
       end
     end
@@ -175,7 +175,7 @@ describe PDF::Reader::TextRun do
       let!(:one) { PDF::Reader::TextRun.new(10, 10, width, font, text)}
       let!(:two) { PDF::Reader::TextRun.new(10, 20, width, font, text)}
 
-      it "should sort two before one" do
+      it "sorts two before one" do
         expect([one, two].sort).to eq([two, one])
       end
     end
@@ -184,7 +184,7 @@ describe PDF::Reader::TextRun do
       let!(:one) { PDF::Reader::TextRun.new(10, 10, width, font, text)}
       let!(:two) { PDF::Reader::TextRun.new(20, 10, width, font, text)}
 
-      it "should sort one before two" do
+      it "sorts one before two" do
         expect([one, two].sort).to eq([one, two])
       end
     end
@@ -193,7 +193,7 @@ describe PDF::Reader::TextRun do
       let!(:one) { PDF::Reader::TextRun.new(10, 10, width, font, text)}
       let!(:two) { PDF::Reader::TextRun.new(10, 05, width, font, text)}
 
-      it "should sort one before two" do
+      it "sorts one before two" do
         expect([one, two].sort).to eq([one, two])
       end
     end
@@ -202,7 +202,7 @@ describe PDF::Reader::TextRun do
       let!(:one) { PDF::Reader::TextRun.new(10, 10, width, font, text)}
       let!(:two) { PDF::Reader::TextRun.new(5, 10, width, font, text)}
 
-      it "should sort two before one" do
+      it "sorts two before one" do
         expect([one, two].sort).to eq([two, one])
       end
     end
@@ -217,7 +217,7 @@ describe PDF::Reader::TextRun do
     context "when the run is 30pts wide with 6 characters" do
       subject { PDF::Reader::TextRun.new(10, 20, width, font, text)}
 
-      it "should return 5.0" do
+      it "returns 5.0" do
         expect(subject.mean_character_width).to eq(5.0)
       end
     end

@@ -3,7 +3,7 @@
 describe PDF::Reader::GlyphHash do
   describe "#name_to_unicode" do
 
-    it "should correctly map a standard glyph name to unicode" do
+    it "correctly maps a standard glyph name to unicode" do
       map = PDF::Reader::GlyphHash.new
       expect(map.name_to_unicode(:a)).to eql(0x0061)
       expect(map.name_to_unicode(:e)).to eql(0x0065)
@@ -12,18 +12,18 @@ describe PDF::Reader::GlyphHash do
       expect(map.name_to_unicode(:zukatakana)).to eql(0x30BA)
     end
 
-    it "should correctly map a glyph name with underscores to unicode" do
+    it "correctly maps a glyph name with underscores to unicode" do
       map = PDF::Reader::GlyphHash.new
       expect(map.name_to_unicode(:f_i)).to eql(map.name_to_unicode(:fi))
     end
 
-    it "should correctly map a uniHHHH glyph to unicode" do
+    it "correctly maps a uniHHHH glyph to unicode" do
       map = PDF::Reader::GlyphHash.new
       expect(map.name_to_unicode(:uni0032)).to eql(0x0032)
       expect(map.name_to_unicode(:uni1234)).to eql(0x1234)
     end
 
-    it "should correctly map a uHHHH glyph to unicode" do
+    it "correctly maps a uHHHH glyph to unicode" do
       map = PDF::Reader::GlyphHash.new
       expect(map.name_to_unicode(:u0032)).to   eql(0x0032)
       expect(map.name_to_unicode(:u1234)).to   eql(0x1234)
@@ -31,7 +31,7 @@ describe PDF::Reader::GlyphHash do
       expect(map.name_to_unicode(:u123456)).to eql(0x123456)
     end
 
-    it "should correctly map a Ann glyph to unicode" do
+    it "correctly maps a Ann glyph to unicode" do
       map = PDF::Reader::GlyphHash.new
       expect(map.name_to_unicode(:A65)).to     eql(65)
       expect(map.name_to_unicode(:g3)).to      eql(3)
@@ -42,7 +42,7 @@ describe PDF::Reader::GlyphHash do
       expect(map.name_to_unicode(:G20000)).to  eql(20000)
     end
 
-    it "should correctly map a AAnn glyph to unicode" do
+    it "correctly maps a AAnn glyph to unicode" do
       map = PDF::Reader::GlyphHash.new
       expect(map.name_to_unicode(:AA65)).to     eql(65)
       expect(map.name_to_unicode(:gg65)).to     eql(65)
@@ -56,7 +56,7 @@ describe PDF::Reader::GlyphHash do
 
   describe "#unicode_to_name" do
 
-    it "should correctly map a standard glyph name to unicode" do
+    it "correctly maps a standard glyph name to unicode" do
       map = PDF::Reader::GlyphHash.new
       expect(map.unicode_to_name(0x0061)).to eql([:a])
       expect(map.unicode_to_name(0x0065)).to eql([:e])
