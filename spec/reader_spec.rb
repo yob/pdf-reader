@@ -5,7 +5,7 @@ describe PDF::Reader do
   let(:oo3)           { pdf_spec_file("oo3")}
   let(:no_text_spaces) { pdf_spec_file("no_text_spaces")}
 
-  describe "open() class method" do
+  describe ".open()" do
 
     it "should pass a reader instance to a block" do
       PDF::Reader.open(cairo_basic) do |reader|
@@ -14,7 +14,7 @@ describe PDF::Reader do
     end
   end
 
-  describe "pdf_version()" do
+  describe "#pdf_version" do
     it "should return the correct pdf_version" do
       expect(PDF::Reader.new(cairo_basic).pdf_version).to eql(1.4)
     end
@@ -24,7 +24,7 @@ describe PDF::Reader do
     end
   end
 
-  describe "page_count()" do
+  describe "#page_count" do
     context "with cairo-basic" do
       it "should return the correct page_count" do
         expect(PDF::Reader.new(cairo_basic).page_count).to eql(2)
@@ -44,7 +44,7 @@ describe PDF::Reader do
     end
   end
 
-  describe "info()" do
+  describe "#info" do
     it "should return the correct info hash from cairo-basic" do
       info = PDF::Reader.new(cairo_basic).info
 
@@ -77,7 +77,7 @@ describe PDF::Reader do
     end
   end
 
-  describe "metadata()" do
+  describe "#metadata" do
     it "should return nil metadata from cairo-basic" do
       expect(PDF::Reader.new(cairo_basic).metadata).to be_nil
     end
@@ -96,7 +96,7 @@ describe PDF::Reader do
     end
   end
 
-  describe "pages()" do
+  describe "#pages" do
     it "should return an array of pages from cairo-basic" do
       pages = PDF::Reader.new(cairo_basic).pages
 
@@ -118,7 +118,7 @@ describe PDF::Reader do
     end
   end
 
-  describe "page()" do
+  describe "#page" do
     it "should return a single page from cairo-basic" do
       expect(PDF::Reader.new(cairo_basic).page(1)).to be_a_kind_of(PDF::Reader::Page)
     end

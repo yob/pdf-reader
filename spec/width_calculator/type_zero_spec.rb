@@ -6,16 +6,16 @@ describe PDF::Reader::WidthCalculator::TypeZero do
     let!(:font)        { double(:descendantfonts => descendants) }
     subject            { PDF::Reader::WidthCalculator::TypeZero.new(font)}
   end
-end
 
-describe PDF::Reader::WidthCalculator::TypeZero, "#glyph_width" do
-  context "when font#descendantfonts is defined" do
-    let!(:descendants) { [double(:glyph_width    => 50)] }
-    let!(:font)        { double(:descendantfonts => descendants) }
-    subject            { PDF::Reader::WidthCalculator::TypeZero.new(font)}
+  describe "#glyph_width" do
+    context "when font#descendantfonts is defined" do
+      let!(:descendants) { [double(:glyph_width    => 50)] }
+      let!(:font)        { double(:descendantfonts => descendants) }
+      subject            { PDF::Reader::WidthCalculator::TypeZero.new(font)}
 
-    it "should delegate the width calculation to the first descendant font" do
-      expect(subject.glyph_width(10)).to eq(50)
+      it "should delegate the width calculation to the first descendant font" do
+        expect(subject.glyph_width(10)).to eq(50)
+      end
     end
   end
 end
