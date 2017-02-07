@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::Page, "raw_content()" do
   it "should return a string from raw_content() from cairo-basic.pdf page 1" do
     @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))

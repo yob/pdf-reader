@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe "PDF::Reader::CMap with a bfchar cmap" do
 
   it "should correctly load a cmap object string" do

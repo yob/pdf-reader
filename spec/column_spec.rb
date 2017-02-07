@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader, "column specs" do
 
   context "page 1" do

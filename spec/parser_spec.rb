@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::Parser do
   include ParserHelper
   include EncodingHelper

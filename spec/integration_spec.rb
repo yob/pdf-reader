@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 # These specs are a kind of integration spec. They're not unit testing small pieces
 # of code, it's just parsing a range of PDF files and ensuring the result is
 # consistent. An extra check to make sure parsing these files will continue

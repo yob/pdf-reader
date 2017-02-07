@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::Filter::Null do
   it "returns the data unchanged" do
     filter = PDF::Reader::Filter::Null.new

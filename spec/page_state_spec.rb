@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::PageState do
   let!(:page)   { double(:cache => {},
                         :objects => {},

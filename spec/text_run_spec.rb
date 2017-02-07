@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::TextRun, "#initilize" do
   context "when initialized with valid values" do
     let(:x)     { 10 }

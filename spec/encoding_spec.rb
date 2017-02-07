@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::Encoding, "initialisation" do
 
   context "when the encoding is unrecognised" do

@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::Filter do
 
   describe "#with" do

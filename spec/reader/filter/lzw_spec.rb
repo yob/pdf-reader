@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::Filter::Lzw do
   it "should filter a lzw stream with no predictors correctly" do
     filter = PDF::Reader::Filter::Lzw.new

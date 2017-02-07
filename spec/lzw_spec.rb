@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::LZW do
   it "should correctly decode a lzw compress string" do
     content = %w{ 80 0B 60 50 22 0C 0C 85 01 }.map { |byte|

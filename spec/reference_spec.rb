@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::Reference, "hash method" do
 
   it "should return the same hash for 2 identical objects" do

@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::WidthCalculator::TrueType do
   it_behaves_like "a WidthCalculator duck type" do
     let!(:descriptor) { double(:missing_width => 50) }

@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::ObjectStream, "[] method" do
 
   before(:each) do

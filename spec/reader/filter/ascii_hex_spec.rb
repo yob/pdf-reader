@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::Filter::AsciiHex do
   it "should filter a ASCIIHex stream correctly" do
     filter = PDF::Reader::Filter::AsciiHex.new

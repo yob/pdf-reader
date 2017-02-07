@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::FontDescriptor, "initialisation" do
   let!(:dict) do
     {

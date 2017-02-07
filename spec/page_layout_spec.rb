@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::PageLayout, "#to_s" do
   context "with an A4 page" do
     let(:mediabox) { [0, 0, 595.28, 841.89 ]}

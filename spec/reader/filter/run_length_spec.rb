@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::Filter::RunLength do
   it "should filter a RunLengthDecode stream correctly" do
     filter = PDF::Reader::Filter::RunLength.new

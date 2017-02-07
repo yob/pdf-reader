@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader do
   let(:cairo_basic)   { pdf_spec_file("cairo-basic")}
   let(:oo3)           { pdf_spec_file("oo3")}

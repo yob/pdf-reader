@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::CidWidths, "#initilize" do
   context "with an empty array" do
     subject { PDF::Reader::CidWidths.new(500, [])}

@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 require 'yaml'
 
 # This spec just checks that the PDFs in the spec suite are intact.

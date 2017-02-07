@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::WidthCalculator::BuiltIn do
   it_behaves_like "a WidthCalculator duck type" do
     let!(:font) { double(:basefont => :Helvetica) }

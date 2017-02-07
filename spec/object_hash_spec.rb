@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::ObjectHash do
   it "should have enumerable mixed in" do
     filename = pdf_spec_file("cairo-unicode")

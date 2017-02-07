@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::WidthCalculator::TypeZero do
   it_behaves_like "a WidthCalculator duck type" do
     let!(:descendants) { [double(:glyph_width    => 50)] }

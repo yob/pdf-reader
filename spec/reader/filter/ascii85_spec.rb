@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::Filter::Ascii85 do
   it "should filter a ASCII85 stream correctly" do
     filter = PDF::Reader::Filter::Ascii85.new

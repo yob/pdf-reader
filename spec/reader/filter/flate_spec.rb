@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::Filter::Flate do
   it "should inflate a RFC1950 (zlib) deflated stream correctly"
   it "should inflate a raw RFC1951 deflated stream correctly"

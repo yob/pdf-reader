@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::Font do
 
   let(:object_hash) { PDF::Reader::ObjectHash.allocate }

@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::GlyphHash, "#name_to_unicode" do
 
   it "should correctly map a standard glyph name to unicode" do

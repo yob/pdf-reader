@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::PageTextReceiver do
 
   it "should return the text content from cairo-basic.pdf page 1" do
