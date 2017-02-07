@@ -1,12 +1,10 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::Parser do
   include ParserHelper
   include EncodingHelper
 
-  it "should parse a name correctly" do
+  it "parses a name correctly" do
     expect(parse_string("/James").parse_token).to eql(:James)
     expect(parse_string("/A;Name_With-Various***Characters?").parse_token).to eql(:"A;Name_With-Various***Characters?")
     expect(parse_string("/1.2").parse_token).to eql(:"1.2")
@@ -19,30 +17,30 @@ describe PDF::Reader::Parser do
     expect(parse_string("/Ja#6des").parse_token).to eql(:"James")
   end
 
-  it "should parse an empty name correctly" do
+  it "parses an empty name correctly" do
     expect(parse_string("/").parse_token).to eql("".to_sym)
     parser = parse_string("/\n/")
     expect(parser.parse_token).to eql("".to_sym)
     expect(parser.parse_token).to eql("".to_sym)
   end
 
-  it "should parse two empty names correctly" do
+  it "parses two empty names correctly" do
     parser = parse_string("/ /")
     expect(parser.parse_token).to eql("".to_sym)
     expect(parser.parse_token).to eql("".to_sym)
   end
 
-  it "should parse booleans correctly" do
+  it "parses booleans correctly" do
     expect(parse_string("true").parse_token).to be_truthy
     expect(parse_string("false").parse_token).to be_falsey
   end
 
-  it "should parse null and nil correctly" do
+  it "parses null and nil correctly" do
     expect(parse_string("").parse_token).to be_nil
     expect(parse_string("null").parse_token).to be_nil
   end
 
-  it "should parse a string correctly" do
+  it "parses a string correctly" do
     expect(parse_string("()").parse_token).to eql("")
     expect(parse_string("(this is a string)").parse_token).to eql("this is a string")
     expect(parse_string("(this \\n is a string)").parse_token).to eql("this \n is a string")
@@ -67,7 +65,7 @@ describe PDF::Reader::Parser do
     expect(parse_string("([test])").parse_token).to eql("[test]")
   end
 
-  it "should parse a Unicode string correctly" do
+  it "parses a Unicode string correctly" do
     seq = {
       # key                 source                  expected               confusing to
       :straddle_seq_5c6e =>["\x4F\x5C\x5C\x6E\x05", "\x4F\x5C\x6E\x05"], # /.\n./
@@ -105,17 +103,17 @@ describe PDF::Reader::Parser do
     expect(parse_string(mixed_src).parse_token).to eql(mixed_exp)
   end
 
-  it "should not leave the closing literal string delimiter in the buffer after parsing a string" do
+  it "does not leave the closing literal string delimiter in the buffer after parsing a string" do
     parser = parse_string("(this is a string) /James")
     expect(parser.parse_token).to eql("this is a string")
     expect(parser.parse_token).to eql(:James)
   end
 
-  it "should parse a hex string correctly" do
+  it "parses a hex string correctly" do
     expect(parse_string("<48656C6C6F>").parse_token).to eql("Hello")
   end
 
-  it "should ignore whitespace when parsing a hex string" do
+  it "ignores whitespace when parsing a hex string" do
     expect(parse_string("<48656C6C6F20\n4A616D6573>").parse_token).to eql("Hello James")
   end
 
@@ -127,13 +125,13 @@ describe PDF::Reader::Parser do
     end
   end
 
-  it "should parse dictionary with embedded hex string correctly" do
+  it "parses dictionary with embedded hex string correctly" do
     dict = parse_string("<< /X <48656C6C6F> >>").parse_token
     expect(dict.size).to eql(1)
     expect(dict[:X]).to eql("Hello")
   end
 
-  it "should parse various dictionaries correctly" do
+  it "parses various dictionaries correctly" do
     str = "<< /Registry (Adobe) /Ordering (Japan1) /Supplement 5 >>"
     dict = parse_string(str).parse_token
 
@@ -143,7 +141,7 @@ describe PDF::Reader::Parser do
     expect(dict[:Supplement]).to  eql(5)
   end
 
-  it "should parse dictionary with extra space ok" do
+  it "parses dictionary with extra space ok" do
     str = "<<\r\n/Type /Pages\r\n/Count 3\r\n/Kids [ 25 0 R 27 0 R]\r\n                                                      \r\n>>"
     dict = parse_string(str).parse_token
     expect(dict.size).to eq(3)
@@ -157,7 +155,7 @@ describe PDF::Reader::Parser do
     end
   end
 
-  it "should parse an array correctly" do
+  it "parses an array correctly" do
     expect(parse_string("[ 10 0 R 12 0 R ]").parse_token.size).to eql(2)
   end
 
@@ -169,7 +167,7 @@ describe PDF::Reader::Parser do
     end
   end
 
-  it "should parse numbers correctly" do
+  it "parses numbers correctly" do
     parser = parse_string("1 2 -3 4.5 -5")
     expect(parser.parse_token).to eql( 1)
     expect(parser.parse_token).to eql( 2)

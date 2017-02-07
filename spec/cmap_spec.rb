@@ -1,10 +1,8 @@
 # coding: utf-8
 
-
-
 describe "PDF::Reader::CMap with a bfchar cmap" do
 
-  it "should correctly load a cmap object string" do
+  it "correctly loads a cmap object string" do
     filename = File.dirname(__FILE__) + "/data/cmap_with_bfchar.txt"
     map = PDF::Reader::CMap.new(binread(filename))
     expect(map.map).to be_a_kind_of(Hash)
@@ -14,7 +12,7 @@ describe "PDF::Reader::CMap with a bfchar cmap" do
     expect(map.map[0x9]).to eq([0x73])
   end
 
-  it "should correctly convert a character code into a unicode codepoint" do
+  it "correctly converts a character code into a unicode codepoint" do
     filename = File.dirname(__FILE__) + "/data/cmap_with_bfchar.txt"
     map = PDF::Reader::CMap.new(binread(filename))
     expect(map.decode(0x1)).to eq([0x48])
@@ -22,7 +20,7 @@ describe "PDF::Reader::CMap with a bfchar cmap" do
     expect(map.decode(0x9)).to eq([0x73])
   end
 
-  it "should correctly load a cmap that uses the beginbfrange operator" do
+  it "correctly loads a cmap that uses the beginbfrange operator" do
     filename = File.dirname(__FILE__) + "/data/cmap_with_bfrange.txt"
     map = PDF::Reader::CMap.new(binread(filename))
     expect(map.decode(0x16C9)).to eq([0x4F38]) # mapped with the bfchar operator
@@ -31,13 +29,13 @@ describe "PDF::Reader::CMap with a bfchar cmap" do
     expect(map.decode(0x0005)).to eq([0x0020+2]) # mapped with the bfrange operator
   end
 
-  it "should correctly load a cmap that uses the beginbfrange operator" do
+  it "correctly loads a cmap that uses the beginbfrange operator" do
     filename = File.dirname(__FILE__) + "/data/cmap_with_bfrange_two.txt"
     map = PDF::Reader::CMap.new(binread(filename))
     expect(map.decode(0x0100)).to eq([0x0100]) # mapped with the bfrange operator
   end
 
-  it "should correctly load a cmap that uses the beginbfrange operator with the array syntax" do
+  it "correctly loads a cmap that uses the beginbfrange operator with the array syntax" do
     filename = File.dirname(__FILE__) + "/data/cmap_with_bfrange_three.txt"
     map = PDF::Reader::CMap.new(binread(filename))
 
@@ -48,7 +46,7 @@ describe "PDF::Reader::CMap with a bfchar cmap" do
     expect(map.decode(0x08)).to eq([0x0073]) # mapped with the bfrange operator
   end
 
-  it "should correctly load a cmap that has ligatures in it" do
+  it "correctly loads a cmap that has ligatures in it" do
     filename = File.dirname(__FILE__) + "/data/cmap_with_ligatures.txt"
     map = PDF::Reader::CMap.new(binread(filename))
 
@@ -57,7 +55,7 @@ describe "PDF::Reader::CMap with a bfchar cmap" do
     expect(map.decode(0x00C1)).to eql([0x66, 0x6C])
   end
 
-  it "should correctly load a cmap that has surrogate pairs in it" do
+  it "correctly loads a cmap that has surrogate pairs in it" do
     filename = File.dirname(__FILE__) + "/data/cmap_with_surrogate_pairs.txt"
     map = PDF::Reader::CMap.new(binread(filename))
 
@@ -70,7 +68,7 @@ describe "PDF::Reader::CMap with a bfchar cmap" do
     expect(map.decode(0x122C)).to eql([0xFFFD])
   end
 
-  it "should correctly load a cmap that has a bfrange with > 255 characters" do
+  it "correctly loads a cmap that has a bfrange with > 255 characters" do
     filename = File.dirname(__FILE__) + "/data/cmap_with_large_bfrange.txt"
     map = PDF::Reader::CMap.new(binread(filename))
 

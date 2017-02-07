@@ -1,37 +1,37 @@
 # coding: utf-8
 
+describe PDF::Reader::Reference do
+  describe "#hash" do
 
+    it "returns the same hash for 2 identical objects" do
+      one = PDF::Reader::Reference.new(1,0)
+      two = PDF::Reader::Reference.new(1,0)
 
-describe PDF::Reader::Reference, "hash method" do
+      expect(one.hash).to eq(two.hash)
+    end
 
-  it "should return the same hash for 2 identical objects" do
-    one = PDF::Reader::Reference.new(1,0)
-    two = PDF::Reader::Reference.new(1,0)
-
-    expect(one.hash).to eq(two.hash)
   end
 
-end
+  describe "#==" do
 
-describe PDF::Reader::Reference, "== method" do
+    it "returns true for the same object" do
+      one = PDF::Reader::Reference.new(1,0)
 
-  it "should return true for the same object" do
-    one = PDF::Reader::Reference.new(1,0)
+      expect(one == one).to be_truthy
+    end
 
-    expect(one == one).to be_truthy
+    it "returns true for 2 identical objects" do
+      one = PDF::Reader::Reference.new(1,0)
+      two = PDF::Reader::Reference.new(1,0)
+
+      expect(one == two).to be_truthy
+    end
+
+    it "returns false if one object isn't a Reference" do
+      one = PDF::Reader::Reference.new(1,0)
+
+      expect(one == "two").to be_falsey
+    end
+
   end
-
-  it "should return true for 2 identical objects" do
-    one = PDF::Reader::Reference.new(1,0)
-    two = PDF::Reader::Reference.new(1,0)
-
-    expect(one == two).to be_truthy
-  end
-
-  it "should return false if one object isn't a Reference" do
-    one = PDF::Reader::Reference.new(1,0)
-
-    expect(one == "two").to be_falsey
-  end
-
 end

@@ -1,11 +1,9 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader, "column specs" do
 
   context "page 1" do
-    it "should correctly extract the headline" do
+    it "correctly extracts the headline" do
       filename = pdf_spec_file("column_integration")
 
       PDF::Reader.open(filename) do |reader|
@@ -13,7 +11,7 @@ describe PDF::Reader, "column specs" do
         expect(page.text).to match(/Some Headline/)
       end
     end
-    it "should correctly extract the first few lines" do
+    it "correctly extracts the first few lines" do
       filename = pdf_spec_file("column_integration")
 
       PDF::Reader.open(filename) do |reader|
@@ -28,7 +26,7 @@ describe PDF::Reader, "column specs" do
       end
     end
 
-    it "should align text from the second column" do
+    it "aligns text from the second column" do
       filename = pdf_spec_file("column_integration")
 
       PDF::Reader.open(filename) do |reader|
@@ -52,7 +50,7 @@ describe PDF::Reader, "column specs" do
   end
 
   context "page 2" do
-    it "should correctly align text in column 1" do
+    it "correctly aligns text in column 1" do
       filename = pdf_spec_file("column_integration")
 
       PDF::Reader.open(filename) do |reader|
@@ -70,7 +68,7 @@ describe PDF::Reader, "column specs" do
         expect(col1_1).to eql(col1_4)
       end
     end
-    it "should correctly align text in column 2" do
+    it "correctly aligns text in column 2" do
       filename = pdf_spec_file("column_integration")
 
       PDF::Reader.open(filename) do |reader|
@@ -89,7 +87,7 @@ describe PDF::Reader, "column specs" do
       end
     end
 
-    it "should correctly align text in column 3 before the interruption" do
+    it "correctly aligns text in column 3 before the interruption" do
       filename = pdf_spec_file("column_integration")
 
       PDF::Reader.open(filename) do |reader|
@@ -108,7 +106,7 @@ describe PDF::Reader, "column specs" do
       end
     end
 
-    it "should correctly align text in column 3 during the interruption" do
+    it "correctly aligns text in column 3 during the interruption" do
       filename = pdf_spec_file("column_integration")
 
       PDF::Reader.open(filename) do |reader|

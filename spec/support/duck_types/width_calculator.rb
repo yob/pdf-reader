@@ -4,7 +4,7 @@
 # the contract defined in this file
 
 shared_examples "a WidthCalculator duck type" do
-  it "should implement the glyph_width method" do
+  it "implements the glyph_width method" do
     expect(subject).to respond_to(:glyph_width)
   end
 end

@@ -1,7 +1,5 @@
 # coding: utf-8
 
-
-
 describe PDF::Reader::PageState do
   let!(:page)   { double(:cache => {},
                         :objects => {},
@@ -23,7 +21,7 @@ describe PDF::Reader::PageState do
         end
       end
 
-      it "should not mutate" do
+      it "does not mutate" do
         expect(subject).to eql(expected)
       end
     end
@@ -33,7 +31,7 @@ describe PDF::Reader::PageState do
     context "with an empty page" do
       let!(:state)  {PDF::Reader::PageState.new(page) }
 
-      it "should increase the stack depth by one" do
+      it "increases the stack depth by one" do
         expect {
           state.save_graphics_state
         }.to change(state, :stack_depth).from(1).to(2)
@@ -45,7 +43,7 @@ describe PDF::Reader::PageState do
     context "with an empty page" do
       let!(:state)  {PDF::Reader::PageState.new(page) }
 
-      it "should reduce the stack depth by one" do
+      it "reduces the stack depth by one" do
         state.save_graphics_state
 
         expect {
@@ -59,7 +57,7 @@ describe PDF::Reader::PageState do
     let!(:state)  {PDF::Reader::PageState.new(page) }
 
     context "when changing value a" do
-      it "should correctly multiply the matrixes" do
+      it "multiplies the matrixes" do
         state.concatenate_matrix(2, 0,
                                  0, 1,
                                  0, 0)
@@ -75,7 +73,7 @@ describe PDF::Reader::PageState do
     end
 
     context "when changing value b" do
-      it "should correctly multiply the matrixes" do
+      it "multiplies the matrixes" do
         state.concatenate_matrix(1, 2,
                                  0, 1,
                                  0, 0)
@@ -91,7 +89,7 @@ describe PDF::Reader::PageState do
     end
 
     context "when changing value c" do
-      it "should correctly multiply the matrixes" do
+      it "multiplies the matrixes" do
         state.concatenate_matrix(1, 0,
                                  2, 1,
                                  0, 0)
@@ -107,7 +105,7 @@ describe PDF::Reader::PageState do
     end
 
     context "when changing value d" do
-      it "should correctly multiply the matrixes" do
+      it "multiplies the matrixes" do
         state.concatenate_matrix(1, 0,
                                  0, 2,
                                  0, 0)
@@ -123,7 +121,7 @@ describe PDF::Reader::PageState do
     end
 
     context "when changing value e" do
-      it "should correctly multiply the matrixes" do
+      it "multiplies the matrixes" do
         state.concatenate_matrix(1, 0,
                                  0, 1,
                                  2, 0)
@@ -139,7 +137,7 @@ describe PDF::Reader::PageState do
     end
 
     context "when changing value f" do
-      it "should correctly multiply the matrixes" do
+      it "multiplies the matrixes" do
         state.concatenate_matrix(1, 0,
                                  0, 1,
                                  0, 2)
@@ -155,7 +153,7 @@ describe PDF::Reader::PageState do
     end
 
     context "when applying a rotation followed by a translation" do
-      it "should correctly multiply the matrixes using pre-multiplication" do
+      it "multiplies the matrixes using pre-multiplication" do
         angle = 90 * Math::PI / 180 # 90 degrees
         state.concatenate_matrix( Math.cos(angle), Math.sin(angle),
                                  -Math.sin(angle), Math.cos(angle),
@@ -179,7 +177,7 @@ describe PDF::Reader::PageState do
     context "with an empty page" do
       let!(:state)  {PDF::Reader::PageState.new(page) }
 
-      it "should initialze the text_matrix to ensure text is positioned at 0,0" do
+      it "initialzes the text_matrix to ensure text is positioned at 0,0" do
         state.begin_text_object
         state.set_text_font_and_size(:Test, 12)
 
@@ -195,7 +193,7 @@ describe PDF::Reader::PageState do
     context "with an empty page" do
       let!(:state)  {PDF::Reader::PageState.new(page) }
 
-      it "should correctly alter the text position" do
+      it "alters the text position" do
         state.begin_text_object
         state.set_text_font_and_size(:Test, 12)
         state.move_text_position(5, 10)
@@ -215,7 +213,7 @@ describe PDF::Reader::PageState do
     context "with an empty page" do
       let!(:state)  {PDF::Reader::PageState.new(page) }
 
-      it "should correctly alter the text position" do
+      it "alters the text position" do
         state.begin_text_object
         state.set_text_font_and_size(:Test, 12)
         state.move_text_position_and_set_leading(5, 10)
@@ -229,7 +227,7 @@ describe PDF::Reader::PageState do
         expect(state.trm_transform(1,1)).to eq([17, 22])
       end
 
-      it "should correctly alter the text leading" do
+      it "alters the text leading" do
         state.begin_text_object
         state.set_text_font_and_size(:Test, 12)
         state.move_text_position_and_set_leading(5, 10)
@@ -243,7 +241,7 @@ describe PDF::Reader::PageState do
     context "with an empty page" do
       let!(:state)  {PDF::Reader::PageState.new(page) }
 
-      it "should correctly alter the text position" do
+      it "alters the text position" do
         state.begin_text_object
         state.set_text_font_and_size(:Test, 12)
         state.set_text_matrix_and_text_line_matrix(1, 2, 3, 4, 5, 6)
@@ -263,7 +261,7 @@ describe PDF::Reader::PageState do
     context "with an empty page" do
       let!(:state)  {PDF::Reader::PageState.new(page) }
 
-      it "should correctly alter the text position" do
+      it "alters the text position" do
         state.begin_text_object
         state.set_text_font_and_size(:Test, 12)
         state.set_text_leading(15)
@@ -284,7 +282,7 @@ describe PDF::Reader::PageState do
     context "with an empty page" do
       let!(:state)  {PDF::Reader::PageState.new(page) }
 
-      it "should correctly alter the text position" do
+      it "alters the text position" do
         state.begin_text_object
         state.set_text_font_and_size(:Test, 12)
         state.set_text_leading(15)
@@ -305,7 +303,7 @@ describe PDF::Reader::PageState do
     context "with an empty page" do
       let!(:state)  {PDF::Reader::PageState.new(page) }
 
-      it "should correctly alter the text position" do
+      it "alters the text position" do
         state.begin_text_object
         state.set_text_font_and_size(:Test, 12)
         state.set_text_leading(15)
@@ -326,19 +324,19 @@ describe PDF::Reader::PageState do
     context "with an empty page" do
       let!(:state)  {PDF::Reader::PageState.new(page) }
 
-      it "should set word spacing" do
+      it "sets word spacing" do
         state.begin_text_object
         state.set_spacing_next_line_show_text(10, 20, "test")
         expect(state.clone_state[:word_spacing]).to eq(10)
       end
 
-      it "should set character spacing" do
+      it "sets character spacing" do
         state.begin_text_object
         state.set_spacing_next_line_show_text(10, 20, "test")
         expect(state.clone_state[:char_spacing]).to eq(20)
       end
 
-      it "should correctly alter the text position" do
+      it "alters the text position" do
         state.begin_text_object
         state.set_text_font_and_size(:Test, 12)
         state.set_spacing_next_line_show_text(10, 20, "test")
@@ -378,7 +376,7 @@ describe PDF::Reader::PageState do
             context "no kerning" do
               context "not a word boundary" do
 
-                it "should correctly alter the text matrix" do
+                it "alters the text matrix" do
                   state.process_glyph_displacement(2, 0, false)
 
                   expect(state.trm_transform(0,0)).to eq([64, 700])
@@ -389,7 +387,7 @@ describe PDF::Reader::PageState do
               end
               context "a word boundary" do
 
-                it "should correctly alter the text matrix" do
+                it "alters the text matrix" do
                   state.process_glyph_displacement(2, 0, true)
 
                   expect(state.trm_transform(0,0)).to eq([64, 700])
@@ -402,7 +400,7 @@ describe PDF::Reader::PageState do
             context "2pt kerning" do
               context "not a word boundary" do
 
-                it "should correctly alter the text matrix" do
+                it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, false)
 
                   expect(state.trm_transform(0,0)).to eq([63.976, 700])
@@ -413,7 +411,7 @@ describe PDF::Reader::PageState do
               end
               context "a word boundary" do
 
-                it "should correctly alter the text matrix" do
+                it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
                   expect(state.trm_transform(0,0)).to eq([63.976, 700])
@@ -431,7 +429,7 @@ describe PDF::Reader::PageState do
             context "no kerning" do
               context "not a word boundary" do
 
-                it "should correctly alter the text matrix" do
+                it "alters the text matrix" do
                   state.process_glyph_displacement(2, 0, false)
 
                   expect(state.trm_transform(0,0)).to eq([64, 700])
@@ -442,7 +440,7 @@ describe PDF::Reader::PageState do
               end
               context "a word boundary" do
 
-                it "should correctly alter the text matrix" do
+                it "alters the text matrix" do
                   state.process_glyph_displacement(2, 0, true)
 
                   expect(state.trm_transform(0,0)).to eq([65, 700])
@@ -455,7 +453,7 @@ describe PDF::Reader::PageState do
             context "2pt kerning" do
               context "not a word boundary" do
 
-                it "should correctly alter the text matrix" do
+                it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, false)
 
                   expect(state.trm_transform(0,0)).to eq([63.976, 700])
@@ -466,7 +464,7 @@ describe PDF::Reader::PageState do
               end
               context "a word boundary" do
 
-                it "should correctly alter the text matrix" do
+                it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
                   expect(state.trm_transform(0,0)).to eq([64.976, 700])
@@ -486,7 +484,7 @@ describe PDF::Reader::PageState do
             context "no kerning" do
               context "not a word boundary" do
 
-                it "should correctly alter the text matrix" do
+                it "alters the text matrix" do
                   state.process_glyph_displacement(2, 0, false)
 
                   expect(state.trm_transform(0,0)).to eq([65, 700])
@@ -497,7 +495,7 @@ describe PDF::Reader::PageState do
               end
               context "a word boundary" do
 
-                it "should correctly alter the text matrix" do
+                it "alters the text matrix" do
                   state.process_glyph_displacement(2, 0, true)
 
                   expect(state.trm_transform(0,0)).to eq([65, 700])
@@ -510,7 +508,7 @@ describe PDF::Reader::PageState do
             context "2pt kerning" do
               context "not a word boundary" do
 
-                it "should correctly alter the text matrix" do
+                it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, false)
 
                   expect(state.trm_transform(0,0)).to eq([64.976, 700])
@@ -521,7 +519,7 @@ describe PDF::Reader::PageState do
               end
               context "a word boundary" do
 
-                it "should correctly alter the text matrix" do
+                it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
                   expect(state.trm_transform(0,0)).to eq([64.976, 700])
@@ -539,7 +537,7 @@ describe PDF::Reader::PageState do
             context "no kerning" do
               context "not a word boundary" do
 
-                it "should correctly alter the text matrix" do
+                it "alters the text matrix" do
                   state.process_glyph_displacement(2, 0, false)
 
                   expect(state.trm_transform(0,0)).to eq([65, 700])
@@ -550,7 +548,7 @@ describe PDF::Reader::PageState do
               end
               context "a word boundary" do
 
-                it "should correctly alter the text matrix" do
+                it "alters the text matrix" do
                   state.process_glyph_displacement(2, 0, true)
 
                   expect(state.trm_transform(0,0)).to eq([66, 700])
@@ -563,7 +561,7 @@ describe PDF::Reader::PageState do
             context "2pt kerning" do
               context "not a word boundary" do
 
-                it "should correctly alter the text matrix" do
+                it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, false)
 
                   expect(state.trm_transform(0,0)).to eq([64.976, 700])
@@ -574,7 +572,7 @@ describe PDF::Reader::PageState do
               end
               context "a word boundary" do
 
-                it "should correctly alter the text matrix" do
+                it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
                   expect(state.trm_transform(0,0)).to eq([65.976, 700])
