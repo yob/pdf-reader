@@ -134,6 +134,19 @@ describe PDF::Reader::PageLayout do
           expect(subject.to_s).to eq("Hello\n\nWorld")
         end
       end
+
+      context "with one run that has an implausible font size of 0" do
+        let!(:runs) do
+          [
+            PDF::Reader::TextRun.new(30, 700, 50, 0, "Hello"),
+          ]
+        end
+        subject { PDF::Reader::PageLayout.new(runs, mediabox)}
+
+        it "returns a correct string" do
+          expect(subject.to_s).to eq("Hello")
+        end
+      end
     end
   end
 end

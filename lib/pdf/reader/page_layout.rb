@@ -8,11 +8,15 @@ class PDF::Reader
   # media box should be a 4 number array that describes the dimensions of the
   # page to be rendered as described by the page's MediaBox attribute
   class PageLayout
+
+    DEFAULT_FONT_SIZE = 12
+
     def initialize(runs, mediabox)
       raise ArgumentError, "a mediabox must be provided" if mediabox.nil?
 
       @runs    = merge_runs(runs)
-      @mean_font_size   = mean(@runs.map(&:font_size)) || 0
+      @mean_font_size   = mean(@runs.map(&:font_size)) || DEFAULT_FONT_SIZE
+      @mean_font_size = DEFAULT_FONT_SIZE if @mean_font_size == 0
       @mean_glyph_width = mean(@runs.map(&:mean_character_width)) || 0
       @page_width  = mediabox[2] - mediabox[0]
       @page_height = mediabox[3] - mediabox[1]
