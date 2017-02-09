@@ -679,6 +679,17 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF that uses a type3 bitmap font" do
+    let(:filename) { pdf_spec_file("type3_font") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq("a\nb\nc")
+      end
+    end
+  end
+
   context "PDF with rotated text" do
     let(:filename) { pdf_spec_file("rotated_text") }
 
