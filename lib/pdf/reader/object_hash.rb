@@ -109,9 +109,6 @@ class PDF::Reader
             hash[k] = deref!(value)
           end
         }
-      when PDF::Reader::Stream
-        object.hash = deref!(object.hash)
-        object
       when Array
         object.map { |value| deref!(value) }
       else

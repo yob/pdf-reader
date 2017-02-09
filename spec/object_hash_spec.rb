@@ -102,11 +102,6 @@ describe PDF::Reader::ObjectHash do
         PDF::Reader::Stream
     end
 
-    it "recursively dereferences references within stream hashes" do
-      font_file = hash.deref! PDF::Reader::Reference.new(15, 0)
-      expect(font_file.hash[:Length]).to eq 2103
-    end
-
     it "recursively dereferences references within arrays" do
       font = hash.deref! PDF::Reader::Reference.new(19, 0)
       expect(font[:DescendantFonts][0][:Subtype]).to eq :CIDFontType0
