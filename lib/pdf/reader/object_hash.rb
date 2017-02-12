@@ -101,33 +101,8 @@ class PDF::Reader
     # Recursively dereferences the object refered to be +key+. If +key+ is not
     # a PDF::Reader::Reference, the key is returned unchanged.
     #
-    def deref!(key, seen = {})
-      seen_key = key.is_a?(PDF::Reader::Reference) ? key : key.object_id
-
-      return seen[seen_key] if seen.key?(seen_key)
-
-      case object = deref(key)
-      when Hash
-        seen[seen_key] ||= {}
-        object.each do |k, value|
-          seen[seen_key][k] = deref!(value, seen)
-        end
-        seen[seen_key]
-      when PDF::Reader::Stream
-        seen[seen_key] ||= PDF::Reader::Stream.new({}, object.data)
-        object.hash.each do |k,value|
-          seen[seen_key].hash[k] = deref!(value, seen)
-        end
-        seen[seen_key]
-      when Array
-        seen[seen_key] ||= []
-        object.each do |value|
-          seen[seen_key] << deref!(value, seen)
-        end
-        seen[seen_key]
-      else
-        object
-      end
+    def deref!(key)
+      deref_internal!(key, {})
     end
 
     # Access an object from the PDF. key can be an int or a PDF::Reader::Reference
@@ -276,6 +251,39 @@ class PDF::Reader
     end
 
     private
+
+    # Private implementation of deref!, which exists to ensure the `seen` argument
+    # isn't publicly available. It's used to avoid endless loops in the recursion, and
+    # doesn't need to be part of the public API.
+    #
+    def deref_internal!(key, seen)
+      seen_key = key.is_a?(PDF::Reader::Reference) ? key : key.object_id
+
+      return seen[seen_key] if seen.key?(seen_key)
+
+      case object = deref(key)
+      when Hash
+        seen[seen_key] ||= {}
+        object.each do |k, value|
+          seen[seen_key][k] = deref_internal!(value, seen)
+        end
+        seen[seen_key]
+      when PDF::Reader::Stream
+        seen[seen_key] ||= PDF::Reader::Stream.new({}, object.data)
+        object.hash.each do |k,value|
+          seen[seen_key].hash[k] = deref_internal!(value, seen)
+        end
+        seen[seen_key]
+      when Array
+        seen[seen_key] ||= []
+        object.each do |value|
+          seen[seen_key] << deref_internal!(value, seen)
+        end
+        seen[seen_key]
+      else
+        object
+      end
+    end
 
     def build_security_handler(opts = {})
       return nil if trailer[:Encrypt].nil?
