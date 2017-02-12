@@ -1,5 +1,6 @@
 # coding: utf-8
 
+
 describe "PDF::Reader::CMap with a bfchar cmap" do
 
   it "correctly loads a cmap object string" do
@@ -44,6 +45,19 @@ describe "PDF::Reader::CMap with a bfchar cmap" do
     expect(map.decode(0x01)).to eq([0x0050]) # mapped with the bfrange operator
     expect(map.decode(0x03)).to eq([0x0067]) # mapped with the bfrange operator
     expect(map.decode(0x08)).to eq([0x0073]) # mapped with the bfrange operator
+  end
+
+  context "when endbfrange is not on a dedicated line" do
+    it "correctly loads a cmap" do
+      pending
+      filename = File.dirname(__FILE__) + "/data/cmap_with_bfrange_four.txt"
+      map = PDF::Reader::CMap.new(binread(filename))
+
+      expect(map.size).to eql(3)
+      expect(map.decode(0x61)).to eq([0x61]) # mapped with the bfrange operator
+      expect(map.decode(0x62)).to eq([0x62]) # mapped with the bfrange operator
+      expect(map.decode(0x63)).to eq([0x63]) # mapped with the bfrange operator
+    end
   end
 
   it "correctly loads a cmap that has ligatures in it" do
