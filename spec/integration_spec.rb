@@ -214,6 +214,16 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF that has a Form XObjects that references itself" do
+    let(:filename) { pdf_spec_file("form_xobject_recursive") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        expect(reader.page(1).text).to include("this form XObject contains a reference to itself")
+      end
+    end
+  end
+
   context "PDF that uses multiple content streams for a single page" do
     let(:filename) { pdf_spec_file("split_params_and_operator") }
 

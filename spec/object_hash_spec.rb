@@ -126,6 +126,22 @@ describe PDF::Reader::ObjectHash do
       expect(orig_collection.object_id).not_to eq(new_collection.object_id)
     end
 
+    # a -> b -> c -> a
+    context "with nested Array's that reference themselves" do
+      let(:a) { [1, b] }
+      let(:b) { [2, c] }
+      let(:c) { [3] }
+
+      before do
+        c << a
+      end
+
+      it "returns a new Array, not mutate the provided Array" do
+        result = hash.deref!(c)
+
+        expect(result).to be_a(Array)
+      end
+    end
   end
 
   describe "#fetch" do
