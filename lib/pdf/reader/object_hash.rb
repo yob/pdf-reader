@@ -101,19 +101,30 @@ class PDF::Reader
     # Recursively dereferences the object refered to be +key+. If +key+ is not
     # a PDF::Reader::Reference, the key is returned unchanged.
     #
-    def deref!(key)
+    def deref!(key, seen = {})
+      seen_key = key.is_a?(PDF::Reader::Reference) ? key : key.object_id
+
+      return seen[seen_key] if seen.key?(seen_key)
+
       case object = deref(key)
       when Hash
-        {}.tap { |hash|
-          object.each do |k, value|
-            hash[k] = deref!(value)
-          end
-        }
+        seen[seen_key] ||= {}
+        object.each do |k, value|
+          seen[seen_key][k] = deref!(value, seen)
+        end
+        seen[seen_key]
       when PDF::Reader::Stream
-        object.hash = deref!(object.hash)
-        object
+        seen[seen_key] ||= PDF::Reader::Stream.new({}, object.data)
+        object.hash.each do |k,value|
+          seen[seen_key].hash[k] = deref!(value, seen)
+        end
+        seen[seen_key]
       when Array
-        object.map { |value| deref!(value) }
+        seen[seen_key] ||= []
+        object.each do |value|
+          seen[seen_key] << deref!(value, seen)
+        end
+        seen[seen_key]
       else
         object
       end
