@@ -1,6 +1,6 @@
 # coding: utf-8
 
-describe PDF::Reader::OrientationDetector do 
+describe PDF::Reader::OrientationDetector do
   describe "#orientation" do
 
     context "with a portrait page and no rotation" do
