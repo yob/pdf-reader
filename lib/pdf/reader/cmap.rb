@@ -31,6 +31,17 @@ class PDF::Reader
   # extracting various useful information.
   #
   class CMap # :nodoc:
+    CMAP_KEYWORDS = {
+      "begincodespacerange" => 1,
+      "endcodespacerange" => 1,
+      "beginbfchar" => 1,
+      "endbfchar" => 1,
+      "beginbfrange" => 1,
+      "endbfrange" => 1,
+      "begin" => 1,
+      "begincmap" => 1,
+      "def" => 1
+    }
 
     attr_reader :map
 
@@ -40,24 +51,25 @@ class PDF::Reader
     end
 
     def process_data(data)
+      parser = build_parser(data)
       mode = nil
-      instructions = ""
+      instructions = []
 
-      data.each_line do |l|
-        if l.include?("beginbfchar")
+      while token = parser.parse_token(CMAP_KEYWORDS)
+        if token == "beginbfchar"
           mode = :char
-        elsif l.include?("endbfchar")
+        elsif token == "endbfchar"
           process_bfchar_instructions(instructions)
-          instructions = ""
+          instructions = []
           mode = nil
-        elsif l.include?("beginbfrange")
+        elsif token == "beginbfrange"
           mode = :range
-        elsif l.include?("endbfrange")
+        elsif token == "endbfrange"
           process_bfrange_instructions(instructions)
-          instructions = ""
+          instructions = []
           mode = nil
         elsif mode == :char || mode == :range
-          instructions << l
+          instructions << token
         end
       end
     end
@@ -105,22 +117,15 @@ class PDF::Reader
     end
 
     def process_bfchar_instructions(instructions)
-      parser  = build_parser(instructions)
-      find    = str_to_int(parser.parse_token)
-      replace = str_to_int(parser.parse_token)
-      while find && replace
-        @map[find[0]] = replace
-        find       = str_to_int(parser.parse_token)
-        replace    = str_to_int(parser.parse_token)
+      instructions.each_slice(2) do |one, two|
+        find    = str_to_int(one)
+        replace = str_to_int(two)
+        @map[find.first] = replace
       end
     end
 
     def process_bfrange_instructions(instructions)
-      parser  = build_parser(instructions)
-      start   = parser.parse_token
-      finish  = parser.parse_token
-      to      = parser.parse_token
-      while start && finish && to
+      instructions.each_slice(3) do |start, finish, to|
         if start.kind_of?(String) && finish.kind_of?(String) && to.kind_of?(String)
           bfrange_type_one(start, finish, to)
         elsif start.kind_of?(String) && finish.kind_of?(String) && to.kind_of?(Array)
@@ -128,9 +133,6 @@ class PDF::Reader
         else
           raise "invalid bfrange section"
         end
-        start   = parser.parse_token
-        finish  = parser.parse_token
-        to      = parser.parse_token
       end
     end
 

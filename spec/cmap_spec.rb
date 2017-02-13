@@ -49,7 +49,6 @@ describe "PDF::Reader::CMap with a bfchar cmap" do
 
   context "when endbfrange is not on a dedicated line" do
     it "correctly loads a cmap" do
-      pending
       filename = File.dirname(__FILE__) + "/data/cmap_with_bfrange_four.txt"
       map = PDF::Reader::CMap.new(binread(filename))
 

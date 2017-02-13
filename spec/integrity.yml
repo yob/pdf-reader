@@ -272,6 +272,9 @@ data/symbol.pdf:
 data/times-with-control-character.pdf:
   :bytes: 904
   :md5: 4bd7309a3f190ede68a88bb2be8bf237
+data/type3_font.pdf:
+  :bytes: 2203
+  :md5: ef2a3eb57d5996c4a33681e1aec98f2c
 data/vertical-text-in-identity-v.pdf:
   :bytes: 9785
   :md5: 8dba658e634fb19a66090607640540d1
