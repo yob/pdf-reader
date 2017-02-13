@@ -104,12 +104,15 @@ module PDF
 
           # apply to glyph displacment for the current glyph so the next
           # glyph will appear in the correct position
-          glyph_width = @state.current_font.glyph_width(glyph_code) / 1000.0
+          # TODO: this "/ 1000" isn't guarunteed to work for Type3 fonts. We may want to push that part of the calcs into the width calculators so we can customise Type3 behaviour
+          glyph_width = @state.current_font.glyph_width(glyph_code) #/ 1000.0
           th = 1
           scaled_glyph_width = glyph_width * @state.font_size * th
           unless utf8_chars == SPACE
             @characters << TextRun.new(newx, newy, scaled_glyph_width, @state.font_size, utf8_chars)
           end
+          #require 'ir_b'
+          #ir b
           @state.process_glyph_displacement(glyph_width, 0, utf8_chars == SPACE)
         end
       end

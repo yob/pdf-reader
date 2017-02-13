@@ -71,6 +71,17 @@ class PDF::Reader
       @cached_widths[code_point] ||= @width_calc.glyph_width(code_point)
     end
 
+    # Only available for Type3 fonts
+    def font_matrix
+      if @font_matrix
+        TransformationMatrix.new(
+          @font_matrix[0], @font_matrix[1],
+          @font_matrix[2], @font_matrix[3],
+          @font_matrix[4], @font_matrix[5],
+        )
+      end
+    end
+
     private
 
     def default_encoding(font_name)
@@ -120,6 +131,10 @@ class PDF::Reader
       # the default cid width = 1000, see Section 9.7.4.1 PDF 32000-1:2008 pp 269
       @cid_widths         = @ohash.object(obj[:W])  || []
       @cid_default_width  = @ohash.object(obj[:DW]) || 1000
+
+      if obj[:FontMatrix]
+        @font_matrix = @ohash.object(obj[:FontMatrix])
+      end
 
       if obj[:ToUnicode]
         # ToUnicode is optional for Type1 and Type3
