@@ -9,12 +9,11 @@ Gem::Specification.new do |spec|
   spec.files =  Dir.glob("{examples,lib}/**/**/*") + ["Rakefile"]
   spec.executables << "pdf_object"
   spec.executables << "pdf_text"
-  spec.executables << "pdf_list_callbacks"
   spec.executables << "pdf_callbacks"
   spec.has_rdoc = true
-  spec.extra_rdoc_files = %w{README.rdoc TODO CHANGELOG MIT-LICENSE }
+  spec.extra_rdoc_files = %w{README.md TODO CHANGELOG MIT-LICENSE }
   spec.rdoc_options << '--title' << 'PDF::Reader Documentation' <<
-                       '--main'  << 'README.rdoc' << '-q'
+                       '--main'  << 'README.md' << '-q'
   spec.authors = ["James Healy"]
   spec.email   = ["jimmy@deefa.com"]
   spec.homepage = "http://github.com/yob/pdf-reader"
