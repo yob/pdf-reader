@@ -31,6 +31,14 @@ describe PDF::Reader::GlyphHash do
       expect(map.name_to_unicode(:u123456)).to eql(0x123456)
     end
 
+    it "correctly maps a Xnn glyph to unicode" do
+      map = PDF::Reader::GlyphHash.new
+      expect(map.name_to_unicode(:X20)).to     eql(32)
+      expect(map.name_to_unicode(:X4A)).to     eql(74)
+      expect(map.name_to_unicode(:X4A4)).to    eql(1188)
+      expect(map.name_to_unicode(:X4a4a)).to   eql(19018)
+    end
+
     it "correctly maps a Ann glyph to unicode" do
       map = PDF::Reader::GlyphHash.new
       expect(map.name_to_unicode(:A65)).to     eql(65)

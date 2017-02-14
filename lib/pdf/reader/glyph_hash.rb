@@ -48,6 +48,9 @@ class PDF::Reader
     #   h.name_to_unicode(:Euro)
     #   => 8364
     #
+    #   h.name_to_unicode(:X4A)
+    #   => 74
+    #
     #   h.name_to_unicode(:G30)
     #   => 48
     #
@@ -62,6 +65,8 @@ class PDF::Reader
 
       if @by_name.has_key?(name)
         @by_name[name]
+      elsif str.match(/\AX[0-9a-fA-F]{2,4}\Z/)
+        "0x#{str[1,4]}".hex
       elsif str.match(/\Auni[A-F\d]{4}\Z/)
         "0x#{str[3,4]}".hex
       elsif str.match(/\Au[A-F\d]{4,6}\Z/)
