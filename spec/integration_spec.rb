@@ -690,6 +690,22 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF that uses a type3 bitmap font with a rare FontMatrix" do
+    let(:filename) { pdf_spec_file("type3_font_with_rare_font_matrix") }
+
+    # TODO most type3 fonts have a FontMatrix entry of [ 0.001 0 0 0.001 0 0 ],
+    # which matches the glyph scale factor of 1000 that non-type3 fonts use.
+    # It's permitted for type3 fonts to use other FontMatrix values though,
+    # and we should do a better job of extracting the text.
+    it "extracts text correctly" do
+      pending
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to include("Parallel Genetic Algorithms")
+      end
+    end
+  end
+
   context "PDF with rotated text" do
     let(:filename) { pdf_spec_file("rotated_text") }
 
