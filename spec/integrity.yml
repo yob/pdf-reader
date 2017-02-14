@@ -32,6 +32,9 @@ data/cmap_with_bfchar.txt:
 data/cmap_with_bfrange.txt:
   :bytes: 3098
   :md5: 3546b23adc960d913b60386ed86d2f00
+data/cmap_with_bfrange_four.txt:
+  :bytes: 338
+  :md5: 2b722bf40b4e3606a09fd0ada4c50430
 data/cmap_with_bfrange_three.txt:
   :bytes: 1890
   :md5: 1d1ec5fc186ae22063c5fa756cb67b9a
