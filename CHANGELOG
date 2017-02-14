@@ -1,5 +1,5 @@
-v2.0.0 (XXX)
-- remove all methods that were deprecated in 1.0.0
+v2.0.0.beta1 (15th February 2017)
+- BREAKING CHANGE: remove all methods that were deprecated in 1.0.0
 - Bug: Support extra encrypted PDF variants (thanks to Gyuchang Jun)
 - various bug fixes
 
