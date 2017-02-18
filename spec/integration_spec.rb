@@ -542,9 +542,9 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
-  context "encrypted_version4_revision4_256bit_aes_user_pass_apples_enc_metadata" do
+  context "encrypted_version5_revision6_256bit_aes_user_pass_apples_enc_metadata" do
     let(:filename) {
-      pdf_spec_file("encrypted_version4_revision4_256bit_aes_user_pass_apples_enc_metadata")
+      pdf_spec_file("encrypted_version5_revision6_256bit_aes_user_pass_apples_enc_metadata")
     }
 
     context "with the user pass" do
@@ -558,9 +558,9 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
-  context "encrypted_version4_revision4_256bit_aes_user_pass_apples_unenc_metadata" do
+  context "encrypted_version5_revision6_256bit_aes_user_pass_apples_unenc_metadata" do
     let(:filename) {
-      pdf_spec_file("encrypted_version4_revision4_256bit_aes_user_pass_apples_unenc_metadata")
+      pdf_spec_file("encrypted_version5_revision6_256bit_aes_user_pass_apples_unenc_metadata")
     }
 
     context "with the user pass" do
