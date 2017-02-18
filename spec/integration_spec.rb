@@ -516,6 +516,17 @@ describe PDF::Reader, "integration specs" do
     }
 
     context "with the user pass" do
+      let(:pass) { "apples" }
+
+      # TODO: remove this spec
+      it "raises UnsupportedFeatureError" do
+        expect {
+          PDF::Reader.open(filename, :password => pass) do |reader|
+            reader.page(1).text
+          end
+        }.to raise_error(PDF::Reader::EncryptedPDFError)
+      end
+
       it "correctly extracts text"
       it "correctly extracts info"
     end
@@ -532,6 +543,17 @@ describe PDF::Reader, "integration specs" do
     }
 
     context "with the user pass" do
+      let(:pass) { "apples" }
+
+      # TODO: remove this spec
+      it "raises UnsupportedFeatureError" do
+        expect {
+          PDF::Reader.open(filename, :password => pass) do |reader|
+            reader.page(1).text
+          end
+        }.to raise_error(PDF::Reader::EncryptedPDFError)
+      end
+
       it "correctly extracts text"
       it "correctly extracts info"
     end
@@ -548,6 +570,17 @@ describe PDF::Reader, "integration specs" do
     }
 
     context "with the user pass" do
+      let(:pass) { "apples" }
+
+      # TODO: remove this spec
+      it "raises UnsupportedFeatureError" do
+        expect {
+          PDF::Reader.open(filename, :password => pass) do |reader|
+            reader.page(1).text
+          end
+        }.to raise_error(PDF::Reader::EncryptedPDFError)
+      end
+
       it "correctly extracts text"
       it "correctly extracts info"
     end
@@ -564,6 +597,17 @@ describe PDF::Reader, "integration specs" do
     }
 
     context "with the user pass" do
+      let(:pass) { "apples" }
+
+      # TODO: remove this spec
+      it "raises UnsupportedFeatureError" do
+        expect {
+          PDF::Reader.open(filename, :password => pass) do |reader|
+            reader.page(1).text
+          end
+        }.to raise_error(PDF::Reader::EncryptedPDFError)
+      end
+
       it "correctly extracts text"
       it "correctly extracts info"
     end
