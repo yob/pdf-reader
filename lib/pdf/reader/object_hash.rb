@@ -289,9 +289,25 @@ class PDF::Reader
       return nil if trailer[:Encrypt].nil?
 
       enc = deref(trailer[:Encrypt])
-      case enc[:Filter]
-      when :Standard
-        StandardSecurityHandler.new(enc, deref(trailer[:ID]), opts[:password])
+      filter = enc.fetch(:Filter, :Standard)
+      version = enc.fetch(:V, 0)
+      if filter == :Standard && version >= 5
+        NullSecurityHandler.new
+      elsif filter == :Standard && version >= 4 && enc.fetch(:CF, {}).fetch(enc[:StmF], {}).fetch(:CFM, nil) == :AESV2
+        NullSecurityHandler.new
+      elsif filter == :Standard
+        encmeta = enc.has_key?(:EncryptMetadata)? enc[:EncryptMetadata].to_s == "true" : true
+
+        StandardSecurityHandler.new(
+          key_length: (enc[:Length] || 40).to_i,
+          revision: enc[:R],
+          owner_key: enc[:O],
+          user_key: enc[:U],
+          permissions: enc[:P].to_i,
+          encrypted_metadata: encmeta,
+          file_id: (deref(trailer[:ID]) || []).first,
+          password: opts[:password]
+        )
       else
         raise PDF::Reader::EncryptedPDFError, "Unsupported encryption method (#{enc[:Filter]})"
       end
