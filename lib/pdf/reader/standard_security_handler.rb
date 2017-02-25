@@ -56,8 +56,22 @@ class PDF::Reader
       @encrypt_key   = build_standard_key(opts[:password] || "")
 
       if @key_length != 5 && @key_length != 16
-        raise ArgumentError, "StandardSecurityHandler only supports 40 and 128 bit encryption (#{@key_length * 8}bit)"
+        msg = "StandardSecurityHandler only supports 40 and 128 bit\
+               encryption (#{@key_length * 8}bit)"
+        raise ArgumentError, msg
       end
+    end
+
+    # This handler supports all RC4 encryption that follows the PDF spec. It does not support
+    # AES encryption that was added in later versions of the spec.
+    def self.supports?(encrypt)
+      return false if encrypt.nil?
+
+      filter = encrypt.fetch(:Filter, :Standard)
+      version = encrypt.fetch(:V, 0)
+      algorithm = encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
+      filter == :Standard &&
+        (version <= 3 || (version == 4 && algorithm != :AESV2))
     end
 
     ##7.6.2 General Encryption Algorithm

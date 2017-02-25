@@ -287,24 +287,17 @@ class PDF::Reader
     end
 
     def build_security_handler(opts = {})
-      return NullSecurityHandler.new if trailer[:Encrypt].nil?
-
-      enc = deref(trailer[:Encrypt])
-      filter = enc.fetch(:Filter, :Standard)
-      version = enc.fetch(:V, 0)
-      if filter == :Standard && version >= 5
-        UnimplementedSecurityHandler.new
-      elsif filter == :Standard && version >= 4 && enc.fetch(:CF, {}).fetch(enc[:StmF], {}).fetch(:CFM, nil) == :AESV2
-        UnimplementedSecurityHandler.new
-      elsif filter == :Standard
-        encmeta = enc.has_key?(:EncryptMetadata)? enc[:EncryptMetadata].to_s == "true" : true
-
+      encrypt = deref(trailer[:Encrypt])
+      if NullSecurityHandler.supports?(encrypt)
+        NullSecurityHandler.new
+      elsif StandardSecurityHandler.supports?(encrypt)
+        encmeta = !encrypt.has_key?(:EncryptMetadata) || encrypt[:EncryptMetadata].to_s == "true"
         StandardSecurityHandler.new(
-          key_length: (enc[:Length] || 40).to_i,
-          revision: enc[:R],
-          owner_key: enc[:O],
-          user_key: enc[:U],
-          permissions: enc[:P].to_i,
+          key_length: (encrypt[:Length] || 40).to_i,
+          revision: encrypt[:R],
+          owner_key: encrypt[:O],
+          user_key: encrypt[:U],
+          permissions: encrypt[:P].to_i,
           encrypted_metadata: encmeta,
           file_id: (deref(trailer[:ID]) || []).first,
           password: opts[:password]
