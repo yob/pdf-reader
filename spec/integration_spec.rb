@@ -841,4 +841,15 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF where the entries in a Kids array are direct objects, rather than indirect" do
+    let(:filename) { pdf_spec_file("kids-as-direct-objects") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq("page 1")
+      end
+    end
+  end
+
 end

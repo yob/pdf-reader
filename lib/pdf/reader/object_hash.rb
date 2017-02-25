@@ -339,7 +339,7 @@ class PDF::Reader
     # returns a nested array of object references for all pages in this object store.
     #
     def get_page_objects(ref)
-      obj = fetch(ref)
+      obj = deref(ref)
 
       if obj[:Type] == :Page
         ref
