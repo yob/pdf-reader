@@ -182,6 +182,9 @@ data/invalid/trailer_is_not_a_dict.pdf:
 data/junk_prefix.pdf:
   :bytes: 934
   :md5: c03c9a96cdefa78c9475b619d87e39bf
+data/kids-as-direct-objects.pdf:
+  :bytes: 1067
+  :md5: 90d7e0ac0b0f886ae062b9efa8f3afb6
 data/large_single_line_content_stream.pdf:
   :bytes: 229020
   :md5: 70f89c25291e4f01fff335188d7c1910
