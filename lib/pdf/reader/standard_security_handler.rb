@@ -42,30 +42,36 @@ class PDF::Reader
                      0x2e, 0x2e, 0x00, 0xb6, 0xd0, 0x68, 0x3e, 0x80,
                      0x2f, 0x0c, 0xa9, 0xfe, 0x64, 0x53, 0x69, 0x7a ]
 
-    attr_reader :filter, :subFilter, :version, :key_length,
-                :crypt_filter, :stream_filter, :string_filter, :embedded_file_filter,
-                :encrypt_key
-    attr_reader :revision, :owner_key, :user_key, :permissions, :file_id, :password
+    attr_reader :key_length, :revision, :encrypt_key
+    attr_reader :owner_key, :user_key, :permissions, :file_id, :password
 
-    def initialize( enc, file_id, password )
-      @filter        = enc[:Filter]
-      @subFilter     = enc[:SubFilter]
-      @version       = enc[:V].to_i
-      @key_length    = enc[:Length].to_i/8
-      @crypt_filter  = enc[:CF]
-      @stream_filter = enc[:StmF]
-      @string_filter = enc[:StrF]
-      @revision      = enc[:R].to_i
-      @owner_key     = enc[:O]
-      @user_key      = enc[:U]
-      @permissions   = enc[:P].to_i
-      @embedded_file_filter = enc[:EFF]
+    def initialize(opts = {})
+      @key_length    = opts[:key_length].to_i/8
+      @revision      = opts[:revision].to_i
+      @owner_key     = opts[:owner_key]
+      @user_key      = opts[:user_key]
+      @permissions   = opts[:permissions].to_i
+      @encryptMeta   = opts.fetch(:encrypted_metadata, true)
+      @file_id       = opts[:file_id] || ""
+      @encrypt_key   = build_standard_key(opts[:password] || "")
 
-      @encryptMeta   = enc.has_key?(:EncryptMetadata)? enc[:EncryptMetadata].to_s == "true" : true;
+      if @key_length != 5 && @key_length != 16
+        msg = "StandardSecurityHandler only supports 40 and 128 bit\
+               encryption (#{@key_length * 8}bit)"
+        raise ArgumentError, msg
+      end
+    end
 
-      @file_id       = (file_id || []).first || ""
+    # This handler supports all RC4 encryption that follows the PDF spec. It does not support
+    # AES encryption that was added in later versions of the spec.
+    def self.supports?(encrypt)
+      return false if encrypt.nil?
 
-      @encrypt_key   = build_standard_key(password)
+      filter = encrypt.fetch(:Filter, :Standard)
+      version = encrypt.fetch(:V, 0)
+      algorithm = encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
+      filter == :Standard &&
+        (version <= 3 || (version == 4 && algorithm != :AESV2))
     end
 
     ##7.6.2 General Encryption Algorithm
