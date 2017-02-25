@@ -45,6 +45,7 @@ class PDF::Reader
       @pdf_version = read_version
       @trailer     = @xref.trailer
       @cache       = opts[:cache] || PDF::Reader::ObjectCache.new
+      @sec_handler = NullSecurityHandler.new
       @sec_handler = build_security_handler(opts)
     end
 
@@ -286,15 +287,15 @@ class PDF::Reader
     end
 
     def build_security_handler(opts = {})
-      return nil if trailer[:Encrypt].nil?
+      return NullSecurityHandler.new if trailer[:Encrypt].nil?
 
       enc = deref(trailer[:Encrypt])
       filter = enc.fetch(:Filter, :Standard)
       version = enc.fetch(:V, 0)
       if filter == :Standard && version >= 5
-        NullSecurityHandler.new
+        UnimplementedSecurityHandler.new
       elsif filter == :Standard && version >= 4 && enc.fetch(:CF, {}).fetch(enc[:StmF], {}).fetch(:CFM, nil) == :AESV2
-        NullSecurityHandler.new
+        UnimplementedSecurityHandler.new
       elsif filter == :Standard
         encmeta = enc.has_key?(:EncryptMetadata)? enc[:EncryptMetadata].to_s == "true" : true
 
@@ -309,13 +310,11 @@ class PDF::Reader
           password: opts[:password]
         )
       else
-        raise PDF::Reader::EncryptedPDFError, "Unsupported encryption method (#{enc[:Filter]})"
+        UnimplementedSecurityHandler.new
       end
     end
 
     def decrypt(ref, obj)
-      return obj unless sec_handler?
-
       case obj
       when PDF::Reader::Stream then
         obj.data = sec_handler.decrypt(obj.data, ref)

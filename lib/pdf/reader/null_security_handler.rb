@@ -2,10 +2,10 @@
 
 class PDF::Reader
 
-  # A null object security handler. Used when we don't support the encryption type in a file.
+  # A null object security handler. Used when a PDF is unencrypted.
   class NullSecurityHandler
-    def decrypt(buf, ref)
-      raise PDF::Reader::EncryptedPDFError, "Unsupported encryption style"
+    def decrypt(buf, _ref)
+      buf
     end
   end
 end
