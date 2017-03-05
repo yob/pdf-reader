@@ -741,6 +741,13 @@ describe PDF::Reader, "integration specs" do
     # which matches the glyph scale factor of 1000 that non-type3 fonts use.
     # It's permitted for type3 fonts to use other FontMatrix values though,
     # and we should do a better job of extracting the text.
+    # The Page is 200pts wide and 50pts high. The first letters for each word
+    # *should* be positioned like so:
+    #
+    #   P - X: 10.3 Y: 20   Width: 7.35 Height: 8.55
+    #   G - X: 56.5 Y: 19.7 Width: 8.25 Height: 9.15
+    #   A - X: 101.5 Y: 20  Width: 8.25 Height: 9
+    #
     it "extracts text correctly" do
       pending
       PDF::Reader.open(filename) do |reader|
