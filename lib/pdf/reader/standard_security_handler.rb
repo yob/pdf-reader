@@ -25,6 +25,7 @@
 #
 ################################################################################
 require 'digest/md5'
+require 'openssl'
 require 'rc4'
 
 class PDF::Reader
@@ -54,6 +55,7 @@ class PDF::Reader
       @encryptMeta   = opts.fetch(:encrypted_metadata, true)
       @file_id       = opts[:file_id] || ""
       @encrypt_key   = build_standard_key(opts[:password] || "")
+      @cfm           = opts[:cfm]
 
       if @key_length != 5 && @key_length != 16
         msg = "StandardSecurityHandler only supports 40 and 128 bit\
@@ -70,8 +72,8 @@ class PDF::Reader
       filter = encrypt.fetch(:Filter, :Standard)
       version = encrypt.fetch(:V, 0)
       algorithm = encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
-      filter == :Standard &&
-        (version <= 3 || (version == 4 && algorithm != :AESV2))
+      (filter == :Standard) && (encrypt[:StmF] == encrypt[:StrF]) &&
+        (version <= 3 || (version == 4 && ((algorithm == :V2) || (algorithm == :AESV2))))
     end
 
     ##7.6.2 General Encryption Algorithm
@@ -87,9 +89,19 @@ class PDF::Reader
       objKey = @encrypt_key.dup
       (0..2).each { |e| objKey << (ref.id >> e*8 & 0xFF ) }
       (0..1).each { |e| objKey << (ref.gen >> e*8 & 0xFF ) }
-      length = objKey.length < 16 ? objKey.length : 16
-      rc4 = RC4.new( Digest::MD5.digest(objKey)[0,length] )
-      rc4.decrypt(buf)
+      if @cfm == :AESV2
+        objKey << 'sAlT'  # Algorithm 1, b)
+        length = objKey.length < 16 ? objKey.length : 16
+        cipher = OpenSSL::Cipher.new("AES-#{length << 3}-CBC")
+        cipher.decrypt
+        cipher.key = Digest::MD5.digest(objKey)[0,length]
+        cipher.iv = buf[0..15]
+        cipher.update(buf[16..-1]) + cipher.final
+      else
+        length = objKey.length < 16 ? objKey.length : 16
+        rc4 = RC4.new( Digest::MD5.digest(objKey)[0,length] )
+        rc4.decrypt(buf)
+      end
     end
 
     private
