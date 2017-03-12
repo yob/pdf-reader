@@ -609,6 +609,105 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "encrypted_version5_revision5_256bit_aes_user_pass_apples_enc_metadata" do
+    let(:filename) {
+      pdf_spec_file("encrypted_version5_revision5_256bit_aes_user_pass_apples_enc_metadata")
+    }
+
+    context "with the user pass" do
+      let(:pass) { "apples" }
+
+      it "correctly extracts text" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.page(1).text).to include("This sample file is encrypted")
+        end
+      end
+
+      it "correctly extracts info" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.info).to eq(
+                                     :Author => "Gyuchang Jun",
+                                     :CreationDate => "D:20170312093033+00'00'",
+                                     :Creator => "Microsoft Word",
+                                     :ModDate => "D:20170312093033+00'00'"
+                                 )
+        end
+      end
+    end
+
+    context "with the owner pass" do
+      let(:pass) { "password" }
+
+      it "correctly extracts text" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.page(1).text).to include("This sample file is encrypted")
+        end
+      end
+
+      it "correctly extracts info" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.info).to eq(
+                                     :Author => "Gyuchang Jun",
+                                     :CreationDate => "D:20170312093033+00'00'",
+                                     :Creator => "Microsoft Word",
+                                     :ModDate => "D:20170312093033+00'00'"
+                                 )
+        end
+      end
+
+    end
+  end
+
+  context "encrypted_version5_revision5_256bit_aes_user_pass_apples_unenc_metadata" do
+    let(:filename) {
+      pdf_spec_file("encrypted_version5_revision5_256bit_aes_user_pass_apples_unenc_metadata")
+    }
+
+    context "with the user pass" do
+      let(:pass) { "apples" }
+
+      it "correctly extracts text" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.page(1).text).to include("This sample file is encrypted")
+        end
+      end
+
+      it "correctly extracts info" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.info).to eq(
+                                     :Author => "Gyuchang Jun",
+                                     :CreationDate => "D:20170312093033+00'00'",
+                                     :Creator => "Microsoft Word",
+                                     :ModDate => "D:20170312093033+00'00'"
+                                 )
+        end
+      end
+
+    end
+
+    context "with the owner pass" do
+      let(:pass) { "password" }
+
+      it "correctly extracts text" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.page(1).text).to include("This sample file is encrypted")
+        end
+      end
+
+      it "correctly extracts info" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.info).to eq(
+                                     :Author => "Gyuchang Jun",
+                                     :CreationDate => "D:20170312093033+00'00'",
+                                     :Creator => "Microsoft Word",
+                                     :ModDate => "D:20170312093033+00'00'"
+                                 )
+        end
+      end
+
+    end
+  end
+
   context "encrypted_version5_revision6_256bit_aes_user_pass_apples_enc_metadata" do
     let(:filename) {
       pdf_spec_file("encrypted_version5_revision6_256bit_aes_user_pass_apples_enc_metadata")
