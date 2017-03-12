@@ -300,7 +300,8 @@ class PDF::Reader
           permissions: encrypt[:P].to_i,
           encrypted_metadata: encmeta,
           file_id: (deref(trailer[:ID]) || []).first,
-          password: opts[:password]
+          password: opts[:password],
+          cfm: encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
         )
       else
         UnimplementedSecurityHandler.new
