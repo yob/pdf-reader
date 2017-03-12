@@ -64,8 +64,7 @@ class PDF::Reader
       end
     end
 
-    # This handler supports all RC4 encryption that follows the PDF spec. It does not support
-    # AES encryption that was added in later versions of the spec.
+    # This handler supports all encryption that follows upto PDF 1.5 spec (revision 4)
     def self.supports?(encrypt)
       return false if encrypt.nil?
 

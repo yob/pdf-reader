@@ -219,7 +219,7 @@ module PDF
           pdfdoc_to_utf8(obj)
         end
       else
-        obj
+        @objects.deref(obj)
       end
     end
 
