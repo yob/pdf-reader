@@ -303,6 +303,14 @@ class PDF::Reader
           password: opts[:password],
           cfm: encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
         )
+      elsif StandardSecurityHandlerV5.supports?(encrypt)
+        StandardSecurityHandlerV5.new(
+            O: encrypt[:O],
+            U: encrypt[:U],
+            OE: encrypt[:OE],
+            UE: encrypt[:UE],
+            password: opts[:password]
+        )
       else
         UnimplementedSecurityHandler.new
       end
