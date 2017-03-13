@@ -10,10 +10,12 @@ class PDF::Reader
     attr_reader :key_length, :encrypt_key
 
     def initialize(opts = {})
-      @key_length  = 256
-      @encrypt_key = build_standard_key(opts)
-
-      raise ArgumentError, 'Incorrect Password' unless @encrypt_key
+      @key_length   = 256
+      @O            = opts[:O]   # hash(32B) + validation salt(8B) + key salt(8B)
+      @U            = opts[:U]   # hash(32B) + validation salt(8B) + key salt(8B)
+      @OE           = opts[:OE]  # decryption key, encrypted w/ owner password
+      @UE           = opts[:UE]  # decryption key, encrypted w/ user password
+      @encrypt_key  = build_standard_key(opts[:password] || '')
     end
 
     # This handler supports AES-256 encryption defined in PDF 1.7 Extension Level 3
@@ -52,50 +54,36 @@ class PDF::Reader
     #
     # if the string is a valid user/owner password, this will return the decryption key
     #
-    def build_standard_key(opts)
-      cipher = OpenSSL::Cipher.new('AES-256-CBC')
-      sha256 = Digest::SHA256.new
-
-      o = opts[:O]    # hash(32B) + validation salt(8B) + key salt(8B)
-      u = opts[:U]    # hash(32B) + validation salt(8B) + key salt(8B)
-      oe = opts[:OE]  # decryption key, encrypted w/ owner password
-      ue = opts[:UE]  # decryption key, encrypted w/ user password
-      pass = (opts[:password] || '')[0...127]   # UTF-8 encoded password. first 127 bytes
-
-      # test for owner pass
-      sha256.update(pass)
-      sha256.update(o[32..39])      # O validation salt
-      sha256.update(u)
-      if sha256.digest == o[0..31]  # O hash
-        sha256.reset
-        sha256.update(pass)
-        sha256.update(o[40..-1])    # O key salt
-        sha256.update(u)
-
+    def auth_owner_pass(password)
+      if Digest::SHA256.digest(password + @O[32..39] + @U) == @O[0..31]
+        cipher = OpenSSL::Cipher.new('AES-256-CBC')
         cipher.decrypt
-        cipher.key = sha256.digest
+        cipher.key = Digest::SHA256.digest(password + @O[40..-1] + @U)
         cipher.iv = "\x00" * 16
         cipher.padding = 0
-        return cipher.update(oe) + cipher.final
+        cipher.update(@OE) + cipher.final
       end
+    end
 
-      sha256.reset
-      cipher.reset
-
-      # test for user pass
-      sha256.update(pass)
-      sha256.update(u[32..39])      # U validation salt
-      if sha256.digest == u[0..31]  # U hash
-        sha256.reset
-        sha256.update(pass)
-        sha256.update(u[40..-1])    # U key salt
-
+    def auth_user_pass(password)
+      if Digest::SHA256.digest(password + @U[32..39]) == @U[0..31]
+        cipher = OpenSSL::Cipher.new('AES-256-CBC')
         cipher.decrypt
-        cipher.key = sha256.digest
+        cipher.key = Digest::SHA256.digest(password + @U[40..-1])
         cipher.iv = "\x00" * 16
         cipher.padding = 0
-        return cipher.update(ue) + cipher.final
+        cipher.update(@UE) + cipher.final
       end
+    end
+
+    def build_standard_key(pass)
+      pass = pass[0...127]   # UTF-8 encoded password. first 127 bytes
+
+      encrypt_key   = auth_owner_pass(pass)
+      encrypt_key ||= auth_user_pass(pass)
+
+      raise PDF::Reader::EncryptedPDFError, "Invalid password (#{pass})" if encrypt_key.nil?
+      encrypt_key
     end
   end
 end
