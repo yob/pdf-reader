@@ -152,9 +152,9 @@ class PDF::Reader
       if @revision > 2 then
         50.times { md5 = Digest::MD5.digest(md5) }
         keyBegins = md5[0, key_length]
-        #first itteration decrypt owner_key
+        #first iteration decrypt owner_key
         out = @owner_key
-        #RC4 keyed with (keyBegins XOR with itteration #) to decrypt previous out
+        #RC4 keyed with (keyBegins XOR with iteration #) to decrypt previous out
         19.downto(0).each { |i| out=RC4.new(xor_each_byte(keyBegins,i)).decrypt(out) }
       else
         out = RC4.new( md5[0, 5] ).decrypt( @owner_key )
