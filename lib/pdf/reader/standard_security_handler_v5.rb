@@ -77,7 +77,7 @@ class PDF::Reader
     end
 
     def build_standard_key(pass)
-      pass = pass[0...127]   # UTF-8 encoded password. first 127 bytes
+      pass = pass.byteslice(0...127)   # UTF-8 encoded password. first 127 bytes
 
       encrypt_key   = auth_owner_pass(pass)
       encrypt_key ||= auth_user_pass(pass)
