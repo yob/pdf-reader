@@ -64,8 +64,7 @@ class PDF::Reader
       end
     end
 
-    # This handler supports all RC4 encryption that follows the PDF spec. It does not support
-    # AES encryption that was added in later versions of the spec.
+    # This handler supports all encryption that follows upto PDF 1.5 spec (revision 4)
     def self.supports?(encrypt)
       return false if encrypt.nil?
 
@@ -153,9 +152,9 @@ class PDF::Reader
       if @revision > 2 then
         50.times { md5 = Digest::MD5.digest(md5) }
         keyBegins = md5[0, key_length]
-        #first itteration decrypt owner_key
+        #first iteration decrypt owner_key
         out = @owner_key
-        #RC4 keyed with (keyBegins XOR with itteration #) to decrypt previous out
+        #RC4 keyed with (keyBegins XOR with iteration #) to decrypt previous out
         19.downto(0).each { |i| out=RC4.new(xor_each_byte(keyBegins,i)).decrypt(out) }
       else
         out = RC4.new( md5[0, 5] ).decrypt( @owner_key )

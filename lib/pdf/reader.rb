@@ -219,7 +219,7 @@ module PDF
           pdfdoc_to_utf8(obj)
         end
       else
-        obj
+        @objects.deref(obj)
       end
     end
 
@@ -277,6 +277,7 @@ require 'pdf/reader/reference'
 require 'pdf/reader/register_receiver'
 require 'pdf/reader/null_security_handler'
 require 'pdf/reader/standard_security_handler'
+require 'pdf/reader/standard_security_handler_v5'
 require 'pdf/reader/unimplemented_security_handler'
 require 'pdf/reader/stream'
 require 'pdf/reader/text_run'
