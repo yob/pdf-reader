@@ -29,13 +29,13 @@ class PDF::Reader
           Rc4SecurityHandler.new(key_builder.key(password))
         end
       elsif standard_v5?(encrypt)
-        StandardSecurityHandlerV5.new(
-            O: encrypt[:O],
-            U: encrypt[:U],
-            OE: encrypt[:OE],
-            UE: encrypt[:UE],
-            password: password
+        key_builder = KeyBuilderV5.new(
+          owner_key: encrypt[:O],
+          user_key: encrypt[:U],
+          owner_encryption_key: encrypt[:OE],
+          user_encryption_key: encrypt[:UE],
         )
+        AesV3SecurityHandler.new(key_builder.key(password))
       else
         UnimplementedSecurityHandler.new
       end
