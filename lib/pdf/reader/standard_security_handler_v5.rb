@@ -21,18 +21,6 @@ class PDF::Reader
       @encrypt_key  = build_standard_key(opts[:password] || '')
     end
 
-    # This handler supports AES-256 encryption defined in PDF 1.7 Extension Level 3
-    def self.supports?(encrypt)
-      return false if encrypt.nil?
-
-      filter = encrypt.fetch(:Filter, :Standard)
-      version = encrypt.fetch(:V, 0)
-      revision = encrypt.fetch(:R, 0)
-      algorithm = encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
-      (filter == :Standard) && (encrypt[:StmF] == encrypt[:StrF]) &&
-          ((version == 5) && (revision == 5) && (algorithm == :AESV3))
-    end
-
     ##7.6.2 General Encryption Algorithm
     #
     # Algorithm 1: Encryption of data using the RC4 or AES algorithms

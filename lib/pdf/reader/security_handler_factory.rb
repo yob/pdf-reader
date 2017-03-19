@@ -9,9 +9,9 @@ class PDF::Reader
       doc_id   ||= []
       password ||= ""
 
-      if NullSecurityHandler.supports?(encrypt)
+      if encrypt.nil?
         NullSecurityHandler.new
-      elsif StandardSecurityHandler.supports?(encrypt)
+      elsif standard?(encrypt)
         encmeta = !encrypt.has_key?(:EncryptMetadata) || encrypt[:EncryptMetadata].to_s == "true"
         key_builder = StandardKeyBuilder.new(
           key_length: (encrypt[:Length] || 40).to_i,
@@ -26,7 +26,7 @@ class PDF::Reader
           key_builder.key(password),
           encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
         )
-      elsif StandardSecurityHandlerV5.supports?(encrypt)
+      elsif standard_v5?(encrypt)
         StandardSecurityHandlerV5.new(
             O: encrypt[:O],
             U: encrypt[:U],
@@ -38,5 +38,30 @@ class PDF::Reader
         UnimplementedSecurityHandler.new
       end
     end
+
+    # This handler supports all encryption that follows upto PDF 1.5 spec (revision 4)
+    def self.standard?(encrypt)
+      return false if encrypt.nil?
+
+      filter = encrypt.fetch(:Filter, :Standard)
+      version = encrypt.fetch(:V, 0)
+      algorithm = encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
+      (filter == :Standard) && (encrypt[:StmF] == encrypt[:StrF]) &&
+        (version <= 3 || (version == 4 && ((algorithm == :V2) || (algorithm == :AESV2))))
+    end
+
+    # This handler supports AES-256 encryption defined in PDF 1.7 Extension Level 3
+    def self.standard_v5?(encrypt)
+      return false if encrypt.nil?
+
+      filter = encrypt.fetch(:Filter, :Standard)
+      version = encrypt.fetch(:V, 0)
+      revision = encrypt.fetch(:R, 0)
+      algorithm = encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
+      (filter == :Standard) && (encrypt[:StmF] == encrypt[:StrF]) &&
+          ((version == 5) && (revision == 5) && (algorithm == :AESV3))
+    end
+
+
   end
 end

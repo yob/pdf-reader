@@ -40,17 +40,6 @@ class PDF::Reader
       @cfm         = cfm
     end
 
-    # This handler supports all encryption that follows upto PDF 1.5 spec (revision 4)
-    def self.supports?(encrypt)
-      return false if encrypt.nil?
-
-      filter = encrypt.fetch(:Filter, :Standard)
-      version = encrypt.fetch(:V, 0)
-      algorithm = encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
-      (filter == :Standard) && (encrypt[:StmF] == encrypt[:StrF]) &&
-        (version <= 3 || (version == 4 && ((algorithm == :V2) || (algorithm == :AESV2))))
-    end
-
     ##7.6.2 General Encryption Algorithm
     #
     # Algorithm 1: Encryption of data using the RC4 or AES algorithms
