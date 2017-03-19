@@ -22,10 +22,12 @@ class PDF::Reader
           encrypted_metadata: encmeta,
           file_id: doc_id.first,
         )
-        StandardSecurityHandler.new(
-          key_builder.key(password),
-          encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
-        )
+        cfm = encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
+        if cfm == :AESV2
+          AesV2SecurityHandler.new(key_builder.key(password))
+        else
+          Rc4SecurityHandler.new(key_builder.key(password))
+        end
       elsif standard_v5?(encrypt)
         StandardSecurityHandlerV5.new(
             O: encrypt[:O],
