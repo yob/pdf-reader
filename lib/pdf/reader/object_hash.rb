@@ -48,7 +48,11 @@ class PDF::Reader
       @trailer     = @xref.trailer
       @cache       = opts[:cache] || PDF::Reader::ObjectCache.new
       @sec_handler = NullSecurityHandler.new
-      @sec_handler = build_security_handler(opts)
+      @sec_handler = SecurityHandlerFactory.build(
+        deref(trailer[:Encrypt]),
+        deref(trailer[:ID]),
+        opts[:password]
+      )
     end
 
     # returns the type of object a ref points to
@@ -296,38 +300,6 @@ class PDF::Reader
         seen[seen_key]
       else
         object
-      end
-    end
-
-    def build_security_handler(opts = {})
-      encrypt = deref(trailer[:Encrypt])
-      if NullSecurityHandler.supports?(encrypt)
-        NullSecurityHandler.new
-      elsif StandardSecurityHandler.supports?(encrypt)
-        encmeta = !encrypt.has_key?(:EncryptMetadata) || encrypt[:EncryptMetadata].to_s == "true"
-        key_builder = StandardKeyBuilder.new(
-          key_length: (encrypt[:Length] || 40).to_i,
-          revision: encrypt[:R],
-          owner_key: encrypt[:O],
-          user_key: encrypt[:U],
-          permissions: encrypt[:P].to_i,
-          encrypted_metadata: encmeta,
-          file_id: (deref(trailer[:ID]) || []).first,
-        )
-        StandardSecurityHandler.new(
-          key_builder.key(opts[:password]),
-          encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
-        )
-      elsif StandardSecurityHandlerV5.supports?(encrypt)
-        StandardSecurityHandlerV5.new(
-            O: encrypt[:O],
-            U: encrypt[:U],
-            OE: encrypt[:OE],
-            UE: encrypt[:UE],
-            password: opts[:password]
-        )
-      else
-        UnimplementedSecurityHandler.new
       end
     end
 
