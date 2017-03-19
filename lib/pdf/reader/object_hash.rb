@@ -305,7 +305,7 @@ class PDF::Reader
         NullSecurityHandler.new
       elsif StandardSecurityHandler.supports?(encrypt)
         encmeta = !encrypt.has_key?(:EncryptMetadata) || encrypt[:EncryptMetadata].to_s == "true"
-        StandardSecurityHandler.new(
+        key_builder = StandardKeyBuilder.new(
           key_length: (encrypt[:Length] || 40).to_i,
           revision: encrypt[:R],
           owner_key: encrypt[:O],
@@ -313,8 +313,10 @@ class PDF::Reader
           permissions: encrypt[:P].to_i,
           encrypted_metadata: encmeta,
           file_id: (deref(trailer[:ID]) || []).first,
-          password: opts[:password],
-          cfm: encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
+        )
+        StandardSecurityHandler.new(
+          key_builder.key(opts[:password]),
+          encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
         )
       elsif StandardSecurityHandlerV5.supports?(encrypt)
         StandardSecurityHandlerV5.new(
