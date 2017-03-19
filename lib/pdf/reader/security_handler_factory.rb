@@ -12,33 +12,41 @@ class PDF::Reader
       if encrypt.nil?
         NullSecurityHandler.new
       elsif standard?(encrypt)
-        encmeta = !encrypt.has_key?(:EncryptMetadata) || encrypt[:EncryptMetadata].to_s == "true"
-        key_builder = StandardKeyBuilder.new(
-          key_length: (encrypt[:Length] || 40).to_i,
-          revision: encrypt[:R],
-          owner_key: encrypt[:O],
-          user_key: encrypt[:U],
-          permissions: encrypt[:P].to_i,
-          encrypted_metadata: encmeta,
-          file_id: doc_id.first,
-        )
-        cfm = encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
-        if cfm == :AESV2
-          AesV2SecurityHandler.new(key_builder.key(password))
-        else
-          Rc4SecurityHandler.new(key_builder.key(password))
-        end
+        build_standard_handler(encrypt, doc_id, password)
       elsif standard_v5?(encrypt)
-        key_builder = KeyBuilderV5.new(
-          owner_key: encrypt[:O],
-          user_key: encrypt[:U],
-          owner_encryption_key: encrypt[:OE],
-          user_encryption_key: encrypt[:UE],
-        )
-        AesV3SecurityHandler.new(key_builder.key(password))
+        build_v5_handler(encrypt, doc_id, password)
       else
         UnimplementedSecurityHandler.new
       end
+    end
+
+    def self.build_standard_handler(encrypt, doc_id, password)
+      encmeta = !encrypt.has_key?(:EncryptMetadata) || encrypt[:EncryptMetadata].to_s == "true"
+      key_builder = StandardKeyBuilder.new(
+        key_length: (encrypt[:Length] || 40).to_i,
+        revision: encrypt[:R],
+        owner_key: encrypt[:O],
+        user_key: encrypt[:U],
+        permissions: encrypt[:P].to_i,
+        encrypted_metadata: encmeta,
+        file_id: doc_id.first,
+      )
+      cfm = encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
+      if cfm == :AESV2
+        AesV2SecurityHandler.new(key_builder.key(password))
+      else
+        Rc4SecurityHandler.new(key_builder.key(password))
+      end
+    end
+
+    def self.build_v5_handler(encrypt, doc_id, password)
+      key_builder = KeyBuilderV5.new(
+        owner_key: encrypt[:O],
+        user_key: encrypt[:U],
+        owner_encryption_key: encrypt[:OE],
+        user_encryption_key: encrypt[:UE],
+      )
+      AesV3SecurityHandler.new(key_builder.key(password))
     end
 
     # This handler supports all encryption that follows upto PDF 1.5 spec (revision 4)
