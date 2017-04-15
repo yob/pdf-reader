@@ -61,9 +61,9 @@ module PDF
             hash.merge!(@objects.deref(obj))
           end
         }
-        # This shouldn't be necesary, but some non compliant PDFs leave MediaBox
-        # out. Assuming 8.5" x 11" is what Acobat does, so we do it too.
-        @attributes[:MediaBox] ||= [0,0,612,792]
+
+        ensure_media_box
+
         @attributes
       end
 
@@ -124,6 +124,16 @@ module PDF
       end
 
       private
+
+      def ensure_media_box
+        # This shouldn't be necesary, but some non compliant PDFs leave MediaBox
+        # out. Assuming 8.5" x 11" is what Acobat does, so we do it too.
+        @attributes[:MediaBox] ||= [0,0,612,792]
+
+        if @attributes[:MediaBox].kind_of? PDF::Reader::Reference
+          @attributes[:MediaBox] = @objects.deref(@attributes[:MediaBox])
+        end
+      end
 
       def root
         root ||= objects.deref(@objects.trailer[:Root])
