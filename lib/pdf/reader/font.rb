@@ -49,7 +49,7 @@ class PDF::Reader
     end
 
     def to_utf8(params)
-      if @tounicode
+      if @tounicode && @tounicode.size > 0
         to_utf8_via_cmap(params)
       else
         to_utf8_via_encoding(params)
