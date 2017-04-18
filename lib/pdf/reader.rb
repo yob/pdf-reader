@@ -76,6 +76,26 @@ module PDF
   #   puts page.images
   #   puts page.text
   #
+  # == Extracting paragraphs
+  #
+  # Use to create an array, albeit imperfect, of PDF's paragraphs. 
+  #
+  #   reader = PDF::Reader.new("somefile.pdf")
+  #   paragraphs = []
+  #   paragraph = ""
+  #   reader.pages.each do |page|
+  #     lines = page.text.scan(/^.+/)
+  #     lines.each do |line|
+  #       if line.length > 55
+  #         paragraph += " #{line}"
+  #       else
+  #         paragraph += " #{line}"
+  #         paragraphs << paragraph
+  #         paragraph = ""
+  #       end
+  #     end
+  #   end
+  #
   # == Low level callbacks (ala current version of PDF::Reader)
   #
   #   reader = PDF::Reader.new("somefile.pdf")
