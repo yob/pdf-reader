@@ -67,8 +67,7 @@ class PDF::Reader
         row = 0
         pixels = []
         paeth, pa, pb, pc = nil
-        until data.empty? do
-          row_data = data.slice! 0, scanline_length
+        data.each_slice(scanline_length) do |row_data|
           filter = row_data.shift
           case filter
           when 0 # None
