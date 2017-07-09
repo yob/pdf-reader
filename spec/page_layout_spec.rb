@@ -147,6 +147,19 @@ describe PDF::Reader::PageLayout do
           expect(subject.to_s).to eq("Hello")
         end
       end
+
+      context "with one run that's positioned at 0,0" do
+        let!(:runs) do
+          [
+            PDF::Reader::TextRun.new(0, 0, 50, 18, "Hello World"),
+          ]
+        end
+        subject { PDF::Reader::PageLayout.new(runs, mediabox)}
+
+        it "returns a correct string" do
+          expect(subject.to_s).to eq("Hello World")
+        end
+      end
     end
   end
 end
