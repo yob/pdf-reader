@@ -9,6 +9,14 @@ require 'colorize'
 $QUIET = false
 
 #
+# Usage
+#
+def usage
+  print_status './read-pdf.rb <FILE>'
+  exit 1
+end
+
+#
 # Print status message
 #
 # @param [String] msg message to print
@@ -43,8 +51,7 @@ end
 def read doc
   print_status "Processing '#{doc}'"
   begin
-    @fname = doc
-    reader = PDF::Reader.new(@fname)
+    reader = PDF::Reader.new doc
   rescue PDF::Reader::MalformedPDFError
     print_error "Could not parse PDF '#{doc}': PDF is malformed"
     exit 1
@@ -54,7 +61,7 @@ def read doc
   end
   print_good 'Processing complete'
 
-  print_status "Parsing '#{@fname}'"
+  print_status "Parsing '#{doc}'"
   begin
     parse reader
   rescue PDF::Reader::UnsupportedFeatureError
@@ -68,7 +75,7 @@ def read doc
 end
 
 #
-# parse pdf
+# Parse PDF
 #
 def parse(reader)
   print_status "Version: #{reader.pdf_version}"
@@ -80,17 +87,11 @@ def parse(reader)
   print_status 'Parsing PDF contents...'
   contents = ''
   reader.pages.each do |page|
-    contents << page.text.to_s
     contents << page.fonts.to_s
-    contents << page.text.to_s
-    contents << page.raw_content.to_s
+    contents << page.text.force_encoding('utf-8')
+    contents << page.raw_content.force_encoding('utf-8')
   end
   #puts contents unless $QUIET
-end
-
-def usage
-  print_status "./read-pdf.rb <FILE>"
-  exit 1
 end
 
 doc = ARGV[0]
@@ -100,7 +101,6 @@ if File.exist? doc
   read doc
   exit 0
 else
-  print_error "Could not find #{doc}"
+  print_error "Could not find file '#{doc}'"
   exit 1
 end
-
