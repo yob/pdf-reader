@@ -1003,4 +1003,15 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF with text positioned at 0,0" do
+    let(:filename) { pdf_spec_file("minimal") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq("Hello World")
+      end
+    end
+  end
+
 end

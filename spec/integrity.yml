@@ -212,6 +212,9 @@ data/lzw_stream.pdf:
 data/mediabox_missing.pdf:
   :bytes: 14875
   :md5: 51560e94565ee1cd9583c388b5aa545a
+data/minimal.pdf:
+  :bytes: 739
+  :md5: b5808604069f9f61d94e0660409616ba
 data/nested_form_xobject.pdf:
   :bytes: 30365
   :md5: 441fd2c734e81784d7db0a86bf4c11e5
