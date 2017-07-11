@@ -102,7 +102,11 @@ class PDF::Reader
       (0..2).each { |e| objKey << (ref.id >> e*8 & 0xFF ) }
       (0..1).each { |e| objKey << (ref.gen >> e*8 & 0xFF ) }
       length = objKey.length < 16 ? objKey.length : 16
-      rc4 = RC4.new( Digest::MD5.digest(objKey)[0,length] )
+      begin
+        rc4 = RC4.new( Digest::MD5.digest(objKey)[0,length] )
+      rescue SyntaxError => e
+        raise ArgumentError, e.message
+      end
       rc4.decrypt(buf)
     end
 
@@ -155,9 +159,17 @@ class PDF::Reader
         #first iteration decrypt owner_key
         out = @owner_key
         #RC4 keyed with (keyBegins XOR with iteration #) to decrypt previous out
-        19.downto(0).each { |i| out=RC4.new(xor_each_byte(keyBegins,i)).decrypt(out) }
+        begin
+          19.downto(0).each { |i| out=RC4.new(xor_each_byte(keyBegins,i)).decrypt(out) }
+        rescue SyntaxError => e
+          raise ArgumentError, e.message
+        end
       else
-        out = RC4.new( md5[0, 5] ).decrypt( @owner_key )
+        begin
+          out = RC4.new( md5[0, 5] ).decrypt( @owner_key )
+        rescue SyntaxError => e
+          raise ArgumentError, e.message
+        end
       end
       # c) check output as user password
       auth_user_pass( out )
@@ -179,10 +191,18 @@ class PDF::Reader
         #initialize out for first iteration
         out = Digest::MD5.digest(PassPadBytes.pack("C*") + @file_id)
         #zero doesn't matter -> so from 0-19
-        20.times{ |i| out=RC4.new(xor_each_byte(keyBegins, i)).encrypt(out) }
+        begin
+          20.times{ |i| out=RC4.new(xor_each_byte(keyBegins, i)).encrypt(out) }
+        rescue SyntaxError => e
+          raise ArgumentError, e.message
+        end
         pass = @user_key[0, 16] == out
       else
-        pass = RC4.new(keyBegins).encrypt(PassPadBytes.pack("C*")) == @user_key
+        begin
+          pass = RC4.new(keyBegins).encrypt(PassPadBytes.pack("C*")) == @user_key
+        rescue SyntaxError => e
+          raise ArgumentError, e.message
+        end
       end
       pass ? keyBegins : nil
     end
