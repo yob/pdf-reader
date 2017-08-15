@@ -198,10 +198,6 @@ class PDF::Reader
       end
     end
 
-    def has_mapping?
-      @mapping.size > 0
-    end
-
     def glyphlist
       @glyphlist ||= PDF::Reader::GlyphHash.new
     end
