@@ -395,5 +395,11 @@ describe PDF::Reader::ObjectHash do
         expect(arr.map { |ref| ref.id }).to eql([6])
       end
     end
+
+    it "raises a MalformedPDFError if dereferenced value is not a dict" do
+      filename = pdf_spec_file("page_reference_is_not_a_dict")
+      h = PDF::Reader::ObjectHash.new(filename)
+      expect { h.page_references }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
   end
 end

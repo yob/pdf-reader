@@ -169,7 +169,7 @@ data/inline_image.pdf:
   :md5: b02bfbb6b0ee7c7d7df1b5f0c1f198c1
 data/inline_image_single_line_content_stream.pdf:
   :bytes: 130786
-  :md5: 096fb28baf29a716066768cb31182b73
+  :md5: '096fb28baf29a716066768cb31182b73'
 data/invalid/data.csv:
   :bytes: 26
   :md5: 7168179491824d651a304cbb83c16964
@@ -182,6 +182,9 @@ data/invalid/no_eof.pdf:
 data/invalid/no_trailer.pdf:
   :bytes: 9599
   :md5: f67206cde8a4f97924a2c93d5b8c40ad
+data/invalid/page_reference_is_not_a_dict.pdf:
+  :bytes: 108807
+  :md5: 7a6da0a240b4c3dea52308502b051cb5
 data/invalid/trailer_is_not_a_dict.pdf:
   :bytes: 9651
   :md5: 2cf861306cb9d19e926a079f54ad4e19
@@ -292,7 +295,7 @@ data/type3_font.pdf:
   :md5: ef2a3eb57d5996c4a33681e1aec98f2c
 data/type3_font_with_rare_font_matrix.pdf:
   :bytes: 11541
-  :md5: 08f69084d72dabc5dfdcf5c1ff2a719f
+  :md5: '08f69084d72dabc5dfdcf5c1ff2a719f'
 data/vertical-text-in-identity-v.pdf:
   :bytes: 9785
   :md5: 8dba658e634fb19a66090607640540d1
