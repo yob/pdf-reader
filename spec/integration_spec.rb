@@ -1023,4 +1023,14 @@ describe PDF::Reader, "integration specs" do
       end
     end
   end
+
+  context "PDF with missing page data" do
+    let(:filename) { pdf_spec_file("invalid_pages") }
+
+    it "raises a MalformedPDFError when an InvalidPageError is raised internally" do
+      PDF::Reader.open(filename) do |reader|
+        expect { reader.pages }.to raise_error(PDF::Reader::MalformedPDFError)
+      end
+    end
+  end
 end

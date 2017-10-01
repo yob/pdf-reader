@@ -1,6 +1,15 @@
 # coding: utf-8
 
 describe PDF::Reader::Page do
+  describe "#initialize" do
+    it "raises InvalidPageError when an invalid page number is provided" do
+      @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
+      expect {
+        PDF::Reader::Page.new(@browser.objects, 10)
+      }.to raise_error(PDF::Reader::InvalidPageError)
+    end
+  end
+
   describe "#raw_content" do
     it "returns a string from raw_content() from cairo-basic.pdf page 1" do
       @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))

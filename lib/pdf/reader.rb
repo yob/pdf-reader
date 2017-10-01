@@ -173,9 +173,13 @@ module PDF
     # methods available on each page
     #
     def pages
-      (1..self.page_count).map { |num|
-        PDF::Reader::Page.new(@objects, num, :cache => @cache)
-      }
+      (1..self.page_count).map do |num|
+        begin
+          PDF::Reader::Page.new(@objects, num, :cache => @cache)
+        rescue InvalidPageError => ex
+          raise MalformedPDFError, "Missing data for page: #{num}"
+        end
+      end
     end
 
     # returns a single PDF::Reader::Page for the specified page.
@@ -193,7 +197,7 @@ module PDF
     def page(num)
       num = num.to_i
       if num < 1 || num > self.page_count
-        raise ArgumentError, "valid pages are 1 .. #{self.page_count}"
+        raise InvalidPageError, "Valid pages are 1 .. #{self.page_count}"
       end
       PDF::Reader::Page.new(@objects, num, :cache => @cache)
     end

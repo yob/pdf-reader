@@ -53,6 +53,10 @@ class PDF::Reader
   class MalformedPDFError < RuntimeError; end
 
   ################################################################################
+  # an exception that is raised when an invalid page number is used
+  class InvalidPageError < ArgumentError; end
+
+  ################################################################################
   # an exception that is raised when a PDF object appears to be invalid
   class InvalidObjectError < MalformedPDFError; end
 
