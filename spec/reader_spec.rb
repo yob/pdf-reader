@@ -128,4 +128,12 @@ describe PDF::Reader do
     end
   end
 
+  describe "#root" do
+    it "raises an exception if trailer Root is not a dict" do
+      filename = pdf_spec_file("trailer_root_is_not_a_dict")
+      pdf = PDF::Reader.new(filename)
+      # pdf.metadata calls the #root method internally
+      expect { pdf.metadata }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
 end

@@ -1014,4 +1014,13 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "Malformed PDF" do
+    let(:filename) { pdf_spec_file("trailer_root_is_not_a_dict") }
+
+    it "raises an exception if trailer Root is not a dict" do
+      PDF::Reader.open(filename) do |reader|
+        expect { reader.page(1) }.to raise_error(PDF::Reader::MalformedPDFError)
+      end
+    end
+  end
 end

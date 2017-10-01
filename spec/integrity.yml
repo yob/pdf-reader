@@ -185,6 +185,9 @@ data/invalid/no_trailer.pdf:
 data/invalid/trailer_is_not_a_dict.pdf:
   :bytes: 9651
   :md5: 2cf861306cb9d19e926a079f54ad4e19
+data/invalid/trailer_root_is_not_a_dict.pdf:
+  :bytes: 108807
+  :md5: e00b7fc6999ca722aa31d2bb90f1e5d0
 data/junk_prefix.pdf:
   :bytes: 934
   :md5: c03c9a96cdefa78c9475b619d87e39bf
