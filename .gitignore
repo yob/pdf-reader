@@ -6,3 +6,5 @@ Gemfile.lock
 *.gem
 .DS_Store
 tools/profiles
+.byebug_history
+.bundle
