@@ -182,6 +182,9 @@ data/invalid/no_eof.pdf:
 data/invalid/no_trailer.pdf:
   :bytes: 9599
   :md5: f67206cde8a4f97924a2c93d5b8c40ad
+data/invalid/page_reference_is_not_a_dict.pdf:
+  :bytes: 108807
+  :md5: 7a6da0a240b4c3dea52308502b051cb5
 data/invalid/trailer_is_not_a_dict.pdf:
   :bytes: 9651
   :md5: 2cf861306cb9d19e926a079f54ad4e19

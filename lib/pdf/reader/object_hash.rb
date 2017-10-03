@@ -350,6 +350,10 @@ class PDF::Reader
     def get_page_objects(ref)
       obj = deref(ref)
 
+      unless obj.kind_of?(::Hash)
+        raise MalformedPDFError, "Dereferenced page object must be a dict"
+      end
+
       if obj[:Type] == :Page
         ref
       elsif obj[:Kids]
