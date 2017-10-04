@@ -36,7 +36,7 @@ module PDF
         @cache       = options[:cache] || {}
 
         unless @page_object.is_a?(::Hash)
-          raise ArgumentError, "invalid page: #{pagenum}"
+          raise InvalidPageError, "Invalid page: #{pagenum}"
         end
       end
 

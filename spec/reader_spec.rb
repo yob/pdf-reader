@@ -116,6 +116,11 @@ describe PDF::Reader do
         expect(page).to be_a_kind_of(PDF::Reader::Page)
       end
     end
+
+    it "raises aMalformedPDFError when an InvalidPageError is raised internally" do
+      reader = PDF::Reader.new(pdf_spec_file("invalid_pages"))
+      expect { reader.pages }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
   end
 
   describe "#page" do
@@ -125,6 +130,11 @@ describe PDF::Reader do
 
     it "returns a single page from no_text_spaces" do
       expect(PDF::Reader.new(no_text_spaces).page(1)).to be_a_kind_of(PDF::Reader::Page)
+    end
+
+    it "raises InvalidPageError when an invalid page number is requested" do
+      reader = PDF::Reader.new(pdf_spec_file("cairo-basic"))
+      expect { reader.page(10) }.to raise_error(PDF::Reader::InvalidPageError)
     end
   end
 

@@ -8,7 +8,7 @@ require 'yaml'
 # line endings) then specs wil fail in confusing ways.
 #
 # This spec will fail if a new PDF is added to the suite but not
-# listed in spec/inhtegrity.yml. After adding the new PDF, be sure to
+# listed in spec/integrity.yml. After adding the new PDF, be sure to
 # run 'rake integrity_yaml'
 
 describe "Spec suite PDFs" do

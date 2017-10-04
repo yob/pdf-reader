@@ -173,6 +173,9 @@ data/inline_image_single_line_content_stream.pdf:
 data/invalid/data.csv:
   :bytes: 26
   :md5: 7168179491824d651a304cbb83c16964
+data/invalid/invalid_pages.pdf:
+  :bytes: 108807
+  :md5: 345670e7d5533a831184603d31dfc2bb
 data/invalid/linearized_bad_xref_offset.pdf:
   :bytes: 1133257
   :md5: 245e575d617b8fe69be7e2be382a7730
