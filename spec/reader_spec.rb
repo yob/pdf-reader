@@ -94,6 +94,14 @@ describe PDF::Reader do
 
       expect(metadata.encoding).to eql Encoding::UTF_8
     end
+
+    it "raises an exception if trailer Root is not a dict" do
+      filename = pdf_spec_file("trailer_root_is_not_a_dict")
+      pdf = PDF::Reader.new(filename)
+      expect {
+        pdf.metadata
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
   end
 
   describe "#pages" do
@@ -135,15 +143,6 @@ describe PDF::Reader do
     it "raises InvalidPageError when an invalid page number is requested" do
       reader = PDF::Reader.new(pdf_spec_file("cairo-basic"))
       expect { reader.page(10) }.to raise_error(PDF::Reader::InvalidPageError)
-    end
-  end
-
-  describe "#root" do
-    it "raises an exception if trailer Root is not a dict" do
-      filename = pdf_spec_file("trailer_root_is_not_a_dict")
-      pdf = PDF::Reader.new(filename)
-      # pdf.metadata calls the #root method internally
-      expect { pdf.metadata }.to raise_error(PDF::Reader::MalformedPDFError)
     end
   end
 end
