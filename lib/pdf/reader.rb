@@ -241,7 +241,13 @@ module PDF
     end
 
     def root
-      @root ||= @objects.deref(@objects.trailer[:Root])
+      @root ||= begin
+        obj = @objects.deref(@objects.trailer[:Root])
+        unless obj.kind_of?(::Hash)
+          raise MalformedPDFError, "PDF malformed, trailer Root should be a dictionary"
+        end
+        obj
+      end
     end
 
   end
