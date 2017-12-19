@@ -58,7 +58,11 @@ module PDF
       def attributes
         @attributes ||= {}.tap { |hash|
           page_with_ancestors.reverse.each do |obj|
-            hash.merge!(@objects.deref(obj))
+            deref_obj = @objects.deref(obj)
+            deref_obj.each do |key, value|
+              deref_obj[key] = @objects.deref(value)
+            end
+            hash.merge!(deref_obj)
           end
         }
         # This shouldn't be necesary, but some non compliant PDFs leave MediaBox
