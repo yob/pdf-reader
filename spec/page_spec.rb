@@ -144,6 +144,14 @@ describe PDF::Reader::Page do
       attribs = @page.attributes
       expect(attribs[:MediaBox]).to eql([0,0,612,792])
     end
+
+    it 'dereferences values' do
+      @browser = PDF::Reader.new(pdf_spec_file("attribute_values_as_references"))
+      @page    = @browser.page(1)
+
+      attribs = @page.attributes
+      expect(attribs[:MediaBox]).to eq([0,0,750,1170])
+    end
   end
 
 
