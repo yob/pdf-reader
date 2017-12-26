@@ -101,6 +101,9 @@ module PDF
           # paint the current glyph
           newx, newy = @state.trm_transform(0,0)
           utf8_chars = @state.current_font.to_utf8(glyph_code)
+          if !utf8_chars.valid_encoding?
+            utf8_chars = utf8_chars.encode("UTF-8", invalid: :replace, undef: :replace)
+          end
 
           # apply to glyph displacment for the current glyph so the next
           # glyph will appear in the correct position
