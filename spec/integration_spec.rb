@@ -1033,4 +1033,15 @@ describe PDF::Reader, "integration specs" do
       end
     end
   end
+
+  context "PDF with MediaBox specified as an indirect object" do
+    let(:filename) { pdf_spec_file("indirect_mediabox") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq("The MediaBox for this page is specified via an indirect object")
+      end
+    end
+  end
 end
