@@ -172,7 +172,7 @@ data/inline_image.pdf:
   :md5: b02bfbb6b0ee7c7d7df1b5f0c1f198c1
 data/inline_image_single_line_content_stream.pdf:
   :bytes: 130786
-  :md5: '096fb28baf29a716066768cb31182b73'
+  :md5: 096fb28baf29a716066768cb31182b73
 data/invalid/data.csv:
   :bytes: 26
   :md5: 7168179491824d651a304cbb83c16964
@@ -304,7 +304,7 @@ data/type3_font.pdf:
   :md5: ef2a3eb57d5996c4a33681e1aec98f2c
 data/type3_font_with_rare_font_matrix.pdf:
   :bytes: 11541
-  :md5: '08f69084d72dabc5dfdcf5c1ff2a719f'
+  :md5: 08f69084d72dabc5dfdcf5c1ff2a719f
 data/vertical-text-in-identity-v.pdf:
   :bytes: 9785
   :md5: 8dba658e634fb19a66090607640540d1
