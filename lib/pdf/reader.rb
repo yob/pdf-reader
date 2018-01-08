@@ -134,6 +134,9 @@ module PDF
 
     def page_count
       pages = @objects.deref(root[:Pages])
+      unless pages.kind_of?(::Hash)
+        raise MalformedPDFError, 'Pages structure is missing'
+      end
       @page_count ||= @objects.deref(pages[:Count])
     end
 
