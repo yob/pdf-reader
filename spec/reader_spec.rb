@@ -44,10 +44,12 @@ describe PDF::Reader do
       end
     end
 
-    it 'raises MalformedPDFError if pages object is missing' do
-      expect {
-        PDF::Reader.new(missing_pages_dict).page_count
-      }.to raise_error(PDF::Reader::MalformedPDFError)
+    context "when the PDF has no pages" do
+      it 'raises MalformedPDFError if pages object is missing' do
+        expect {
+          PDF::Reader.new(missing_pages_dict).page_count
+        }.to raise_error(PDF::Reader::MalformedPDFError)
+      end
     end
   end
 
