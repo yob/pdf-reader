@@ -4,6 +4,7 @@ describe PDF::Reader do
   let(:cairo_basic)   { pdf_spec_file("cairo-basic")}
   let(:oo3)           { pdf_spec_file("oo3")}
   let(:no_text_spaces) { pdf_spec_file("no_text_spaces")}
+  let(:missing_pages_dict) { pdf_spec_file('missing_pages_dict') }
 
   describe ".open()" do
 
@@ -40,6 +41,14 @@ describe PDF::Reader do
     context "with indirect_page_count" do
       it "returns the correct page_count" do
         expect(PDF::Reader.new(pdf_spec_file("indirect_page_count")).page_count).to eql(1)
+      end
+    end
+
+    context "when the PDF has no pages" do
+      it 'raises MalformedPDFError if pages object is missing' do
+        expect {
+          PDF::Reader.new(missing_pages_dict).page_count
+        }.to raise_error(PDF::Reader::MalformedPDFError)
       end
     end
   end
