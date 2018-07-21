@@ -226,7 +226,7 @@ class PDF::Reader
     end
 
     def prepare_inline_token
-      str = ""
+      str = "".dup
 
       buffer = []
 
@@ -249,7 +249,7 @@ class PDF::Reader
     # we find a closing >
     #
     def prepare_hex_token
-      str = ""
+      str = "".dup
       finished = false
 
       while !finished
@@ -279,7 +279,7 @@ class PDF::Reader
     # problem.
     #
     def prepare_literal_token
-      str = ""
+      str = "".dup
       count = 1
 
       while count > 0
@@ -309,7 +309,7 @@ class PDF::Reader
     # to read up on it.
     #
     def prepare_regular_token
-      tok = ""
+      tok = "".dup
 
       while byte = @io.getbyte
         case byte
@@ -328,7 +328,7 @@ class PDF::Reader
           while TOKEN_WHITESPACE.include?(peek_byte) && tok.size == 0
             @io.getbyte
           end
-          tok = ""
+          tok = "".dup
           break
         when 0x3C
           # opening delimiter '<', start of new token
@@ -339,7 +339,7 @@ class PDF::Reader
           else
             @tokens << "<"
           end
-          tok = ""
+          tok = "".dup
           break
         when 0x3E
           # closing delimiter '>', start of new token
@@ -350,26 +350,26 @@ class PDF::Reader
           else
             @tokens << ">"
           end
-          tok = ""
+          tok = "".dup
           break
         when 0x28, 0x5B, 0x7B
           # opening delimiter, start of new token
           @tokens << tok if tok.size > 0
           @tokens << byte.chr
-          tok = ""
+          tok = "".dup
           break
         when 0x29, 0x5D, 0x7D
           # closing delimiter
           @tokens << tok if tok.size > 0
           @tokens << byte.chr
-          tok = ""
+          tok = "".dup
           break
         when 0x2F
           # PDF name, start of new token
           @tokens << tok if tok.size > 0
           @tokens << byte.chr
           @tokens << "" if byte == 0x2F && ([nil, 0x20, 0x0A] + TOKEN_DELIMITER).include?(peek_byte)
-          tok = ""
+          tok = "".dup
           break
         else
           tok << byte
