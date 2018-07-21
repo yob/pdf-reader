@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen_string_literal: true
 
 module PDF
   # This class is deprecated, please stop using it.

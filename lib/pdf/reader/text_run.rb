@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen_string_literal: true
 
 class PDF::Reader
   # A value object that represents one or more consecutive characters on a page.

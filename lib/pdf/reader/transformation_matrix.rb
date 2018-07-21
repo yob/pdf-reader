@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen_string_literal: true
 
 class PDF::Reader
   # co-ordinate systems in PDF files are specified using a 3x3 matrix that looks

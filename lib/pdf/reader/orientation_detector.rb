@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen_string_literal: true
 
 class PDF::Reader
   # Small util class for detecting the orientation of a single PDF page. Accounts

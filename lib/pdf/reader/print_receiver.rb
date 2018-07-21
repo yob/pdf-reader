@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen_string_literal: true
 
 class PDF::Reader
   # A simple receiver that prints all operaters and parameters in the content
