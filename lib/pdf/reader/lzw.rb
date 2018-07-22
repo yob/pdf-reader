@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen_string_literal: true
 
 module PDF
 
@@ -82,7 +83,7 @@ module PDF
       #
       def self.decode(data)
         stream = BitStream.new data.to_s, 9 # size of codes between 9 and 12 bits
-        result = ''
+        result = "".dup
         until (code = stream.read) == CODE_EOD
           if code == CODE_CLEAR_TABLE
             stream.set_bits_in_chunk(9)

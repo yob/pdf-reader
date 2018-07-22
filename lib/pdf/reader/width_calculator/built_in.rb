@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen_string_literal: true
 
 require 'afm'
 require 'pdf/reader/synchronized_cache'

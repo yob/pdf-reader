@@ -1,4 +1,6 @@
 # coding: utf-8
+# frozen_string_literal: true
+
 #
 class PDF::Reader # :nodoc:
   module Filter # :nodoc:
@@ -12,7 +14,7 @@ class PDF::Reader # :nodoc:
       # Decode the specified data with the RunLengthDecode compression algorithm
       def filter(data)
         pos = 0
-        out = ""
+        out = "".dup
 
         while pos < data.length
           length = data.getbyte(pos)

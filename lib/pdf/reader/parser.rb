@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen_string_literal: true
 
 ################################################################################
 #
@@ -132,7 +133,7 @@ class PDF::Reader
     # reads a PDF name from the buffer and converts it to a Ruby Symbol
     def pdf_name
       tok = @buffer.token
-      tok.gsub!(/#([A-Fa-f0-9]{2})/) do |match|
+      tok = tok.dup.gsub(/#([A-Fa-f0-9]{2})/) do |match|
         match[1, 2].hex.chr
       end
       tok.to_sym
@@ -154,7 +155,7 @@ class PDF::Reader
     ################################################################################
     # Reads a PDF hex string from the buffer and converts it to a Ruby String
     def hex_string
-      str = ""
+      str = "".dup
 
       loop do
         token = @buffer.token
@@ -171,11 +172,11 @@ class PDF::Reader
     # Reads a PDF String from the buffer and converts it to a Ruby String
     def string
       str = @buffer.token
-      return "".force_encoding("binary") if str == ")"
+      return "".dup.force_encoding("binary") if str == ")"
       Error.assert_equal(parse_token, ")")
 
       str.gsub!(/\\([nrtbf()\\\n]|\d{1,3})?|\r\n?|\n\r/m) do |match|
-        MAPPING[match] || ""
+        MAPPING[match] || "".dup
       end
       str.force_encoding("binary")
     end
