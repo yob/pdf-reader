@@ -143,24 +143,24 @@ describe PDF::Reader::TransformationMatrix do
           matrix_one.multiply_with_an_object!(matrix_two)
 
           # we can't use #to_a in this test because of all the floating point nums
-          expect( "%.3f" % matrix_one.a).to eq("3.273")
-          expect( "%.3f" % matrix_one.b).to eq("-1.513")
-          expect( "%.3f" % matrix_one.c).to eq("5.557")
-          expect( "%.3f" % matrix_one.d).to eq("-3.181")
-          expect( "%.3f" % matrix_one.e).to eq("7.842")
-          expect( "%.3f" % matrix_one.f).to eq("-4.848")
+          expect(matrix_one.a).to be_within(0.001).of(3.273)
+          expect(matrix_one.b).to be_within(0.001).of(-1.513)
+          expect(matrix_one.c).to be_within(0.001).of(5.557)
+          expect(matrix_one.d).to be_within(0.001).of(-3.181)
+          expect(matrix_one.e).to be_within(0.001).of(7.842)
+          expect(matrix_one.f).to be_within(0.001).of(-4.848)
         end
 
         it "sets the new matrix values when reversed" do
           matrix_two.multiply_with_an_object!(matrix_one)
 
           # we can't use #to_a in this test because of all the floating point nums
-          expect( "%.3f" % matrix_two.a).to eq("-3.644")
-          expect( "%.3f" % matrix_two.b).to eq("-4.477")
-          expect( "%.3f" % matrix_two.c).to eq("2.593")
-          expect( "%.3f" % matrix_two.d).to eq("3.735")
-          expect( "%.3f" % matrix_two.e).to eq("6.000")
-          expect( "%.3f" % matrix_two.f).to eq("7.000")
+          expect(matrix_two.a).to be_within(0.001).of(-3.644)
+          expect(matrix_two.b).to be_within(0.001).of(-4.477)
+          expect(matrix_two.c).to be_within(0.001).of(2.593)
+          expect(matrix_two.d).to be_within(0.001).of(3.735)
+          expect(matrix_two.e).to be_within(0.001).of(6.000)
+          expect(matrix_two.f).to be_within(0.001).of(7.000)
         end
       end
     end
