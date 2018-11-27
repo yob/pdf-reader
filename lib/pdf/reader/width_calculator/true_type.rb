@@ -17,8 +17,7 @@ class PDF::Reader
 
       def glyph_width(code_point)
         return 0 if code_point.nil? || code_point < 0
-
-        glyph_width_from_font(code_point) || glyph_width_from_descriptor(code_point)
+        glyph_width_from_font(code_point) || glyph_width_from_descriptor(code_point) || 0
       end
 
       private
