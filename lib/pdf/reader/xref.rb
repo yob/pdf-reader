@@ -207,7 +207,7 @@ class PDF::Reader
       elsif bytes.size == 8
         bytes.unpack("Q>")[0]
       else
-        raise UnsupportedFeatureError, "Unable to unpack xref stream entries with more than 4 bytes"
+        raise UnsupportedFeatureError, "Unable to unpack xref stream entries of #{bytes.size} bytes"
       end
     end
     ################################################################################
