@@ -1,4 +1,9 @@
-v2.1.0 (15th Februar 2018)
+v2.2.0 (18th December 2018)
+- Support additional XRef Stream variants (thanks Stefan Wienert)
+- Add frozen_strings pragma to reduce object allocations on ruby 2.3+
+- various bug fixes
+
+v2.1.0 (15th February 2018)
 - Support extra encrypted PDF variants (thanks to Gyuchang Jun)
 - various bug fixes
 
