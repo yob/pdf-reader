@@ -10,7 +10,6 @@ Gem::Specification.new do |spec|
   spec.executables << "pdf_object"
   spec.executables << "pdf_text"
   spec.executables << "pdf_callbacks"
-  spec.has_rdoc = true
   spec.extra_rdoc_files = %w{README.md TODO CHANGELOG MIT-LICENSE }
   spec.rdoc_options << '--title' << 'PDF::Reader Documentation' <<
                        '--main'  << 'README.md' << '-q'
