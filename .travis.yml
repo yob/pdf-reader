@@ -13,6 +13,3 @@ rvm:
   - jruby-9.2
 before_install:
   - gem update bundler
-matrix:
-  allow_failures:
-  - rvm: 2.6
