@@ -8,11 +8,11 @@ rvm:
   - 2.3
   - 2.4
   - 2.5
-  - 2.6.0-rc2
+  - 2.6
   - jruby-9.1
   - jruby-9.2
 before_install:
   - gem update bundler
 matrix:
   allow_failures:
-  - rvm: 2.6.0-rc2
+  - rvm: 2.6
