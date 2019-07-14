@@ -95,6 +95,15 @@ describe PDF::Reader::CMap do
       end
     end
 
+    context "cmap with bfchar and multiple surrogate pairs" do
+      it "correctly loads character mapping" do
+        filename = File.dirname(__FILE__) + "/data/cmap_with_multiple_surrogate_pairs.txt"
+        map = PDF::Reader::CMap.new(binread(filename))
+
+        expect(map.decode(0x0BC9)).to eql([0x1D443, 0x1D443])
+      end
+    end
+
     context "cmap with bfrange containing > 255 characters" do
       it "correctly loads character mapping" do
         filename = File.dirname(__FILE__) + "/data/cmap_with_large_bfrange.txt"

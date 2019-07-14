@@ -110,6 +110,14 @@ class PDF::Reader
         # lets convert to a UTF-32. (the high bit is between 0xD800-0xDBFF, the
         # low bit is between 0xDC00-0xDFFF) for example: U+1D44E (U+D835 U+DC4E)
         [(unpacked_string[0] - 0xD800) * 0x400 + (unpacked_string[1] - 0xDC00) + 0x10000]
+      elsif unpacked_string.size == 4 && unpacked_string[0] > 0xD800 && unpacked_string[0] < 0xDBFF
+        # this is a Unicode UTF-16 "Surrogate Pair" see Unicode Spec. Chapter 3.7
+        # lets convert to a UTF-32. (the high bit is between 0xD800-0xDBFF, the
+        # low bit is between 0xDC00-0xDFFF) for example: U+1D44E (U+D835 U+DC4E)
+        [
+          (unpacked_string[0] - 0xD800) * 0x400 + (unpacked_string[1] - 0xDC00) + 0x10000,
+          (unpacked_string[2] - 0xD800) * 0x400 + (unpacked_string[3] - 0xDC00) + 0x10000,
+        ]
       else
         # it is a bad idea to just return the first 16 bits, as this doesn't allow
         # for ligatures for example fi (U+0066 U+0069)
