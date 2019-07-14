@@ -41,6 +41,7 @@ describe PDF::Reader::CMap do
         filename = File.dirname(__FILE__) + "/data/cmap_with_bfrange_two.txt"
         map = PDF::Reader::CMap.new(binread(filename))
         expect(map.decode(0x0100)).to eq([0x0100]) # mapped with the bfrange operator
+        expect(map.decode(0xD900)).to eq([0xD900]) # mapped with the bfrange operator
       end
     end
 
@@ -95,7 +96,7 @@ describe PDF::Reader::CMap do
       end
     end
 
-    context "cmap with bfchar and multiple surrogate pairs" do
+    context "cmap with bfchar with surrogate pairs and ligatures" do
       it "correctly loads character mapping" do
         filename = File.dirname(__FILE__) + "/data/cmap_with_multiple_surrogate_pairs.txt"
         map = PDF::Reader::CMap.new(binread(filename))
