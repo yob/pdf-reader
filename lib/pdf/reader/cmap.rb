@@ -98,7 +98,7 @@ class PDF::Reader
 
     def str_to_int(str)
       return nil if str.nil? || str.size == 0
-      unpacked_string = if str.size == 1 # UTF-8
+      unpacked_string = if str.bytesize == 1 # UTF-8
         str.unpack("C*")
       else # UTF-16
          str.unpack("n*")
