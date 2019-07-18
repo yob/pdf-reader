@@ -25,9 +25,9 @@ class PDF::Reader
       width           = urx.to_i - llx.to_i
       height          = ury.to_i - lly.to_i
       if width > height
-        [0,180].include?(rotation) ? 'landscape' : 'portrait'
+        (rotation % 180).zero? ? 'landscape' : 'portrait'
       else
-        [0,180].include?(rotation) ? 'portrait' : 'landscape'
+        (rotation % 180).zero? ? 'portrait' : 'landscape'
       end
     end
   end

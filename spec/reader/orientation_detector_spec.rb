@@ -21,6 +21,15 @@ describe PDF::Reader::OrientationDetector do
       end
     end
 
+    context "with a portrait page and 360° rotation" do
+      let!(:detector) {
+        PDF::Reader::OrientationDetector.new(:MediaBox => [0, 0, 612, 792], :Rotate => 360)
+      }
+      it "returns landscape" do
+        expect(detector.orientation).to eq('portrait')
+      end
+    end
+
     context "with a landscape page and no rotation" do
       let!(:detector) {
         PDF::Reader::OrientationDetector.new(:MediaBox => [0, 0, 792, 612])
@@ -39,5 +48,13 @@ describe PDF::Reader::OrientationDetector do
       end
     end
 
+    context "with a landscape page and 360° rotation" do
+      let!(:detector) {
+        PDF::Reader::OrientationDetector.new(:MediaBox => [0, 0, 792, 612], :Rotate => 360)
+      }
+      it "returns portrait" do
+        expect(detector.orientation).to eq('landscape')
+      end
+    end
   end
 end
