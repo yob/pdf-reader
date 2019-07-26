@@ -82,7 +82,7 @@ class PDF::Reader
         @cache[key]
       elsif xref[key].is_a?(Integer)
         buf = new_buffer(xref[key])
-        @cache[key] = decrypt(key, Parser.new(buf, self).object(key.id, key.gen))
+        @cache[key] = decrypt(key, Parser.new(buf, self).object(key.id, key.gen), {})
       elsif xref[key].is_a?(PDF::Reader::Reference)
         container_key = xref[key]
         object_streams[container_key] ||= PDF::Reader::ObjectStream.new(object(container_key))
@@ -317,16 +317,27 @@ class PDF::Reader
       end
     end
 
-    def decrypt(ref, obj)
+    def decrypt(ref, obj, seen)
+      seen_key = obj.object_id
+
+      return seen[seen_key] if seen.key?(seen_key)
+
       case obj
       when PDF::Reader::Stream then
         obj.data = sec_handler.decrypt(obj.data, ref)
         obj
       when Hash                then
-        arr = obj.map { |key,val| [key, decrypt(ref, val)] }.flatten(1)
-        Hash[*arr]
+        seen[seen_key] ||= {}
+        obj.each do |key,val|
+          seen[seen_key][key] = decrypt(ref, val, seen)
+        end
+        seen[seen_key]
       when Array               then
-        obj.collect { |item| decrypt(ref, item) }
+        seen[seen_key] ||= []
+        obj.each do |item|
+          seen[seen_key] << decrypt(ref, item, seen)
+        end
+        seen[seen_key]
       when String
         sec_handler.decrypt(obj, ref)
       else
