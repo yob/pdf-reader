@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.rdoc_options << '--title' << 'PDF::Reader Documentation' <<
                        '--main'  << 'README.md' << '-q'
   spec.authors = ["James Healy"]
-  spec.email   = ["jimmy@deefa.com"]
+  spec.email   = ["james@yob.id.au"]
   spec.homepage = "http://github.com/yob/pdf-reader"
   spec.required_ruby_version = ">=1.9.3"
 
