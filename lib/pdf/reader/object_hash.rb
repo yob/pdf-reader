@@ -78,16 +78,7 @@ class PDF::Reader
         key = PDF::Reader::Reference.new(key.to_i, 0)
       end
 
-      if @cache.has_key?(key)
-        @cache[key]
-      elsif xref[key].is_a?(Integer)
-        buf = new_buffer(xref[key])
-        @cache[key] = decrypt(key, Parser.new(buf, self).object(key.id, key.gen))
-      elsif xref[key].is_a?(PDF::Reader::Reference)
-        container_key = xref[key]
-        object_streams[container_key] ||= PDF::Reader::ObjectStream.new(object(container_key))
-        @cache[key] = object_streams[container_key][key.id]
-      end
+      @cache[key] ||= fetch_object(key) || fetch_object_stream(key)
     rescue InvalidObjectError
       return default
     end
@@ -253,6 +244,26 @@ class PDF::Reader
     end
 
     private
+
+    # parse a traditional object from the PDF, starting from the byte offset indicated
+    # in the xref table
+    #
+    def fetch_object(key)
+      if xref[key].is_a?(Integer)
+        buf = new_buffer(xref[key])
+        decrypt(key, Parser.new(buf, self).object(key.id, key.gen))
+      end
+    end
+
+    # parse a object that's embedded in an object stream in the PDF
+    #
+    def fetch_object_stream(key)
+      if xref[key].is_a?(PDF::Reader::Reference)
+        container_key = xref[key]
+        object_streams[container_key] ||= PDF::Reader::ObjectStream.new(object(container_key))
+        object_streams[container_key][key.id]
+      end
+    end
 
     # Private implementation of deref!, which exists to ensure the `seen` argument
     # isn't publicly available. It's used to avoid endless loops in the recursion, and
