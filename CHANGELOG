@@ -1,4 +1,4 @@
-UNRELEASED (XXX)
+v2.2.1 (27th July 2019)
 - Improve utf8 text extraction from CMaps that contain surrogate pair ligatures
 
 v2.2.0 (18th December 2018)
