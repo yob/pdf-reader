@@ -96,6 +96,14 @@ class PDF::Reader
       Parser.new(buffer)
     end
 
+    # The following includes some manual decoding of UTF-16BE strings into unicode codepoints. In
+    # theory we could replace all the UTF-16 code with something based on Ruby's encoding support:
+    #
+    #    str.dup.force_encoding("utf-16be").encode!("utf-8").unpack("U*")
+    #
+    # However, some cmaps contain broken surrogate pairs and the ruby encoding support raises an
+    # exception when we try converting broken UTF-16 to UTF-8
+    #
     def str_to_int(str)
       return nil if str.nil? || str.size == 0
       unpacked_string = if str.bytesize == 1 # UTF-8
