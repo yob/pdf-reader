@@ -230,18 +230,21 @@ class PDF::Reader
     # should always be 0, but all sort of crazy junk is prefixed to PDF files
     # in the real world.
     #
-    # Checks up to 50 chars into the file, returns nil if no PDF data detected.
+    # Checks up to 1024 chars into the file,
+    # returns nil if no PDF data detected.
+    # Adobe PDF 1.4 spec (3.4.1) 12. Acrobat viewers require only that the
+    # header appear somewhere within the first 1024 bytes of the file
     #
     def calc_junk_offset(io)
       io.rewind
       offset = io.pos
-      until (c = io.readchar) == '%' || c == 37 || offset > 50
+      until (c = io.readchar) == '%' || c == 37 || offset > 1024
         offset += 1
       end
       io.rewind
-      offset < 50 ? offset : nil
+      offset < 1024 ? offset : nil
     rescue EOFError
-      return nil
+      nil
     end
   end
   ################################################################################
