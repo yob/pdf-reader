@@ -805,8 +805,17 @@ describe PDF::Reader, "integration specs" do
     let(:filename) { pdf_spec_file("junk_prefix") }
 
     it "extracts text correctly" do
-      filename = pdf_spec_file("junk_prefix")
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eql("This PDF contains junk before the %-PDF marker")
+      end
+    end
+  end
 
+  context "PDF with a 1024 bytes of junk prefix" do
+    let(:filename) { pdf_spec_file("junk_prefix_1024") }
+
+    it "extracts text correctly" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
         expect(page.text).to eql("This PDF contains junk before the %-PDF marker")
