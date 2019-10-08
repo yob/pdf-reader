@@ -203,6 +203,9 @@ data/invalid/trailer_root_is_not_a_dict.pdf:
 data/junk_prefix.pdf:
   :bytes: 934
   :md5: c03c9a96cdefa78c9475b619d87e39bf
+data/junk_prefix_1024.pdf:
+  :bytes: 1936
+  :md5: ebd3cdb031d14ab64056ad14e09b86b6
 data/kids-as-direct-objects.pdf:
   :bytes: 1067
   :md5: 90d7e0ac0b0f886ae062b9efa8f3afb6
