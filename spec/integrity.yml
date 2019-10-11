@@ -47,6 +47,9 @@ data/cmap_with_large_bfrange.txt:
 data/cmap_with_ligatures.txt:
   :bytes: 1480
   :md5: 4c37d2d0d10ec44e688f4161b2794a1b
+data/cmap_with_multiple_surrogate_pairs.txt:
+  :bytes: 1043
+  :md5: 90ade19ffdb30e65f1571b00ad1c1655
 data/cmap_with_surrogate_pairs.txt:
   :bytes: 1340
   :md5: c0963a9329c749f28f070b71b21b656b
