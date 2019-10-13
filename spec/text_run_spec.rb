@@ -282,4 +282,28 @@ describe PDF::Reader::TextRun do
       end
     end
   end
+
+  describe "#intersection_area_percent" do
+    let(:result) {
+      run_one.intersection_area_percent(run_two)
+    }
+
+    context "with two runs that don't intersect" do
+      let(:run_one) { PDF::Reader::TextRun.new(30, 700, 10, 12, "H") }
+      let(:run_two) { PDF::Reader::TextRun.new(100, 500, 10, 12, "H") }
+
+      it "returns 0" do
+        expect(result).to eq(0)
+      end
+    end
+
+    context "when run_two overalps with 50% of run_one" do
+      let(:run_one) { PDF::Reader::TextRun.new(100, 100, 10, 12, "H") }
+      let(:run_two) { PDF::Reader::TextRun.new(105, 100, 10, 12, "H") }
+
+      it "returns 0.5" do
+        expect(result).to be_within(0.01).of(0.5)
+      end
+    end
+  end
 end
