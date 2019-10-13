@@ -38,6 +38,10 @@ class PDF::Reader
       @endx ||= x + width
     end
 
+    def endy
+      @endy ||= y + font_size
+    end
+
     def mean_character_width
       @width / character_count
     end
@@ -58,6 +62,11 @@ class PDF::Reader
 
     def inspect
       "#{text} w:#{width} f:#{font_size} @#{x},#{y}"
+    end
+
+    def intersect?(other_run)
+      x <= other_run.endx && endx >= other_run.x && 
+        endy >= other_run.y && y <= other_run.endy
     end
 
     private
