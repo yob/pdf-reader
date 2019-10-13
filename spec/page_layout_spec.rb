@@ -160,6 +160,46 @@ describe PDF::Reader::PageLayout do
           expect(subject.to_s).to eq("Hello World")
         end
       end
+
+      context "with two runs that overlap to make fake 'bold', using the same Y offset" do
+        let!(:runs) do
+          [
+            PDF::Reader::TextRun.new(420.74, 636.0, 6.67, 12, "b"),
+            PDF::Reader::TextRun.new(427.41, 636.0, 6.67, 12, "o"),
+            PDF::Reader::TextRun.new(434.08, 636.0, 2.66, 12, "l"),
+            PDF::Reader::TextRun.new(436.75, 636.0, 6.67, 12, "d"),
+            PDF::Reader::TextRun.new(420.84, 636.0, 6.67, 12, "b"),
+            PDF::Reader::TextRun.new(427.51, 636.0, 6.67, 12, "o"),
+            PDF::Reader::TextRun.new(434.18, 636.0, 2.66, 12, "l"),
+            PDF::Reader::TextRun.new(436.85, 636.0, 6.67, 12, "d"),
+          ]
+        end
+        subject { PDF::Reader::PageLayout.new(runs, mediabox)}
+
+        it "returns a correct string" do
+          expect(subject.to_s).to eq("bold")
+        end
+      end
+
+      context "with two runs that overlap to make fake 'bold', using different X+Y offset" do
+        let!(:runs) do
+          [
+            PDF::Reader::TextRun.new(420.74, 635.95, 6.67, 12, "b"),
+            PDF::Reader::TextRun.new(427.41, 635.95, 6.67, 12, "o"),
+            PDF::Reader::TextRun.new(434.08, 635.95, 2.66, 12, "l"),
+            PDF::Reader::TextRun.new(436.75, 635.95, 6.67, 12, "d"),
+            PDF::Reader::TextRun.new(420.84, 636.05, 6.67, 12, "b"),
+            PDF::Reader::TextRun.new(427.51, 636.05, 6.67, 12, "o"),
+            PDF::Reader::TextRun.new(434.18, 636.05, 2.66, 12, "l"),
+            PDF::Reader::TextRun.new(436.85, 636.05, 6.67, 12, "d"),
+          ]
+        end
+        subject { PDF::Reader::PageLayout.new(runs, mediabox)}
+
+        it "returns a correct string" do
+          expect(subject.to_s).to eq("bold")
+        end
+      end
     end
   end
 end
