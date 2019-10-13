@@ -222,4 +222,64 @@ describe PDF::Reader::TextRun do
       end
     end
   end
+
+  describe "#intersect" do
+    let(:result) {
+      run_one.intersect?(run_two)
+    }
+
+    context "with two runs that don't intersect" do
+      let(:run_one) { PDF::Reader::TextRun.new(30, 700, 10, 12, "H") }
+      let(:run_two) { PDF::Reader::TextRun.new(100, 500, 10, 12, "H") }
+
+      it "returns false" do
+        expect(result).to eq(false)
+      end
+    end
+
+    context "when run_two overlaps the top of run_one" do
+      let(:run_one) { PDF::Reader::TextRun.new(30, 100, 10, 12, "H") }
+      let(:run_two) { PDF::Reader::TextRun.new(30, 110, 10, 12, "H") }
+
+      it "returns true" do
+        expect(result).to eq(true)
+      end
+    end
+
+    context "when run_two overlaps the bottom of run_one" do
+      let(:run_one) { PDF::Reader::TextRun.new(30, 100, 10, 12, "H") }
+      let(:run_two) { PDF::Reader::TextRun.new(30, 92, 10, 12, "H") }
+
+      it "returns true" do
+        expect(result).to eq(true)
+      end
+    end
+
+    context "when run_two overlaps the left of run_one" do
+      let(:run_one) { PDF::Reader::TextRun.new(30, 100, 10, 12, "H") }
+      let(:run_two) { PDF::Reader::TextRun.new(25, 100, 10, 12, "H") }
+
+      it "returns true" do
+        expect(result).to eq(true)
+      end
+    end
+
+    context "when run_two overlaps the right of run_one" do
+      let(:run_one) { PDF::Reader::TextRun.new(30, 100, 10, 12, "H") }
+      let(:run_two) { PDF::Reader::TextRun.new(35, 100, 10, 12, "H") }
+
+      it "returns true" do
+        expect(result).to eq(true)
+      end
+    end
+
+    context "with two identical runs" do
+      let(:run_one) { PDF::Reader::TextRun.new(30, 700, 10, 12, "H") }
+      let(:run_two) { PDF::Reader::TextRun.new(30, 700, 10, 12, "H") }
+
+      it "returns true" do
+        expect(result).to eq(true)
+      end
+    end
+  end
 end
