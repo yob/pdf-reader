@@ -7,62 +7,60 @@ class PDF::Reader
 
     # This should be between 0 and 1. If TextRun B obscures this much of TextRun A (and they
     # have identical characters) then one will be discarded
-    OVERLAPPING_PERCENTAGE_THRESHOLD = 0.5
+    OVERLAPPING_THRESHOLD = 0.5
 
     def self.exclude_redundant_runs(runs)
-      collection = new_marked_text_run_collection(runs)
-      collection.each do |run|
-        next unless run.keep?
+      sweep_line_status = Array.new
+      event_point_schedule = Array.new
+      to_exclude = []
 
-        collection.reject { |comp|
-          run.object_id == comp.object_id
-        }.select { |comp|
-          comp.keep? &&
-            run.text == comp.text &&
-            run.intersection_area_percent(comp) > OVERLAPPING_PERCENTAGE_THRESHOLD
-        }.each { |comp|
-          comp.discard!
-        }
+      runs.each do |run|
+        event_point_schedule << EventPoint.new(run.x, run)
+        event_point_schedule << EventPoint.new(run.endx, run)
       end
-      return_umarked_items(collection)
+
+      event_point_schedule.sort! { |a,b| a.x <=> b.x }
+
+      while not event_point_schedule.empty? do
+        event_point = event_point_schedule.shift
+        break unless event_point
+
+        if event_point.start? then
+          if detect_intersection(sweep_line_status, event_point)
+            to_exclude << event_point.run
+          end
+          sweep_line_status.push event_point
+        else
+          sweep_line_status.delete event_point
+        end
+      end
+      runs - to_exclude
     end
 
-    def self.new_marked_text_run_collection(runs)
-      runs.map { |run| MarkedTextRun.new(run) }
+    def self.detect_intersection(sweep_line_status, event_point)
+      sweep_line_status.each do |point_in_sls|
+        if event_point.x >= point_in_sls.run.x &&
+            event_point.x <= point_in_sls.run.endx &&
+            point_in_sls.run.intersection_area_percent(event_point.run) > OVERLAPPING_THRESHOLD
+          return true
+        end
+      end
+      return false
     end
-
-    def self.return_umarked_items(collection)
-      collection.select { |run|
-        run.keep?
-      }.map(&:run)
-    end
-
   end
 
   # Utility class used to avoid modifying the underlying TextRun objects while we're
   # looking for duplicates
-  class MarkedTextRun
-    attr_reader :run
+  class EventPoint
+    attr_reader :x, :run
 
-    def initialize(run)
-      @run = run
-      @discard = false
+    def initialize x, run
+      @x, @run = x, run
     end
 
-    def discard!
-      @discard = true
-    end
-
-    def keep?
-      !@discard
-    end
-
-    def text
-      @run.text
-    end
-
-    def intersection_area_percent(comp)
-      @run.intersection_area_percent(comp.run)
+    def start?
+      @x == @run.x
     end
   end
+
 end
