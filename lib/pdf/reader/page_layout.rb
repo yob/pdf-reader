@@ -15,7 +15,7 @@ class PDF::Reader
     def initialize(runs, mediabox)
       raise ArgumentError, "a mediabox must be provided" if mediabox.nil?
 
-      @runs    = merge_runs(runs)
+      @runs    = merge_runs(discard_overlapping_dupes(runs))
       @mean_font_size   = mean(@runs.map(&:font_size)) || DEFAULT_FONT_SIZE
       @mean_font_size = DEFAULT_FONT_SIZE if @mean_font_size == 0
       @mean_glyph_width = mean(@runs.map(&:mean_character_width)) || 0
@@ -111,6 +111,59 @@ class PDF::Reader
         end
       end
       runs
+    end
+
+    # This won't stay here long
+    class MarkedTextRun
+      attr_reader :run
+
+      def initialize(run)
+        @run = run
+        @discard = false
+      end
+
+      def discard!
+        @discard = true
+      end
+
+      def keep?
+        !@discard
+      end
+
+      def text
+        @run.text
+      end
+
+      def intersection_area_percent(comp)
+        @run.intersection_area_percent(comp.run)
+      end
+    end
+
+    # intentionally quadratic!
+    def discard_overlapping_dupes(runs)
+      collection = new_marked_text_run_collection(runs)
+      collection.each do |run|
+        next unless run.keep?
+
+        collection.reject { |comp|
+          run.object_id == comp.object_id
+        }.select { |comp|
+          comp.keep? && run.text == comp.text && run.intersection_area_percent(comp) > 0.5
+        }.each { |comp|
+          comp.discard!
+        }
+      end
+      return_umarked_items(collection)
+    end
+
+    def new_marked_text_run_collection(runs)
+      runs.map { |run| MarkedTextRun.new(run) }
+    end
+
+    def return_umarked_items(collection)
+      collection.select { |run|
+        run.keep?
+      }.map(&:run)
     end
 
     def local_string_insert(haystack, needle, index)
