@@ -1,6 +1,8 @@
 # coding: utf-8
 # frozen_string_literal: true
 
+require 'pdf/reader/overlapping_runs_filter'
+
 class PDF::Reader
 
   # Takes a collection of TextRun objects and renders them into a single
@@ -15,7 +17,7 @@ class PDF::Reader
     def initialize(runs, mediabox)
       raise ArgumentError, "a mediabox must be provided" if mediabox.nil?
 
-      @runs    = merge_runs(runs)
+      @runs    = OverlappingRunsFilter.exclude_redundant_runs(merge_runs(runs))
       @mean_font_size   = mean(@runs.map(&:font_size)) || DEFAULT_FONT_SIZE
       @mean_font_size = DEFAULT_FONT_SIZE if @mean_font_size == 0
       @mean_glyph_width = mean(@runs.map(&:mean_character_width)) || 0
