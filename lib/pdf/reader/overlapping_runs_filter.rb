@@ -41,7 +41,7 @@ class PDF::Reader
       sweep_line_status.each do |point_in_sls|
         if event_point.x >= point_in_sls.run.x &&
             event_point.x <= point_in_sls.run.endx &&
-            point_in_sls.run.intersection_area_percent(event_point.run) > OVERLAPPING_THRESHOLD
+            point_in_sls.run.intersection_area_percent(event_point.run) >= OVERLAPPING_THRESHOLD
           return true
         end
       end
