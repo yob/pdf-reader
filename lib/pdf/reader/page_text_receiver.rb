@@ -21,6 +21,10 @@ module PDF
       ########## BEGIN FORWARDERS ##########
       # Graphics State Operators
       def_delegators :@state, :save_graphics_state, :restore_graphics_state
+      def_delegators :@state, :set_color_rendering_intent
+      def_delegators :@state, :set_flatness_tolerance, :set_graphics_state_parameters
+      def_delegators :@state, :set_line_cap_style, :set_line_dash, :set_line_join_style
+      def_delegators :@state, :set_line_width, :set_miter_limit
 
       # Matrix Operators
       def_delegators :@state, :concatenate_matrix
