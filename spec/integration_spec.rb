@@ -979,6 +979,17 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "Scanned PDF with invisible text added by ClearScan" do
+    let(:filename) { pdf_spec_file("clearscan") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq("This document was scanned and then OCRd with Adobe ClearScan")
+      end
+    end
+  end
+
   context "PDF with text that contains a control char" do
     let(:filename) { pdf_spec_file("times-with-control-character") }
 
