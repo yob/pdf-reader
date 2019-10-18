@@ -26,6 +26,9 @@ data/cairo-unicode-short.pdf:
 data/cairo-unicode.pdf:
   :bytes: 137432
   :md5: c9ad1b69ba65c4f3a6678f5a3363580c
+data/clearscan-with-image-removed.pdf:
+  :bytes: 22495
+  :md5: e23e6771ff494e4c16a4c58a72c36aea
 data/clearscan.pdf:
   :bytes: 13956
   :md5: d7b929232c52193d02dcc5e7a4bee015
