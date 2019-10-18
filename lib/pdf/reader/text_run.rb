@@ -7,15 +7,16 @@ class PDF::Reader
   class TextRun
     include Comparable
 
-    attr_reader :origin, :width, :font_size, :text
+    attr_reader :origin, :width, :font_size, :text, :state
 
     alias :to_s :text
 
-    def initialize(x, y, width, font_size, text)
+    def initialize(x, y, width, font_size, text, state)
       @origin = PDF::Reader::Point.new(x, y)
       @width = width
       @font_size = font_size
       @text = text
+      @state = state
     end
 
     # Allows collections of TextRun objects to be sorted. They will be sorted
@@ -62,14 +63,14 @@ class PDF::Reader
       raise ArgumentError, "#{other} cannot be merged with this run" unless mergable?(other)
 
       if (other.x - endx) <( font_size * 0.2)
-        TextRun.new(x, y, other.endx - x, font_size, text + other.text)
+        TextRun.new(x, y, other.endx - x, font_size, text + other.text, {})
       else
-        TextRun.new(x, y, other.endx - x, font_size, "#{text} #{other.text}")
+        TextRun.new(x, y, other.endx - x, font_size, "#{text} #{other.text}", {})
       end
     end
 
     def inspect
-      "#{text} w:#{width} f:#{font_size} @#{x},#{y}"
+      "#{text} w:#{width} f:#{font_size} @#{x},#{y} #{@state.inspect}"
     end
 
     def intersect?(other_run)
