@@ -1,3 +1,8 @@
+UNRELEASED
+- Text extraction now makes an effort to skip duplicate characters that overlap, a
+  common approach used for a fake "bold" effect
+- Several small bug fixes
+
 v2.2.1 (27th July 2019)
 - Improve utf8 text extraction from CMaps that contain surrogate pair ligatures
 
