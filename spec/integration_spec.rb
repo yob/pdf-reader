@@ -70,6 +70,17 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF with a difference table (v2)" do
+    let(:filename) { pdf_spec_file("difference_table2") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eql("This PDF contains ligatures,for example in “ﬁle”and “ﬂoor”.")
+      end
+    end
+  end
+
   context "PDF with a content stream that has trailing whitespace" do
     let(:filename) { pdf_spec_file("content_stream_trailing_whitespace") }
 
