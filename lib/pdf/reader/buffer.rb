@@ -55,7 +55,7 @@ class PDF::Reader
     #
     # Params:
     #
-    #   io - an IO stream or string with the raw data to tokenise
+    #   io - an IO stream (usually a StringIO) with the raw data to tokenise
     #
     # options:
     #
