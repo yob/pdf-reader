@@ -40,20 +40,22 @@ class PDF::Reader
       @mapping  = default_mapping # maps from character codes to Unicode codepoints
       @string_cache  = {} # maps from character codes to UTF-8 strings.
 
-      if enc.kind_of?(Hash)
-        self.differences = enc[:Differences] if enc[:Differences]
-        enc = enc[:Encoding] || enc[:BaseEncoding]
+      @enc_name = if enc.kind_of?(Hash)
+        enc[:Encoding] || enc[:BaseEncoding]
       elsif enc != nil
-        enc = enc.to_sym
+        enc.to_sym
       else
-        enc = nil
+        nil
       end
 
-      @enc_name = enc
-      @unpack   = get_unpack(enc)
-      @map_file = get_mapping_file(enc)
+      @unpack   = get_unpack(@enc_name)
+      @map_file = get_mapping_file(@enc_name)
 
       load_mapping(@map_file) if @map_file
+
+      if enc.is_a?(Hash) && enc[:Differences]
+        self.differences = enc[:Differences]
+      end
     end
 
     # set the differences table for this encoding. should be an array in the following format:

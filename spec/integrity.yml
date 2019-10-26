@@ -95,6 +95,9 @@ data/deflated_with_predictors_result.dat:
 data/difference_table.pdf:
   :bytes: 1093
   :md5: e4786a50e8840b513a1907f7b176d9f4
+data/difference_table2.pdf:
+  :bytes: 6741
+  :md5: 195ac8f8f7270b39a2da2f682cde2416
 data/difference_table_encrypted.pdf:
   :bytes: 1442
   :md5: 142596eae43ecd6bad12ccfd3d0921d1
