@@ -1064,4 +1064,32 @@ describe PDF::Reader, "integration specs" do
       end
     end
   end
+
+  context "PDF with overlapping chars to achieve fake bold effect" do
+    let(:filename) { pdf_spec_file("overlapping-chars-xy-fake-bold") }
+    let(:text) {
+      "Some characters that overlap with different X and Y to achieve a fake bold effect"
+    }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq(text)
+      end
+    end
+  end
+
+  context "PDF with overlapping chars (same Y pos) to achieve fake bold effect" do
+    let(:filename) { pdf_spec_file("overlapping-chars-x-fake-bold") }
+    let(:text) {
+      "Some characters that overlap with different X to achieve a fake bold effect"
+    }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq(text)
+      end
+    end
+  end
 end

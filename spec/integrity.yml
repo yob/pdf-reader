@@ -266,6 +266,12 @@ data/osx_print_unicode.pdf:
 data/outline.pdf:
   :bytes: 6313
   :md5: 95a4ebc34a521001125040afc146cd2e
+data/overlapping-chars-x-fake-bold.pdf:
+  :bytes: 1377
+  :md5: f53f3cbbaffffa5039408cb2e5a0a572
+data/overlapping-chars-xy-fake-bold.pdf:
+  :bytes: 1403
+  :md5: 2c9d673b612514e2a4f1be5cb11510a0
 data/override_inherited_attributes.pdf:
   :bytes: 1140
   :md5: d0d37dce31110dc5ba6b85d0c0dba608

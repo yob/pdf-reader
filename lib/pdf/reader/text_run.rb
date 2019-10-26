@@ -38,6 +38,10 @@ class PDF::Reader
       @endx ||= x + width
     end
 
+    def endy
+      @endy ||= y + font_size
+    end
+
     def mean_character_width
       @width / character_count
     end
@@ -60,7 +64,27 @@ class PDF::Reader
       "#{text} w:#{width} f:#{font_size} @#{x},#{y}"
     end
 
+    def intersect?(other_run)
+      x <= other_run.endx && endx >= other_run.x &&
+        endy >= other_run.y && y <= other_run.endy
+    end
+
+    # return what percentage of this text run is overlapped by another run
+    def intersection_area_percent(other_run)
+      return 0 unless intersect?(other_run)
+
+      dx = [endx, other_run.endx].min - [x, other_run.x].max
+      dy = [endy, other_run.endy].min - [y, other_run.y].max
+      intersection_area = dx*dy
+
+      intersection_area.to_f / area
+    end
+
     private
+
+    def area
+      (endx - x) * (endy - y)
+    end
 
     def mergable_range
       @mergable_range ||= Range.new(endx - 3, endx + font_size)
