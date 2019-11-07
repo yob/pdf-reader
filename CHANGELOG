@@ -1,6 +1,8 @@
-UNRELEASED
+v2.3.0 (7th November 2019)
 - Text extraction now makes an effort to skip duplicate characters that overlap, a
-  common approach used for a fake "bold" effect
+  common approach used for a fake "bold" effect, This will make text extraction a bit
+  slower - if that turns out to be an issue I'll look into further optimisations or
+  provide a toggle to turn it off
 - Several small bug fixes
 
 v2.2.1 (27th July 2019)
