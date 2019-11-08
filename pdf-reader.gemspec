@@ -15,8 +15,15 @@ Gem::Specification.new do |spec|
                        '--main'  << 'README.md' << '-q'
   spec.authors = ["James Healy"]
   spec.email   = ["james@yob.id.au"]
-  spec.homepage = "http://github.com/yob/pdf-reader"
+  spec.homepage = "https://github.com/yob/pdf-reader"
   spec.required_ruby_version = ">=1.9.3"
+
+  spec.metadata = {
+    "bug_tracker_uri"   => "https://github.com/yob/pdf-reader/issues",
+    "changelog_uri"     => "https://github.com/yob/pdf-reader/blob/v#{spec.version}/CHANGELOG",
+    "documentation_uri" => "https://www.rubydoc.info/gems/pdf-reader/#{spec.version}",
+    "source_code_uri"   => "https://github.com/yob/pdf-reader/tree/v#{spec.version}",
+  }
 
   spec.add_development_dependency("rake")
   spec.add_development_dependency("rspec", "~> 3.5")
