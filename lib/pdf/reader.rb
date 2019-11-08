@@ -180,7 +180,7 @@ module PDF
       (1..self.page_count).map do |num|
         begin
           PDF::Reader::Page.new(@objects, num, :cache => @cache)
-        rescue InvalidPageError => ex
+        rescue InvalidPageError
           raise MalformedPDFError, "Missing data for page: #{num}"
         end
       end
