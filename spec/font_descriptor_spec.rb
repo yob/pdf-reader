@@ -22,7 +22,7 @@ describe PDF::Reader::FontDescriptor do
         :FontFamily   => :BoldItalic
       }
     end
-    let!(:objects) { PDF::Reader::ObjectHash.allocate }
+    let!(:objects) { Marron::ObjectHash.allocate }
     subject        { PDF::Reader::FontDescriptor.new(objects, dict)}
 
     it "sets the correct instance vars" do

@@ -2,7 +2,7 @@
 
 describe PDF::Reader::Font do
 
-  let(:object_hash) { PDF::Reader::ObjectHash.allocate }
+  let(:object_hash) { Marron::ObjectHash.allocate }
 
   describe "to_utf8()" do
     context "with no ToUnicode CMap" do

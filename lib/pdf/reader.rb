@@ -112,14 +112,22 @@ module PDF
     #   reader = PDF::Reader.new("somefile.pdf", :password => "apples")
     #
     def initialize(input, opts = {})
-      @cache   = PDF::Reader::ObjectCache.new
+      @cache   = Marron::ObjectCache.new
       opts.merge!(:cache => @cache)
-      @objects = PDF::Reader::ObjectHash.new(input, opts)
+      @objects = Marron::ObjectHash.new(input, opts)
+    rescue Marron::MalformedPDFError => e
+      raise PDF::Reader::MalformedPDFError.new(e.message)
+    rescue Marron::EncryptedPDFError => e
+      raise PDF::Reader::EncryptedPDFError.new(e.message)
     end
 
     def info
       dict = @objects.deref(@objects.trailer[:Info])
       doc_strings_to_utf8(dict)
+    rescue Marron::MalformedPDFError => e
+      raise PDF::Reader::MalformedPDFError.new(e.message)
+    rescue Marron::EncryptedPDFError => e
+      raise PDF::Reader::EncryptedPDFError.new(e.message)
     end
 
     def metadata
@@ -131,6 +139,10 @@ module PDF
         xml.force_encoding("utf-8")
         xml
       end
+    rescue Marron::MalformedPDFError => e
+      raise PDF::Reader::MalformedPDFError.new(e.message)
+    rescue Marron::EncryptedPDFError => e
+      raise PDF::Reader::EncryptedPDFError.new(e.message)
     end
 
     def page_count
@@ -139,6 +151,10 @@ module PDF
         raise MalformedPDFError, 'Pages structure is missing'
       end
       @page_count ||= @objects.deref(pages[:Count])
+    rescue Marron::MalformedPDFError => e
+      raise PDF::Reader::MalformedPDFError.new(e.message)
+    rescue Marron::EncryptedPDFError => e
+      raise PDF::Reader::EncryptedPDFError.new(e.message)
     end
 
     def pdf_version
@@ -262,42 +278,21 @@ module PDF
 end
 ################################################################################
 
+require 'marron'
 require 'pdf/reader/resource_methods'
-require 'pdf/reader/buffer'
 require 'pdf/reader/cid_widths'
 require 'pdf/reader/cmap'
 require 'pdf/reader/encoding'
 require 'pdf/reader/error'
-require 'pdf/reader/filter'
-require 'pdf/reader/filter/ascii85'
-require 'pdf/reader/filter/ascii_hex'
-require 'pdf/reader/filter/depredict'
-require 'pdf/reader/filter/flate'
-require 'pdf/reader/filter/lzw'
-require 'pdf/reader/filter/null'
-require 'pdf/reader/filter/run_length'
 require 'pdf/reader/font'
 require 'pdf/reader/font_descriptor'
 require 'pdf/reader/form_xobject'
 require 'pdf/reader/glyph_hash'
-require 'pdf/reader/lzw'
-require 'pdf/reader/object_cache'
-require 'pdf/reader/object_hash'
-require 'pdf/reader/object_stream'
 require 'pdf/reader/pages_strategy'
-require 'pdf/reader/parser'
 require 'pdf/reader/print_receiver'
-require 'pdf/reader/reference'
 require 'pdf/reader/register_receiver'
-require 'pdf/reader/null_security_handler'
-require 'pdf/reader/standard_security_handler'
-require 'pdf/reader/standard_security_handler_v5'
-require 'pdf/reader/unimplemented_security_handler'
-require 'pdf/reader/stream'
 require 'pdf/reader/text_run'
 require 'pdf/reader/page_state'
 require 'pdf/reader/page_text_receiver'
-require 'pdf/reader/token'
-require 'pdf/reader/xref'
 require 'pdf/reader/orientation_detector'
 require 'pdf/reader/page'

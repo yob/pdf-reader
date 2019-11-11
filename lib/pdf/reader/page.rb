@@ -138,12 +138,12 @@ module PDF
       end
 
       def content_stream(receivers, instructions)
-        buffer       = Buffer.new(StringIO.new(instructions), :content_stream => true)
-        parser       = Parser.new(buffer, @objects)
+        buffer       = Marron::Buffer.new(StringIO.new(instructions), :content_stream => true)
+        parser       = Marron::Parser.new(buffer, @objects)
         params       = []
 
         while (token = parser.parse_token(PagesStrategy::OPERATORS))
-          if token.kind_of?(Token) and PagesStrategy::OPERATORS.has_key?(token)
+          if token.kind_of?(Marron::Token) and PagesStrategy::OPERATORS.has_key?(token)
             callback(receivers, PagesStrategy::OPERATORS[token], params)
             params.clear
           else

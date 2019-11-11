@@ -92,8 +92,8 @@ class PDF::Reader
     private
 
     def build_parser(instructions)
-      buffer = Buffer.new(StringIO.new(instructions))
-      Parser.new(buffer)
+      buffer = Marron::Buffer.new(StringIO.new(instructions))
+      Marron::Parser.new(buffer)
     end
 
     # The following includes some manual decoding of UTF-16BE strings into unicode codepoints. In

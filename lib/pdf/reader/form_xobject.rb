@@ -79,8 +79,8 @@ module PDF
 
       def tokens
         @cache[cached_tokens_key] ||= begin
-                      buffer = Buffer.new(StringIO.new(raw_content), :content_stream => true)
-                      parser = Parser.new(buffer, @objects)
+                      buffer = Marron::Buffer.new(StringIO.new(raw_content), :content_stream => true)
+                      parser = Marron::Parser.new(buffer, @objects)
                       result = []
                       while (token = parser.parse_token(PagesStrategy::OPERATORS))
                         result << token
@@ -93,7 +93,7 @@ module PDF
         params       = []
 
         tokens.each do |token|
-          if token.kind_of?(Token) and PagesStrategy::OPERATORS.has_key?(token)
+          if token.kind_of?(Marron::Token) and PagesStrategy::OPERATORS.has_key?(token)
             callback(receivers, PagesStrategy::OPERATORS[token], params)
             params.clear
           else
