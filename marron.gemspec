@@ -6,7 +6,6 @@ Gem::Specification.new do |spec|
   spec.summary = "A low level for parsing and reading PDF files"
   spec.description = "Marron implements a PDF parser conforming as much as possible to the PDF specification from Adobe"
   spec.files =  Dir.glob("{examples,lib}/**/**/*") + ["Rakefile"]
-  spec.has_rdoc = true
   spec.extra_rdoc_files = %w{README.rdoc TODO CHANGELOG MIT-LICENSE }
   spec.rdoc_options << '--title' << 'Marron Documentation' <<
                        '--main'  << 'README.rdoc' << '-q'
@@ -16,10 +15,9 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">=1.8.7"
 
   spec.add_development_dependency("rake")
-  spec.add_development_dependency("rspec", "~>2.3")
-  spec.add_development_dependency("ZenTest", "~>4.4.2")
-  spec.add_development_dependency("cane", "~>2.2.3")
-  spec.add_development_dependency("morecane")
+  spec.add_development_dependency("rspec", "~> 3.5")
+  spec.add_development_dependency("cane", "~> 3.0")
+  spec.add_development_dependency("morecane", "~> 0.2")
   spec.add_development_dependency("ir_b")
   spec.add_development_dependency("rdoc")
 
