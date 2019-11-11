@@ -7,6 +7,10 @@ require 'marron/object_cache'
 require 'marron/object_stream'
 require 'marron/parser'
 require 'marron/reference'
+require 'marron/standard_security_handler'
+require 'marron/standard_security_handler_v5'
+require 'marron/null_security_handler'
+require 'marron/unimplemented_security_handler'
 require 'marron/stream'
 require 'marron/xref'
 
@@ -56,6 +60,7 @@ module Marron
       @trailer     = @xref.trailer
       @cache       = opts[:cache] || Marron::ObjectCache.new
       @sec_handler = NullSecurityHandler.new
+      @sec_handler = build_security_handler(opts)
     end
 
     # returns the type of object a ref points to
@@ -266,9 +271,9 @@ module Marron
     # parse a object that's embedded in an object stream in the PDF
     #
     def fetch_object_stream(key)
-      if xref[key].is_a?(PDF::Reader::Reference)
+      if xref[key].is_a?(Marron::Reference)
         container_key = xref[key]
-        object_streams[container_key] ||= PDF::Reader::ObjectStream.new(object(container_key))
+        object_streams[container_key] ||= Marron::ObjectStream.new(object(container_key))
         object_streams[container_key][key.id]
       end
     end
@@ -278,7 +283,7 @@ module Marron
     # doesn't need to be part of the public API.
     #
     def deref_internal!(key, seen)
-      seen_key = key.is_a?(PDF::Reader::Reference) ? key : key.object_id
+      seen_key = key.is_a?(Marron::Reference) ? key : key.object_id
 
       return seen[seen_key] if seen.key?(seen_key)
 
@@ -289,8 +294,8 @@ module Marron
           seen[seen_key][k] = deref_internal!(value, seen)
         end
         seen[seen_key]
-      when PDF::Reader::Stream
-        seen[seen_key] ||= PDF::Reader::Stream.new({}, object.data)
+      when Marron::Stream
+        seen[seen_key] ||= Marron::Stream.new({}, object.data)
         object.hash.each do |k,value|
           seen[seen_key].hash[k] = deref_internal!(value, seen)
         end

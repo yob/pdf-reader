@@ -4,7 +4,7 @@
 require 'digest'
 require 'openssl'
 
-class PDF::Reader
+module Marron
 
   # class creates interface to encrypt dictionary for use in Decrypt
   class StandardSecurityHandlerV5
@@ -39,7 +39,7 @@ class PDF::Reader
     # used to decrypt RC4/AES encrypted PDF streams (buf)
     #
     # buf - a string to decrypt
-    # ref - a PDF::Reader::Reference for the object to decrypt
+    # ref - a Marron::Reference for the object to decrypt
     #
     def decrypt( buf, ref )
       cipher = OpenSSL::Cipher.new("AES-#{@key_length}-CBC")
@@ -84,7 +84,7 @@ class PDF::Reader
       encrypt_key   = auth_owner_pass(pass)
       encrypt_key ||= auth_user_pass(pass)
 
-      raise PDF::Reader::EncryptedPDFError, "Invalid password (#{pass})" if encrypt_key.nil?
+      raise Marron::EncryptedPDFError, "Invalid password (#{pass})" if encrypt_key.nil?
       encrypt_key
     end
   end

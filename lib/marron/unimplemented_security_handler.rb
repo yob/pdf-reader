@@ -1,7 +1,7 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-class PDF::Reader
+module Marron
 
   # Security handler for when we don't support the flavour of encryption
   # used in a PDF.
@@ -11,7 +11,7 @@ class PDF::Reader
     end
 
     def decrypt(buf, ref)
-      raise PDF::Reader::EncryptedPDFError, "Unsupported encryption style"
+      raise Marron::EncryptedPDFError, "Unsupported encryption style"
     end
   end
 end
