@@ -21,27 +21,26 @@ class PDF::Reader
 
       event_point_schedule.sort! { |a,b| a.x <=> b.x }
 
-      while not event_point_schedule.empty? do
-        event_point = event_point_schedule.shift
-        break unless event_point
+      event_point_schedule.each do |event_point|
+        run = event_point.run
 
-        if event_point.start? then
+        if event_point.start?
           if detect_intersection(sweep_line_status, event_point)
-            to_exclude << event_point.run
+            to_exclude << run
           end
-          sweep_line_status.push event_point
+          sweep_line_status.push(run)
         else
-          sweep_line_status.delete event_point
+          sweep_line_status.delete(run)
         end
       end
       runs - to_exclude
     end
 
     def self.detect_intersection(sweep_line_status, event_point)
-      sweep_line_status.each do |point_in_sls|
-        if event_point.x >= point_in_sls.run.x &&
-            event_point.x <= point_in_sls.run.endx &&
-            point_in_sls.run.intersection_area_percent(event_point.run) >= OVERLAPPING_THRESHOLD
+      sweep_line_status.each do |open_text_run|
+        if event_point.x >= open_text_run.x &&
+            event_point.x <= open_text_run.endx &&
+            open_text_run.intersection_area_percent(event_point.run) >= OVERLAPPING_THRESHOLD
           return true
         end
       end
