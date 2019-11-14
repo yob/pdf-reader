@@ -21,13 +21,12 @@ class PDF::Reader
 
       event_point_schedule.sort! { |a,b| a.x <=> b.x }
 
-      while not event_point_schedule.empty? do
-        event_point = event_point_schedule.shift
-        break unless event_point
+      event_point_schedule.each do |event_point|
+        run = event_point.run
 
-        if event_point.start? then
+        if event_point.start?
           if detect_intersection(sweep_line_status, event_point)
-            to_exclude << event_point.run
+            to_exclude << run
           end
           sweep_line_status.push event_point
         else
