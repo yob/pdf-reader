@@ -97,7 +97,13 @@ class PDF::Reader
       elsif @subtype == :Type3
         PDF::Reader::WidthCalculator::TypeOneOrThree.new(self)
       elsif @subtype == :TrueType
-        PDF::Reader::WidthCalculator::TrueType.new(self)
+        if @font_descriptor
+          PDF::Reader::WidthCalculator::TrueType.new(self)
+        else
+          # A TrueType font that isn't embedded. Most readers look for a version on the
+          # local system and fallback to a substitute. For now, we go straight to a substitute
+          PDF::Reader::WidthCalculator::BuiltIn.new(self)
+        end
       elsif @subtype == :CIDFontType0 || @subtype == :CIDFontType2
         PDF::Reader::WidthCalculator::Composite.new(self)
       else

@@ -887,6 +887,28 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF that uses a type1 font that isn't embedded and isn't one of the 14 built-ins" do
+    let(:filename) { pdf_spec_file("type1-arial") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq("This text uses a Type1 font that isn't embedded")
+      end
+    end
+  end
+
+  context "PDF that uses a TrueType font that isn't embedded and has no metrics" do
+    let(:filename) { pdf_spec_file("truetype-arial") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to start_with("This text uses a TrueType font that isn't embedded")
+      end
+    end
+  end
+
   context "PDF that uses a type3 bitmap font" do
     let(:filename) { pdf_spec_file("type3_font") }
 

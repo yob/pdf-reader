@@ -326,6 +326,12 @@ data/symbol.pdf:
 data/times-with-control-character.pdf:
   :bytes: 904
   :md5: 4bd7309a3f190ede68a88bb2be8bf237
+data/truetype-arial.pdf:
+  :bytes: 1387
+  :md5: 2b3e4ff85b618d1f4c6b3b5df2631ab0
+data/type1-arial.pdf:
+  :bytes: 1014
+  :md5: eb48405005f1265219c4c8759eafee32
 data/type3_font.pdf:
   :bytes: 2203
   :md5: ef2a3eb57d5996c4a33681e1aec98f2c
