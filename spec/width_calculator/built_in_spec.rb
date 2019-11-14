@@ -6,28 +6,6 @@ describe PDF::Reader::WidthCalculator::BuiltIn do
     subject     { PDF::Reader::WidthCalculator::BuiltIn.new(font)}
   end
 
-  describe "#initialize" do
-    context "when the basefont is one of the 14 standard fonts" do
-      let!(:font)        { double(:basefont => :Helvetica) }
-
-      it "initializes with no errors" do
-        expect {
-          PDF::Reader::WidthCalculator::BuiltIn.new(font)
-        }.not_to raise_error
-      end
-    end
-
-    context "when the basefont is not one of the 14 standard fonts" do
-      let!(:font)        { double(:basefont => :Foo) }
-
-      it "raises an error" do
-        expect {
-          PDF::Reader::WidthCalculator::BuiltIn.new(font)
-        }.to raise_error(ArgumentError)
-      end
-    end
-  end
-
   describe "#glyph_width" do
     context "With Helvetica, StandardEncoding and no Widths" do
       let!(:encoding)     { PDF::Reader::Encoding.new(:StandardEncoding) }
@@ -46,6 +24,22 @@ describe PDF::Reader::WidthCalculator::BuiltIn do
 
       it "returns width 0 for code point 157(unknown)" do
         expect(width_calculator.glyph_width(157)).to eq(0)
+      end
+    end
+
+    context "With Foo, a font that isn't part of the built-in 14" do
+      let!(:encoding)     { PDF::Reader::Encoding.new(:WinAnsiEncoding) }
+      let!(:font)         { double(:basefont => :Foo,
+                                  :subtype => :Type1,
+                                  :encoding => encoding,
+                                  :widths => []) }
+
+      let(:width_calculator) {
+        PDF::Reader::WidthCalculator::BuiltIn.new(font)
+      }
+
+      it "returns width 722 for code point 65 (A)" do
+        expect(width_calculator.glyph_width(65)).to eq(722)
       end
     end
   end

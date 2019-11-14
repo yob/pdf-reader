@@ -12,11 +12,20 @@ class PDF::Reader
     # see Section 9.6.2.2, PDF 32000-1:2008, pp 256
     class BuiltIn
 
+      BUILTINS = [
+        :Courier, :"Courier-Bold", :"Courier-BoldOblique", :"Courier-Oblique",
+        :Helvetica, :"Helvetica-Bold", :"Helvetica-BoldOblique", :"Helvetica-Oblique",
+        :Symbol,
+        :"Times-Roman", :"Times-Bold", :"Times-BoldItalic", :"Times-Italic",
+        :ZapfDingbats
+      ]
+
       def initialize(font)
         @font = font
         @@all_metrics ||= PDF::Reader::SynchronizedCache.new
 
-        metrics_path = File.join(File.dirname(__FILE__), "..","afm","#{font.basefont}.afm")
+        basefont = extract_basefont(font.basefont)
+        metrics_path = File.join(File.dirname(__FILE__), "..","afm","#{basefont}.afm")
 
         if File.file?(metrics_path)
           @metrics = @@all_metrics[metrics_path] ||= AFM::Font.new(metrics_path)
@@ -54,6 +63,13 @@ class PDF::Reader
         @font.encoding.int_to_name(code_point).first.to_s[/\Acontrol..\Z/]
       end
 
+      def extract_basefont(font_name)
+        if BUILTINS.include?(font_name)
+          font_name
+        else
+          "Times-Roman"
+        end
+      end
     end
   end
 end
