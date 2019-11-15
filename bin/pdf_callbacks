@@ -9,7 +9,7 @@ require 'pdf/reader'
 receiver = PDF::Reader::PrintReceiver.new
 
 if ARGV.empty?
-  browser = PDF::Reader.new($stdin)
+  browser = PDF::Reader.new(StringIO.new(ARGF.read))
 else
   browser = PDF::Reader.new(ARGV[0])
 end
