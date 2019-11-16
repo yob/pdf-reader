@@ -4,7 +4,7 @@ require 'rubygems'
 require 'pdf/reader'
 
 if ARGV.empty?
-  browser = PDF::Reader.new($stdin)
+  browser = PDF::Reader.new(StringIO.new(ARGF.read))
 else
   browser = PDF::Reader.new(ARGV[0])
 end
