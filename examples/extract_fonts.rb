@@ -17,8 +17,8 @@ module ExtractFonts
       return count if page.fonts.nil? || page.fonts.empty?
 
       page.fonts.each do |label, font|
-        next if complete_refs[font]
-        complete_refs[font] = true
+        next if complete_refs[label]
+        complete_refs[label] = true
 
         process_font(page, font)
 
