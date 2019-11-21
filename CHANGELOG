@@ -1,10 +1,11 @@
-UNRELEASED
+v2.4.0 (21st November 2019)
 - Optimise overlapping characters code introduced in 2.3.0. Text extraction of pages with
   thousands of characters is still slower than it was in 2.2.1, but it might tolerable
   for now. See https://github.com/yob/pdf-reader/pull/308 for details.
 - Implement very basic font substitution for Type1 and TrueType fonts that aren't embedded
 - Remove PDF::Hash class. It's been deprecated since 2010, and it's hard to believe anyone
   is still using it.
+- Several small bug fixes
 
 v2.3.0 (7th November 2019)
 - Text extraction now makes an effort to skip duplicate characters that overlap, a
