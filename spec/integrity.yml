@@ -257,6 +257,9 @@ data/nested_form_xobject_another.pdf:
 data/no_text_spaces.pdf:
   :bytes: 2058403
   :md5: f1167a44c687e6dc4fcffb451598c502
+data/one-byte-identity.pdf:
+  :bytes: 13941
+  :md5: a5e0693ee17aa8e53e9a140e9b9ccf97
 data/oo3.pdf:
   :bytes: 12247
   :md5: 0c53ddbcb99c2e10d7b1622f14191b84

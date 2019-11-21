@@ -943,6 +943,20 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF with a Type0 font and Encoding is a CMap called OneByteIdentityH" do
+    let(:filename) { pdf_spec_file("one-byte-identity") }
+
+    # I'm not 100% confident that we'rr correctly handling OneByteIdentityH files in a way
+    # that will always work. It works for the sample file I have though, so that's better than
+    # nothing
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq("abc")
+      end
+    end
+  end
+
   context "PDF with rotated text" do
     let(:filename) { pdf_spec_file("rotated_text") }
 
