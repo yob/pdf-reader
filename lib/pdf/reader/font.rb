@@ -131,7 +131,9 @@ class PDF::Reader
       if obj[:ToUnicode]
         # ToUnicode is optional for Type1 and Type3
         stream = @ohash.object(obj[:ToUnicode])
-        @tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
+        if stream.is_a?(PDF::Reader::Stream)
+          @tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
+        end
       end
     end
 
