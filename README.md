@@ -178,6 +178,6 @@ little UTF-8 friendly box to indicate an unrecognisable character.
 
 * PDF Specification: http://www.adobe.com/devnet/pdf/pdf_reference.html
 
-* PDF Tutorial Slide Presentations: http://home.comcast.net/~jk05/presentations/PDFTutorials.html
+* PDF Tutorial Slide Presentations: https://web.archive.org/web/20150110042057/http://home.comcast.net/~jk05/presentations/PDFTutorials.html
 
 * Developing with PDF (book): http://shop.oreilly.com/product/0636920025269.do
