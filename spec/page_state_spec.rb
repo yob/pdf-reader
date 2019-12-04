@@ -5,7 +5,8 @@ describe PDF::Reader::PageState do
                         :objects => {},
                         :fonts => {},
                         :xobjects => {},
-                        :color_spaces => {})}
+                        :color_spaces => {},
+                        :rotate => 0)}
 
   describe "#DEFAULT_GRAPHICS_STATE" do
     subject { PDF::Reader::PageState::DEFAULT_GRAPHICS_STATE }

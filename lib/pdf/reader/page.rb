@@ -124,6 +124,18 @@ module PDF
         }.join(" ")
       end
 
+      # returns the angle to rotate the page clockwise. Always 0, 90, 180 or 270
+      #
+      def rotate
+        value = attributes[:Rotate].to_i
+        case value
+        when 0, 90, 180, 270
+          value
+        else
+          0
+        end
+      end
+
       private
 
       def root
