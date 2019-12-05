@@ -24,7 +24,7 @@ class PDF::Reader
       @page_width  = (mediabox[2] - mediabox[0]).abs
       @page_height = (mediabox[3] - mediabox[1]).abs
       @x_offset = @runs.map(&:x).sort.first || 0
-      lowest_y = @runs.map(&:y).sort.last || 0
+      lowest_y = @runs.map(&:y).sort.first || 0
       @y_offset = lowest_y > 0 ? 0 : lowest_y
     end
 
