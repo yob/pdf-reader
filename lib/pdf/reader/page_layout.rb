@@ -21,9 +21,11 @@ class PDF::Reader
       @mean_font_size   = mean(@runs.map(&:font_size)) || DEFAULT_FONT_SIZE
       @mean_font_size = DEFAULT_FONT_SIZE if @mean_font_size == 0
       @mean_glyph_width = mean(@runs.map(&:mean_character_width)) || 0
-      @page_width  = mediabox[2] - mediabox[0]
-      @page_height = mediabox[3] - mediabox[1]
-      @x_offset = @runs.map(&:x).sort.first
+      @page_width  = (mediabox[2] - mediabox[0]).abs
+      @page_height = (mediabox[3] - mediabox[1]).abs
+      @x_offset = @runs.map(&:x).sort.first || 0
+      lowest_y = @runs.map(&:y).sort.last || 0
+      @y_offset = lowest_y > 0 ? 0 : lowest_y
     end
 
     def to_s
@@ -32,7 +34,7 @@ class PDF::Reader
       page = row_count.times.map { |i| " " * col_count }
       @runs.each do |run|
         x_pos = ((run.x - @x_offset) / col_multiplier).round
-        y_pos = row_count - (run.y / row_multiplier).round
+        y_pos = row_count - ((run.y - @y_offset) / row_multiplier).round
         if y_pos <= row_count && y_pos >= 0 && x_pos <= col_count && x_pos >= 0
           local_string_insert(page[y_pos-1], run.text, x_pos)
         end

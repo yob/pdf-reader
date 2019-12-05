@@ -302,6 +302,9 @@ data/prince1.pdf:
 data/prince2.pdf:
   :bytes: 944243
   :md5: 8722b6b2ce81f63df791a6826d4193f6
+data/rotate-then-undo.pdf:
+  :bytes: 1191
+  :md5: c14ac0c2669d63988c07c71f75c28b39
 data/rotated_text.pdf:
   :bytes: 936
   :md5: 86ba3d60315a0986c9a06d6d313dab6f
