@@ -1140,6 +1140,20 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF with 180 page rotation followed by matrix transformations to undo it" do
+    let(:filename) { pdf_spec_file("rotate-180") }
+    let(:text) {
+      "This text is rendered upside down\nand then the page is rotated"
+    }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq(text)
+      end
+    end
+  end
+
   context "PDF with page rotation followed by matrix transformations to undo it" do
     let(:filename) { pdf_spec_file("rotate-then-undo") }
     let(:text) {
