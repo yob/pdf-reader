@@ -38,6 +38,8 @@ class PDF::Reader
           state[:ctm] = TransformationMatrix.new(rotate_cos, rotate_sin,
                                                  rotate_sin * -1, rotate_cos,
                                                  0, 0)
+          state[:ctm].multiply!(1, 0, 0, -1, 0, 0) # flip vertically
+          state[:ctm].multiply!(-1, 0, 0, 1, 0, 0) # flip horizontally
         end
       end
 
