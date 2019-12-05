@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
     "source_code_uri"   => "https://github.com/yob/pdf-reader/tree/v#{spec.version}",
   }
 
-  spec.add_development_dependency("rake")
+  spec.add_development_dependency("rake", "< 13.0")
   spec.add_development_dependency("rspec", "~> 3.5")
   spec.add_development_dependency("cane", "~> 3.0")
   spec.add_development_dependency("morecane", "~> 0.2")
