@@ -8,6 +8,9 @@ data/TJ_starts_with_a_number.pdf:
 data/adobe_sample.pdf:
   :bytes: 378345
   :md5: 07ab19345bfd5d22af6301a5751f94c2
+data/all_page_boxes_exist.pdf:
+  :bytes: 1405798
+  :md5: '0985d3e0e4f5b4ec40adb86bc05d7fd3'
 data/ascii85_filter.pdf:
   :bytes: 21288
   :md5: 49502f60a3f058e20d0564312c9dda2b
@@ -242,6 +245,9 @@ data/lzw_decompressed.dat:
 data/lzw_stream.pdf:
   :bytes: 2351
   :md5: f728d3746de95834d300480e17083b65
+data/mediabox_and_cropbox_are_references.pdf:
+  :bytes: 45683
+  :md5: bef53045134b504254688af70be78100
 data/mediabox_missing.pdf:
   :bytes: 14875
   :md5: 51560e94565ee1cd9583c388b5aa545a
