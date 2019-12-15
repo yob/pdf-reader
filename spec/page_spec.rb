@@ -20,7 +20,7 @@ describe PDF::Reader::Page do
   end
 
   describe "#text" do
-    # only do a very basc test here. Detailed testing of text extraction is
+    # only do a very basic test here. Detailed testing of text extraction is
     # done by testing the PageTextReceiver class
     it "returns the text content from cairo-basic.pdf page 1" do
       @browser = PDF::Reader.new(pdf_spec_file("cairo-basic"))
@@ -29,6 +29,45 @@ describe PDF::Reader::Page do
       expect(@page.text).to eql("Hello James")
     end
 
+  end
+
+  describe "#boxes" do
+    let!(:page)    { browser.page(1) }
+    let!(:browser) { PDF::Reader.new(pdf_spec_file("all_page_boxes_exist")) }
+
+    it "returns a hash of all the different boxes" do
+      expect(page.attributes[:ArtBox]).to_not be_empty
+      expect(page.attributes[:BleedBox]).to_not be_empty
+      expect(page.attributes[:CropBox]).to_not be_empty
+      expect(page.attributes[:MediaBox]).to_not be_empty
+      expect(page.attributes[:TrimBox]).to_not be_empty
+
+      expect(page.boxes).to eq(
+        {
+          ArtBox: [0, 0, 612, 792],
+          BleedBox: [0, 0, 612, 792],
+          CropBox: [0, 0, 612, 792],
+          MediaBox: [0, 0, 612, 792],
+          TrimBox: [0, 0, 612, 792],
+        }
+      )
+    end
+
+    context "mediabox and cropbox are references" do
+      let!(:browser) { PDF::Reader.new(pdf_spec_file("mediabox_and_cropbox_are_references")) }
+
+      it "returns a non-reference for the dimensions of the boxes" do
+        expect(page.boxes).to eq(
+          {
+            ArtBox: [0, 0, 612, 792],
+            BleedBox: [0, 0, 612, 792],
+            CropBox: [0, 0, 612, 792],
+            MediaBox: [0, 0, 612, 792],
+            TrimBox: [0, 0, 612, 792],
+          }
+        )
+      end
+    end
   end
 
   describe "#walk" do
