@@ -1,0 +1,11 @@
+{
+  "name": "pdf-reader",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:yob/pdf-reader.git",
+  "author": "James Healy <james@yob.id.au>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

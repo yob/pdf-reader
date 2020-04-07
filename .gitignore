@@ -6,3 +6,4 @@ Gemfile.lock
 *.gem
 .DS_Store
 tools/profiles
+node_modules
