@@ -164,6 +164,15 @@ data/form_xobject_recursive.pdf:
 data/hard_lock_under_osx.pdf:
   :bytes: 4545
   :md5: 365e2076036b5e2445d1dcde13d6dbb6
+data/hello-world.deflate:
+  :bytes: 44
+  :md5: 81bf56d574794df545f2403cfedfa4cc
+data/hello-world.gz:
+  :bytes: 55
+  :md5: 8af940b62b3afe47c87547e26396b5ed
+data/hello-world.z:
+  :bytes: 50
+  :md5: 25f1f816ea6e6f42414cf23551acc2c2
 data/indirect_kids_array.pdf:
   :bytes: 951
   :md5: 7cb585bfe3f5266ed50bd205422953fd

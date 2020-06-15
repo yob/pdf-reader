@@ -8,6 +8,8 @@ class PDF::Reader
   module Filter # :nodoc:
     # implementation of the Flate (zlib) stream filter
     class Flate
+      ZLIB_AUTO_DETECT_ZLIB_OR_GZIP = 47  # Zlib::MAX_WBITS + 32
+
       def initialize(options = {})
         @options = options
       end
@@ -17,7 +19,7 @@ class PDF::Reader
       def filter(data)
         deflated = nil
         begin
-          deflated = Zlib::Inflate.new.inflate(data)
+          deflated = Zlib::Inflate.new(ZLIB_AUTO_DETECT_ZLIB_OR_GZIP).inflate(data)
         rescue Zlib::DataError => e
           # by default, Ruby's Zlib assumes the data it's inflating
           # is RFC1951 deflated data, wrapped in a RFC1950 zlib container. If that
