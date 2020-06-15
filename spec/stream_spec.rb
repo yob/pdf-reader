@@ -15,8 +15,8 @@ describe PDF::Reader::Stream do
 
   it "decodes streams that use FlateDecode with something funny about them"
 
-  it "raises a MalformedPDFError when there's a problem decoding a Flated Stream" do
-  decoded_stream = <<EOF
+  context "with a zlib stream (RFC1950) that fails an adler32 CRC check" do
+    let(:decoded_stream) { <<EOF
 /CIDInit /ProcSet findresource begin
 12 dict begin
 begincmap
@@ -83,18 +83,30 @@ CMapName currentdict /CMap defineresource pop
 end
 end
 EOF
+    }
 
-    File.open(pdf_spec_file("zlib_stream_issue"), "rb") do |io|
-      ohash = PDF::Reader::ObjectHash.new(io)
-      ref   = PDF::Reader::Reference.new(30,0)
-      obj   = ohash.object(ref)
-      expect { obj.unfiltered_data }.to raise_error(PDF::Reader::MalformedPDFError)
-
-      # TODO: resolve why the zlib shippedwith ruby can't decompress this stream correctly
-      #       then replace the the above raise_error check with the following 2 checks
-      #obj.should be_a_kind_of(Hash)
-      #stream.should eql(decoded_stream.strip)
+    it "raises a MalformedPDFError" do
+      File.open(pdf_spec_file("zlib_stream_issue"), "rb") do |io|
+        ohash = PDF::Reader::ObjectHash.new(io)
+        ref   = PDF::Reader::Reference.new(30,0)
+        obj   = ohash.object(ref)
+        expect { obj.unfiltered_data }.to raise_error(PDF::Reader::MalformedPDFError)
+      end
     end
 
+    # Acrobat manages to decode this one, so maybe we can too
+    it "raises makes an effor to decode the stream anyway" do
+      # TODO: if I can find a way to convince the ruby zlib bindings to ignore a checksum failure,
+      #       delete the previous spec and use this one instead
+      pending
+      File.open(pdf_spec_file("zlib_stream_issue"), "rb") do |io|
+        ohash = PDF::Reader::ObjectHash.new(io)
+        ref   = PDF::Reader::Reference.new(30,0)
+        obj   = ohash.object(ref)
+
+        expect(obj).to be_a_kind_of(PDF::Reader::Stream)
+        expect(obj.unfiltered_data).to eql(decoded_stream.strip)
+      end
+    end
   end
 end
