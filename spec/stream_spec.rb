@@ -13,8 +13,6 @@ describe PDF::Reader::Stream do
     expect(obj.unfiltered_data).to eql(binary_string(decoded_stream))
   end
 
-  it "decodes streams that use FlateDecode with something funny about them"
-
   context "with a zlib stream (RFC1950) that fails an adler32 CRC check" do
     let(:decoded_stream) { <<EOF
 /CIDInit /ProcSet findresource begin
