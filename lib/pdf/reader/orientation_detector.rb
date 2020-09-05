@@ -22,8 +22,8 @@ class PDF::Reader
     def detect_orientation
       llx,lly,urx,ury = @attributes[:MediaBox]
       rotation        = @attributes[:Rotate].to_i
-      width           = urx.to_i - llx.to_i
-      height          = ury.to_i - lly.to_i
+      width           = (urx.to_i - llx.to_i).abs
+      height          = (ury.to_i - lly.to_i).abs
       if width > height
         (rotation % 180).zero? ? 'landscape' : 'portrait'
       else
