@@ -56,5 +56,14 @@ describe PDF::Reader::OrientationDetector do
         expect(detector.orientation).to eq('landscape')
       end
     end
+
+    context "with a portrait page that uses negative Y co-ordinates" do
+      let!(:detector) {
+        PDF::Reader::OrientationDetector.new(:MediaBox => [0,792,612,0])
+      }
+      it "returns portrait" do
+        expect(detector.orientation).to eq('portrait')
+      end
+    end
   end
 end
