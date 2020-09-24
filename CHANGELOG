@@ -1,3 +1,6 @@
+v.2.4.1 (24th September 2020)
+- Re-vendor font metrics from Adobe to clarify their license
+
 v2.4.0 (21st November 2019)
 - Optimise overlapping characters code introduced in 2.3.0. Text extraction of pages with
   thousands of characters is still slower than it was in 2.2.1, but it might tolerable
