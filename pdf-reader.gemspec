@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency("pry")
   spec.add_development_dependency("rdoc")
 
-  spec.add_dependency('Ascii85', '~> 1.0.0')
+  spec.add_dependency('Ascii85', '~> 1.0')
   spec.add_dependency('ruby-rc4')
   spec.add_dependency('hashery', '~> 2.0')
   spec.add_dependency('ttfunk')
