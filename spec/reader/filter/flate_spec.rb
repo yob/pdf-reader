@@ -13,6 +13,19 @@ describe PDF::Reader::Filter::Flate do
       end
     end
 
+    context "an RFC1950 (zlib) deflated stream with an extra byte on the end" do
+      let(:deflated_path) {
+        File.dirname(__FILE__) + "/../../data/stream-with-extra-byte.z"
+      }
+      let(:deflated_data) { binread(deflated_path) }
+      it "inflates correctly" do
+        filter = PDF::Reader::Filter::Flate.new
+        result = filter.filter(deflated_data)
+        expect(result).to start_with("q")
+        expect(result).to end_with("ET\n")
+      end
+    end
+
     context "a raw RFC1951 deflated stream" do
       let(:deflated_path) {
         File.dirname(__FILE__) + "/../../data/hello-world.deflate"
