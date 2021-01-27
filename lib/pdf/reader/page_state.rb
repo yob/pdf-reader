@@ -330,11 +330,13 @@ class PDF::Reader
         th = state[:h_scaling]
         # optimise the common path to reduce Float allocations
         if th == 1 && tj == 0 && tc == 0 && tw == 0
-          glyph_width = w0 * fs
-          tx = glyph_width
+          tx = w0 * fs
+        elsif tj != 0
+          # don't apply spacing to TJ displacement
+          tx = (w0 - (tj/1000.0)) * fs * th
         else
-          glyph_width = ((w0 - (tj/1000.0)) * fs) * th
-          tx = glyph_width + ((tc + tw) * th)
+          # apply horizontal scaling to spacing values but not font size
+          tx = ((w0 * fs) + tc + tw) * th
         end
 
         # TODO: I'm pretty sure that tx shouldn't need to be divided by

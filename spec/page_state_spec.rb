@@ -468,10 +468,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
-                  expect(state.trm_transform(0,0)).to eq([64.976, 700])
-                  expect(state.trm_transform(0,1)).to eq([64.976, 712])
-                  expect(state.trm_transform(1,0)).to eq([76.976, 700])
-                  expect(state.trm_transform(1,1)).to eq([76.976, 712])
+                  expect(state.trm_transform(0,0)).to eq([63.976, 700])
+                  expect(state.trm_transform(0,1)).to eq([63.976, 712])
+                  expect(state.trm_transform(1,0)).to eq([75.976, 700])
+                  expect(state.trm_transform(1,1)).to eq([75.976, 712])
                 end
               end
             end
@@ -512,10 +512,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, false)
 
-                  expect(state.trm_transform(0,0)).to eq([64.976, 700])
-                  expect(state.trm_transform(0,1)).to eq([64.976, 712])
-                  expect(state.trm_transform(1,0)).to eq([76.976, 700])
-                  expect(state.trm_transform(1,1)).to eq([76.976, 712])
+                  expect(state.trm_transform(0,0)).to eq([63.976, 700])
+                  expect(state.trm_transform(0,1)).to eq([63.976, 712])
+                  expect(state.trm_transform(1,0)).to eq([75.976, 700])
+                  expect(state.trm_transform(1,1)).to eq([75.976, 712])
                 end
               end
               context "a word boundary" do
@@ -523,10 +523,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
-                  expect(state.trm_transform(0,0)).to eq([64.976, 700])
-                  expect(state.trm_transform(0,1)).to eq([64.976, 712])
-                  expect(state.trm_transform(1,0)).to eq([76.976, 700])
-                  expect(state.trm_transform(1,1)).to eq([76.976, 712])
+                  expect(state.trm_transform(0,0)).to eq([63.976, 700])
+                  expect(state.trm_transform(0,1)).to eq([63.976, 712])
+                  expect(state.trm_transform(1,0)).to eq([75.976, 700])
+                  expect(state.trm_transform(1,1)).to eq([75.976, 712])
                 end
               end
             end
@@ -565,10 +565,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, false)
 
-                  expect(state.trm_transform(0,0)).to eq([64.976, 700])
-                  expect(state.trm_transform(0,1)).to eq([64.976, 712])
-                  expect(state.trm_transform(1,0)).to eq([76.976, 700])
-                  expect(state.trm_transform(1,1)).to eq([76.976, 712])
+                  expect(state.trm_transform(0,0)).to eq([63.976, 700])
+                  expect(state.trm_transform(0,1)).to eq([63.976, 712])
+                  expect(state.trm_transform(1,0)).to eq([75.976, 700])
+                  expect(state.trm_transform(1,1)).to eq([75.976, 712])
                 end
               end
               context "a word boundary" do
@@ -576,10 +576,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
-                  expect(state.trm_transform(0,0)).to eq([65.976, 700])
-                  expect(state.trm_transform(0,1)).to eq([65.976, 712])
-                  expect(state.trm_transform(1,0)).to eq([77.976, 700])
-                  expect(state.trm_transform(1,1)).to eq([77.976, 712])
+                  expect(state.trm_transform(0,0)).to eq([63.976, 700])
+                  expect(state.trm_transform(0,1)).to eq([63.976, 712])
+                  expect(state.trm_transform(1,0)).to eq([75.976, 700])
+                  expect(state.trm_transform(1,1)).to eq([75.976, 712])
                 end
               end
             end
