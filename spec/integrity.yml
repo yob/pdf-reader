@@ -2,12 +2,12 @@
 data/20070313 - 2nd Laptop Battery.pdf:
   :bytes: 27832
   :md5: be3427795b673615e42f89b9043d44d9
-data/TJ_starts_with_a_number.pdf:
-  :bytes: 13119
-  :md5: 83501b5c507cdddbd9283ad2003c885b
 data/TJ_and_char_spacing.pdf:
   :bytes: 905
   :md5: 8d2a7d485f95f3bc45187c1cf38330c2
+data/TJ_starts_with_a_number.pdf:
+  :bytes: 13119
+  :md5: 83501b5c507cdddbd9283ad2003c885b
 data/adobe_sample.pdf:
   :bytes: 378345
   :md5: 07ab19345bfd5d22af6301a5751f94c2
@@ -344,6 +344,9 @@ data/standard_font_with_a_difference.pdf:
 data/standard_font_with_no_difference.pdf:
   :bytes: 856
   :md5: 1d59995aefe22d8a8859c1c217dddcc9
+data/stream-with-extra-byte.z:
+  :bytes: 516
+  :md5: cb7b8af4921811eb51d1d22a4194a6fe
 data/surrogate_pair_integration_sample.pdf:
   :bytes: 1210387
   :md5: abc393e941d2aeb7a64f5e2ab1b58a92
