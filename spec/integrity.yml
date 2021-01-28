@@ -5,6 +5,9 @@ data/20070313 - 2nd Laptop Battery.pdf:
 data/TJ_starts_with_a_number.pdf:
   :bytes: 13119
   :md5: 83501b5c507cdddbd9283ad2003c885b
+data/TJ_and_char_spacing.pdf:
+  :bytes: 905
+  :md5: 8d2a7d485f95f3bc45187c1cf38330c2
 data/adobe_sample.pdf:
   :bytes: 378345
   :md5: 07ab19345bfd5d22af6301a5751f94c2
