@@ -1,3 +1,7 @@
+v2.4.2 (28th January 2021)
+- relax ASCII85 dependency to allow 1.x
+- improved support for decompressing objects with slightly malformed zlib data
+
 v.2.4.1 (24th September 2020)
 - Re-vendor font metrics from Adobe to clarify their license
 
