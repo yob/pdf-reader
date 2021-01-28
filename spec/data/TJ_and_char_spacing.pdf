@@ -1,0 +1,73 @@
+%PDF-1.7
+%„¢¼Ú
+
+1 0 obj
+  <<
+  /Type /Catalog
+  /Pages 2 0 R
+  >>
+endobj
+
+2 0 obj
+  <<
+  /Type /Pages
+  /Kids [3 0 R]
+  /Count 1
+  /MediaBox [0 0 595 842]
+  >>
+endobj
+
+3 0 obj
+  <<
+  /Type /Page
+  /Parent 2 0 R
+  /Resources 
+    <<
+    /Font 
+      <<
+      /F1 
+        <<
+        /Type /Font
+        /Subtype /Type1
+        /BaseFont /Helvetica
+        >>
+      >>
+    >>
+  /Contents 4 0 R
+  >>
+endobj
+
+4 0 obj
+  <<
+  /Length 279
+  >>
+stream
+  BT
+    /F1 18 Tf
+    1 0 0 1 50 800 Tm
+    18 TL
+    -2 Tc -1 Tw
+    (The big brown fox) Tj
+    T*
+    [(T)-108(h)-108(e)-162( )-108(b)-108(i)-108(g)-162( )-108(b)-108(r)-108(o)-108(w)-108(n)-162( )-108(f)-108(o)-108(x)] TJ
+    T*
+    0 Tc 0 Tw
+    (The big brown fox) Tj
+  ET
+endstream
+endobj
+xref
+0 5
+0000000000 65535 f
+0000000016 00000 n
+0000000074 00000 n
+0000000168 00000 n
+0000000405 00000 n
+trailer
+  <<
+  /Root 1 0 R
+  /Size 5
+  >>
+startxref
+740
+%%EOF

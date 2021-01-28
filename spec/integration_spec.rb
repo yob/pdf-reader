@@ -982,6 +982,17 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF with a TJ operator that aims to correct for character spacing" do
+    let(:filename) { pdf_spec_file("TJ_and_char_spacing") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text[15,17]).to eq("The big brown fox")
+      end
+    end
+  end
+
   context "PDF with a page that's missing the MediaBox attribute" do
     let(:filename) { pdf_spec_file("mediabox_missing") }
 
