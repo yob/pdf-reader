@@ -27,6 +27,23 @@ describe PDF::Reader::WidthCalculator::BuiltIn do
       end
     end
 
+    context "With Helvetica and a custom encoding that overwrites standard codepoints" do
+      # Codepoint 196 (tilde) is mapped to German umlaut Ä
+      let(:encoding)     { PDF::Reader::Encoding.new({:Differences => [196, :Adieresis]}) }
+      let(:font)         { double(:basefont => :Helvetica,
+                                  :subtype => :Type1,
+                                  :encoding => encoding) }
+
+      let(:width_calculator) {
+        PDF::Reader::WidthCalculator::BuiltIn.new(font)
+      }
+
+      it "returns the correct width for the overwritten codepoint" do
+        # tilde = 333, Ä = 667
+        expect(width_calculator.glyph_width(196)).to eq(667)
+      end
+    end
+
     context "With Foo, a font that isn't part of the built-in 14" do
       let!(:encoding)     { PDF::Reader::Encoding.new(:WinAnsiEncoding) }
       let!(:font)         { double(:basefont => :Foo,
