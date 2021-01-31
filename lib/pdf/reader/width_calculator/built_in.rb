@@ -41,9 +41,12 @@ class PDF::Reader
         metrics = names.map { |name|
           @metrics.char_metrics[name.to_s]
         }.compact.first
-        return metrics[:wx] if metrics
 
-        @font.widths[code_point - 1] || 0
+        if metrics
+          metrics[:wx]
+        else
+          @font.widths[code_point - 1] || 0
+        end
       end
 
       private
