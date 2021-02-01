@@ -30,6 +30,7 @@ class PDF::Reader
 
     def to_s
       return "" if @runs.empty?
+      return "" if row_count == 0
 
       page = row_count.times.map { |i| " " * col_count }
       @runs.each do |run|
