@@ -113,6 +113,9 @@ data/distiller_unicode.pdf:
 data/dutch.pdf:
   :bytes: 14163
   :md5: cbe0d3075d4474a221cd0b3800c5a0e4
+data/encrypted_and_xref_stream.pdf:
+  :bytes: 1197
+  :md5: 6bba66a160f820798385a3d1e8e156d2
 data/encrypted_version1_revision2_128bit_rc4_blank_user_password.pdf:
   :bytes: 15674
   :md5: 88a9b78341fa55879fa94930bd4d33af

@@ -331,7 +331,9 @@ class PDF::Reader
     def decrypt(ref, obj)
       case obj
       when PDF::Reader::Stream then
-        obj.data = sec_handler.decrypt(obj.data, ref)
+        # PDF 32000-1:2008 7.5.8.2: "The cross-reference stream shall not be encrypted [...]."
+        # Therefore we shouldn't try to decrypt it.
+        obj.data = sec_handler.decrypt(obj.data, ref) unless obj.hash[:Type] == :XRef
         obj
       when Hash                then
         arr = obj.map { |key,val| [key, decrypt(ref, val)] }.flatten(1)

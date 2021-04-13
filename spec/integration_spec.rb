@@ -773,6 +773,24 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "Encrypted PDF with an xref stream" do
+    let(:filename) {
+      pdf_spec_file("encrypted_and_xref_stream")
+    }
+
+    it "correctly extracts text" do
+      PDF::Reader.open(filename) do |reader|
+        expect(reader.page(1).text).to eq("This text is encrypted")
+      end
+    end
+
+    it "correctly parses indirect objects" do
+      PDF::Reader.open(filename) do |reader|
+        expect { reader.objects.values }.not_to raise_error
+      end
+    end
+  end
+
   context "PDF with inline images" do
     let(:filename) { pdf_spec_file("inline_image") }
 
