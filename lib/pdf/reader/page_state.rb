@@ -30,15 +30,7 @@ class PDF::Reader
         @xobject_stack = [page.xobjects]
         @cs_stack      = [page.color_spaces]
         @stack         = [DEFAULT_GRAPHICS_STATE.dup]
-        if page.rotate == 0
-          state[:ctm]  = identity_matrix
-        else
-          rotate_cos = Math.cos(page.rotate * (Math::PI/180.0)).round(2)
-          rotate_sin = Math.sin(page.rotate * (Math::PI/180.0)).round(2)
-          state[:ctm] = TransformationMatrix.new(rotate_cos, rotate_sin,
-                                                 rotate_sin * -1, rotate_cos,
-                                                 0, 0)
-        end
+        state[:ctm]  = identity_matrix
       end
 
       #####################################################

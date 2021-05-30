@@ -41,6 +41,7 @@ module PDF
       # starting a new page
       def page=(page)
         @state = PageState.new(page)
+        @page = page
         @content = []
         @characters = []
         @mediabox = page.objects.deref(page.attributes[:MediaBox])
@@ -104,6 +105,8 @@ module PDF
         glyphs.each_with_index do |glyph_code, index|
           # paint the current glyph
           newx, newy = @state.trm_transform(0,0)
+          newx, newy = apply_rotation(newx, newy)
+
           utf8_chars = @state.current_font.to_utf8(glyph_code)
 
           # apply to glyph displacment for the current glyph so the next
@@ -116,6 +119,21 @@ module PDF
           end
           @state.process_glyph_displacement(glyph_width, 0, utf8_chars == SPACE)
         end
+      end
+
+      def apply_rotation(x, y)
+        if @page.rotate == 90
+          tmp = x
+          x = y
+          y = tmp * -1
+        elsif @page.rotate == 180
+          y *= -1
+        elsif @page.rotate == 270
+          tmp = x
+          x = y * -1
+          y = tmp * -1
+        end
+        return x, y
       end
 
     end
