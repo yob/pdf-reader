@@ -1,11 +1,5 @@
 steps:
   - command: "auto/run-specs"
-    label: "rspec (1.9.3)"
-    env:
-      DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "1.9.3"
-
-  - command: "auto/run-specs"
     label: "rspec (2.0)"
     env:
       DOCKER_IMAGE: "ruby"
