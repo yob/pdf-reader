@@ -17,7 +17,11 @@ class PDF::Reader
       #
       def filter(data)
         data = "<~#{data}" unless data.to_s[0,2] == "<~"
-        ::Ascii85::decode(data)
+        if defined?(::Ascii85Native)
+          ::Ascii85Native::decode(data)
+        else
+          ::Ascii85::decode(data)
+        end
       rescue Exception => e
         # Oops, there was a problem decoding the stream
         raise MalformedPDFError,
