@@ -1,7 +1,7 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-require 'ascii85'
+require 'ascii85_native'
 
 class PDF::Reader
   module Filter # :nodoc:
@@ -17,7 +17,7 @@ class PDF::Reader
       #
       def filter(data)
         data = "<~#{data}" unless data.to_s[0,2] == "<~"
-        ::Ascii85::decode(data)
+        ::Ascii85Native::decode(data)
       rescue Exception => e
         # Oops, there was a problem decoding the stream
         raise MalformedPDFError,
