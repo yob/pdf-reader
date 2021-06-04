@@ -1,4 +1,4 @@
-# pdf-reader
+# pdf-reader-test
 
 The PDF::Reader library implements a PDF parser conforming as much as possible
 to the PDF specification from Adobe.
