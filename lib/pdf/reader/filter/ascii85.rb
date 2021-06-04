@@ -16,6 +16,7 @@ class PDF::Reader
       # rubygem.
       #
       def filter(data)
+        data = "<~#{data}" unless data.to_s[0,2] == "<~"
         ::Ascii85Native::decode(data)
       rescue Exception => e
         # Oops, there was a problem decoding the stream
