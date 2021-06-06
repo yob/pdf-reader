@@ -1,3 +1,10 @@
+v2.5.0 (6th June 2021)
+- bump minimum ruby version to 2.0
+- Correctly handle trascoding to UTF-8 from some fonts that use a difference table [#344](https://github.com/yob/pdf-reader/pull/344/) 
+- Fix some character spacing issues with the TJ operator [#343](https://github.com/yob/pdf-reader/pull/343)
+- Fix crash with some encrypted PDFs [#348](https://github.com/yob/pdf-reader/pull/348/)
+- Fix positions of text on some PDFs with pages rotated 90° [#350](https://github.com/yob/pdf-reader/pull/350/)
+
 v2.4.2 (28th January 2021)
 - relax ASCII85 dependency to allow 1.x
 - improved support for decompressing objects with slightly malformed zlib data
