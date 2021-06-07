@@ -17,8 +17,8 @@ module ExtractFonts
       return count if page.fonts.nil? || page.fonts.empty?
 
       page.fonts.each do |label, font|
-        next if complete_refs[font]
-        complete_refs[font] = true
+        next if complete_refs[label]
+        complete_refs[label] = true
 
         process_font(page, font)
 
@@ -39,7 +39,7 @@ module ExtractFonts
       when :TrueType, :CIDFontType2 then
         ExtractFonts::TTF.new(page.objects, font).save("#{font[:BaseFont]}.ttf")
       else
-        $stderr.puts "unsupported font type #{font[:Subtype]}"
+        $stderr.puts "unsupported font type #{font[:Subtype]} for #{font[:BaseFont]}"
       end
     end
 
@@ -71,7 +71,13 @@ end
 filename = File.expand_path(File.dirname(__FILE__)) + "/../spec/data/cairo-unicode.pdf"
 extractor = ExtractFonts::Extractor.new
 
-PDF::Reader.open(filename) do |reader|
-  page = reader.page(1)
-  extractor.page(page)
+if ARGV.size == 0
+  ARGV << filename
+end
+
+ARGV.each do |arg|
+  PDF::Reader.open(arg) do |reader|
+    page = reader.page(1)
+    extractor.page(page)
+  end
 end
