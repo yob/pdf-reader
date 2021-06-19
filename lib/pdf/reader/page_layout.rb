@@ -86,14 +86,6 @@ class PDF::Reader
       end
     end
 
-    def each_line(&block)
-      @runs.sort.group_by { |run|
-        run.y.to_i
-      }.map { |y, collection|
-        yield y, collection
-      }
-    end
-
     # take a collection of TextRun objects and merge any that are in close
     # proximity
     def merge_runs(runs)
