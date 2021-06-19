@@ -1220,7 +1220,7 @@ describe PDF::Reader, "integration specs" do
     it "extracts text correctly" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
-        expect(page.text).to include("This PDF ha s Rotate:90 in the page")
+        expect(page.text).to include("This PDF ha  sRotate:90 in the page")
         expect(page.text).to include("metadata to get a landscape layout")
         expect(page.text).to include("and text in bottom right quadrant")
       end
