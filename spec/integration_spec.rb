@@ -1213,4 +1213,17 @@ describe PDF::Reader, "integration specs" do
       end
     end
   end
+
+  context "PDF with page rotation of 90 degrees followed by matrix transformations to undo it" do
+    let(:filename) { pdf_spec_file("rotate-90-then-undo-with-br-text") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to include("This PDF ha s Rotate:90 in the page")
+        expect(page.text).to include("metadata to get a landscape layout")
+        expect(page.text).to include("and text in bottom right quadrant")
+      end
+    end
+  end
 end
