@@ -20,7 +20,7 @@ class PDF::Reader
       @runs    = merge_runs(OverlappingRunsFilter.exclude_redundant_runs(runs))
       @mean_font_size   = mean(@runs.map(&:font_size)) || DEFAULT_FONT_SIZE
       @mean_font_size = DEFAULT_FONT_SIZE if @mean_font_size == 0
-      @mean_glyph_width = mean(@runs.map(&:mean_character_width)) || 0
+      @median_glyph_width = median(@runs.map(&:mean_character_width)) || 0
       @page_width  = (mediabox[2] - mediabox[0]).abs
       @page_height = (mediabox[3] - mediabox[1]).abs
       @x_offset = @runs.map(&:x).sort.first || 0
@@ -67,7 +67,7 @@ class PDF::Reader
     end
 
     def col_count
-      @col_count ||= ((@page_width  / @mean_glyph_width) * 1.05).floor
+      @col_count ||= ((@page_width  / @median_glyph_width) * 1.05).floor
     end
 
     def row_multiplier
@@ -86,12 +86,12 @@ class PDF::Reader
       end
     end
 
-    def each_line(&block)
-      @runs.sort.group_by { |run|
-        run.y.to_i
-      }.map { |y, collection|
-        yield y, collection
-      }
+    def median(collection)
+      if collection.size == 0
+        0
+      else
+        collection.sort[(collection.size * 0.5).floor]
+      end
     end
 
     # take a collection of TextRun objects and merge any that are in close
