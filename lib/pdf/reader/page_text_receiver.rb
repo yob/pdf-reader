@@ -45,8 +45,8 @@ module PDF
         @content = []
         @characters = []
         @mediabox = page.objects.deref(page.attributes[:MediaBox])
-        device_bl = @state.ctm_transform(@mediabox[0], @mediabox[1])
-        device_tr = @state.ctm_transform(@mediabox[2], @mediabox[3])
+        device_bl = apply_rotation(*@state.ctm_transform(@mediabox[0], @mediabox[1]))
+        device_tr = apply_rotation(*@state.ctm_transform(@mediabox[2], @mediabox[3]))
         @device_mediabox = [ device_bl.first, device_bl.last, device_tr.first, device_tr.last]
       end
 
