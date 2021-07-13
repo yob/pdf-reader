@@ -1,7 +1,7 @@
 # coding: utf-8
 # frozen_string_literal: true
 
-require 'ascii85_native'
+require 'ascii85'
 
 class PDF::Reader
   module Filter # :nodoc:
@@ -17,7 +17,7 @@ class PDF::Reader
       #
       def filter(data)
         data = "<~#{data}" unless data.to_s[0,2] == "<~"
-        if defined(::Ascii85Native)
+        if defined?(::Ascii85Native)
           ::Ascii85Native::decode(data)
         else
           ::Ascii85::decode(data)
