@@ -34,7 +34,7 @@ class PDF::Reader
       ################################################################################
       def tiff_depredict(data)
         data        = data.unpack("C*")
-        unfiltered  = []
+        unfiltered  = ''
         bpc         = @options[:BitsPerComponent] || 8
         pixel_bits  = bpc * @options[:Colors]
         pixel_bytes = pixel_bits / 8
@@ -51,11 +51,11 @@ class PDF::Reader
             left = index < pixel_bytes ? 0 : row_data[index - pixel_bytes]
             row_data[index] = (byte + left) % 256
           end
-          unfiltered += row_data
+          unfiltered += row_data.pack("C*")
           pos += line_len
         end
 
-        unfiltered.pack("C*")
+        unfiltered
       end
       ################################################################################
       def png_depredict(data)
