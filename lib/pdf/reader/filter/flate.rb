@@ -9,6 +9,8 @@ class PDF::Reader
   module Filter # :nodoc:
     # implementation of the Flate (zlib) stream filter
     class Flate
+      extend T::Sig
+
       ZLIB_AUTO_DETECT_ZLIB_OR_GZIP = 47  # Zlib::MAX_WBITS + 32
       ZLIB_RAW_DEFLATE              = -15 # Zlib::MAX_WBITS * -1
 
@@ -18,6 +20,7 @@ class PDF::Reader
 
       ################################################################################
       # Decode the specified data with the Zlib compression algorithm
+      sig {params(data: String).returns(String)}
       def filter(data)
         deflated = zlib_inflate(data) || zlib_inflate(data[0, data.bytesize-1])
 

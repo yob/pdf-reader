@@ -33,6 +33,8 @@ class PDF::Reader
   # extracting various useful information.
   #
   class CMap # :nodoc:
+    extend T::Sig
+
     CMAP_KEYWORDS = {
       "begincodespacerange" => 1,
       "endcodespacerange" => 1,
@@ -47,14 +49,16 @@ class PDF::Reader
 
     attr_reader :map
 
+    sig { params(data: String).void}
     def initialize(data)
       @map = {}
       process_data(data)
     end
 
+    sig { params(data: String).void}
     def process_data(data)
       parser = build_parser(data)
-      mode = nil
+      mode = T.let(:none, Symbol)
       instructions = []
 
       while token = parser.parse_token(CMAP_KEYWORDS)
@@ -63,19 +67,20 @@ class PDF::Reader
         elsif token == "endbfchar"
           process_bfchar_instructions(instructions)
           instructions = []
-          mode = nil
+          mode = :none
         elsif token == "beginbfrange"
           mode = :range
         elsif token == "endbfrange"
           process_bfrange_instructions(instructions)
           instructions = []
-          mode = nil
+          mode = :none
         elsif mode == :char || mode == :range
           instructions << token
         end
       end
     end
 
+    sig { returns(Integer) }
     def size
       @map.size
     end

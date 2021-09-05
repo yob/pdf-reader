@@ -7,6 +7,8 @@ class PDF::Reader
     # some filter implementations support preprocessing of the  data to
     # improve compression
     class Depredict
+      extend T::Sig
+
       def initialize(options = {})
         @options = options || {}
       end
@@ -15,6 +17,7 @@ class PDF::Reader
       # Streams can be preprocessed to improve compression. This reverses the
       # preprocessing
       #
+      sig {params(data: String).returns(String)}
       def filter(data)
         predictor = @options[:Predictor].to_i
 
@@ -68,7 +71,7 @@ class PDF::Reader
         scanline_length = (pixel_bytes * @options[:Columns]) + 1
         row = 0
         pixels = []
-        paeth, pa, pb, pc = nil
+        paeth, pa, pb, pc = 0, 0, 0, 0
         until data.empty? do
           row_data = data.slice! 0, scanline_length
           filter = row_data.shift
@@ -95,17 +98,17 @@ class PDF::Reader
               row_data[index] = (byte + ((left + upper)/2).floor) % 256
             end
           when 4 # Paeth
-            left = upper = upper_left = nil
+            left = upper = upper_left = 0
             row_data.each_with_index do |byte, index|
               col = index / pixel_bytes
 
-              left = index < pixel_bytes ? 0 : row_data[index - pixel_bytes]
+              left = index < pixel_bytes ? 0 : Integer(row_data[index - pixel_bytes])
               if row.zero?
                 upper = upper_left = 0
               else
-                upper = pixels[row-1][col][index % pixel_bytes]
+                upper = Integer(pixels[row-1][col][index % pixel_bytes])
                 upper_left = col.zero? ? 0 :
-                  pixels[row-1][col-1][index % pixel_bytes]
+                  Integer(pixels[row-1][col-1][index % pixel_bytes])
               end
 
               p = left + upper - upper_left
