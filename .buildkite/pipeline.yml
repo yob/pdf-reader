@@ -1,4 +1,12 @@
 steps:
+  - command: "auto/run-sorbet"
+    label: ":sorbet:"
+    env:
+      DOCKER_IMAGE: "ruby"
+      RUBY_VERSION: "2.7"
+
+  - wait
+
   - command: "auto/run-specs"
     label: "rspec (2.0)"
     env:

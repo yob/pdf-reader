@@ -1,0 +1,5 @@
+#! /bin/bash -eu
+#
+# Run the tests
+
+$(dirname $0)/with-ruby srb tc
