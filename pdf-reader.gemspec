@@ -33,6 +33,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency("morecane", "~> 0.2")
   spec.add_development_dependency("pry")
   spec.add_development_dependency("rdoc")
+  spec.add_development_dependency("sorbet")
+  spec.add_development_dependency("sorbet-runtime")
 
   spec.add_dependency('Ascii85', '~> 1.0')
   spec.add_dependency('ruby-rc4')
