@@ -1,3 +1,4 @@
+# typed: true
 # coding: utf-8
 
 class PDF::Reader

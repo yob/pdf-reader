@@ -1,3 +1,4 @@
+# typed: false
 # coding: utf-8
 
 # some helper methods available to all specs

@@ -1,3 +1,4 @@
+# typed: false
 # coding: utf-8
 
 # expose the xrefs hash inside the XRef class so we can ensure it's built correctly

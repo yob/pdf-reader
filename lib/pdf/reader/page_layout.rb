@@ -1,4 +1,5 @@
 # coding: utf-8
+# typed: false
 # frozen_string_literal: true
 
 require 'pdf/reader/overlapping_runs_filter'

@@ -1,3 +1,4 @@
+# typed: false
 # coding: utf-8
 
 # These specs are an integration safety net to ensure all of our callbacks provide a consistant

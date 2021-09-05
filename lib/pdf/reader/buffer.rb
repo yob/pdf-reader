@@ -1,4 +1,5 @@
 # coding: ASCII-8BIT
+# typed: false
 # frozen_string_literal: true
 
 ################################################################################

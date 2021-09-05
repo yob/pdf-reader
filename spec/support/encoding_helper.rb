@@ -1,3 +1,4 @@
+# typed: false
 # coding: utf-8
 
 module EncodingHelper

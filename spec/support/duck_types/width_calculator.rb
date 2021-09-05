@@ -1,3 +1,4 @@
+# typed: false
 # coding: utf-8
 
 # All objects that implement the WidthCalculator duck type must conform to

@@ -1,4 +1,5 @@
 # coding: utf-8
+# typed: false
 # frozen_string_literal: true
 
 class PDF::Reader

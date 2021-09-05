@@ -1,3 +1,4 @@
+# typed: false
 # encoding: utf-8
 
 describe PDF::Reader::RegisterReceiver do
