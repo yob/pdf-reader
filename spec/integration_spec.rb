@@ -92,6 +92,17 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF with a content stream that is enclosed with CR characters only" do
+    let(:filename) { pdf_spec_file("content_stream_cr_only") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq("This is a weird PDF file")
+      end
+    end
+  end
+
   context "PDF with a content stream that is missing an operator (has hanging params)" do
     let(:filename) { pdf_spec_file("content_stream_missing_final_operator") }
 
