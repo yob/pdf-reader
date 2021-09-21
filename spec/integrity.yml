@@ -74,6 +74,9 @@ data/content_stream_as_array.pdf:
 data/content_stream_begins_with_newline.pdf:
   :bytes: 910
   :md5: 6c447a7c6c99eb2b984ab2fd4c8d9c61
+data/content_stream_cr_only.pdf:
+  :bytes: 702
+  :md5: 3253e3654b2375bdd732d0dd1c096db9
 data/content_stream_missing_final_operator.pdf:
   :bytes: 46799
   :md5: 8b3d2706526dcf684dad80b53bf6dc94
