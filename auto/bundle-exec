@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Install missing gems
+bundle check > /dev/null || bundle install
+
+# print a basic overview of the current environment (ruby version, bundler version, kernel, etc)
+bundle env | head -n 19
+uname -a
+
+# run the thing
+exec bundle exec "${@-bash}"

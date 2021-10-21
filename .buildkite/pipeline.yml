@@ -1,0 +1,67 @@
+steps:
+  - command: "auto/run-specs"
+    label: "rspec (2.0)"
+    env:
+      DOCKER_IMAGE: "ruby"
+      RUBY_VERSION: "2.0"
+
+  - command: "auto/run-specs"
+    label: "rspec (2.1)"
+    env:
+      DOCKER_IMAGE: "ruby"
+      RUBY_VERSION: "2.1"
+
+  - command: "auto/run-specs"
+    label: "rspec (2.2)"
+    env:
+      DOCKER_IMAGE: "ruby"
+      RUBY_VERSION: "2.2"
+
+  - command: "auto/run-specs"
+    label: "rspec (2.3)"
+    env:
+      DOCKER_IMAGE: "ruby"
+      RUBY_VERSION: "2.3"
+
+  - command: "auto/run-specs"
+    label: "rspec (2.4)"
+    env:
+      DOCKER_IMAGE: "ruby"
+      RUBY_VERSION: "2.4"
+
+  - command: "auto/run-specs"
+    label: "rspec (2.5)"
+    env:
+      DOCKER_IMAGE: "ruby"
+      RUBY_VERSION: "2.5"
+
+  - command: "auto/run-specs"
+    label: "rspec (2.6)"
+    env:
+      DOCKER_IMAGE: "ruby"
+      RUBY_VERSION: "2.6"
+
+  - command: "auto/run-specs"
+    label: "rspec (2.7)"
+    env:
+      DOCKER_IMAGE: "ruby"
+      RUBY_VERSION: "2.7"
+
+  - command: "auto/run-specs"
+    label: "rspec (3.0)"
+    env:
+      DOCKER_IMAGE: "ruby"
+      RUBY_VERSION: "3.0"
+
+  - command: "auto/run-specs"
+    label: "rspec (jruby-9.1)"
+    env:
+      DOCKER_IMAGE: "jruby"
+      RUBY_VERSION: "9.1"
+
+  - command: "auto/run-specs"
+    label: "rspec (jruby-9.2)"
+    env:
+      DOCKER_IMAGE: "jruby"
+      RUBY_VERSION: "9.2"
+

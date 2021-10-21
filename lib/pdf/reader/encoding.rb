@@ -42,10 +42,10 @@ class PDF::Reader
 
       @enc_name = if enc.kind_of?(Hash)
         enc[:Encoding] || enc[:BaseEncoding]
-      elsif enc != nil
+      elsif enc && enc.respond_to?(:to_sym)
         enc.to_sym
       else
-        nil
+        :StandardEncoding
       end
 
       @unpack   = get_unpack(@enc_name)

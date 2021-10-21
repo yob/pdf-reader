@@ -20,19 +20,22 @@ class PDF::Reader
       @runs    = merge_runs(OverlappingRunsFilter.exclude_redundant_runs(runs))
       @mean_font_size   = mean(@runs.map(&:font_size)) || DEFAULT_FONT_SIZE
       @mean_font_size = DEFAULT_FONT_SIZE if @mean_font_size == 0
-      @mean_glyph_width = mean(@runs.map(&:mean_character_width)) || 0
-      @page_width  = mediabox[2] - mediabox[0]
-      @page_height = mediabox[3] - mediabox[1]
-      @x_offset = @runs.map(&:x).sort.first
+      @median_glyph_width = median(@runs.map(&:mean_character_width)) || 0
+      @page_width  = (mediabox[2] - mediabox[0]).abs
+      @page_height = (mediabox[3] - mediabox[1]).abs
+      @x_offset = @runs.map(&:x).sort.first || 0
+      lowest_y = @runs.map(&:y).sort.first || 0
+      @y_offset = lowest_y > 0 ? 0 : lowest_y
     end
 
     def to_s
       return "" if @runs.empty?
+      return "" if row_count == 0
 
       page = row_count.times.map { |i| " " * col_count }
       @runs.each do |run|
         x_pos = ((run.x - @x_offset) / col_multiplier).round
-        y_pos = row_count - (run.y / row_multiplier).round
+        y_pos = row_count - ((run.y - @y_offset) / row_multiplier).round
         if y_pos <= row_count && y_pos >= 0 && x_pos <= col_count && x_pos >= 0
           local_string_insert(page[y_pos-1], run.text, x_pos)
         end
@@ -64,7 +67,7 @@ class PDF::Reader
     end
 
     def col_count
-      @col_count ||= ((@page_width  / @mean_glyph_width) * 1.05).floor
+      @col_count ||= ((@page_width  / @median_glyph_width) * 1.05).floor
     end
 
     def row_multiplier
@@ -83,12 +86,12 @@ class PDF::Reader
       end
     end
 
-    def each_line(&block)
-      @runs.sort.group_by { |run|
-        run.y.to_i
-      }.map { |y, collection|
-        yield y, collection
-      }
+    def median(collection)
+      if collection.size == 0
+        0
+      else
+        collection.sort[(collection.size * 0.5).floor]
+      end
     end
 
     # take a collection of TextRun objects and merge any that are in close

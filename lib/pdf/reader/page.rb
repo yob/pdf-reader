@@ -124,6 +124,34 @@ module PDF
         }.join(" ")
       end
 
+      # returns the angle to rotate the page clockwise. Always 0, 90, 180 or 270
+      #
+      def rotate
+        value = attributes[:Rotate].to_i
+        case value
+        when 0, 90, 180, 270
+          value
+        else
+          0
+        end
+      end
+
+      # returns the "boxes" that define the page object.
+      # values are defaulted according to section 7.7.3.3 of the PDF Spec 1.7
+      #
+      def boxes
+        mediabox = attributes[:MediaBox]
+        cropbox = attributes[:Cropbox] || mediabox
+
+        {
+          MediaBox: objects.deref!(mediabox),
+          CropBox: objects.deref!(cropbox),
+          BleedBox: objects.deref!(attributes[:BleedBox] || cropbox),
+          TrimBox: objects.deref!(attributes[:TrimBox] || cropbox),
+          ArtBox: objects.deref!(attributes[:ArtBox] || cropbox)
+        }
+      end
+
       private
 
       def root

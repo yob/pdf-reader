@@ -166,6 +166,19 @@ http://groups.google.com/group/pdf-reader
 The easiest way to explain how this works in practice is to show some examples.
 Check out the examples/ directory for a few files.
 
+# Alternate Decoder
+
+For PDF files containing Ascii85 streams, the [ascii85_native](https://github.com/AnomalousBit/ascii85_native) gem can be used for increased performance. If the ascii85_native gem is detected, pdf-reader will automatically use the gem.
+
+First, run `gem install ascii85_native` and then require the gem alongside pdf-reader:
+
+```ruby
+require "pdf-reader"
+require "ascii85_native"
+```
+
+Another way of enabling native Ascii85 decoding is to place `gem 'ascii85_native'` in your project's `Gemfile`.
+
 # Known Limitations
 
 Occasionally some text cannot be extracted properly due to the way it has been
@@ -178,6 +191,6 @@ little UTF-8 friendly box to indicate an unrecognisable character.
 
 * PDF Specification: http://www.adobe.com/devnet/pdf/pdf_reference.html
 
-* PDF Tutorial Slide Presentations: http://home.comcast.net/~jk05/presentations/PDFTutorials.html
+* PDF Tutorial Slide Presentations: https://web.archive.org/web/20150110042057/http://home.comcast.net/~jk05/presentations/PDFTutorials.html
 
 * Developing with PDF (book): http://shop.oreilly.com/product/0636920025269.do

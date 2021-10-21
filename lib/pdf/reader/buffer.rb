@@ -86,8 +86,8 @@ class PDF::Reader
     #
     # options:
     #
-    #   :skip_eol - if true, the IO stream is advanced past a CRLF or LF that
-    #               is sitting under the io cursor.
+    #   :skip_eol - if true, the IO stream is advanced past a CRLF, CR or LF
+    #               that is sitting under the io cursor.
     #
     def read(bytes, opts = {})
       reset_pos
@@ -99,7 +99,7 @@ class PDF::Reader
           return nil
         elsif str == "\r\n"
           # do nothing
-        elsif str[0,1] == "\n"
+        elsif str[0,1] == "\n" || str[0,1] == "\r"
           @io.seek(-1, IO::SEEK_CUR)
         else
           @io.seek(-2, IO::SEEK_CUR)

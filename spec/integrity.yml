@@ -2,12 +2,18 @@
 data/20070313 - 2nd Laptop Battery.pdf:
   :bytes: 27832
   :md5: be3427795b673615e42f89b9043d44d9
+data/TJ_and_char_spacing.pdf:
+  :bytes: 905
+  :md5: 8d2a7d485f95f3bc45187c1cf38330c2
 data/TJ_starts_with_a_number.pdf:
   :bytes: 13119
   :md5: 83501b5c507cdddbd9283ad2003c885b
 data/adobe_sample.pdf:
   :bytes: 378345
   :md5: 07ab19345bfd5d22af6301a5751f94c2
+data/all_page_boxes_exist.pdf:
+  :bytes: 1405798
+  :md5: '0985d3e0e4f5b4ec40adb86bc05d7fd3'
 data/ascii85_filter.pdf:
   :bytes: 21288
   :md5: 49502f60a3f058e20d0564312c9dda2b
@@ -68,6 +74,9 @@ data/content_stream_as_array.pdf:
 data/content_stream_begins_with_newline.pdf:
   :bytes: 910
   :md5: 6c447a7c6c99eb2b984ab2fd4c8d9c61
+data/content_stream_cr_only.pdf:
+  :bytes: 702
+  :md5: 3253e3654b2375bdd732d0dd1c096db9
 data/content_stream_missing_final_operator.pdf:
   :bytes: 46799
   :md5: 8b3d2706526dcf684dad80b53bf6dc94
@@ -107,6 +116,9 @@ data/distiller_unicode.pdf:
 data/dutch.pdf:
   :bytes: 14163
   :md5: cbe0d3075d4474a221cd0b3800c5a0e4
+data/encrypted_and_xref_stream.pdf:
+  :bytes: 1197
+  :md5: 6bba66a160f820798385a3d1e8e156d2
 data/encrypted_version1_revision2_128bit_rc4_blank_user_password.pdf:
   :bytes: 15674
   :md5: 88a9b78341fa55879fa94930bd4d33af
@@ -161,6 +173,15 @@ data/form_xobject_recursive.pdf:
 data/hard_lock_under_osx.pdf:
   :bytes: 4545
   :md5: 365e2076036b5e2445d1dcde13d6dbb6
+data/hello-world.deflate:
+  :bytes: 44
+  :md5: 81bf56d574794df545f2403cfedfa4cc
+data/hello-world.gz:
+  :bytes: 55
+  :md5: 8af940b62b3afe47c87547e26396b5ed
+data/hello-world.z:
+  :bytes: 50
+  :md5: 25f1f816ea6e6f42414cf23551acc2c2
 data/indirect_kids_array.pdf:
   :bytes: 951
   :md5: 7cb585bfe3f5266ed50bd205422953fd
@@ -242,6 +263,9 @@ data/lzw_decompressed.dat:
 data/lzw_stream.pdf:
   :bytes: 2351
   :md5: f728d3746de95834d300480e17083b65
+data/mediabox_and_cropbox_are_references.pdf:
+  :bytes: 45683
+  :md5: bef53045134b504254688af70be78100
 data/mediabox_missing.pdf:
   :bytes: 14875
   :md5: 51560e94565ee1cd9583c388b5aa545a
@@ -257,6 +281,9 @@ data/nested_form_xobject_another.pdf:
 data/no_text_spaces.pdf:
   :bytes: 2058403
   :md5: f1167a44c687e6dc4fcffb451598c502
+data/one-byte-identity.pdf:
+  :bytes: 13941
+  :md5: a5e0693ee17aa8e53e9a140e9b9ccf97
 data/oo3.pdf:
   :bytes: 12247
   :md5: 0c53ddbcb99c2e10d7b1622f14191b84
@@ -299,6 +326,18 @@ data/prince1.pdf:
 data/prince2.pdf:
   :bytes: 944243
   :md5: 8722b6b2ce81f63df791a6826d4193f6
+data/rotate-180.pdf:
+  :bytes: 17738
+  :md5: 5ab145b4527aabb75532d9b990f6df0c
+data/rotate-90-then-undo-with-br-text.pdf:
+  :bytes: 1202
+  :md5: d86bb1a0cb9b2fdde5bb43d3f7cd1e9a
+data/rotate-90-then-undo.pdf:
+  :bytes: 1253
+  :md5: 198b5e4197643180a6d4e1659e7baf89
+data/rotate-then-undo.pdf:
+  :bytes: 1191
+  :md5: c14ac0c2669d63988c07c71f75c28b39
 data/rotated_text.pdf:
   :bytes: 936
   :md5: 86ba3d60315a0986c9a06d6d313dab6f
@@ -317,6 +356,9 @@ data/standard_font_with_a_difference.pdf:
 data/standard_font_with_no_difference.pdf:
   :bytes: 856
   :md5: 1d59995aefe22d8a8859c1c217dddcc9
+data/stream-with-extra-byte.z:
+  :bytes: 516
+  :md5: cb7b8af4921811eb51d1d22a4194a6fe
 data/surrogate_pair_integration_sample.pdf:
   :bytes: 1210387
   :md5: abc393e941d2aeb7a64f5e2ab1b58a92

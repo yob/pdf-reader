@@ -1,0 +1,21 @@
+#! /bin/bash -eu
+#
+# Launch a docker container with ruby. Launches a shell by default
+
+cd $(dirname $0)/..
+
+docker_image="${DOCKER_IMAGE:=ruby}"
+ruby_version="${RUBY_VERSION:-2.7}"
+docker_volume_name="pdf-reader-gem-cache-${docker_image}${ruby_version}"
+
+docker volume create ${docker_volume_name} > /dev/null
+
+docker run \
+  -v `pwd`:/work:rw \
+  --mount source=${docker_volume_name},target=/usr/local/bundle  \
+  -w /work \
+  --entrypoint /work/auto/bundle-exec \
+  --rm \
+  -i \
+  -t ${docker_image}:${ruby_version} \
+  "${@-bash}"

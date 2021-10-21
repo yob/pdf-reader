@@ -1,10 +1,25 @@
-UNRELEASED
+v2.5.0 (6th June 2021)
+- bump minimum ruby version to 2.0
+- Correctly handle trascoding to UTF-8 from some fonts that use a difference table [#344](https://github.com/yob/pdf-reader/pull/344/) 
+- Fix some character spacing issues with the TJ operator [#343](https://github.com/yob/pdf-reader/pull/343)
+- Fix crash with some encrypted PDFs [#348](https://github.com/yob/pdf-reader/pull/348/)
+- Fix positions of text on some PDFs with pages rotated 90° [#350](https://github.com/yob/pdf-reader/pull/350/)
+
+v2.4.2 (28th January 2021)
+- relax ASCII85 dependency to allow 1.x
+- improved support for decompressing objects with slightly malformed zlib data
+
+v.2.4.1 (24th September 2020)
+- Re-vendor font metrics from Adobe to clarify their license
+
+v2.4.0 (21st November 2019)
 - Optimise overlapping characters code introduced in 2.3.0. Text extraction of pages with
   thousands of characters is still slower than it was in 2.2.1, but it might tolerable
   for now. See https://github.com/yob/pdf-reader/pull/308 for details.
 - Implement very basic font substitution for Type1 and TrueType fonts that aren't embedded
 - Remove PDF::Hash class. It's been deprecated since 2010, and it's hard to believe anyone
   is still using it.
+- Several small bug fixes
 
 v2.3.0 (7th November 2019)
 - Text extraction now makes an effort to skip duplicate characters that overlap, a

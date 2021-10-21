@@ -201,5 +201,15 @@ describe PDF::Reader::PageLayout do
         end
       end
     end
+    context "with a page that's too small to fit any of the text" do
+      let(:mediabox) { [0, 0, 46.560, 32.640]}
+      let(:font_size) { 72 }
+
+      it "returns an empty string" do
+        run = PDF::Reader::TextRun.new(0, 0, 50, font_size, "a")
+        layout = PDF::Reader::PageLayout.new([run], mediabox)
+        expect(layout.to_s).to eq("")
+      end
+    end
   end
 end

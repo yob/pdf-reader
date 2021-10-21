@@ -92,6 +92,17 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF with a content stream that is enclosed with CR characters only" do
+    let(:filename) { pdf_spec_file("content_stream_cr_only") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq("This is a weird PDF file")
+      end
+    end
+  end
+
   context "PDF with a content stream that is missing an operator (has hanging params)" do
     let(:filename) { pdf_spec_file("content_stream_missing_final_operator") }
 
@@ -773,6 +784,24 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "Encrypted PDF with an xref stream" do
+    let(:filename) {
+      pdf_spec_file("encrypted_and_xref_stream")
+    }
+
+    it "correctly extracts text" do
+      PDF::Reader.open(filename) do |reader|
+        expect(reader.page(1).text).to eq("This text is encrypted")
+      end
+    end
+
+    it "correctly parses indirect objects" do
+      PDF::Reader.open(filename) do |reader|
+        expect { reader.objects.values }.not_to raise_error
+      end
+    end
+  end
+
   context "PDF with inline images" do
     let(:filename) { pdf_spec_file("inline_image") }
 
@@ -943,6 +972,20 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF with a Type0 font and Encoding is a CMap called OneByteIdentityH" do
+    let(:filename) { pdf_spec_file("one-byte-identity") }
+
+    # I'm not 100% confident that we'rr correctly handling OneByteIdentityH files in a way
+    # that will always work. It works for the sample file I have though, so that's better than
+    # nothing
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq("abc")
+      end
+    end
+  end
+
   context "PDF with rotated text" do
     let(:filename) { pdf_spec_file("rotated_text") }
 
@@ -964,6 +1007,17 @@ describe PDF::Reader, "integration specs" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
         expect(page.text[0,18]).to eq("This file has a TJ")
+      end
+    end
+  end
+
+  context "PDF with a TJ operator that aims to correct for character spacing" do
+    let(:filename) { pdf_spec_file("TJ_and_char_spacing") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text[15,17]).to eq("The big brown fox")
       end
     end
   end
@@ -1122,6 +1176,64 @@ describe PDF::Reader, "integration specs" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
         expect(page.text).to eq(text)
+      end
+    end
+  end
+
+  context "PDF with 180 page rotation followed by matrix transformations to undo it" do
+    let(:filename) { pdf_spec_file("rotate-180") }
+    let(:text) {
+      "This text is rendered upside down\nand then the page is rotated"
+    }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq(text)
+      end
+    end
+  end
+
+  context "PDF with page rotation followed by matrix transformations to undo it" do
+    let(:filename) { pdf_spec_file("rotate-then-undo") }
+    let(:text) {
+      "This page uses matrix transformations to print text sideways, " +
+      "then has a Rotate key to fix it"
+    }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq(text)
+      end
+    end
+  end
+
+  context "PDF with page rotation of 90 degrees followed by matrix transformations to undo it" do
+    let(:filename) { pdf_spec_file("rotate-90-then-undo") }
+    let(:text) {
+      "1: This PDF has Rotate:90 in the page metadata\n" +
+      "2: to get a landscape layout, and then uses matrix\n" +
+      "3: transformation to rotate the text back to normal"
+    }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq(text)
+      end
+    end
+  end
+
+  context "PDF with page rotation of 90 degrees followed by matrix transformations to undo it" do
+    let(:filename) { pdf_spec_file("rotate-90-then-undo-with-br-text") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to include("This PDF ha  sRotate:90 in the page")
+        expect(page.text).to include("metadata to get a landscape layout")
+        expect(page.text).to include("and text in bottom right quadrant")
       end
     end
   end
