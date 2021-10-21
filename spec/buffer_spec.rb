@@ -211,6 +211,15 @@ describe PDF::Reader::Buffer, "token method" do
     end
   end
 
+  context "string with an escaped, unbalanced right param correctly" do
+    it "tokenises correctly" do
+      buf = parse_string("(James Code Monkey\\))")
+      expect(buf.token).to eql("(")
+      expect(buf.token).to eql("James Code Monkey\\)")
+      expect(buf.token).to eql(")")
+    end
+  end
+
   context "indirect reference" do
     it "tokenises correctly" do
       buf = parse_string("aaa 1 0 R bbb")
@@ -662,7 +671,12 @@ describe PDF::Reader::Buffer, "read method" do
 
   context "with a multi-line buffer (three \\n)" do
     context "without :skip_eol" do
-      it "returns raw data from the underlying IO"
+      it "returns raw data from the underlying IO" do
+        buf = parse_string("stream\n\n\nbbb")
+
+        expect(buf.token).to eql("stream")
+        expect(buf.read(5)).to eql("\n\nbbb")
+      end
     end
     context "with :skip_eol" do
       it "returns raw data from the underlying IO" do
@@ -676,7 +690,12 @@ describe PDF::Reader::Buffer, "read method" do
 
   context "with a multi-line buffer (\\r\\n)" do
     context "without :skip_eol" do
-      it "returns raw data from the underlying IO"
+      it "returns raw data from the underlying IO" do
+        buf = parse_string("stream\r\nbbb")
+
+        expect(buf.token).to eql("stream")
+        expect(buf.read(4)).to eql("\nbbb")
+      end
     end
     context "with :skip_eol" do
       it "returns raw data from the underlying IO" do
