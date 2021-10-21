@@ -57,14 +57,36 @@ describe PDF::Reader::Parser do
     expect(parse_string("(x\rx)").parse_token).to eql("x\nx")
     expect(parse_string("(x\r\nx)").parse_token).to eql("x\nx")
     expect(parse_string("(x\\rx)").parse_token).to eql("x\rx")
+    expect(parse_string("(x\\r\\nx)").parse_token).to eql("x\r\nx")
     expect(parse_string("(\\rx)").parse_token).to eql("\rx")
     expect(parse_string("(\\r)").parse_token).to eql("\r")
-    expect(parse_string("(x\n\rx)").parse_token).to eql("x\nx")
+    expect(parse_string("(x\n\rx)").parse_token).to eql("x\n\nx")
     expect(parse_string("(x \\\nx)").parse_token).to eql("x x")
     expect(parse_string("(\\\\f)").parse_token).to eql("\\f")
     expect(parse_string("([test])").parse_token).to eql("[test]")
   end
 
+  it "parses invalid octals correctly" do
+    expect(parse_string("(x \\1019 x)").parse_token).to eql("x A9 x")
+    expect(parse_string("(x \\618 x)").parse_token).to eql("x 18 x")
+    expect(parse_string("(x \\18 x)").parse_token).to eql("x \x018 x")
+    expect(parse_string("(x \\5019 x)").parse_token).to eql("x A9 x")
+  end
+
+  it "parses single EOLs (NL, CRNL, CR) correctly" do
+    expect(parse_string("(x\ry)").parse_token).to eql("x\ny")
+    expect(parse_string("(x\ny)").parse_token).to eql("x\ny")
+    expect(parse_string("(x\r\ny)").parse_token).to eql("x\ny")
+  end
+
+  it "parses multiple EOLs (NL, CRNL, CR) correctly" do
+    expect(parse_string("(x\r\r\ny)").parse_token).to eql("x\n\ny")
+  end
+
+  it "parses reverse solidus (backslash) line wrap escapes correctly" do
+    expect(parse_string("(a\\\nb\\\rc\\\r\nd").parse_token).to eql("abcd")
+  end
+  
   it "parses a Unicode string correctly" do
     seq = {
       # key                 source                  expected               confusing to
@@ -107,6 +129,40 @@ describe PDF::Reader::Parser do
     parser = parse_string("(this is a string) /James")
     expect(parser.parse_token).to eql("this is a string")
     expect(parser.parse_token).to eql(:James)
+  end
+
+  # PDF Spec 7.3.4.2 Table 3
+  it "parses reverse solidus (backslash) escapes correctly" do
+    expect(parse_string("(\\n)").parse_token).to eql("\x0A")
+    expect(parse_string("(\\r)").parse_token).to eql("\x0D")
+    expect(parse_string("(\\t)").parse_token).to eql("\x09")
+    expect(parse_string("(\\b)").parse_token).to eql("\x08")
+    expect(parse_string("(\\f)").parse_token).to eql("\x0C")
+    expect(parse_string("(\\())").parse_token).to eql("(")
+    expect(parse_string("(\\))").parse_token).to eql(")")
+    expect(parse_string("(\\\\)").parse_token).to eql("\x5C")
+  end
+
+  it "parses unescaped EOL chars correctly" do
+    expect(parse_string("(A\nB\rC\r\nD").parse_token).to eql("A\x0aB\x0aC\x0aD")
+  end
+
+  it "parses reverse solidus (backslash) invalid escapes correctly" do
+    expect(parse_string("(\\a)").parse_token).to eql("a")
+    expect(parse_string("(\\c)").parse_token).to eql("c")
+    expect(parse_string("(\\d)").parse_token).to eql("d")
+    expect(parse_string("(\\e)").parse_token).to eql("e")
+    expect(parse_string("(\\z)").parse_token).to eql("z")
+    expect(parse_string("(\\])").parse_token).to eql("]")
+    expect(parse_string("(\\[)").parse_token).to eql("[")
+  end
+
+  it "parses reverse solidus (backslash) combination escapes correctly" do
+    expect(parse_string("(\\a)").parse_token).to eql("a")
+  end
+
+  it "parses reverse solidus (backslash) combination escapes correctly" do
+    expect(parse_string("(\\a)").parse_token).to eql("a")
   end
 
   it "parses a hex string correctly" do
