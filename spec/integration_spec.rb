@@ -1125,7 +1125,6 @@ describe PDF::Reader, "integration specs" do
     let(:filename) { pdf_spec_file("octal101") }
 
     it "extracts text correctly" do
-      pending "Awaiting PR368"
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
         expect(page.text).to eq("A ]A[")
@@ -1137,7 +1136,6 @@ describe PDF::Reader, "integration specs" do
     let(:filename) { pdf_spec_file("octal74") }
 
     it "extracts text correctly" do
-      pending "Awaiting PR368"
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
         expect(page.text).to eq("< ]<8[")
@@ -1149,7 +1147,6 @@ describe PDF::Reader, "integration specs" do
     let(:filename) { pdf_spec_file("textwrapcr") }
 
     it "extracts text correctly" do
-      pending "Awaiting PR368"
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
         expect(page.text).to eq("aaaa bbbb")
@@ -1172,7 +1169,6 @@ describe PDF::Reader, "integration specs" do
     let(:filename) { pdf_spec_file("textwrapcrlf") }
 
     it "extracts text correctly" do
-      pending "Awaiting PR368"
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
         expect(page.text).to eq("aaaabbbb")
