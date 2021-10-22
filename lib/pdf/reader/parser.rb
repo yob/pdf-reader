@@ -175,15 +175,18 @@ class PDF::Reader
       return "".dup.force_encoding("binary") if str == ")"
       Error.assert_equal(parse_token, ")")
 
-      str.gsub!(/\\([nrtbf()\\\n]|\d{1,3})?|\r\n?|\n\r/m) do |match|
-        MAPPING[match] || "".dup
+      str.gsub!(/\\(\r\n|[nrtbf()\\\n\r]|([0-7]{1,3}))?|\r\n?/m) do |match|
+        if $2.nil? # not octal digits
+          MAPPING[match] || "".dup
+        else # must be octal digits
+          ($2.oct & 0xff).chr # ignore high level overflow
+        end
       end
       str.force_encoding("binary")
     end
 
     MAPPING = {
       "\r"   => "\n",
-      "\n\r" => "\n",
       "\r\n" => "\n",
       "\\n"  => "\n",
       "\\r"  => "\r",
@@ -194,10 +197,9 @@ class PDF::Reader
       "\\)"  => ")",
       "\\\\" => "\\",
       "\\\n" => "",
+      "\\\r" => "",
+      "\\\r\n" => "",
     }
-    0.upto(9)   { |n| MAPPING["\\00"+n.to_s] = ("00"+n.to_s).oct.chr }
-    0.upto(99)  { |n| MAPPING["\\0"+n.to_s]  = ("0"+n.to_s).oct.chr }
-    0.upto(377) { |n| MAPPING["\\"+n.to_s]   = n.to_s.oct.chr }
 
     ################################################################################
     # Decodes the contents of a PDF Stream and returns it as a Ruby String.

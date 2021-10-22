@@ -281,6 +281,12 @@ data/nested_form_xobject_another.pdf:
 data/no_text_spaces.pdf:
   :bytes: 2058403
   :md5: f1167a44c687e6dc4fcffb451598c502
+data/octal101.pdf:
+  :bytes: 739
+  :md5: eb8d6048feb4512bef783eea6de27244
+data/octal74.pdf:
+  :bytes: 739
+  :md5: d30dfbc3a9d7799e0311cd59dfa2a6a5
 data/one-byte-identity.pdf:
   :bytes: 13941
   :md5: a5e0693ee17aa8e53e9a140e9b9ccf97
@@ -365,6 +371,18 @@ data/surrogate_pair_integration_sample.pdf:
 data/symbol.pdf:
   :bytes: 1055
   :md5: 57941286e6442f5c0b295611a99e0f56
+data/textwrapcr.pdf:
+  :bytes: 739
+  :md5: 9700990dd8adb5d2bb83fc5f4af5c2ae
+data/textwrapcrlf.pdf:
+  :bytes: 739
+  :md5: aa1a41bcd5aaaeaa6d247e51dd853093
+data/textwraplf.pdf:
+  :bytes: 739
+  :md5: faefe55f50f9e3d32886da39e4cfdca9
+data/textwraplfcr.pdf:
+  :bytes: 739
+  :md5: a3d37d948a81cf019f757aba808e6aa0
 data/times-with-control-character.pdf:
   :bytes: 904
   :md5: 4bd7309a3f190ede68a88bb2be8bf237
