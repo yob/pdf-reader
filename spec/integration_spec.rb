@@ -1121,6 +1121,41 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF with CR line-wrapped text" do
+    let(:filename) { pdf_spec_file("textwrapcr") }
+
+    it "extracts text correctly" do
+      pending "Awaiting PR368"
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq("aaaa bbbb")
+      end
+    end
+  end
+
+  context "PDF with LF line-wrapped text" do
+    let(:filename) { pdf_spec_file("textwraplf") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq("aaaa bbbb")
+      end
+    end
+  end
+
+  context "PDF with CRLF line-wrapped text" do
+    let(:filename) { pdf_spec_file("textwrapcrlf") }
+
+    it "extracts text correctly" do
+      pending "Awaiting PR368"
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq("aaaabbbb")
+      end
+    end
+  end
+
   context "Malformed PDF" do
     let(:filename) { pdf_spec_file("trailer_root_is_not_a_dict") }
 

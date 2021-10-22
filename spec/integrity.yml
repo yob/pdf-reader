@@ -365,6 +365,15 @@ data/surrogate_pair_integration_sample.pdf:
 data/symbol.pdf:
   :bytes: 1055
   :md5: 57941286e6442f5c0b295611a99e0f56
+data/textwrapcr.pdf:
+  :bytes: 739
+  :md5: 9700990dd8adb5d2bb83fc5f4af5c2ae
+data/textwrapcrlf.pdf:
+  :bytes: 739
+  :md5: aa1a41bcd5aaaeaa6d247e51dd853093
+data/textwraplf.pdf:
+  :bytes: 739
+  :md5: faefe55f50f9e3d32886da39e4cfdca9
 data/times-with-control-character.pdf:
   :bytes: 904
   :md5: 4bd7309a3f190ede68a88bb2be8bf237
