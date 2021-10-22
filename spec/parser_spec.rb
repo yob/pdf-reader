@@ -86,7 +86,6 @@ describe PDF::Reader::Parser do
   it "parses reverse solidus (backslash) line wrap escapes correctly" do
     expect(parse_string("(a\\\nb\\\rc\\\r\nd").parse_token).to eql("abcd")
   end
-  
   it "parses a Unicode string correctly" do
     seq = {
       # key                 source                  expected               confusing to
