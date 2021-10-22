@@ -374,6 +374,9 @@ data/textwrapcrlf.pdf:
 data/textwraplf.pdf:
   :bytes: 739
   :md5: faefe55f50f9e3d32886da39e4cfdca9
+data/textwraplfcr.pdf:
+  :bytes: 739
+  :md5: a3d37d948a81cf019f757aba808e6aa0
 data/times-with-control-character.pdf:
   :bytes: 904
   :md5: 4bd7309a3f190ede68a88bb2be8bf237
