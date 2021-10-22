@@ -1121,6 +1121,30 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF with octal data" do
+    let(:filename) { pdf_spec_file("octal101") }
+
+    it "extracts text correctly" do
+      pending "Awaiting PR368"
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq("A ]A[")
+      end
+    end
+  end
+
+  context "PDF with octal data" do
+    let(:filename) { pdf_spec_file("octal74") }
+
+    it "extracts text correctly" do
+      pending "Awaiting PR368"
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq("< ]<8[")
+      end
+    end
+  end
+
   context "PDF with CR line-wrapped text" do
     let(:filename) { pdf_spec_file("textwrapcr") }
 
