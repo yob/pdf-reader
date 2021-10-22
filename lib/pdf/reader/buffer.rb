@@ -88,7 +88,10 @@ class PDF::Reader
     #
     #   :skip_eol - if true, the IO stream is advanced past a CRLF, CR or LF
     #               that is sitting under the io cursor.
-    #
+    #   Note:
+    #   Skipping a bare CR is not spec-compliant.
+    #   This is because the data may start with LF.
+    #   However we check for CRLF first, so the ambiguity is avoided.
     def read(bytes, opts = {})
       reset_pos
 
@@ -97,9 +100,9 @@ class PDF::Reader
         str = @io.read(2)
         if str.nil?
           return nil
-        elsif str == "\r\n"
+        elsif str == "\r\n" # CRLF: This MUST be done before checking for CR alone
           # do nothing
-        elsif str[0,1] == "\n" || str[0,1] == "\r"
+        elsif str[0,1] == "\n" || str[0,1] == "\r" # LF or CR alone
           @io.seek(-1, IO::SEEK_CUR)
         else
           @io.seek(-2, IO::SEEK_CUR)
