@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: false
+# typed: true
 # frozen_string_literal: true
 
 require 'pdf/reader/overlapping_runs_filter'
@@ -13,6 +13,7 @@ class PDF::Reader
   # media box should be a 4 number array that describes the dimensions of the
   # page to be rendered as described by the page's MediaBox attribute
   class PageLayout
+    extend T::Sig
 
     DEFAULT_FONT_SIZE = 12
 
@@ -108,18 +109,17 @@ class PDF::Reader
       }.flatten.sort
     end
 
+    sig {params(chars: T::Array[PDF::Reader::TextRun]).returns(T::Array[PDF::Reader::TextRun])}
     def group_chars_into_runs(chars)
-      runs = []
-      while head = chars.shift
+      chars.each_with_object([]) do |char, runs|
         if runs.empty?
-          runs << head
-        elsif runs.last.mergable?(head)
-          runs[-1] = runs.last + head
+          runs << char
+        elsif runs.last.mergable?(char)
+          runs[-1] = runs.last + char
         else
-          runs << head
+          runs << char
         end
       end
-      runs
     end
 
     def local_string_insert(haystack, needle, index)

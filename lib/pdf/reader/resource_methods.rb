@@ -2,12 +2,17 @@
 # typed: false
 # frozen_string_literal: true
 
+# Setting this file to "typed: true" is difficult because it's a mixin that assumes some things
+# are aavailable from the class, like @objects and resources. Sorbet doesn't know about them.
+
 module PDF
   class Reader
 
     # mixin for common methods in Page and FormXobjects
     #
     module ResourceMethods
+      extend T::Helpers
+
       # Returns a Hash of color spaces that are available to this page
       #
       # NOTE: this method de-serialise objects from the underlying PDF

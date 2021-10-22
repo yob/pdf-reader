@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: false
+# typed: true
 # frozen_string_literal: true
 
 ################################################################################
@@ -95,6 +95,7 @@ module PDF
   #   reader = PDF::Reader.new("somefile.pdf", :password => "apples")
   #
   class Reader
+    extend T::Sig
 
     # lowlevel hash-like access to all objects in the underlying PDF
     attr_reader :objects
@@ -139,7 +140,7 @@ module PDF
     def page_count
       pages = @objects.deref(root[:Pages])
       unless pages.kind_of?(::Hash)
-        raise MalformedPDFError, 'Pages structure is missing'
+        raise MalformedPDFError, "Pages structure is missing #{pages.class}"
       end
       @page_count ||= @objects.deref(pages[:Count])
     end
@@ -224,7 +225,7 @@ module PDF
       when Array then
         obj.map { |item| doc_strings_to_utf8(item) }
       when String then
-        if obj[0,2].unpack("C*") == [254, 255]
+        if has_utf16_bom?(obj)
           utf16_to_utf8(obj)
         else
           pdfdoc_to_utf8(obj)
@@ -232,6 +233,15 @@ module PDF
       else
         @objects.deref(obj)
       end
+    end
+
+    sig { params(str: String).returns(T::Boolean)}
+    def has_utf16_bom?(str)
+      first_bytes = str[0,2]
+
+      return false if first_bytes.nil?
+
+      first_bytes.unpack("C*") == [254, 255]
     end
 
     # TODO find a PDF I can use to spec this behaviour

@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: false
+# typed: true
 # frozen_string_literal: true
 
 ################################################################################
@@ -167,7 +167,9 @@ class PDF::Reader
 
       # add a missing digit if required, as required by the spec
       str << "0" unless str.size % 2 == 0
-      str.scan(/../).map {|i| i.hex.chr}.join.force_encoding("binary")
+      str.chars.each_slice(2).map { |nibbles|
+        nibbles.join("").hex.chr
+      }.join.force_encoding("binary")
     end
     ################################################################################
     # Reads a PDF String from the buffer and converts it to a Ruby String

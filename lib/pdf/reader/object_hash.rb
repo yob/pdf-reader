@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: false
+# typed: true
 # frozen_string_literal: true
 
 class PDF::Reader
@@ -337,8 +337,10 @@ class PDF::Reader
         obj.data = sec_handler.decrypt(obj.data, ref) unless obj.hash[:Type] == :XRef
         obj
       when Hash                then
-        arr = obj.map { |key,val| [key, decrypt(ref, val)] }.flatten(1)
-        Hash[*arr]
+        arr = obj.map { |key,val| [key, decrypt(ref, val)] }
+        arr.each_with_object({}) { |(k,v), accum|
+          accum[k] = v
+        }
       when Array               then
         obj.collect { |item| decrypt(ref, item) }
       when String

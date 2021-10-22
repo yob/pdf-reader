@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: false
+# typed: true
 # frozen_string_literal: true
 
 module PDF
@@ -156,7 +156,7 @@ module PDF
       private
 
       def root
-        root ||= objects.deref(@objects.trailer[:Root])
+       @root ||= objects.deref(@objects.trailer[:Root])
       end
 
       # Returns the resources that accompany this page. Includes
