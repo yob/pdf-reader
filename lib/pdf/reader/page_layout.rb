@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'pdf/reader/overlapping_runs_filter'
+require 'pdf/reader/zero_width_runs_filter'
 
 class PDF::Reader
 
@@ -17,7 +18,9 @@ class PDF::Reader
     def initialize(runs, mediabox)
       raise ArgumentError, "a mediabox must be provided" if mediabox.nil?
 
-      @runs    = merge_runs(OverlappingRunsFilter.exclude_redundant_runs(runs))
+      runs = ZeroWidthRunsFilter.exclude_zero_width_runs(runs)
+      runs = OverlappingRunsFilter.exclude_redundant_runs(runs)
+      @runs = merge_runs(runs)
       @mean_font_size   = mean(@runs.map(&:font_size)) || DEFAULT_FONT_SIZE
       @mean_font_size = DEFAULT_FONT_SIZE if @mean_font_size == 0
       @median_glyph_width = median(@runs.map(&:mean_character_width)) || 0

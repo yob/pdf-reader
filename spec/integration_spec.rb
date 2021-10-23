@@ -1182,7 +1182,7 @@ describe PDF::Reader, "integration specs" do
     it "extracts text correctly" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
-        expect(page.text).to eq("aaaa\nbbbb")
+        expect(page.text).to eq("aaaabbbb")
       end
     end
   end
