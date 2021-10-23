@@ -103,19 +103,25 @@ class PDF::Reader
 
     # returns a hash that maps glyph names to unicode codepoints. The mapping is based on
     # a text file supplied by Adobe at:
-    # http://www.adobe.com/devnet/opentype/archives/glyphlist.txt
+    # https://github.com/adobe-type-tools/agl-aglfn
     def load_adobe_glyph_mapping
       keyed_by_name      = {}
       keyed_by_codepoint = {}
 
-      File.open(File.dirname(__FILE__) + "/glyphlist.txt", "r:BINARY") do |f|
-        f.each do |l|
-          _m, name, code = *l.match(/([0-9A-Za-z]+);([0-9A-F]{4})/)
-          if name && code
-            cp = "0x#{code}".hex
-            keyed_by_name[name.to_sym]   = cp
-            keyed_by_codepoint[cp]     ||= []
-            keyed_by_codepoint[cp]     << name.to_sym
+      paths = [
+        File.dirname(__FILE__) + "/glyphlist.txt",
+        File.dirname(__FILE__) + "/glyphlist-zapfdingbats.txt",
+      ]
+      paths.each do |path|
+        File.open(path, "r:BINARY") do |f|
+          f.each do |l|
+            _m, name, code = *l.match(/([0-9A-Za-z]+);([0-9A-F]{4})/)
+            if name && code
+              cp = "0x#{code}".hex
+              keyed_by_name[name.to_sym]   = cp
+              keyed_by_codepoint[cp]     ||= []
+              keyed_by_codepoint[cp]     << name.to_sym
+            end
           end
         end
       end

@@ -60,11 +60,16 @@ describe PDF::Reader::GlyphHash do
       expect(map.name_to_unicode(:GG20000)).to eql(20000)
     end
 
+    it "correctly maps a zaph dingbats name to unicode" do
+      map = PDF::Reader::GlyphHash.new
+      expect(map.name_to_unicode(:a3)).to     eql(0x2704)
+    end
+
   end
 
   describe "#unicode_to_name" do
 
-    it "correctly maps a standard glyph name to unicode" do
+    it "correctly maps a standard unicode codepoint to a glyph name" do
       map = PDF::Reader::GlyphHash.new
       expect(map.unicode_to_name(0x0061)).to eql([:a])
       expect(map.unicode_to_name(0x0065)).to eql([:e])
@@ -77,6 +82,11 @@ describe PDF::Reader::GlyphHash do
       expect(map.unicode_to_name(0x20AC)).to eql([:Euro, :euro])
       expect(map.unicode_to_name(0x30BA)).to eql([:zukatakana])
       expect(map.unicode_to_name(157)).to eql([])
+    end
+
+    it "correctly maps a zapf dingbats unicode codepoint to a glyph name" do
+      map = PDF::Reader::GlyphHash.new
+      expect(map.unicode_to_name(0x2704)).to eql([:a3])
     end
   end
 end
