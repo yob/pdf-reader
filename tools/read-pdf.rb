@@ -6,7 +6,7 @@
 require 'pdf-reader'
 require 'colorize'
 
-$QUIET = false
+$QUIET = ARGV.delete('--quiet')
 
 #
 # Print status message
@@ -40,7 +40,7 @@ end
 #
 # @param [File] file PDF file
 #
-def read doc
+def read(doc)
   print_status "Processing '#{doc}'"
   begin
     @fname = doc
@@ -60,7 +60,7 @@ def read doc
   rescue PDF::Reader::UnsupportedFeatureError
     print_error "Could not parse PDF '#{doc}': PDF::Reader::UnsupportedFeatureError"
     exit 1
-  rescue PDF::Reader::MalformedPDFError => e
+  rescue PDF::Reader::MalformedPDFError
     print_error "Could not parse PDF '#{doc}': PDF is malformed"
     exit 1
   end
@@ -78,18 +78,27 @@ def parse(reader)
   print_status "Pages: #{reader.page_count}"
 
   print_status 'Parsing PDF contents...'
-  contents = ''
   reader.pages.each do |page|
-    contents << page.text.to_s
-    contents << page.fonts.to_s
-    contents << page.text.to_s
-    contents << page.raw_content.to_s
+    text = page.text.to_s
+    unless $QUIET
+      print_status 'Page text'
+      puts text
+    end
+    text = page.fonts.to_s
+    unless $QUIET
+      print_status 'Page fonts'
+      puts text
+    end
+    text = page.raw_content.to_s
+    unless $QUIET
+      print_status 'Page raw_content'
+      puts text
+    end
   end
-  #puts contents unless $QUIET
 end
 
 def usage
-  print_status "./read-pdf.rb <FILE>"
+  print_status "./read-pdf.rb <FILE> [--quiet]"
   exit 1
 end
 
@@ -103,4 +112,3 @@ else
   print_error "Could not find #{doc}"
   exit 1
 end
-
