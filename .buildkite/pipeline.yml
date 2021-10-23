@@ -65,3 +65,8 @@ steps:
       DOCKER_IMAGE: "jruby"
       RUBY_VERSION: "9.2"
 
+  - command: "auto/run-specs"
+    label: "rspec (jruby-9.3)"
+    env:
+      DOCKER_IMAGE: "jruby"
+      RUBY_VERSION: "9.3"
