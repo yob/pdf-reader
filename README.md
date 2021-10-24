@@ -189,7 +189,9 @@ little UTF-8 friendly box to indicate an unrecognisable character.
 
 * PDF::Reader Code Repository: http://github.com/yob/pdf-reader
 
-* PDF Specification: http://www.adobe.com/devnet/pdf/pdf_reference.html
+* PDF Specification: https://www.adobe.com/content/dam/acom/en/devnet/pdf/pdfs/PDF32000_2008.pdf
+
+* Adobe PDF Developer Resources: http://www.adobe.com/devnet/pdf/pdf_reference.html
 
 * PDF Tutorial Slide Presentations: https://web.archive.org/web/20150110042057/http://home.comcast.net/~jk05/presentations/PDFTutorials.html
 
