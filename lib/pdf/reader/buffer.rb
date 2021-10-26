@@ -55,6 +55,7 @@ class PDF::Reader
     CR = "\r"
     LF = "\n"
     CRLF = "\r\n"
+    WHITE_SPACE = [LF, CR, ' ']
 
     attr_reader :pos
 
@@ -250,7 +251,7 @@ class PDF::Reader
         case seeking
         when 'E'
           if chr == 'E'
-            if prevchr =~ /\s/
+            if WHITE_SPACE.include? prevchr
               seeking = 'I'
               eisize = 3 # include whitespace in delimiter
             elsif prevchr == NULL_BYTE
@@ -265,7 +266,7 @@ class PDF::Reader
             seeking = 'E'
           end
         when :END
-          if chr =~ /\s/
+          if WHITE_SPACE.include? chr
             eisize += 1 # Drop trailer
             break
           else
