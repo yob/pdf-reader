@@ -48,6 +48,10 @@ class PDF::Reader
     ID = "ID"
     FWD_SLASH = "/"
     NULL_BYTE = "\x00"
+    CR = "\r"
+    LF = "\n"
+    CRLF = "\r\n"
+
     # Quite a few PDFs have trailing junk.
     # This can be several k of nuls in some cases
     # Allow for this here
@@ -104,9 +108,9 @@ class PDF::Reader
         str = @io.read(2)
         if str.nil?
           return nil
-        elsif str == "\r\n" # CRLF: This MUST be done before checking for CR alone
+        elsif str == CRLF # This MUST be done before checking for CR alone
           # do nothing
-        elsif str[0,1] == "\n" || str[0,1] == "\r" # LF or CR alone
+        elsif str[0, 1] == LF || str[0, 1] == CR # LF or CR alone
           @io.seek(-1, IO::SEEK_CUR)
         else
           @io.seek(-2, IO::SEEK_CUR)
@@ -232,24 +236,52 @@ class PDF::Reader
       end
     end
 
+    # Extract data between ID and EI
+    # EI must follow white-space character or NUL.
+    # The white-space is dropped from the token
+    # EI must in turn be followed by white-space or end of buffer
     def prepare_inline_token
-      str = "".dup
-
-      buffer = []
-
-      until buffer[0] =~ /\s|\0/ && buffer[1, 2] == ["E", "I"]
+      idstart = @io.pos
+      chr = prevchr = nil
+      eisize = 0 # how many chars in the end marker
+      seeking = 'E' # what are we looking for now?
+      loop do
         chr = @io.read(1)
-        buffer << chr
-
-        if buffer.length > 3
-          str << buffer.shift
+        break if chr.nil?
+        case seeking
+        when 'E'
+          if chr == 'E'
+            if prevchr =~ /\s/
+              seeking = 'I'
+              eisize = 3 # include whitespace in delimiter
+            elsif prevchr == NULL_BYTE
+              seeking = 'I'
+              eisize = 2 # leave prevchr in data
+            end
+          end
+        when 'I'
+          if chr == 'I'
+            seeking = :END
+          else
+            seeking = 'E'
+          end
+        when :END
+          if chr =~ /\s/
+            eisize += 1 # Drop trailer
+            break
+          else
+            seeking = 'E'
+          end
         end
+        prevchr = chr
       end
-
-      str << NULL_BYTE if buffer.first == NULL_BYTE
-
+      unless seeking == :END
+        raise MalformedPDFError, "EI terminator not found"
+      end
+      eiend = @io.pos
+      @io.seek(idstart, IO::SEEK_SET)
+      str = @io.read(eiend - eisize - idstart) # get the ID content
       @tokens << string_token(str)
-      @io.seek(-3, IO::SEEK_CUR) unless chr.nil?
     end
 
     # if we're currently inside a hex string, read hex nibbles until
