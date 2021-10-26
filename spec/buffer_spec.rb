@@ -487,6 +487,19 @@ describe PDF::Reader::Buffer, "token method" do
     end
   end
 
+  context "inline image without a trailing 'EI'" do
+    context "inside a content stream" do
+      it "tokenises correctly" do
+        io = StringIO.new(binary_string("BI ID aaa bbb ccc \xF0\xF0\xF0"))
+        buf = PDF::Reader::Buffer.new(io, :content_stream => true)
+        expect(buf.pos).to eql(0)
+        expect {
+          buf.token
+        }.to raise_error(PDF::Reader::MalformedPDFError, "EI terminator not found")
+      end
+    end
+  end
+
   context "dict that has ID as a key" do
     it "tokenises correctly" do
       io = StringIO.new("<</ID /S1 >> BDC")
