@@ -48,6 +48,10 @@ class PDF::Reader
     ID = "ID"
     FWD_SLASH = "/"
     NULL_BYTE = "\x00"
+    # Quite a few PDFs have trailing junk.
+    # This can be several k of nuls in some cases
+    # Allow for this here
+    TRAILING_BYTECOUNT = 5000
 
     attr_reader :pos
 
@@ -130,8 +134,8 @@ class PDF::Reader
     #
     def find_first_xref_offset
       check_size_is_non_zero
-      @io.seek(-1024, IO::SEEK_END) rescue @io.seek(0)
-      data = @io.read(1024)
+      @io.seek(-TRAILING_BYTECOUNT, IO::SEEK_END) rescue @io.seek(0)
+      data = @io.read(TRAILING_BYTECOUNT)
 
       # the PDF 1.7 spec (section #3.4) says that EOL markers can be either \r, \n, or both.
       lines = data.split(/[\n\r]+/).reverse
