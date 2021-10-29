@@ -125,7 +125,8 @@ class PDF::Reader
 
       # HACK: some PDF writers start numbering a 1 instead of 0. Fix up the number.
       tokens = buf.instance_variable_get(:@tokens)
-      if tokens[0] == '1' and tokens[2] == '0000000000' and tokens[3] = '65535'
+      if tokens[0] == '1' and tokens[2, 3] == ['0000000000', '65535', 'f']
+        # TODO should this be logged?
         tokens[0] = "0"
       end
 
