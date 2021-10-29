@@ -1121,6 +1121,17 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF with bad xref: using 1 not 0" do
+    let(:filename) { pdf_spec_file("minimal-xref-1") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to eq("Hello World")
+      end
+    end
+  end
+
   context "PDF with octal data" do
     let(:filename) { pdf_spec_file("octal101") }
 
