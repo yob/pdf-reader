@@ -208,7 +208,7 @@ class PDF::Reader
     def load_mapping(file)
       File.open(file, "r:BINARY") do |f|
         f.each do |l|
-          _m, single_byte, unicode = *l.match(/([0-9A-Za-z]+);([0-9A-F]{4})/)
+          _m, single_byte, unicode = *l.match(/\A([0-9A-Za-z]+);([0-9A-F]{4})/)
           @mapping["0x#{single_byte}".hex] = "0x#{unicode}".hex if single_byte
         end
       end
