@@ -229,7 +229,9 @@ class PDF::Reader
       return if @tokens.size < 3
       return if @tokens[2] != "R"
 
-      if @tokens[0].match(/\d+/) && @tokens[1].match(/\d+/)
+      # must match whole tokens
+      digits_only = %r{\A\d+\z}
+      if @tokens[0].match(digits_only) && @tokens[1].match(digits_only)
         @tokens[0] = PDF::Reader::Reference.new(@tokens[0].to_i, @tokens[1].to_i)
         @tokens[1] = nil
         @tokens[2] = nil
