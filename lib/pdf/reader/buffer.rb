@@ -257,7 +257,7 @@ class PDF::Reader
             if WHITE_SPACE.include? prevchr
               seeking = 'I'
               eisize = 3 # include whitespace in delimiter
-            elsif prevchr == NULL_BYTE
+            else # assume the EI immediately follows the data
               seeking = 'I'
               eisize = 2 # leave prevchr in data
             end
