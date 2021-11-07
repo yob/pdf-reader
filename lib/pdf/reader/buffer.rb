@@ -240,9 +240,9 @@ class PDF::Reader
     end
 
     # Extract data between ID and EI
-    # EI must follow white-space character or NUL.
-    # The white-space is dropped from the token
-    # EI must in turn be followed by white-space or end of buffer
+    # If the EI follows white-space the space is dropped from the data
+    # The EI must followed by white-space or end of buffer
+    # This is to reduce the chance of accidentally matching an embedded EI
     def prepare_inline_token
       idstart = @io.pos
       chr = prevchr = nil
@@ -254,11 +254,10 @@ class PDF::Reader
         case seeking
         when 'E'
           if chr == 'E'
+            seeking = 'I'
             if WHITE_SPACE.include? prevchr
-              seeking = 'I'
-              eisize = 3 # include whitespace in delimiter
-            elsif prevchr == NULL_BYTE
-              seeking = 'I'
+              eisize = 3 # include whitespace in delimiter, i.e. drop from data
+            else # assume the EI immediately follows the data
               eisize = 2 # leave prevchr in data
             end
           end

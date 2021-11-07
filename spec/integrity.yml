@@ -200,6 +200,9 @@ data/inherited_page_attributes.pdf:
 data/inherited_trimbox.pdf:
   :bytes: 1139
   :md5: b3eab8b6fb964b0c8e63d1b75069a6c8
+data/inline_data_followed_by_ei.pdf:
+  :bytes: 1054
+  :md5: 1189782791340a1910d80eae751728bc
 data/inline_image.pdf:
   :bytes: 30684
   :md5: b02bfbb6b0ee7c7d7df1b5f0c1f198c1
