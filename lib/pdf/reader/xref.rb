@@ -131,6 +131,9 @@ class PDF::Reader
             generation = buf.token.to_i
             state = buf.token
 
+            # Some PDF writers start numbering at 1 instead of 0. Fix up the number.
+            # TODO should this fix be logged?
+            objid = 0 if objid == 1 and offset == 0 and generation == 65535 and state == 'f'
             store(objid, generation, offset + @junk_offset) if state == "n" && offset > 0
             objid += 1
             params.clear
