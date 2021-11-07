@@ -202,6 +202,16 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF that has dummy inline data no white-space before EI" do
+    let(:filename) { pdf_spec_file("inline_data_followed_by_ei") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        expect(reader.page(1).text).to eql("ID followed by EI on same line\n__END__")
+      end
+    end
+  end
+
   context "PDF that uses Form XObjects to repeat content" do
     let(:filename) { pdf_spec_file("form_xobject") }
 
