@@ -1303,4 +1303,14 @@ describe PDF::Reader, "integration specs" do
       end
     end
   end
+
+  context "PDF with /Prev 0 trailer entry" do
+    let(:filename) { pdf_spec_file("prev0") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        expect(reader.page(1).text).to eql("aaaa bbbb")
+      end
+    end
+  end
 end

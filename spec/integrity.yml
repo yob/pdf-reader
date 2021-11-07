@@ -326,6 +326,9 @@ data/pdfwriter-manual.pdf:
 data/portrait.pdf:
   :bytes: 288466
   :md5: dc2413fb949ee78fc1e2319ca4ffcd93
+data/prev0.pdf:
+  :bytes: 753
+  :md5: 5c729e47a5bd097d312df70f913c6349
 data/prince1.pdf:
   :bytes: 679595
   :md5: a6dff45e93532535321b76758676a23f

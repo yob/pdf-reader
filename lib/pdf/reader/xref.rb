@@ -146,7 +146,9 @@ class PDF::Reader
       end
 
       load_offsets(trailer[:XRefStm])   if trailer.has_key?(:XRefStm)
-      load_offsets(trailer[:Prev].to_i) if trailer.has_key?(:Prev)
+      # Some PDF creators seem to use '/Prev 0' in trailer if there is no previous xref
+      # It's not possible for an xref to appear at offset 0, so can safely skip the ref
+      load_offsets(trailer[:Prev].to_i) if trailer.has_key?(:Prev) and trailer[:Prev].to_i != 0
 
       trailer
     end
