@@ -123,13 +123,6 @@ class PDF::Reader
     def load_xref_table(buf)
       params = []
 
-      # HACK: some PDF writers start numbering a 1 instead of 0. Fix up the number.
-      tokens = buf.instance_variable_get(:@tokens)
-      if tokens[0] == '1' and tokens[2, 3] == ['0000000000', '65535', 'f']
-        # TODO should this be logged?
-        tokens[0] = "0"
-      end
-
       while !params.include?("trailer") && !params.include?(nil)
         if params.size == 2
           objid, count = params[0].to_i, params[1].to_i
@@ -138,6 +131,9 @@ class PDF::Reader
             generation = buf.token.to_i
             state = buf.token
 
+            # Some PDF writers start numbering at 1 instead of 0. Fix up the number.
+            # TODO should this fix be logged?
+            objid = 0 if objid == 1 and offset == 0 and generation == 65535 and state == 'f'
             store(objid, generation, offset + @junk_offset) if state == "n" && offset > 0
             objid += 1
             params.clear
