@@ -1,3 +1,20 @@
+v2.6.0 (12th November 2021)
+- Text extraction improvements
+  - Improved text layout on pages with a variery of font sizes (http://github.com/yob/pdf-reader/pull/355)
+  - Fixed text positioning for some rotated pages (http://github.com/yob/pdf-reader/pull/356)
+  - Improved character width calculation for PDFs using built-in (non-embedded) ZapfDingbats (http://github.com/yob/pdf-reader/pull/373)
+  - Skip zero-width characters (http://github.com/yob/pdf-reader/pull/372)
+- Performance improvements
+  - Reduced memory pressure when decoding TIFF images (http://github.com/yob/pdf-reader/pull/360)
+  - Optional dependency on ascii81_native gem for faster processing of files using the ascii85 filter (http://github.com/yob/pdf-reader/pull/359)
+- Successfully parse more files
+  - Gracefully handle some non-spec compliant CR/LF issues (http://github.com/yob/pdf-reader/pull/364)
+  - Fix parsing of some escape sequences in content streams (http://github.com/yob/pdf-reader/pull/368)
+  - Increase the amount of junk bytes we detect and skip at the end of a file (382)
+  - Ignore "/Prev 0" in trailers (http://github.com/yob/pdf-reader/pull/383)
+  - Fix parsing of some inline images (BI ID EI tokens) (http://github.com/yob/pdf-reader/pull/389)
+  - Gracefully handle some xref tables that incorrectly start with 1 (http://github.com/yob/pdf-reader/pull/384)
+
 v2.5.0 (6th June 2021)
 - bump minimum ruby version to 2.0
 - Correctly handle trascoding to UTF-8 from some fonts that use a difference table [#344](https://github.com/yob/pdf-reader/pull/344/) 

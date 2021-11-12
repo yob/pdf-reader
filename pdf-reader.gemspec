@@ -2,7 +2,7 @@
 # which will make the gem filesize irritatingly large
 Gem::Specification.new do |spec|
   spec.name = "pdf-reader"
-  spec.version = "2.5.0"
+  spec.version = "2.6.0"
   spec.summary = "A library for accessing the content of PDF files"
   spec.description = "The PDF::Reader library implements a PDF parser conforming as much as possible to the PDF specification from Adobe"
   spec.license = "MIT"
