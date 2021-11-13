@@ -1,6 +1,6 @@
 v2.6.0 (12th November 2021)
 - Text extraction improvements
-  - Improved text layout on pages with a variery of font sizes (http://github.com/yob/pdf-reader/pull/355)
+  - Improved text layout on pages with a variety of font sizes (http://github.com/yob/pdf-reader/pull/355)
   - Fixed text positioning for some rotated pages (http://github.com/yob/pdf-reader/pull/356)
   - Improved character width calculation for PDFs using built-in (non-embedded) ZapfDingbats (http://github.com/yob/pdf-reader/pull/373)
   - Skip zero-width characters (http://github.com/yob/pdf-reader/pull/372)
