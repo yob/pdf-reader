@@ -4,7 +4,7 @@ module PDF
     sig { returns(T.untyped) }
     attr_reader :objects
 
-    sig { params(input: T.untyped, opts: T.untyped).returns(T.untyped) }
+    sig { params(input: T.untyped, opts: T.untyped).void }
     def initialize(input, opts = {}); end
 
     sig { returns(T.untyped) }
@@ -61,7 +61,7 @@ module PDF
       sig { returns(T.untyped) }
       attr_reader :pos
 
-      sig { params(io: T.untyped, opts: T.untyped).returns(T.untyped) }
+      sig { params(io: T.untyped, opts: T.untyped).void }
       def initialize(io, opts = {}); end
 
       sig { returns(T.untyped) }
@@ -119,7 +119,7 @@ module PDF
     class CidWidths
       extend Forwardable
 
-      sig { params(default: T.untyped, array: T.untyped).returns(T.untyped) }
+      sig { params(default: T.untyped, array: T.untyped).void }
       def initialize(default, array); end
 
       sig { params(default: T.untyped, array: T.untyped).returns(T.untyped) }
@@ -188,7 +188,7 @@ module PDF
       sig { returns(T.untyped) }
       attr_reader :unpack
 
-      sig { params(enc: T.untyped).returns(T.untyped) }
+      sig { params(enc: T.untyped).void }
       def initialize(enc); end
 
       sig { params(diff: T.untyped).returns(T.untyped) }
@@ -294,7 +294,7 @@ module PDF
       sig { returns(T.untyped) }
       attr_reader :cid_default_width
 
-      sig { params(ohash: T.untyped, obj: T.untyped).returns(T.untyped) }
+      sig { params(ohash: T.untyped, obj: T.untyped).void }
       def initialize(ohash, obj); end
 
       sig { params(params: T.untyped).returns(T.untyped) }
@@ -377,7 +377,7 @@ module PDF
       sig { returns(T.untyped) }
       attr_reader :font_flags
 
-      sig { params(ohash: T.untyped, fd_hash: T.untyped).returns(T.untyped) }
+      sig { params(ohash: T.untyped, fd_hash: T.untyped).void }
       def initialize(ohash, fd_hash); end
 
       sig { params(char_code: T.untyped).returns(T.untyped) }
@@ -396,7 +396,7 @@ module PDF
       sig { returns(T.untyped) }
       attr_reader :xobject
 
-      sig { params(page: T.untyped, xobject: T.untyped, options: T.untyped).returns(T.untyped) }
+      sig { params(page: T.untyped, xobject: T.untyped, options: T.untyped).void }
       def initialize(page, xobject, options = {}); end
 
       sig { returns(T.untyped) }
@@ -428,7 +428,7 @@ module PDF
     end
 
     class GlyphHash
-      sig { returns(T.untyped) }
+      sig { void }
       def initialize; end
 
       sig { params(name: T.untyped).returns(T.untyped) }
@@ -446,7 +446,7 @@ module PDF
       CODE_CLEAR_TABLE = 256
 
       class BitStream
-        sig { params(data: T.untyped, bits_in_chunk: T.untyped).returns(T.untyped) }
+        sig { params(data: T.untyped, bits_in_chunk: T.untyped).void }
         def initialize(data, bits_in_chunk); end
 
         sig { params(bits_in_chunk: T.untyped).returns(T.untyped) }
@@ -460,7 +460,7 @@ module PDF
         sig { returns(T.untyped) }
         attr_reader :string_table_pos
 
-        sig { returns(T.untyped) }
+        sig { void }
         def initialize; end
 
         sig { params(key: T.untyped).returns(T.untyped) }
@@ -494,7 +494,7 @@ module PDF
       sig { returns(T.untyped) }
       attr_reader :misses
 
-      sig { params(lru_size: T.untyped).returns(T.untyped) }
+      sig { params(lru_size: T.untyped).void }
       def initialize(lru_size = 1000); end
 
       sig { params(key: T.untyped).returns(T.untyped) }
@@ -558,7 +558,7 @@ module PDF
       sig { returns(T.untyped) }
       attr_reader :sec_handler
 
-      sig { params(input: T.untyped, opts: T.untyped).returns(T.untyped) }
+      sig { params(input: T.untyped, opts: T.untyped).void }
       def initialize(input, opts = {}); end
 
       sig { params(ref: T.untyped).returns(T.untyped) }
@@ -662,7 +662,7 @@ module PDF
     end
 
     class ObjectStream
-      sig { params(stream: T.untyped).returns(T.untyped) }
+      sig { params(stream: T.untyped).void }
       def initialize(stream); end
 
       sig { params(objid: T.untyped).returns(T.untyped) }
@@ -682,7 +682,7 @@ module PDF
     end
 
     class OrientationDetector
-      sig { params(attributes: T.untyped).returns(T.untyped) }
+      sig { params(attributes: T.untyped).void }
       def initialize(attributes); end
 
       sig { returns(T.untyped) }
@@ -731,7 +731,7 @@ module PDF
       sig { returns(T.untyped) }
       attr_reader :cache
 
-      sig { params(objects: T.untyped, pagenum: T.untyped, options: T.untyped).returns(T.untyped) }
+      sig { params(objects: T.untyped, pagenum: T.untyped, options: T.untyped).void }
       def initialize(objects, pagenum, options = {}); end
 
       sig { returns(T.untyped) }
@@ -787,7 +787,7 @@ module PDF
       extend T::Sig
       DEFAULT_FONT_SIZE = 12
 
-      sig { params(runs: T.untyped, mediabox: T.untyped).returns(T.untyped) }
+      sig { params(runs: T.untyped, mediabox: T.untyped).void }
       def initialize(runs, mediabox); end
 
       sig { returns(T.untyped) }
@@ -837,7 +837,7 @@ module PDF
         :text_knockout  => 0
       }
 
-      sig { params(page: T.untyped).returns(T.untyped) }
+      sig { params(page: T.untyped).void }
       def initialize(page); end
 
       sig { returns(T.untyped) }
@@ -1084,7 +1084,7 @@ module PDF
       sig { returns(T.untyped) }
       attr_accessor :callbacks
 
-      sig { returns(T.untyped) }
+      sig { void }
       def initialize; end
 
       sig { params(meth: T.untyped).returns(T.untyped) }
@@ -1101,7 +1101,7 @@ module PDF
       sig { returns(T.untyped) }
       attr_reader :gen
 
-      sig { params(id: T.untyped, gen: T.untyped).returns(T.untyped) }
+      sig { params(id: T.untyped, gen: T.untyped).void }
       def initialize(id, gen); end
 
       sig { returns(T.untyped) }
@@ -1121,7 +1121,7 @@ module PDF
       sig { returns(T.untyped) }
       attr_accessor :callbacks
 
-      sig { returns(T.untyped) }
+      sig { void }
       def initialize; end
 
       sig { params(meth: T.untyped).returns(T.untyped) }
@@ -1207,7 +1207,7 @@ module PDF
       sig { returns(T.untyped) }
       attr_reader :password
 
-      sig { params(opts: T.untyped).returns(T.untyped) }
+      sig { params(opts: T.untyped).void }
       def initialize(opts = {}); end
 
       sig { params(encrypt: T.untyped).returns(T.untyped) }
@@ -1248,7 +1248,7 @@ module PDF
       sig { returns(T.untyped) }
       attr_reader :encrypt_key
 
-      sig { params(opts: T.untyped).returns(T.untyped) }
+      sig { params(opts: T.untyped).void }
       def initialize(opts = {}); end
 
       sig { params(encrypt: T.untyped).returns(T.untyped) }
@@ -1274,7 +1274,7 @@ module PDF
       sig { returns(T.untyped) }
       attr_accessor :data
 
-      sig { params(hash: T.untyped, data: T.untyped).returns(T.untyped) }
+      sig { params(hash: T.untyped, data: T.untyped).void }
       def initialize(hash, data); end
 
       sig { returns(T.untyped) }
@@ -1282,7 +1282,7 @@ module PDF
     end
 
     class SynchronizedCache
-      sig { returns(T.untyped) }
+      sig { void }
       def initialize; end
 
       sig { params(key: T.untyped).returns(T.untyped) }
@@ -1318,7 +1318,7 @@ module PDF
           width: T.untyped,
           font_size: T.untyped,
           text: T.untyped
-        ).returns(T.untyped)
+        ).void
       end
       def initialize(x, y, width, font_size, text); end
 
@@ -1360,7 +1360,7 @@ module PDF
     end
 
     class Token < String
-      sig { params(val: T.untyped).returns(T.untyped) }
+      sig { params(val: T.untyped).void }
       def initialize(val); end
     end
 
@@ -1391,7 +1391,7 @@ module PDF
           d: T.untyped,
           e: T.untyped,
           f: T.untyped
-        ).returns(T.untyped)
+        ).void
       end
       def initialize(a, b, c, d, e, f); end
 
@@ -1491,7 +1491,7 @@ module PDF
       sig { returns(T.untyped) }
       attr_reader :trailer
 
-      sig { params(io: T.untyped).returns(T.untyped) }
+      sig { params(io: T.untyped).void }
       def initialize(io); end
 
       sig { returns(T.untyped) }
@@ -1539,7 +1539,7 @@ module PDF
       class Ascii85
         extend T::Sig
 
-        sig { params(options: T.untyped).returns(T.untyped) }
+        sig { params(options: T.untyped).void }
         def initialize(options = {}); end
 
         sig { params(data: String).returns(String) }
@@ -1549,7 +1549,7 @@ module PDF
       class AsciiHex
         extend T::Sig
 
-        sig { params(options: T.untyped).returns(T.untyped) }
+        sig { params(options: T.untyped).void }
         def initialize(options = {}); end
 
         sig { params(data: String).returns(String) }
@@ -1559,7 +1559,7 @@ module PDF
       class Depredict
         extend T::Sig
 
-        sig { params(options: T.untyped).returns(T.untyped) }
+        sig { params(options: T.untyped).void }
         def initialize(options = {}); end
 
         sig { params(data: String).returns(String) }
@@ -1577,7 +1577,7 @@ module PDF
         ZLIB_AUTO_DETECT_ZLIB_OR_GZIP = 47
         ZLIB_RAW_DEFLATE = -15
 
-        sig { params(options: T.untyped).returns(T.untyped) }
+        sig { params(options: T.untyped).void }
         def initialize(options = {}); end
 
         sig { params(data: String).returns(String) }
@@ -1590,7 +1590,7 @@ module PDF
       class Lzw
         extend T::Sig
 
-        sig { params(options: T.untyped).returns(T.untyped) }
+        sig { params(options: T.untyped).void }
         def initialize(options = {}); end
 
         sig { params(data: String).returns(String) }
@@ -1598,7 +1598,7 @@ module PDF
       end
 
       class Null
-        sig { params(options: T.untyped).returns(T.untyped) }
+        sig { params(options: T.untyped).void }
         def initialize(options = {}); end
 
         sig { params(data: T.untyped).returns(T.untyped) }
@@ -1608,7 +1608,7 @@ module PDF
       class RunLength
         extend T::Sig
 
-        sig { params(options: T.untyped).returns(T.untyped) }
+        sig { params(options: T.untyped).void }
         def initialize(options = {}); end
 
         sig { params(data: String).returns(String) }
@@ -1626,7 +1626,7 @@ module PDF
         :ZapfDingbats
       ]
 
-        sig { params(font: T.untyped).returns(T.untyped) }
+        sig { params(font: T.untyped).void }
         def initialize(font); end
 
         sig { params(code_point: T.untyped).returns(T.untyped) }
@@ -1640,7 +1640,7 @@ module PDF
       end
 
       class Composite
-        sig { params(font: T.untyped).returns(T.untyped) }
+        sig { params(font: T.untyped).void }
         def initialize(font); end
 
         sig { params(code_point: T.untyped).returns(T.untyped) }
@@ -1648,7 +1648,7 @@ module PDF
       end
 
       class TrueType
-        sig { params(font: T.untyped).returns(T.untyped) }
+        sig { params(font: T.untyped).void }
         def initialize(font); end
 
         sig { params(code_point: T.untyped).returns(T.untyped) }
@@ -1662,7 +1662,7 @@ module PDF
       end
 
       class TypeOneOrThree
-        sig { params(font: T.untyped).returns(T.untyped) }
+        sig { params(font: T.untyped).void }
         def initialize(font); end
 
         sig { params(code_point: T.untyped).returns(T.untyped) }
@@ -1670,7 +1670,7 @@ module PDF
       end
 
       class TypeZero
-        sig { params(font: T.untyped).returns(T.untyped) }
+        sig { params(font: T.untyped).void }
         def initialize(font); end
 
         sig { params(code_point: T.untyped).returns(T.untyped) }
