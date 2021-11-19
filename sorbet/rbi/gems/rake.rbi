@@ -180,6 +180,7 @@ class Rake::FileList
   def ==(array); end
   def [](*args, &block); end
   def []=(*args, &block); end
+  def abbrev(*args, &block); end
   def add(*filenames); end
   def add_matching(pattern); end
   def all?(*args, &block); end
