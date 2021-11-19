@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: true
+# typed: false
 # frozen_string_literal: true
 
 require 'ascii85'
