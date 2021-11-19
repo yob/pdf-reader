@@ -1,4 +1,5 @@
 # coding: utf-8
+# typed: strict
 # frozen_string_literal: true
 
 # Copyright (C) 2010 James Healy (jimmy@deefa.com)

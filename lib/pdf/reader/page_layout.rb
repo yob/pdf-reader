@@ -1,4 +1,5 @@
 # coding: utf-8
+# typed: true
 # frozen_string_literal: true
 
 require 'pdf/reader/overlapping_runs_filter'
@@ -108,17 +109,15 @@ class PDF::Reader
     end
 
     def group_chars_into_runs(chars)
-      runs = []
-      while head = chars.shift
+      chars.each_with_object([]) do |char, runs|
         if runs.empty?
-          runs << head
-        elsif runs.last.mergable?(head)
-          runs[-1] = runs.last + head
+          runs << char
+        elsif runs.last.mergable?(char)
+          runs[-1] = runs.last + char
         else
-          runs << head
+          runs << char
         end
       end
-      runs
     end
 
     def local_string_insert(haystack, needle, index)

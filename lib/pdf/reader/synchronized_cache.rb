@@ -1,4 +1,5 @@
 # encoding: utf-8
+# typed: true
 # frozen_string_literal: true
 
 # utilities.rb : General-purpose utility classes which don't fit anywhere else

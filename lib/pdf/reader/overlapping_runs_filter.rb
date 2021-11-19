@@ -1,4 +1,6 @@
+# typed: true
 # coding: utf-8
+# frozen_string_literal: true
 
 class PDF::Reader
   # remove duplicates from a collection of TextRun objects. This can be helpful when a PDF
@@ -51,10 +53,14 @@ class PDF::Reader
   # Utility class used to avoid modifying the underlying TextRun objects while we're
   # looking for duplicates
   class EventPoint
-    attr_reader :x, :run
 
-    def initialize x, run
-      @x, @run = x, run
+    attr_reader :x
+
+    attr_reader :run
+
+    def initialize(x, run)
+      @x = x
+      @run = run
     end
 
     def start?

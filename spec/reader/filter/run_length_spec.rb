@@ -1,3 +1,4 @@
+# typed: false
 # coding: utf-8
 
 describe PDF::Reader::Filter::RunLength do

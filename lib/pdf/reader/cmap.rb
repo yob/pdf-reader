@@ -1,4 +1,5 @@
 # coding: utf-8
+# typed: false
 # frozen_string_literal: true
 
 ################################################################################
@@ -32,6 +33,7 @@ class PDF::Reader
   # extracting various useful information.
   #
   class CMap # :nodoc:
+
     CMAP_KEYWORDS = {
       "begincodespacerange" => 1,
       "endcodespacerange" => 1,
@@ -53,7 +55,7 @@ class PDF::Reader
 
     def process_data(data)
       parser = build_parser(data)
-      mode = nil
+      mode = :none
       instructions = []
 
       while token = parser.parse_token(CMAP_KEYWORDS)
@@ -62,13 +64,13 @@ class PDF::Reader
         elsif token == "endbfchar"
           process_bfchar_instructions(instructions)
           instructions = []
-          mode = nil
+          mode = :none
         elsif token == "beginbfrange"
           mode = :range
         elsif token == "endbfrange"
           process_bfrange_instructions(instructions)
           instructions = []
-          mode = nil
+          mode = :none
         elsif mode == :char || mode == :range
           instructions << token
         end

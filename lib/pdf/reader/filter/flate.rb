@@ -1,4 +1,5 @@
 # coding: utf-8
+# typed: true
 # frozen_string_literal: true
 
 
@@ -8,6 +9,7 @@ class PDF::Reader
   module Filter # :nodoc:
     # implementation of the Flate (zlib) stream filter
     class Flate
+
       ZLIB_AUTO_DETECT_ZLIB_OR_GZIP = 47  # Zlib::MAX_WBITS + 32
       ZLIB_RAW_DEFLATE              = -15 # Zlib::MAX_WBITS * -1
 

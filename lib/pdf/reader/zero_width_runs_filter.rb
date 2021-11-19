@@ -1,4 +1,6 @@
 # coding: utf-8
+# typed: strict
+# frozen_string_literal: true
 
 class PDF::Reader
   # There's no point rendering zero-width characters

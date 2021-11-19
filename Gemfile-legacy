@@ -1,0 +1,5 @@
+source "https://rubygems.org"
+
+gemspec
+
+# This Gemfile is used in the CI environment for ruby < 2.3, where sorbet can't be loaded

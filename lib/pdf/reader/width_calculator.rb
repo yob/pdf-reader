@@ -1,4 +1,5 @@
 # coding: utf-8
+# typed: strict
 # frozen_string_literal: true
 
 # PDF files may define fonts in a number of ways. Each approach means we must

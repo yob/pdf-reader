@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # coding: utf-8
+# typed: ignore
 
 #  Basic RSpec of a generated PDF
 #
