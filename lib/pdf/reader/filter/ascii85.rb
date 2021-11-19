@@ -8,7 +8,6 @@ class PDF::Reader
   module Filter # :nodoc:
     # implementation of the Ascii85 filter
     class Ascii85
-      extend T::Sig
 
       def initialize(options = {})
         @options = options
@@ -18,7 +17,6 @@ class PDF::Reader
       # Decode the specified data using the Ascii85 algorithm. Relies on the AScii85
       # rubygem.
       #
-      sig {params(data: String).returns(String)}
       def filter(data)
         data = "<~#{data}" unless data.to_s[0,2] == "<~"
         if defined?(::Ascii85Native)

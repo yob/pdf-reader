@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.summary = "A library for accessing the content of PDF files"
   spec.description = "The PDF::Reader library implements a PDF parser conforming as much as possible to the PDF specification from Adobe"
   spec.license = "MIT"
-  spec.files =  Dir.glob("{examples,lib}/**/**/*") + ["Rakefile"]
+  spec.files =  Dir.glob("{examples,lib,rbi}/**/**/*") + ["Rakefile"]
   spec.executables << "pdf_object"
   spec.executables << "pdf_text"
   spec.executables << "pdf_callbacks"
@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency("pry")
   spec.add_development_dependency("rdoc")
   spec.add_development_dependency("sorbet")
-  spec.add_development_dependency("sorbet-runtime")
+  spec.add_development_dependency('parlour')
 
   spec.add_dependency('Ascii85', '~> 1.0')
   spec.add_dependency('ruby-rc4')

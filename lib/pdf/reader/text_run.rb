@@ -5,7 +5,6 @@
 class PDF::Reader
   # A value object that represents one or more consecutive characters on a page.
   class TextRun
-    extend T::Sig
     include Comparable
 
     attr_reader :x, :y, :width, :font_size, :text
@@ -48,12 +47,10 @@ class PDF::Reader
       @width / character_count
     end
 
-    sig {params(other: PDF::Reader::TextRun).returns(T::Boolean)}
     def mergable?(other)
       y.to_i == other.y.to_i && font_size == other.font_size && mergable_range.include?(other.x)
     end
 
-    sig {params(other: PDF::Reader::TextRun).returns(PDF::Reader::TextRun)}
     def +(other)
       raise ArgumentError, "#{other} cannot be merged with this run" unless mergable?(other)
 

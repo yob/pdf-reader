@@ -29,8 +29,6 @@
 ################################################################################
 
 require 'stringio'
-require 'sorbet-runtime'
-
 
 module PDF
   ################################################################################
@@ -95,7 +93,6 @@ module PDF
   #   reader = PDF::Reader.new("somefile.pdf", :password => "apples")
   #
   class Reader
-    extend T::Sig
 
     # lowlevel hash-like access to all objects in the underlying PDF
     attr_reader :objects
@@ -235,7 +232,6 @@ module PDF
       end
     end
 
-    sig { params(str: String).returns(T::Boolean)}
     def has_utf16_bom?(str)
       first_bytes = str[0,2]
 

@@ -7,7 +7,6 @@ class PDF::Reader
     # some filter implementations support preprocessing of the  data to
     # improve compression
     class Depredict
-      extend T::Sig
 
       def initialize(options = {})
         @options = options || {}
@@ -17,7 +16,6 @@ class PDF::Reader
       # Streams can be preprocessed to improve compression. This reverses the
       # preprocessing
       #
-      sig {params(data: String).returns(String)}
       def filter(data)
         predictor = @options[:Predictor].to_i
 

@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: true
+# typed: false
 # frozen_string_literal: true
 
 ################################################################################
@@ -33,7 +33,6 @@ class PDF::Reader
   # extracting various useful information.
   #
   class CMap # :nodoc:
-    extend T::Sig
 
     CMAP_KEYWORDS = {
       "begincodespacerange" => 1,
@@ -49,16 +48,14 @@ class PDF::Reader
 
     attr_reader :map
 
-    sig { params(data: String).void}
     def initialize(data)
       @map = {}
       process_data(data)
     end
 
-    sig { params(data: String).void}
     def process_data(data)
       parser = build_parser(data)
-      mode = T.let(:none, Symbol)
+      mode = :none
       instructions = []
 
       while token = parser.parse_token(CMAP_KEYWORDS)
@@ -80,7 +77,6 @@ class PDF::Reader
       end
     end
 
-    sig { returns(Integer) }
     def size
       @map.size
     end

@@ -1,4 +1,4 @@
-# typed: strict
+# typed: true
 # coding: utf-8
 # frozen_string_literal: true
 
@@ -6,13 +6,11 @@ class PDF::Reader
   # remove duplicates from a collection of TextRun objects. This can be helpful when a PDF
   # uses slightly offset overlapping characters to achieve a fake 'bold' effect.
   class OverlappingRunsFilter
-    extend T::Sig
 
     # This should be between 0 and 1. If TextRun B obscures this much of TextRun A (and they
     # have identical characters) then one will be discarded
     OVERLAPPING_THRESHOLD = 0.5
 
-    sig {params(runs: T::Array[PDF::Reader::TextRun]).returns(T::Array[PDF::Reader::TextRun])}
     def self.exclude_redundant_runs(runs)
       sweep_line_status = Array.new
       event_point_schedule = Array.new
@@ -40,12 +38,6 @@ class PDF::Reader
       runs - to_exclude
     end
 
-    sig {
-      params(
-        sweep_line_status: T::Array[PDF::Reader::TextRun],
-        event_point: EventPoint
-      ).returns(T::Boolean)
-    }
     def self.detect_intersection(sweep_line_status, event_point)
       sweep_line_status.each do |open_text_run|
         if event_point.x >= open_text_run.x &&
@@ -61,21 +53,16 @@ class PDF::Reader
   # Utility class used to avoid modifying the underlying TextRun objects while we're
   # looking for duplicates
   class EventPoint
-    extend T::Sig
 
-    sig { returns(Numeric) }
     attr_reader :x
 
-    sig { returns(PDF::Reader::TextRun) }
     attr_reader :run
 
-    sig {params(x: Numeric, run: PDF::Reader::TextRun).void }
     def initialize(x, run)
       @x = x
       @run = run
     end
 
-    sig { returns(T::Boolean) }
     def start?
       @x == @run.x
     end

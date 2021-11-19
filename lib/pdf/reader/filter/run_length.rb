@@ -7,7 +7,6 @@ class PDF::Reader # :nodoc:
   module Filter # :nodoc:
     # implementation of the run length stream filter
     class RunLength
-      extend T::Sig
 
       def initialize(options = {})
         @options = options
@@ -15,7 +14,6 @@ class PDF::Reader # :nodoc:
 
       ################################################################################
       # Decode the specified data with the RunLengthDecode compression algorithm
-      sig {params(data: String).returns(String)}
       def filter(data)
         pos = 0
         out = "".dup

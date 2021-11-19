@@ -11,7 +11,6 @@ module PDF
     # mixin for common methods in Page and FormXobjects
     #
     module ResourceMethods
-      extend T::Helpers
 
       # Returns a Hash of color spaces that are available to this page
       #

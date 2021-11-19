@@ -13,7 +13,6 @@ class PDF::Reader
   # media box should be a 4 number array that describes the dimensions of the
   # page to be rendered as described by the page's MediaBox attribute
   class PageLayout
-    extend T::Sig
 
     DEFAULT_FONT_SIZE = 12
 
@@ -109,7 +108,6 @@ class PDF::Reader
       }.flatten.sort
     end
 
-    sig {params(chars: T::Array[PDF::Reader::TextRun]).returns(T::Array[PDF::Reader::TextRun])}
     def group_chars_into_runs(chars)
       chars.each_with_object([]) do |char, runs|
         if runs.empty?

@@ -7,7 +7,6 @@ class PDF::Reader
   module Filter # :nodoc:
     # implementation of the AsciiHex stream filter
     class AsciiHex
-      extend T::Sig
 
       def initialize(options = {})
         @options = options
@@ -16,7 +15,6 @@ class PDF::Reader
       ################################################################################
       # Decode the specified data using the AsciiHex algorithm.
       #
-      sig {params(data: String).returns(String)}
       def filter(data)
         data.chop! if data[-1,1] == ">"
         data = data[1,data.size] if data[0,1] == "<"
