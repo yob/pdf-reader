@@ -371,26 +371,6 @@ class Bundler::Injector
   def self.remove(gems, options=T.unsafe(nil)); end
 end
 
-class Bundler::Installer
-  def generate_bundler_executable_stubs(spec, options=T.unsafe(nil)); end
-
-  def generate_standalone_bundler_executable_stubs(spec); end
-
-  def initialize(root, definition); end
-
-  def post_install_messages(); end
-
-  def run(options); end
-end
-
-class Bundler::Installer
-  def self.ambiguous_gems(); end
-
-  def self.ambiguous_gems=(ambiguous_gems); end
-
-  def self.install(root, definition, options=T.unsafe(nil)); end
-end
-
 class Bundler::Molinillo::DependencyGraph
   include ::Enumerable
 end
@@ -934,6 +914,38 @@ end
 
 CodeRay::Styles::Style::PLUGIN_HOST = CodeRay::Styles
 
+module Commander
+  VERSION = ::T.let(nil, ::T.untyped)
+end
+
+class Commander::HelpFormatter::Base
+  def initialize(runner); end
+
+  def render(); end
+
+  def render_command(command); end
+end
+
+class Commander::HelpFormatter::Base
+end
+
+class Commander::HelpFormatter::Terminal
+  def template(name); end
+end
+
+class Commander::HelpFormatter::Terminal
+end
+
+class Commander::HelpFormatter::TerminalCompact
+end
+
+class Commander::HelpFormatter::TerminalCompact
+end
+
+module Commander::UI::AskForClass
+  DEPRECATED_CONSTANTS = ::T.let(nil, ::T.untyped)
+end
+
 class DRb::DRbArray
   def _dump(lv); end
 end
@@ -1133,6 +1145,14 @@ DRbIdConv = DRb::DRbIdConv
 DRbObject = DRb::DRbObject
 
 DRbUndumped = DRb::DRbUndumped
+
+class Date
+  def infinite?(); end
+end
+
+class Date::Infinity
+  def initialize(d=T.unsafe(nil)); end
+end
 
 class Delegator
   RUBYGEMS_ACTIVATION_MONITOR = ::T.let(nil, ::T.untyped)
@@ -2145,6 +2165,184 @@ class Hashery::LRUHash
   FETCH = ::T.let(nil, ::T.untyped)
 end
 
+class HighLine
+  VERSION = ::T.let(nil, ::T.untyped)
+end
+
+module HighLine::BuiltinStyles
+  BASIC_COLORS = ::T.let(nil, ::T.untyped)
+  BLACK = ::T.let(nil, ::T.untyped)
+  BLACK_STYLE = ::T.let(nil, ::T.untyped)
+  BLINK = ::T.let(nil, ::T.untyped)
+  BLINK_STYLE = ::T.let(nil, ::T.untyped)
+  BLUE = ::T.let(nil, ::T.untyped)
+  BLUE_STYLE = ::T.let(nil, ::T.untyped)
+  BOLD = ::T.let(nil, ::T.untyped)
+  BOLD_STYLE = ::T.let(nil, ::T.untyped)
+  BRIGHT_BLACK = ::T.let(nil, ::T.untyped)
+  BRIGHT_BLACK_STYLE = ::T.let(nil, ::T.untyped)
+  BRIGHT_BLUE = ::T.let(nil, ::T.untyped)
+  BRIGHT_BLUE_STYLE = ::T.let(nil, ::T.untyped)
+  BRIGHT_CYAN = ::T.let(nil, ::T.untyped)
+  BRIGHT_CYAN_STYLE = ::T.let(nil, ::T.untyped)
+  BRIGHT_GRAY = ::T.let(nil, ::T.untyped)
+  BRIGHT_GRAY_STYLE = ::T.let(nil, ::T.untyped)
+  BRIGHT_GREEN = ::T.let(nil, ::T.untyped)
+  BRIGHT_GREEN_STYLE = ::T.let(nil, ::T.untyped)
+  BRIGHT_GREY = ::T.let(nil, ::T.untyped)
+  BRIGHT_GREY_STYLE = ::T.let(nil, ::T.untyped)
+  BRIGHT_MAGENTA = ::T.let(nil, ::T.untyped)
+  BRIGHT_MAGENTA_STYLE = ::T.let(nil, ::T.untyped)
+  BRIGHT_NONE = ::T.let(nil, ::T.untyped)
+  BRIGHT_NONE_STYLE = ::T.let(nil, ::T.untyped)
+  BRIGHT_RED = ::T.let(nil, ::T.untyped)
+  BRIGHT_RED_STYLE = ::T.let(nil, ::T.untyped)
+  BRIGHT_WHITE = ::T.let(nil, ::T.untyped)
+  BRIGHT_WHITE_STYLE = ::T.let(nil, ::T.untyped)
+  BRIGHT_YELLOW = ::T.let(nil, ::T.untyped)
+  BRIGHT_YELLOW_STYLE = ::T.let(nil, ::T.untyped)
+  CLEAR = ::T.let(nil, ::T.untyped)
+  CLEAR_STYLE = ::T.let(nil, ::T.untyped)
+  COLORS = ::T.let(nil, ::T.untyped)
+  COLOR_LIST = ::T.let(nil, ::T.untyped)
+  CONCEALED = ::T.let(nil, ::T.untyped)
+  CONCEALED_STYLE = ::T.let(nil, ::T.untyped)
+  CYAN = ::T.let(nil, ::T.untyped)
+  CYAN_STYLE = ::T.let(nil, ::T.untyped)
+  DARK = ::T.let(nil, ::T.untyped)
+  DARK_STYLE = ::T.let(nil, ::T.untyped)
+  ERASE_CHAR = ::T.let(nil, ::T.untyped)
+  ERASE_CHAR_STYLE = ::T.let(nil, ::T.untyped)
+  ERASE_LINE = ::T.let(nil, ::T.untyped)
+  ERASE_LINE_STYLE = ::T.let(nil, ::T.untyped)
+  GRAY = ::T.let(nil, ::T.untyped)
+  GRAY_STYLE = ::T.let(nil, ::T.untyped)
+  GREEN = ::T.let(nil, ::T.untyped)
+  GREEN_STYLE = ::T.let(nil, ::T.untyped)
+  GREY = ::T.let(nil, ::T.untyped)
+  GREY_STYLE = ::T.let(nil, ::T.untyped)
+  LIGHT_BLACK = ::T.let(nil, ::T.untyped)
+  LIGHT_BLACK_STYLE = ::T.let(nil, ::T.untyped)
+  LIGHT_BLUE = ::T.let(nil, ::T.untyped)
+  LIGHT_BLUE_STYLE = ::T.let(nil, ::T.untyped)
+  LIGHT_CYAN = ::T.let(nil, ::T.untyped)
+  LIGHT_CYAN_STYLE = ::T.let(nil, ::T.untyped)
+  LIGHT_GRAY = ::T.let(nil, ::T.untyped)
+  LIGHT_GRAY_STYLE = ::T.let(nil, ::T.untyped)
+  LIGHT_GREEN = ::T.let(nil, ::T.untyped)
+  LIGHT_GREEN_STYLE = ::T.let(nil, ::T.untyped)
+  LIGHT_GREY = ::T.let(nil, ::T.untyped)
+  LIGHT_GREY_STYLE = ::T.let(nil, ::T.untyped)
+  LIGHT_MAGENTA = ::T.let(nil, ::T.untyped)
+  LIGHT_MAGENTA_STYLE = ::T.let(nil, ::T.untyped)
+  LIGHT_NONE = ::T.let(nil, ::T.untyped)
+  LIGHT_NONE_STYLE = ::T.let(nil, ::T.untyped)
+  LIGHT_RED = ::T.let(nil, ::T.untyped)
+  LIGHT_RED_STYLE = ::T.let(nil, ::T.untyped)
+  LIGHT_WHITE = ::T.let(nil, ::T.untyped)
+  LIGHT_WHITE_STYLE = ::T.let(nil, ::T.untyped)
+  LIGHT_YELLOW = ::T.let(nil, ::T.untyped)
+  LIGHT_YELLOW_STYLE = ::T.let(nil, ::T.untyped)
+  MAGENTA = ::T.let(nil, ::T.untyped)
+  MAGENTA_STYLE = ::T.let(nil, ::T.untyped)
+  NONE = ::T.let(nil, ::T.untyped)
+  NONE_STYLE = ::T.let(nil, ::T.untyped)
+  ON_BLACK = ::T.let(nil, ::T.untyped)
+  ON_BLACK_STYLE = ::T.let(nil, ::T.untyped)
+  ON_BLUE = ::T.let(nil, ::T.untyped)
+  ON_BLUE_STYLE = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_BLACK = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_BLACK_STYLE = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_BLUE = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_BLUE_STYLE = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_CYAN = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_CYAN_STYLE = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_GRAY = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_GRAY_STYLE = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_GREEN = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_GREEN_STYLE = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_GREY = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_GREY_STYLE = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_MAGENTA = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_MAGENTA_STYLE = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_NONE = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_NONE_STYLE = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_RED = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_RED_STYLE = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_WHITE = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_WHITE_STYLE = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_YELLOW = ::T.let(nil, ::T.untyped)
+  ON_BRIGHT_YELLOW_STYLE = ::T.let(nil, ::T.untyped)
+  ON_CYAN = ::T.let(nil, ::T.untyped)
+  ON_CYAN_STYLE = ::T.let(nil, ::T.untyped)
+  ON_GRAY = ::T.let(nil, ::T.untyped)
+  ON_GRAY_STYLE = ::T.let(nil, ::T.untyped)
+  ON_GREEN = ::T.let(nil, ::T.untyped)
+  ON_GREEN_STYLE = ::T.let(nil, ::T.untyped)
+  ON_GREY = ::T.let(nil, ::T.untyped)
+  ON_GREY_STYLE = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_BLACK = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_BLACK_STYLE = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_BLUE = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_BLUE_STYLE = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_CYAN = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_CYAN_STYLE = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_GRAY = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_GRAY_STYLE = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_GREEN = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_GREEN_STYLE = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_GREY = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_GREY_STYLE = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_MAGENTA = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_MAGENTA_STYLE = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_NONE = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_NONE_STYLE = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_RED = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_RED_STYLE = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_WHITE = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_WHITE_STYLE = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_YELLOW = ::T.let(nil, ::T.untyped)
+  ON_LIGHT_YELLOW_STYLE = ::T.let(nil, ::T.untyped)
+  ON_MAGENTA = ::T.let(nil, ::T.untyped)
+  ON_MAGENTA_STYLE = ::T.let(nil, ::T.untyped)
+  ON_NONE = ::T.let(nil, ::T.untyped)
+  ON_NONE_STYLE = ::T.let(nil, ::T.untyped)
+  ON_RED = ::T.let(nil, ::T.untyped)
+  ON_RED_STYLE = ::T.let(nil, ::T.untyped)
+  ON_WHITE = ::T.let(nil, ::T.untyped)
+  ON_WHITE_STYLE = ::T.let(nil, ::T.untyped)
+  ON_YELLOW = ::T.let(nil, ::T.untyped)
+  ON_YELLOW_STYLE = ::T.let(nil, ::T.untyped)
+  RED = ::T.let(nil, ::T.untyped)
+  RED_STYLE = ::T.let(nil, ::T.untyped)
+  RESET = ::T.let(nil, ::T.untyped)
+  RESET_STYLE = ::T.let(nil, ::T.untyped)
+  REVERSE = ::T.let(nil, ::T.untyped)
+  REVERSE_STYLE = ::T.let(nil, ::T.untyped)
+  STYLES = ::T.let(nil, ::T.untyped)
+  STYLE_LIST = ::T.let(nil, ::T.untyped)
+  UNDERLINE = ::T.let(nil, ::T.untyped)
+  UNDERLINE_STYLE = ::T.let(nil, ::T.untyped)
+  UNDERSCORE = ::T.let(nil, ::T.untyped)
+  UNDERSCORE_STYLE = ::T.let(nil, ::T.untyped)
+  WHITE = ::T.let(nil, ::T.untyped)
+  WHITE_STYLE = ::T.let(nil, ::T.untyped)
+  YELLOW = ::T.let(nil, ::T.untyped)
+  YELLOW_STYLE = ::T.let(nil, ::T.untyped)
+end
+
+module HighLine::BuiltinStyles::ClassMethods
+  RGB_COLOR_PATTERN = ::T.let(nil, ::T.untyped)
+end
+
+class HighLine::SampleColorScheme
+  SAMPLE_SCHEME = ::T.let(nil, ::T.untyped)
+end
+
+module HighLine::StringExtensions
+  STYLE_METHOD_NAME_PATTERN = ::T.let(nil, ::T.untyped)
+end
+
 class IO
   def beep(); end
 
@@ -2229,6 +2427,17 @@ class IO
   def winsize(); end
 
   def winsize=(winsize); end
+end
+
+class IO::ConsoleMode
+  def echo=(echo); end
+
+  def raw(*arg); end
+
+  def raw!(*arg); end
+end
+
+class IO::ConsoleMode
 end
 
 IO::EWOULDBLOCKWaitReadable = IO::EAGAINWaitReadable
@@ -2517,73 +2726,8 @@ class OptionParser::ParseError
   def additional=(additional); end
 end
 
-class PDF::Reader::CMap
-  extend ::T::Private::Methods::MethodHooks
-  extend ::T::Private::Methods::SingletonMethodHooks
-end
-
-class PDF::Reader::EventPoint
-  extend ::T::Private::Methods::MethodHooks
-  extend ::T::Private::Methods::SingletonMethodHooks
-end
-
-class PDF::Reader::Filter::Ascii85
-  extend ::T::Private::Methods::MethodHooks
-  extend ::T::Private::Methods::SingletonMethodHooks
-end
-
-class PDF::Reader::Filter::AsciiHex
-  extend ::T::Private::Methods::MethodHooks
-  extend ::T::Private::Methods::SingletonMethodHooks
-end
-
-class PDF::Reader::Filter::Depredict
-  extend ::T::Private::Methods::MethodHooks
-  extend ::T::Private::Methods::SingletonMethodHooks
-end
-
-class PDF::Reader::Filter::Flate
-  extend ::T::Private::Methods::MethodHooks
-  extend ::T::Private::Methods::SingletonMethodHooks
-end
-
-class PDF::Reader::Filter::Lzw
-  extend ::T::Private::Methods::MethodHooks
-  extend ::T::Private::Methods::SingletonMethodHooks
-end
-
-class PDF::Reader::Filter::RunLength
-  extend ::T::Private::Methods::MethodHooks
-  extend ::T::Private::Methods::SingletonMethodHooks
-end
-
-class PDF::Reader::OverlappingRunsFilter
-  extend ::T::Private::Methods::MethodHooks
-  extend ::T::Private::Methods::SingletonMethodHooks
-end
-
-class PDF::Reader::PageLayout
-  extend ::T::Private::Methods::MethodHooks
-  extend ::T::Private::Methods::SingletonMethodHooks
-end
-
-class PDF::Reader::TextRun
-  extend ::T::Private::Methods::MethodHooks
-  extend ::T::Private::Methods::SingletonMethodHooks
-end
-
 class PDF::Reader::TransformationMatrix
   def multiply_with_an_object!(m2); end
-end
-
-class PDF::Reader::ZeroWidthRunsFilter
-  extend ::T::Private::Methods::MethodHooks
-  extend ::T::Private::Methods::SingletonMethodHooks
-end
-
-class PDF::Reader
-  extend ::T::Private::Methods::MethodHooks
-  extend ::T::Private::Methods::SingletonMethodHooks
 end
 
 module Parallel
@@ -2596,10 +2740,1116 @@ class Parallel::UserInterruptHandler
   INTERRUPT_SIGNAL = ::T.let(nil, ::T.untyped)
 end
 
+module Parlour
+  VERSION = ::T.let(nil, ::T.untyped)
+end
+
+class Parlour::ConflictResolver
+  def resolve_conflicts(*args, &blk); end
+end
+
+class Parlour::ConflictResolver
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+module Parlour::Conversion
+end
+
+class Parlour::Conversion::Converter
+  def add_warning(*args, &blk); end
+
+  def warnings(*args, &blk); end
+end
+
+class Parlour::Conversion::Converter
+  extend ::T::Sig
+  extend ::T::Helpers
+  extend ::T::Private::Abstract::Hooks
+  extend ::T::InterfaceWrapper::Helpers
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Parlour::Conversion::RbiToRbs
+  def convert_all(*args, &blk); end
+
+  def convert_object(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def rbs_gen(*args, &blk); end
+end
+
+class Parlour::Conversion::RbiToRbs
+end
+
+module Parlour::Conversion
+end
+
+module Parlour::Debugging
+end
+
+module Parlour::Debugging::Tree
+  INDENT_SPACES = ::T.let(nil, ::T.untyped)
+end
+
+module Parlour::Debugging::Tree
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+  def self.begin(*args, &blk); end
+
+  def self.end(*args, &blk); end
+
+  def self.here(*args, &blk); end
+
+  def self.line_prefix(); end
+
+  def self.text_prefix(); end
+end
+
+module Parlour::Debugging
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+  def self.debug_mode=(*args, &blk); end
+
+  def self.debug_mode?(*args, &blk); end
+
+  def self.debug_puts(*args, &blk); end
+
+  def self.name_for_debug_caller(*args, &blk); end
+end
+
+class Parlour::DetachedRbiGenerator
+  def detached!(*args, &blk); end
+end
+
+class Parlour::DetachedRbiGenerator
+end
+
+class Parlour::DetachedRbsGenerator
+  def detached!(*args, &blk); end
+end
+
+class Parlour::DetachedRbsGenerator
+end
+
+class Parlour::Generator
+  def current_plugin(*args, &blk); end
+
+  def current_plugin=(current_plugin); end
+
+  def initialize(*args, &blk); end
+
+  def options(*args, &blk); end
+end
+
+class Parlour::Generator
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Parlour::Options
+  def break_params(*args, &blk); end
+
+  def indented(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def sort_namespaces(*args, &blk); end
+
+  def tab_size(*args, &blk); end
+end
+
+class Parlour::Options
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Parlour::ParseError
+  def buffer(*args, &blk); end
+
+  def initialize(buffer, range); end
+
+  def range(*args, &blk); end
+end
+
+class Parlour::ParseError
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Parlour::Plugin
+  def generate(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def strictness(*args, &blk); end
+
+  def strictness=(strictness); end
+end
+
+class Parlour::Plugin
+  extend ::T::Sig
+  extend ::T::Helpers
+  extend ::T::Private::Abstract::Hooks
+  extend ::T::InterfaceWrapper::Helpers
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+  def self.inherited(*args, &blk); end
+
+  def self.registered_plugins(*args, &blk); end
+
+  def self.run_plugins(*args, &blk); end
+end
+
+class Parlour::RbiGenerator
+  def initialize(**hash); end
+
+  def rbi(*args, &blk); end
+
+  def root(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::Arbitrary
+  def ==(*args, &blk); end
+
+  def code(*args, &blk); end
+
+  def code=(code); end
+end
+
+class Parlour::RbiGenerator::Arbitrary
+end
+
+class Parlour::RbiGenerator::Attribute
+  def class_attribute(*args, &blk); end
+
+  def kind(*args, &blk); end
+
+  def type(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::Attribute
+end
+
+class Parlour::RbiGenerator::ClassNamespace
+  def abstract(*args, &blk); end
+
+  def superclass(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::ClassNamespace
+end
+
+class Parlour::RbiGenerator::Constant
+  def ==(*args, &blk); end
+
+  def eigen_constant(); end
+
+  def value(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::Constant
+end
+
+class Parlour::RbiGenerator::EnumClassNamespace
+  def enums(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::EnumClassNamespace
+end
+
+class Parlour::RbiGenerator::Extend
+  def ==(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::Extend
+end
+
+class Parlour::RbiGenerator::Include
+  def ==(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::Include
+end
+
+class Parlour::RbiGenerator::Method
+  def ==(*args, &blk); end
+
+  def abstract(*args, &blk); end
+
+  def class_method(*args, &blk); end
+
+  def final(*args, &blk); end
+
+  def implementation(*args, &blk); end
+
+  def overridable(*args, &blk); end
+
+  def override(*args, &blk); end
+
+  def parameters(*args, &blk); end
+
+  def return_type(*args, &blk); end
+
+  def type_parameters(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::Method
+end
+
+class Parlour::RbiGenerator::ModuleNamespace
+  def abstract(*args, &blk); end
+
+  def interface(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::ModuleNamespace
+end
+
+class Parlour::RbiGenerator::Namespace
+  def add_comment_to_next_child(*args, &blk); end
+
+  def aliases(*args, &blk); end
+
+  def children(*args, &blk); end
+
+  def constants(*args, &blk); end
+
+  def create_arbitrary(code:, &block); end
+
+  def create_attr(*args, &blk); end
+
+  def create_attr_accessor(*args, &blk); end
+
+  def create_attr_reader(*args, &blk); end
+
+  def create_attr_writer(*args, &blk); end
+
+  def create_attribute(*args, &blk); end
+
+  def create_class(*args, &blk); end
+
+  def create_constant(*args, &blk); end
+
+  def create_enum_class(*args, &blk); end
+
+  def create_extend(*args, &blk); end
+
+  def create_extends(*args, &blk); end
+
+  def create_include(*args, &blk); end
+
+  def create_includes(*args, &blk); end
+
+  def create_method(*args, &blk); end
+
+  def create_module(*args, &blk); end
+
+  def create_struct_class(*args, &blk); end
+
+  def create_type_alias(*args, &blk); end
+
+  def extends(*args, &blk); end
+
+  def final(*args, &blk); end
+
+  def includes(*args, &blk); end
+
+  def path(*args, &blk); end
+
+  def sealed(*args, &blk); end
+
+  def type_aliases(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::Namespace
+end
+
+Parlour::RbiGenerator::Options = Parlour::Options
+
+class Parlour::RbiGenerator::Parameter
+  def ==(*args, &blk); end
+
+  def default(*args, &blk); end
+
+  def generalize_from_rbi!(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def kind(*args, &blk); end
+
+  def name(*args, &blk); end
+
+  def name_without_kind(*args, &blk); end
+
+  def to_def_param(*args, &blk); end
+
+  def to_sig_param(*args, &blk); end
+
+  def type(*args, &blk); end
+  PREFIXES = ::T.let(nil, ::T.untyped)
+end
+
+class Parlour::RbiGenerator::Parameter
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Parlour::RbiGenerator::RbiObject
+  def generalize_from_rbi!(*args, &blk); end
+
+  def generate_rbi(*args, &blk); end
+
+  def generator(*args, &blk); end
+
+  def merge_into_self(*args, &blk); end
+
+  def mergeable?(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::RbiObject
+end
+
+class Parlour::RbiGenerator::StructClassNamespace
+  def props(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::StructClassNamespace
+end
+
+class Parlour::RbiGenerator::StructProp
+  def ==(*args, &blk); end
+
+  def array(*args, &blk); end
+
+  def default(*args, &blk); end
+
+  def dont_store(*args, &blk); end
+
+  def enum(*args, &blk); end
+
+  def factory(*args, &blk); end
+
+  def foreign(*args, &blk); end
+
+  def generalize_from_rbi!(*args, &blk); end
+
+  def immutable(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def name(*args, &blk); end
+
+  def optional(*args, &blk); end
+
+  def override(*args, &blk); end
+
+  def redaction(*args, &blk); end
+
+  def to_prop_call(*args, &blk); end
+
+  def type(*args, &blk); end
+  EXTRA_PROPERTIES = ::T.let(nil, ::T.untyped)
+end
+
+class Parlour::RbiGenerator::StructProp
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Parlour::RbiGenerator::TypeAlias
+  def ==(*args, &blk); end
+
+  def type(*args, &blk); end
+end
+
+class Parlour::RbiGenerator::TypeAlias
+end
+
+class Parlour::RbiGenerator
+end
+
+class Parlour::RbsGenerator
+  def initialize(**hash); end
+
+  def rbs(*args, &blk); end
+
+  def root(*args, &blk); end
+end
+
+class Parlour::RbsGenerator::Arbitrary
+  def ==(*args, &blk); end
+
+  def code(*args, &blk); end
+
+  def code=(code); end
+end
+
+class Parlour::RbsGenerator::Arbitrary
+end
+
+class Parlour::RbsGenerator::Attribute
+  def kind(*args, &blk); end
+
+  def type(*args, &blk); end
+end
+
+class Parlour::RbsGenerator::Attribute
+end
+
+class Parlour::RbsGenerator::Block
+  def ==(*args, &blk); end
+
+  def generate_rbs(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def required(*args, &blk); end
+
+  def type(*args, &blk); end
+end
+
+class Parlour::RbsGenerator::Block
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Parlour::RbsGenerator::ClassNamespace
+  def superclass(*args, &blk); end
+end
+
+class Parlour::RbsGenerator::ClassNamespace
+end
+
+class Parlour::RbsGenerator::Constant
+  def ==(*args, &blk); end
+
+  def type(*args, &blk); end
+end
+
+class Parlour::RbsGenerator::Constant
+end
+
+class Parlour::RbsGenerator::Extend
+  def ==(*args, &blk); end
+
+  def type(*args, &blk); end
+end
+
+class Parlour::RbsGenerator::Extend
+end
+
+class Parlour::RbsGenerator::Include
+  def ==(*args, &blk); end
+
+  def type(*args, &blk); end
+end
+
+class Parlour::RbsGenerator::Include
+end
+
+class Parlour::RbsGenerator::InterfaceNamespace
+end
+
+class Parlour::RbsGenerator::InterfaceNamespace
+end
+
+class Parlour::RbsGenerator::Method
+  def ==(*args, &blk); end
+
+  def class_method(*args, &blk); end
+
+  def signatures(*args, &blk); end
+end
+
+class Parlour::RbsGenerator::Method
+end
+
+class Parlour::RbsGenerator::MethodSignature
+  def ==(*args, &blk); end
+
+  def block(*args, &blk); end
+
+  def generate_rbs(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def parameters(*args, &blk); end
+
+  def return_type(*args, &blk); end
+
+  def type_parameters(*args, &blk); end
+end
+
+class Parlour::RbsGenerator::MethodSignature
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Parlour::RbsGenerator::ModuleNamespace
+end
+
+class Parlour::RbsGenerator::ModuleNamespace
+end
+
+class Parlour::RbsGenerator::Namespace
+  def add_comment_to_next_child(*args, &blk); end
+
+  def aliases(*args, &blk); end
+
+  def children(*args, &blk); end
+
+  def constants(*args, &blk); end
+
+  def create_arbitrary(code:, &block); end
+
+  def create_attr(*args, &blk); end
+
+  def create_attr_accessor(*args, &blk); end
+
+  def create_attr_reader(*args, &blk); end
+
+  def create_attr_writer(*args, &blk); end
+
+  def create_attribute(*args, &blk); end
+
+  def create_class(*args, &blk); end
+
+  def create_constant(*args, &blk); end
+
+  def create_extend(*args, &blk); end
+
+  def create_extends(*args, &blk); end
+
+  def create_include(*args, &blk); end
+
+  def create_includes(*args, &blk); end
+
+  def create_interface(*args, &blk); end
+
+  def create_method(*args, &blk); end
+
+  def create_module(*args, &blk); end
+
+  def create_type_alias(*args, &blk); end
+
+  def extends(*args, &blk); end
+
+  def includes(*args, &blk); end
+
+  def path(*args, &blk); end
+
+  def type_aliases(*args, &blk); end
+end
+
+class Parlour::RbsGenerator::Namespace
+end
+
+class Parlour::RbsGenerator::Parameter
+  def ==(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def kind(*args, &blk); end
+
+  def name(*args, &blk); end
+
+  def name_without_kind(*args, &blk); end
+
+  def required(*args, &blk); end
+
+  def to_rbs_param(*args, &blk); end
+
+  def type(*args, &blk); end
+  PREFIXES = ::T.let(nil, ::T.untyped)
+  RBS_KEYWORDS = ::T.let(nil, ::T.untyped)
+end
+
+class Parlour::RbsGenerator::Parameter
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Parlour::RbsGenerator::RbsObject
+  def generate_rbs(*args, &blk); end
+
+  def generator(*args, &blk); end
+
+  def merge_into_self(*args, &blk); end
+
+  def mergeable?(*args, &blk); end
+end
+
+class Parlour::RbsGenerator::RbsObject
+end
+
+class Parlour::RbsGenerator::TypeAlias
+  def ==(*args, &blk); end
+
+  def type(*args, &blk); end
+end
+
+class Parlour::RbsGenerator::TypeAlias
+end
+
+class Parlour::RbsGenerator
+end
+
+module Parlour::TypeLoader
+end
+
+module Parlour::TypeLoader
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+  def self.load_file(*args, &blk); end
+
+  def self.load_project(*args, &blk); end
+
+  def self.load_source(*args, &blk); end
+end
+
+class Parlour::TypeParser
+  def ast(*args, &blk); end
+
+  def ast=(ast); end
+
+  def body_has_modifier?(*args, &blk); end
+
+  def body_includes_and_extends(*args, &blk); end
+
+  def constant_names(*args, &blk); end
+
+  def generator(*args, &blk); end
+
+  def generator=(generator); end
+
+  def initialize(*args, &blk); end
+
+  def node_to_s(*args, &blk); end
+
+  def parse_all(*args, &blk); end
+
+  def parse_err(*args, &blk); end
+
+  def parse_method_into_methods(*args, &blk); end
+
+  def parse_node_to_type(*args, &blk); end
+
+  def parse_path_to_object(*args, &blk); end
+
+  def parse_sig_into_methods(*args, &blk); end
+
+  def parse_sig_into_sig(*args, &blk); end
+
+  def previous_sibling_sig_node?(*args, &blk); end
+
+  def sig_node?(*args, &blk); end
+
+  def unknown_node_errors(*args, &blk); end
+
+  def warning(*args, &blk); end
+
+  def zip_by(*args, &blk); end
+end
+
+class Parlour::TypeParser::IntermediateSig
+  def abstract(); end
+
+  def abstract=(val); end
+
+  def final(); end
+
+  def final=(val); end
+
+  def initialize(*args, &blk); end
+
+  def overridable(); end
+
+  def overridable=(val); end
+
+  def override(); end
+
+  def override=(val); end
+
+  def params(); end
+
+  def params=(val); end
+
+  def return_type(); end
+
+  def return_type=(val); end
+
+  def type_parameters(); end
+
+  def type_parameters=(val); end
+end
+
+class Parlour::TypeParser::IntermediateSig
+  def self.inherited(s); end
+end
+
+class Parlour::TypeParser::NodePath
+  def child(*args, &blk); end
+
+  def indices(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def parent(*args, &blk); end
+
+  def sibling(*args, &blk); end
+
+  def traverse(*args, &blk); end
+end
+
+class Parlour::TypeParser::NodePath
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Parlour::TypeParser
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+  def self.from_source(*args, &blk); end
+
+  def self.parse_single_type(*args, &blk); end
+end
+
+class Parlour::TypedObject
+  def add_comment(*args, &blk); end
+
+  def add_comments(*args, &blk); end
+
+  def comments(*args, &blk); end
+
+  def describe(*args, &blk); end
+
+  def generate_comments(*args, &blk); end
+
+  def generated_by(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def name(*args, &blk); end
+end
+
+class Parlour::TypedObject
+  extend ::T::Sig
+  extend ::T::Helpers
+  extend ::T::Private::Abstract::Hooks
+  extend ::T::InterfaceWrapper::Helpers
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+module Parlour::Types
+  TypeLike = ::T.let(nil, ::T.untyped)
+end
+
+class Parlour::Types::Array
+  def ==(*args, &blk); end
+end
+
+class Parlour::Types::Array
+end
+
+class Parlour::Types::Boolean
+  def ==(*args, &blk); end
+end
+
+class Parlour::Types::Boolean
+end
+
+class Parlour::Types::Class
+  def ==(*args, &blk); end
+
+  def type(*args, &blk); end
+end
+
+class Parlour::Types::Class
+end
+
+class Parlour::Types::Enumerable
+  def ==(*args, &blk); end
+end
+
+class Parlour::Types::Enumerable
+end
+
+class Parlour::Types::Enumerator
+  def ==(*args, &blk); end
+end
+
+class Parlour::Types::Enumerator
+end
+
+class Parlour::Types::Generic
+  def ==(*args, &blk); end
+
+  def type(*args, &blk); end
+
+  def type_params(*args, &blk); end
+end
+
+class Parlour::Types::Generic
+end
+
+class Parlour::Types::Hash
+  def ==(*args, &blk); end
+
+  def key(*args, &blk); end
+
+  def value(*args, &blk); end
+end
+
+class Parlour::Types::Hash
+end
+
+class Parlour::Types::Intersection
+  def ==(*args, &blk); end
+
+  def types(*args, &blk); end
+end
+
+class Parlour::Types::Intersection
+end
+
+class Parlour::Types::Nilable
+  def ==(*args, &blk); end
+
+  def type(*args, &blk); end
+end
+
+class Parlour::Types::Nilable
+end
+
+class Parlour::Types::Proc
+  def ==(*args, &blk); end
+
+  def parameters(*args, &blk); end
+
+  def return_type(*args, &blk); end
+end
+
+class Parlour::Types::Proc::Parameter
+  def ==(*args, &blk); end
+
+  def default(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def name(*args, &blk); end
+
+  def type(*args, &blk); end
+end
+
+class Parlour::Types::Proc::Parameter
+  extend ::T::Sig
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Parlour::Types::Proc
+end
+
+class Parlour::Types::Range
+  def ==(*args, &blk); end
+end
+
+class Parlour::Types::Range
+end
+
+class Parlour::Types::Raw
+  def ==(*args, &blk); end
+
+  def str(*args, &blk); end
+end
+
+class Parlour::Types::Raw
+end
+
+class Parlour::Types::Record
+  def ==(*args, &blk); end
+
+  def keys_to_types(*args, &blk); end
+end
+
+class Parlour::Types::Record
+end
+
+class Parlour::Types::Self
+  def ==(*args, &blk); end
+end
+
+class Parlour::Types::Self
+end
+
+class Parlour::Types::Set
+  def ==(*args, &blk); end
+end
+
+class Parlour::Types::Set
+end
+
+class Parlour::Types::SingleElementCollection
+  def collection_name(*args, &blk); end
+
+  def element(*args, &blk); end
+end
+
+class Parlour::Types::SingleElementCollection
+end
+
+class Parlour::Types::Tuple
+  def ==(*args, &blk); end
+
+  def types(*args, &blk); end
+end
+
+class Parlour::Types::Tuple
+end
+
+class Parlour::Types::Type
+  def describe(*args, &blk); end
+
+  def generate_rbi(*args, &blk); end
+
+  def generate_rbs(*args, &blk); end
+
+  def initialize(*args, &blk); end
+
+  def to_type(*args, &blk); end
+end
+
+class Parlour::Types::Type
+  extend ::T::Sig
+  extend ::T::Helpers
+  extend ::T::Private::Abstract::Hooks
+  extend ::T::InterfaceWrapper::Helpers
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+  def self.to_type(*args, &blk); end
+end
+
+class Parlour::Types::Union
+  def ==(*args, &blk); end
+
+  def types(*args, &blk); end
+end
+
+class Parlour::Types::Union
+end
+
+class Parlour::Types::Untyped
+  def ==(*args, &blk); end
+end
+
+class Parlour::Types::Untyped
+end
+
+module Parlour::Types
+end
+
+module Parlour
+end
+
+ParseError = Racc::ParseError
+
+module Parser
+  MESSAGES = ::T.let(nil, ::T.untyped)
+  VERSION = ::T.let(nil, ::T.untyped)
+end
+
+Parser::CurrentRuby = Parser::Ruby27
+
+class Parser::Diagnostic
+  LEVELS = ::T.let(nil, ::T.untyped)
+end
+
+class Parser::Lexer
+  ESCAPES = ::T.let(nil, ::T.untyped)
+  KEYWORDS = ::T.let(nil, ::T.untyped)
+  KEYWORDS_BEGIN = ::T.let(nil, ::T.untyped)
+  LEX_STATES = ::T.let(nil, ::T.untyped)
+  PUNCTUATION = ::T.let(nil, ::T.untyped)
+  PUNCTUATION_BEGIN = ::T.let(nil, ::T.untyped)
+  REGEXP_META_CHARACTERS = ::T.let(nil, ::T.untyped)
+end
+
+class Parser::Lexer::Dedenter
+  TAB_WIDTH = ::T.let(nil, ::T.untyped)
+end
+
+class Parser::Lexer::Literal
+  DELIMITERS = ::T.let(nil, ::T.untyped)
+  TYPES = ::T.let(nil, ::T.untyped)
+end
+
+class Parser::MaxNumparamStack
+  ORDINARY_PARAMS = ::T.let(nil, ::T.untyped)
+end
+
+module Parser::Meta
+  NODE_TYPES = ::T.let(nil, ::T.untyped)
+end
+
+class Parser::Rewriter
+  DEPRECATION_WARNING = ::T.let(nil, ::T.untyped)
+end
+
+class Parser::Ruby24
+  Racc_arg = ::T.let(nil, ::T.untyped)
+  Racc_debug_parser = ::T.let(nil, ::T.untyped)
+  Racc_token_to_s_table = ::T.let(nil, ::T.untyped)
+end
+
+class Parser::Ruby27
+  Racc_arg = ::T.let(nil, ::T.untyped)
+  Racc_debug_parser = ::T.let(nil, ::T.untyped)
+  Racc_token_to_s_table = ::T.let(nil, ::T.untyped)
+end
+
+class Parser::Source::Buffer
+  ENCODING_RE = ::T.let(nil, ::T.untyped)
+end
+
+class Parser::Source::Comment::Associator
+  MAGIC_COMMENT_RE = ::T.let(nil, ::T.untyped)
+  POSTFIX_TYPES = ::T.let(nil, ::T.untyped)
+end
+
+class Parser::Source::Rewriter
+  DEPRECATION_WARNING = ::T.let(nil, ::T.untyped)
+end
+
+class Parser::Source::TreeRewriter
+  ACTIONS = ::T.let(nil, ::T.untyped)
+  DEPRECATION_WARNING = ::T.let(nil, ::T.untyped)
+  POLICY_TO_LEVEL = ::T.let(nil, ::T.untyped)
+end
+
+class Parser::StaticEnvironment
+  FORWARD_ARGS = ::T.let(nil, ::T.untyped)
+end
+
 class Pathname
   def fnmatch?(*arg); end
-
-  def glob(*arg); end
 
   def make_symlink(arg); end
 end
@@ -4216,6 +5466,19 @@ module RSpec::Version
   STRING = ::T.let(nil, ::T.untyped)
 end
 
+module Racc
+  Copyright = ::T.let(nil, ::T.untyped)
+  Racc_No_Extentions = ::T.let(nil, ::T.untyped)
+  VERSION = ::T.let(nil, ::T.untyped)
+  Version = ::T.let(nil, ::T.untyped)
+end
+
+class Racc::CparseParams
+end
+
+class Racc::CparseParams
+end
+
 class Racc::Parser
   Racc_Main_Parsing_Routine = ::T.let(nil, ::T.untyped)
   Racc_Runtime_Core_Id_C = ::T.let(nil, ::T.untyped)
@@ -4229,6 +5492,18 @@ class Racc::Parser
   Racc_Runtime_Type = ::T.let(nil, ::T.untyped)
   Racc_Runtime_Version = ::T.let(nil, ::T.untyped)
   Racc_YY_Parse_Method = ::T.let(nil, ::T.untyped)
+end
+
+class Rainbow::Color::Named
+  NAMES = ::T.let(nil, ::T.untyped)
+end
+
+class Rainbow::Presenter
+  TERM_EFFECTS = ::T.let(nil, ::T.untyped)
+end
+
+module Rainbow::X11ColorNames
+  NAMES = ::T.let(nil, ::T.untyped)
 end
 
 module Rake
@@ -4834,15 +6109,6 @@ class Ripper::SexpBuilder
   def on_yield0(*args); end
 
   def on_zsuper(*args); end
-end
-
-class Ripper::SexpBuilder
-end
-
-class Ripper::SexpBuilderPP
-end
-
-class Ripper::SexpBuilderPP
 end
 
 class Ripper::TokenPattern

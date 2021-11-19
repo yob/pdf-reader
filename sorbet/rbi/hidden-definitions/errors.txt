@@ -252,15 +252,6 @@
 # wrong constant name <static-init>
 # wrong constant name inject
 # wrong constant name remove
-# wrong constant name generate_bundler_executable_stubs
-# wrong constant name generate_standalone_bundler_executable_stubs
-# wrong constant name initialize
-# wrong constant name post_install_messages
-# wrong constant name run
-# wrong constant name <static-init>
-# wrong constant name ambiguous_gems
-# wrong constant name ambiguous_gems=
-# wrong constant name install
 # wrong constant name ==
 # wrong constant name app_cache_dirname
 # wrong constant name app_cache_path
@@ -449,6 +440,13 @@
 # uninitialized constant CodeRay::Scanners::Scanner::Id
 # uninitialized constant CodeRay::Scanners::Scanner::Version
 # Did you mean?  CodeRay::VERSION
+# wrong constant name initialize
+# wrong constant name render
+# wrong constant name render_command
+# wrong constant name <static-init>
+# wrong constant name template
+# wrong constant name <static-init>
+# wrong constant name <static-init>
 # uninitialized constant Continuation
 # uninitialized constant Continuation
 # uninitialized constant Coverage
@@ -530,6 +528,8 @@
 # wrong constant name method_missing
 # wrong constant name <static-init>
 # wrong constant name mutex
+# wrong constant name infinite?
+# wrong constant name initialize
 # wrong constant name class_name
 # wrong constant name class_names
 # wrong constant name corrections
@@ -906,6 +906,166 @@
 # wrong constant name ruby2_keywords_hash
 # wrong constant name ruby2_keywords_hash?
 # wrong constant name try_convert
+# Bad color or uninitialized constant BASIC_COLORS
+# Bad color or uninitialized constant BLACK
+# Bad color or uninitialized constant BLACK_STYLE
+# Bad color or uninitialized constant BLINK
+# Bad color or uninitialized constant BLINK_STYLE
+# Bad color or uninitialized constant BLUE
+# Bad color or uninitialized constant BLUE_STYLE
+# Bad color or uninitialized constant BOLD
+# Bad color or uninitialized constant BOLD_STYLE
+# Bad color or uninitialized constant BRIGHT_BLACK
+# Bad color or uninitialized constant BRIGHT_BLACK_STYLE
+# Bad color or uninitialized constant BRIGHT_BLUE
+# Bad color or uninitialized constant BRIGHT_BLUE_STYLE
+# Bad color or uninitialized constant BRIGHT_CYAN
+# Bad color or uninitialized constant BRIGHT_CYAN_STYLE
+# Bad color or uninitialized constant BRIGHT_GRAY
+# Bad color or uninitialized constant BRIGHT_GRAY_STYLE
+# Bad color or uninitialized constant BRIGHT_GREEN
+# Bad color or uninitialized constant BRIGHT_GREEN_STYLE
+# Bad color or uninitialized constant BRIGHT_GREY
+# Bad color or uninitialized constant BRIGHT_GREY_STYLE
+# Bad color or uninitialized constant BRIGHT_MAGENTA
+# Bad color or uninitialized constant BRIGHT_MAGENTA_STYLE
+# Bad color or uninitialized constant BRIGHT_NONE
+# Bad color or uninitialized constant BRIGHT_NONE_STYLE
+# Bad color or uninitialized constant BRIGHT_RED
+# Bad color or uninitialized constant BRIGHT_RED_STYLE
+# Bad color or uninitialized constant BRIGHT_WHITE
+# Bad color or uninitialized constant BRIGHT_WHITE_STYLE
+# Bad color or uninitialized constant BRIGHT_YELLOW
+# Bad color or uninitialized constant BRIGHT_YELLOW_STYLE
+# Bad color or uninitialized constant CLEAR
+# Bad color or uninitialized constant CLEAR_STYLE
+# Bad color or uninitialized constant COLORS
+# Bad color or uninitialized constant COLOR_LIST
+# Bad color or uninitialized constant CONCEALED
+# Bad color or uninitialized constant CONCEALED_STYLE
+# Bad color or uninitialized constant CYAN
+# Bad color or uninitialized constant CYAN_STYLE
+# Bad color or uninitialized constant DARK
+# Bad color or uninitialized constant DARK_STYLE
+# Bad color or uninitialized constant ERASE_CHAR
+# Bad color or uninitialized constant ERASE_CHAR_STYLE
+# Bad color or uninitialized constant ERASE_LINE
+# Bad color or uninitialized constant ERASE_LINE_STYLE
+# Bad color or uninitialized constant GRAY
+# Bad color or uninitialized constant GRAY_STYLE
+# Bad color or uninitialized constant GREEN
+# Bad color or uninitialized constant GREEN_STYLE
+# Bad color or uninitialized constant GREY
+# Bad color or uninitialized constant GREY_STYLE
+# Bad color or uninitialized constant LIGHT_BLACK
+# Bad color or uninitialized constant LIGHT_BLACK_STYLE
+# Bad color or uninitialized constant LIGHT_BLUE
+# Bad color or uninitialized constant LIGHT_BLUE_STYLE
+# Bad color or uninitialized constant LIGHT_CYAN
+# Bad color or uninitialized constant LIGHT_CYAN_STYLE
+# Bad color or uninitialized constant LIGHT_GRAY
+# Bad color or uninitialized constant LIGHT_GRAY_STYLE
+# Bad color or uninitialized constant LIGHT_GREEN
+# Bad color or uninitialized constant LIGHT_GREEN_STYLE
+# Bad color or uninitialized constant LIGHT_GREY
+# Bad color or uninitialized constant LIGHT_GREY_STYLE
+# Bad color or uninitialized constant LIGHT_MAGENTA
+# Bad color or uninitialized constant LIGHT_MAGENTA_STYLE
+# Bad color or uninitialized constant LIGHT_NONE
+# Bad color or uninitialized constant LIGHT_NONE_STYLE
+# Bad color or uninitialized constant LIGHT_RED
+# Bad color or uninitialized constant LIGHT_RED_STYLE
+# Bad color or uninitialized constant LIGHT_WHITE
+# Bad color or uninitialized constant LIGHT_WHITE_STYLE
+# Bad color or uninitialized constant LIGHT_YELLOW
+# Bad color or uninitialized constant LIGHT_YELLOW_STYLE
+# Bad color or uninitialized constant MAGENTA
+# Bad color or uninitialized constant MAGENTA_STYLE
+# Bad color or uninitialized constant NONE
+# Bad color or uninitialized constant NONE_STYLE
+# Bad color or uninitialized constant ON_BLACK
+# Bad color or uninitialized constant ON_BLACK_STYLE
+# Bad color or uninitialized constant ON_BLUE
+# Bad color or uninitialized constant ON_BLUE_STYLE
+# Bad color or uninitialized constant ON_BRIGHT_BLACK
+# Bad color or uninitialized constant ON_BRIGHT_BLACK_STYLE
+# Bad color or uninitialized constant ON_BRIGHT_BLUE
+# Bad color or uninitialized constant ON_BRIGHT_BLUE_STYLE
+# Bad color or uninitialized constant ON_BRIGHT_CYAN
+# Bad color or uninitialized constant ON_BRIGHT_CYAN_STYLE
+# Bad color or uninitialized constant ON_BRIGHT_GRAY
+# Bad color or uninitialized constant ON_BRIGHT_GRAY_STYLE
+# Bad color or uninitialized constant ON_BRIGHT_GREEN
+# Bad color or uninitialized constant ON_BRIGHT_GREEN_STYLE
+# Bad color or uninitialized constant ON_BRIGHT_GREY
+# Bad color or uninitialized constant ON_BRIGHT_GREY_STYLE
+# Bad color or uninitialized constant ON_BRIGHT_MAGENTA
+# Bad color or uninitialized constant ON_BRIGHT_MAGENTA_STYLE
+# Bad color or uninitialized constant ON_BRIGHT_NONE
+# Bad color or uninitialized constant ON_BRIGHT_NONE_STYLE
+# Bad color or uninitialized constant ON_BRIGHT_RED
+# Bad color or uninitialized constant ON_BRIGHT_RED_STYLE
+# Bad color or uninitialized constant ON_BRIGHT_WHITE
+# Bad color or uninitialized constant ON_BRIGHT_WHITE_STYLE
+# Bad color or uninitialized constant ON_BRIGHT_YELLOW
+# Bad color or uninitialized constant ON_BRIGHT_YELLOW_STYLE
+# Bad color or uninitialized constant ON_CYAN
+# Bad color or uninitialized constant ON_CYAN_STYLE
+# Bad color or uninitialized constant ON_GRAY
+# Bad color or uninitialized constant ON_GRAY_STYLE
+# Bad color or uninitialized constant ON_GREEN
+# Bad color or uninitialized constant ON_GREEN_STYLE
+# Bad color or uninitialized constant ON_GREY
+# Bad color or uninitialized constant ON_GREY_STYLE
+# Bad color or uninitialized constant ON_LIGHT_BLACK
+# Bad color or uninitialized constant ON_LIGHT_BLACK_STYLE
+# Bad color or uninitialized constant ON_LIGHT_BLUE
+# Bad color or uninitialized constant ON_LIGHT_BLUE_STYLE
+# Bad color or uninitialized constant ON_LIGHT_CYAN
+# Bad color or uninitialized constant ON_LIGHT_CYAN_STYLE
+# Bad color or uninitialized constant ON_LIGHT_GRAY
+# Bad color or uninitialized constant ON_LIGHT_GRAY_STYLE
+# Bad color or uninitialized constant ON_LIGHT_GREEN
+# Bad color or uninitialized constant ON_LIGHT_GREEN_STYLE
+# Bad color or uninitialized constant ON_LIGHT_GREY
+# Bad color or uninitialized constant ON_LIGHT_GREY_STYLE
+# Bad color or uninitialized constant ON_LIGHT_MAGENTA
+# Bad color or uninitialized constant ON_LIGHT_MAGENTA_STYLE
+# Bad color or uninitialized constant ON_LIGHT_NONE
+# Bad color or uninitialized constant ON_LIGHT_NONE_STYLE
+# Bad color or uninitialized constant ON_LIGHT_RED
+# Bad color or uninitialized constant ON_LIGHT_RED_STYLE
+# Bad color or uninitialized constant ON_LIGHT_WHITE
+# Bad color or uninitialized constant ON_LIGHT_WHITE_STYLE
+# Bad color or uninitialized constant ON_LIGHT_YELLOW
+# Bad color or uninitialized constant ON_LIGHT_YELLOW_STYLE
+# Bad color or uninitialized constant ON_MAGENTA
+# Bad color or uninitialized constant ON_MAGENTA_STYLE
+# Bad color or uninitialized constant ON_NONE
+# Bad color or uninitialized constant ON_NONE_STYLE
+# Bad color or uninitialized constant ON_RED
+# Bad color or uninitialized constant ON_RED_STYLE
+# Bad color or uninitialized constant ON_WHITE
+# Bad color or uninitialized constant ON_WHITE_STYLE
+# Bad color or uninitialized constant ON_YELLOW
+# Bad color or uninitialized constant ON_YELLOW_STYLE
+# Bad color or uninitialized constant RED
+# Bad color or uninitialized constant RED_STYLE
+# Bad color or uninitialized constant RESET
+# Bad color or uninitialized constant RESET_STYLE
+# Bad color or uninitialized constant REVERSE
+# Bad color or uninitialized constant REVERSE_STYLE
+# Bad color or uninitialized constant STYLES
+# Bad color or uninitialized constant STYLE_LIST
+# Bad color or uninitialized constant UNDERLINE
+# Bad color or uninitialized constant UNDERLINE_STYLE
+# Bad color or uninitialized constant UNDERSCORE
+# Bad color or uninitialized constant UNDERSCORE_STYLE
+# Bad color or uninitialized constant WHITE
+# Bad color or uninitialized constant WHITE_STYLE
+# Bad color or uninitialized constant YELLOW
+# Bad color or uninitialized constant YELLOW_STYLE
+# wrong constant name <Class:ConsoleMode>
 # wrong constant name beep
 # wrong constant name check_winsize_changed
 # wrong constant name clear_screen
@@ -948,6 +1108,10 @@
 # wrong constant name wait_writable
 # wrong constant name winsize
 # wrong constant name winsize=
+# wrong constant name echo=
+# wrong constant name raw
+# wrong constant name raw!
+# wrong constant name <static-init>
 # wrong constant name console
 # wrong constant name console_size
 # wrong constant name default_console_size
@@ -1063,10 +1227,6 @@
 # wrong constant name <Class:Object>
 # uninitialized constant Observable
 # uninitialized constant Observable
-# uninitialized constant Open3
-# Did you mean?  OpenSSL
-# uninitialized constant Open3
-# Did you mean?  OpenSSL
 # wrong constant name indefinite_length
 # wrong constant name indefinite_length=
 # wrong constant name +@
@@ -1110,9 +1270,9 @@
 # wrong constant name to_der
 # wrong constant name fips_mode
 # uninitialized constant OpenURI
-# Did you mean?  OpenStruct
+# Did you mean?  Open3
 # uninitialized constant OpenURI
-# Did you mean?  OpenStruct
+# Did you mean?  Open3
 # wrong constant name additional_message
 # wrong constant name get_candidates
 # wrong constant name additional
@@ -1129,8 +1289,563 @@
 # uninitialized constant PackageSpec
 # uninitialized constant PackageSpec
 # wrong constant name <Class:PackageSpec>
+# wrong constant name <Class:ConflictResolver>
+# wrong constant name <Class:Conversion>
+# wrong constant name <Class:Debugging>
+# wrong constant name <Class:DetachedRbiGenerator>
+# wrong constant name <Class:DetachedRbsGenerator>
+# wrong constant name <Class:Generator>
+# wrong constant name <Class:Options>
+# wrong constant name <Class:ParseError>
+# wrong constant name <Class:Plugin>
+# wrong constant name <Class:RbiGenerator>
+# wrong constant name <Class:RbsGenerator>
+# wrong constant name <Class:TypeLoader>
+# wrong constant name <Class:TypeParser>
+# wrong constant name <Class:TypedObject>
+# wrong constant name <Class:Types>
+# wrong constant name resolve_conflicts
+# wrong constant name <static-init>
+# wrong constant name <Class:Converter>
+# wrong constant name <Class:RbiToRbs>
+# wrong constant name add_warning
+# wrong constant name warnings
+# wrong constant name <static-init>
+# wrong constant name convert_all
+# wrong constant name convert_object
+# wrong constant name initialize
+# wrong constant name rbs_gen
+# wrong constant name <static-init>
+# wrong constant name <static-init>
+# wrong constant name <Class:Tree>
+# wrong constant name <static-init>
+# wrong constant name begin
+# wrong constant name end
+# wrong constant name here
+# wrong constant name line_prefix
+# wrong constant name text_prefix
+# wrong constant name <static-init>
+# wrong constant name debug_mode=
+# wrong constant name debug_mode?
+# wrong constant name debug_puts
+# wrong constant name name_for_debug_caller
+# wrong constant name detached!
+# wrong constant name <static-init>
+# wrong constant name detached!
+# wrong constant name <static-init>
+# wrong constant name current_plugin
+# wrong constant name current_plugin=
+# wrong constant name initialize
+# wrong constant name options
+# wrong constant name <static-init>
+# wrong constant name break_params
+# wrong constant name indented
+# wrong constant name initialize
+# wrong constant name sort_namespaces
+# wrong constant name tab_size
+# wrong constant name <static-init>
+# wrong constant name buffer
+# wrong constant name initialize
+# wrong constant name range
+# wrong constant name <static-init>
+# wrong constant name generate
+# wrong constant name initialize
+# wrong constant name strictness
+# wrong constant name strictness=
+# wrong constant name <static-init>
+# wrong constant name inherited
+# wrong constant name registered_plugins
+# wrong constant name run_plugins
+# wrong constant name <Class:Arbitrary>
+# wrong constant name <Class:Attribute>
+# wrong constant name <Class:ClassNamespace>
+# wrong constant name <Class:Constant>
+# wrong constant name <Class:EnumClassNamespace>
+# wrong constant name <Class:Extend>
+# wrong constant name <Class:Include>
+# wrong constant name <Class:Method>
+# wrong constant name <Class:ModuleNamespace>
+# wrong constant name <Class:Namespace>
+# wrong constant name <Class:Parameter>
+# wrong constant name <Class:RbiObject>
+# wrong constant name <Class:StructClassNamespace>
+# wrong constant name <Class:StructProp>
+# wrong constant name <Class:TypeAlias>
+# wrong constant name initialize
+# wrong constant name rbi
+# wrong constant name root
+# wrong constant name ==
+# wrong constant name code
+# wrong constant name code=
+# wrong constant name <static-init>
+# wrong constant name class_attribute
+# wrong constant name kind
+# wrong constant name type
+# wrong constant name <static-init>
+# wrong constant name abstract
+# wrong constant name superclass
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name eigen_constant
+# wrong constant name value
+# wrong constant name <static-init>
+# wrong constant name enums
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name abstract
+# wrong constant name class_method
+# wrong constant name final
+# wrong constant name implementation
+# wrong constant name overridable
+# wrong constant name override
+# wrong constant name parameters
+# wrong constant name return_type
+# wrong constant name type_parameters
+# wrong constant name <static-init>
+# wrong constant name abstract
+# wrong constant name interface
+# wrong constant name <static-init>
+# wrong constant name add_comment_to_next_child
+# wrong constant name aliases
+# wrong constant name children
+# wrong constant name constants
+# wrong constant name create_arbitrary
+# wrong constant name create_attr
+# wrong constant name create_attr_accessor
+# wrong constant name create_attr_reader
+# wrong constant name create_attr_writer
+# wrong constant name create_attribute
+# wrong constant name create_class
+# wrong constant name create_constant
+# wrong constant name create_enum_class
+# wrong constant name create_extend
+# wrong constant name create_extends
+# wrong constant name create_include
+# wrong constant name create_includes
+# wrong constant name create_method
+# wrong constant name create_module
+# wrong constant name create_struct_class
+# wrong constant name create_type_alias
+# wrong constant name extends
+# wrong constant name final
+# wrong constant name includes
+# wrong constant name path
+# wrong constant name sealed
+# wrong constant name type_aliases
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name default
+# wrong constant name generalize_from_rbi!
+# wrong constant name initialize
+# wrong constant name kind
+# wrong constant name name
+# wrong constant name name_without_kind
+# wrong constant name to_def_param
+# wrong constant name to_sig_param
+# wrong constant name type
+# wrong constant name <static-init>
+# wrong constant name generalize_from_rbi!
+# wrong constant name generate_rbi
+# wrong constant name generator
+# wrong constant name merge_into_self
+# wrong constant name mergeable?
+# wrong constant name <static-init>
+# wrong constant name props
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name array
+# wrong constant name default
+# wrong constant name dont_store
+# wrong constant name enum
+# wrong constant name factory
+# wrong constant name foreign
+# wrong constant name generalize_from_rbi!
+# wrong constant name immutable
+# wrong constant name initialize
+# wrong constant name name
+# wrong constant name optional
+# wrong constant name override
+# wrong constant name redaction
+# wrong constant name to_prop_call
+# wrong constant name type
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name type
+# wrong constant name <static-init>
+# wrong constant name <static-init>
+# wrong constant name <Class:Arbitrary>
+# wrong constant name <Class:Attribute>
+# wrong constant name <Class:Block>
+# wrong constant name <Class:ClassNamespace>
+# wrong constant name <Class:Constant>
+# wrong constant name <Class:Extend>
+# wrong constant name <Class:Include>
+# wrong constant name <Class:InterfaceNamespace>
+# wrong constant name <Class:Method>
+# wrong constant name <Class:MethodSignature>
+# wrong constant name <Class:ModuleNamespace>
+# wrong constant name <Class:Namespace>
+# wrong constant name <Class:Parameter>
+# wrong constant name <Class:RbsObject>
+# wrong constant name <Class:TypeAlias>
+# wrong constant name initialize
+# wrong constant name rbs
+# wrong constant name root
+# wrong constant name ==
+# wrong constant name code
+# wrong constant name code=
+# wrong constant name <static-init>
+# wrong constant name kind
+# wrong constant name type
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name generate_rbs
+# wrong constant name initialize
+# wrong constant name required
+# wrong constant name type
+# wrong constant name <static-init>
+# wrong constant name superclass
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name type
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name type
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name type
+# wrong constant name <static-init>
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name class_method
+# wrong constant name signatures
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name block
+# wrong constant name generate_rbs
+# wrong constant name initialize
+# wrong constant name parameters
+# wrong constant name return_type
+# wrong constant name type_parameters
+# wrong constant name <static-init>
+# wrong constant name <static-init>
+# wrong constant name add_comment_to_next_child
+# wrong constant name aliases
+# wrong constant name children
+# wrong constant name constants
+# wrong constant name create_arbitrary
+# wrong constant name create_attr
+# wrong constant name create_attr_accessor
+# wrong constant name create_attr_reader
+# wrong constant name create_attr_writer
+# wrong constant name create_attribute
+# wrong constant name create_class
+# wrong constant name create_constant
+# wrong constant name create_extend
+# wrong constant name create_extends
+# wrong constant name create_include
+# wrong constant name create_includes
+# wrong constant name create_interface
+# wrong constant name create_method
+# wrong constant name create_module
+# wrong constant name create_type_alias
+# wrong constant name extends
+# wrong constant name includes
+# wrong constant name path
+# wrong constant name type_aliases
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name initialize
+# wrong constant name kind
+# wrong constant name name
+# wrong constant name name_without_kind
+# wrong constant name required
+# wrong constant name to_rbs_param
+# wrong constant name type
+# wrong constant name <static-init>
+# wrong constant name generate_rbs
+# wrong constant name generator
+# wrong constant name merge_into_self
+# wrong constant name mergeable?
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name type
+# wrong constant name <static-init>
+# wrong constant name <static-init>
+# wrong constant name <static-init>
+# wrong constant name load_file
+# wrong constant name load_project
+# wrong constant name load_source
+# wrong constant name <Class:IntermediateSig>
+# wrong constant name <Class:NodePath>
+# wrong constant name ast
+# wrong constant name ast=
+# wrong constant name body_has_modifier?
+# wrong constant name body_includes_and_extends
+# wrong constant name constant_names
+# wrong constant name generator
+# wrong constant name generator=
+# wrong constant name initialize
+# wrong constant name node_to_s
+# wrong constant name parse_all
+# wrong constant name parse_err
+# wrong constant name parse_method_into_methods
+# wrong constant name parse_node_to_type
+# wrong constant name parse_path_to_object
+# wrong constant name parse_sig_into_methods
+# wrong constant name parse_sig_into_sig
+# wrong constant name previous_sibling_sig_node?
+# wrong constant name sig_node?
+# wrong constant name unknown_node_errors
+# wrong constant name warning
+# wrong constant name zip_by
+# wrong constant name abstract
+# wrong constant name abstract=
+# wrong constant name final
+# wrong constant name final=
+# wrong constant name initialize
+# wrong constant name overridable
+# wrong constant name overridable=
+# wrong constant name override
+# wrong constant name override=
+# wrong constant name params
+# wrong constant name params=
+# wrong constant name return_type
+# wrong constant name return_type=
+# wrong constant name type_parameters
+# wrong constant name type_parameters=
+# wrong constant name <static-init>
+# wrong constant name inherited
+# wrong constant name child
+# wrong constant name indices
+# wrong constant name initialize
+# wrong constant name parent
+# wrong constant name sibling
+# wrong constant name traverse
+# wrong constant name <static-init>
+# wrong constant name <static-init>
+# wrong constant name from_source
+# wrong constant name parse_single_type
+# wrong constant name add_comment
+# wrong constant name add_comments
+# wrong constant name comments
+# wrong constant name describe
+# wrong constant name generate_comments
+# wrong constant name generated_by
+# wrong constant name initialize
+# wrong constant name name
+# wrong constant name <static-init>
+# wrong constant name <Class:Array>
+# wrong constant name <Class:Boolean>
+# wrong constant name <Class:Class>
+# wrong constant name <Class:Enumerable>
+# wrong constant name <Class:Enumerator>
+# wrong constant name <Class:Generic>
+# wrong constant name <Class:Hash>
+# wrong constant name <Class:Intersection>
+# wrong constant name <Class:Nilable>
+# wrong constant name <Class:Proc>
+# wrong constant name <Class:Range>
+# wrong constant name <Class:Raw>
+# wrong constant name <Class:Record>
+# wrong constant name <Class:Self>
+# wrong constant name <Class:Set>
+# wrong constant name <Class:SingleElementCollection>
+# wrong constant name <Class:Tuple>
+# wrong constant name <Class:Type>
+# wrong constant name <Class:Union>
+# wrong constant name <Class:Untyped>
+# wrong constant name ==
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name type
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name type
+# wrong constant name type_params
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name key
+# wrong constant name value
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name types
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name type
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name <Class:Parameter>
+# wrong constant name parameters
+# wrong constant name return_type
+# wrong constant name ==
+# wrong constant name default
+# wrong constant name initialize
+# wrong constant name name
+# wrong constant name type
+# wrong constant name <static-init>
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name str
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name keys_to_types
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name <static-init>
+# wrong constant name collection_name
+# wrong constant name element
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name types
+# wrong constant name <static-init>
+# wrong constant name describe
+# wrong constant name generate_rbi
+# wrong constant name generate_rbs
+# wrong constant name initialize
+# wrong constant name to_type
+# wrong constant name <static-init>
+# wrong constant name to_type
+# wrong constant name ==
+# wrong constant name types
+# wrong constant name <static-init>
+# wrong constant name ==
+# wrong constant name <static-init>
+# wrong constant name <static-init>
+# wrong constant name <static-init>
+# uninitialized constant Parser::Ruby24::Racc_Main_Parsing_Routine
+# uninitialized constant Parser::Ruby24::Racc_Runtime_Core_Id_C
+# Did you mean?  Parser::Ruby24::Racc_Runtime_Core_Version_C
+# uninitialized constant Parser::Ruby24::Racc_Runtime_Core_Revision
+# Did you mean?  Parser::Ruby24::Racc_Runtime_Core_Revision_R
+#                Parser::Ruby24::Racc_Runtime_Core_Revision_C
+#                Parser::Ruby24::Racc_Runtime_Revision
+#                Parser::Ruby24::Racc_Runtime_Core_Version
+#                Parser::Ruby24::Racc_Runtime_Core_Version_R
+#                Parser::Ruby24::Racc_Runtime_Core_Version_C
+#                Parser::Ruby24::Racc_Runtime_Version
+#                Parser::Ruby24::Racc_Runtime_Core_Id_C
+# uninitialized constant Parser::Ruby24::Racc_Runtime_Core_Revision_C
+# Did you mean?  Parser::Ruby24::Racc_Runtime_Core_Revision_R
+#                Parser::Ruby24::Racc_Runtime_Revision
+#                Parser::Ruby24::Racc_Runtime_Core_Version_R
+#                Parser::Ruby24::Racc_Runtime_Core_Version_C
+#                Parser::Ruby24::Racc_Runtime_Core_Version
+#                Parser::Ruby24::Racc_Runtime_Core_Id_C
+# uninitialized constant Parser::Ruby24::Racc_Runtime_Core_Revision_R
+# Did you mean?  Parser::Ruby24::Racc_Runtime_Core_Revision_C
+#                Parser::Ruby24::Racc_Runtime_Revision
+#                Parser::Ruby24::Racc_Runtime_Core_Version_R
+#                Parser::Ruby24::Racc_Runtime_Core_Version_C
+#                Parser::Ruby24::Racc_Runtime_Core_Version
+# uninitialized constant Parser::Ruby24::Racc_Runtime_Core_Version
+# Did you mean?  Parser::Ruby24::Racc_Runtime_Revision
+#                Parser::Ruby24::Racc_Runtime_Core_Revision
+#                Parser::Ruby24::Racc_Runtime_Core_Version_R
+#                Parser::Ruby24::Racc_Runtime_Core_Version_C
+#                Parser::Ruby24::Racc_Runtime_Core_Revision_R
+#                Parser::Ruby24::Racc_Runtime_Core_Revision_C
+#                Parser::Ruby24::Racc_Runtime_Version
+#                Parser::Ruby24::Racc_Runtime_Core_Id_C
+# uninitialized constant Parser::Ruby24::Racc_Runtime_Core_Version_C
+# Did you mean?  Parser::Ruby24::Racc_Runtime_Core_Version_R
+#                Parser::Ruby24::Racc_Runtime_Core_Revision_R
+#                Parser::Ruby24::Racc_Runtime_Core_Revision_C
+#                Parser::Ruby24::Racc_Runtime_Revision
+#                Parser::Ruby24::Racc_Runtime_Core_Revision
+#                Parser::Ruby24::Racc_Runtime_Version
+#                Parser::Ruby24::Racc_Runtime_Core_Id_C
+# uninitialized constant Parser::Ruby24::Racc_Runtime_Core_Version_R
+# Did you mean?  Parser::Ruby24::Racc_Runtime_Core_Version_C
+#                Parser::Ruby24::Racc_Runtime_Core_Revision_R
+#                Parser::Ruby24::Racc_Runtime_Core_Revision_C
+#                Parser::Ruby24::Racc_Runtime_Revision
+#                Parser::Ruby24::Racc_Runtime_Core_Revision
+#                Parser::Ruby24::Racc_Runtime_Version
+#                Parser::Ruby24::Racc_Runtime_Core_Id_C
+# uninitialized constant Parser::Ruby24::Racc_Runtime_Revision
+# Did you mean?  Parser::Ruby24::Racc_Runtime_Version
+#                Parser::Ruby24::Racc_Runtime_Core_Version
+#                Parser::Ruby24::Racc_Runtime_Core_Revision
+# uninitialized constant Parser::Ruby24::Racc_Runtime_Type
+# uninitialized constant Parser::Ruby24::Racc_Runtime_Version
+# Did you mean?  Parser::Ruby24::Racc_Runtime_Revision
+#                Parser::Ruby24::Racc_Runtime_Core_Version
+# uninitialized constant Parser::Ruby24::Racc_YY_Parse_Method
+# uninitialized constant Parser::Ruby27::Racc_Main_Parsing_Routine
+# uninitialized constant Parser::Ruby27::Racc_Runtime_Core_Id_C
+# Did you mean?  Parser::Ruby27::Racc_Runtime_Core_Version_C
+# uninitialized constant Parser::Ruby27::Racc_Runtime_Core_Revision
+# Did you mean?  Parser::Ruby27::Racc_Runtime_Core_Revision_R
+#                Parser::Ruby27::Racc_Runtime_Core_Revision_C
+#                Parser::Ruby27::Racc_Runtime_Revision
+#                Parser::Ruby27::Racc_Runtime_Core_Version
+#                Parser::Ruby27::Racc_Runtime_Core_Version_R
+#                Parser::Ruby27::Racc_Runtime_Core_Version_C
+#                Parser::Ruby27::Racc_Runtime_Version
+#                Parser::Ruby27::Racc_Runtime_Core_Id_C
+# uninitialized constant Parser::Ruby27::Racc_Runtime_Core_Revision_C
+# Did you mean?  Parser::Ruby27::Racc_Runtime_Core_Revision_R
+#                Parser::Ruby27::Racc_Runtime_Revision
+#                Parser::Ruby27::Racc_Runtime_Core_Version_R
+#                Parser::Ruby27::Racc_Runtime_Core_Version_C
+#                Parser::Ruby27::Racc_Runtime_Core_Version
+#                Parser::Ruby27::Racc_Runtime_Core_Id_C
+# uninitialized constant Parser::Ruby27::Racc_Runtime_Core_Revision_R
+# Did you mean?  Parser::Ruby27::Racc_Runtime_Core_Revision_C
+#                Parser::Ruby27::Racc_Runtime_Revision
+#                Parser::Ruby27::Racc_Runtime_Core_Version_R
+#                Parser::Ruby27::Racc_Runtime_Core_Version_C
+#                Parser::Ruby27::Racc_Runtime_Core_Version
+# uninitialized constant Parser::Ruby27::Racc_Runtime_Core_Version
+# Did you mean?  Parser::Ruby27::Racc_Runtime_Revision
+#                Parser::Ruby27::Racc_Runtime_Core_Revision
+#                Parser::Ruby27::Racc_Runtime_Core_Version_R
+#                Parser::Ruby27::Racc_Runtime_Core_Version_C
+#                Parser::Ruby27::Racc_Runtime_Core_Revision_R
+#                Parser::Ruby27::Racc_Runtime_Core_Revision_C
+#                Parser::Ruby27::Racc_Runtime_Version
+#                Parser::Ruby27::Racc_Runtime_Core_Id_C
+# uninitialized constant Parser::Ruby27::Racc_Runtime_Core_Version_C
+# Did you mean?  Parser::Ruby27::Racc_Runtime_Core_Version_R
+#                Parser::Ruby27::Racc_Runtime_Core_Revision_R
+#                Parser::Ruby27::Racc_Runtime_Core_Revision_C
+#                Parser::Ruby27::Racc_Runtime_Revision
+#                Parser::Ruby27::Racc_Runtime_Core_Revision
+#                Parser::Ruby27::Racc_Runtime_Version
+#                Parser::Ruby27::Racc_Runtime_Core_Id_C
+# uninitialized constant Parser::Ruby27::Racc_Runtime_Core_Version_R
+# Did you mean?  Parser::Ruby27::Racc_Runtime_Core_Version_C
+#                Parser::Ruby27::Racc_Runtime_Core_Revision_R
+#                Parser::Ruby27::Racc_Runtime_Core_Revision_C
+#                Parser::Ruby27::Racc_Runtime_Revision
+#                Parser::Ruby27::Racc_Runtime_Core_Revision
+#                Parser::Ruby27::Racc_Runtime_Version
+#                Parser::Ruby27::Racc_Runtime_Core_Id_C
+# uninitialized constant Parser::Ruby27::Racc_Runtime_Revision
+# Did you mean?  Parser::Ruby27::Racc_Runtime_Version
+#                Parser::Ruby27::Racc_Runtime_Core_Version
+#                Parser::Ruby27::Racc_Runtime_Core_Revision
+# uninitialized constant Parser::Ruby27::Racc_Runtime_Type
+# uninitialized constant Parser::Ruby27::Racc_Runtime_Version
+# Did you mean?  Parser::Ruby27::Racc_Runtime_Revision
+#                Parser::Ruby27::Racc_Runtime_Core_Version
+# uninitialized constant Parser::Ruby27::Racc_YY_Parse_Method
 # wrong constant name fnmatch?
-# wrong constant name glob
 # wrong constant name make_symlink
 # uninitialized constant Prime
 # uninitialized constant Prime
@@ -1316,48 +2031,48 @@
 # uninitialized constant RDoc::RD::BlockParser::Racc_Runtime_Core_Id_C
 # Did you mean?  RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
 # uninitialized constant RDoc::RD::BlockParser::Racc_Runtime_Core_Revision
-# Did you mean?  RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_C
-#                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_R
+# Did you mean?  RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_R
+#                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_C
 #                RDoc::RD::BlockParser::Racc_Runtime_Revision
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Version
-#                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_R
+#                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
 #                RDoc::RD::BlockParser::Racc_Runtime_Version
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Id_C
 # uninitialized constant RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_C
 # Did you mean?  RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_R
 #                RDoc::RD::BlockParser::Racc_Runtime_Revision
-#                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_R
+#                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Version
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Id_C
 # uninitialized constant RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_R
 # Did you mean?  RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_C
 #                RDoc::RD::BlockParser::Racc_Runtime_Revision
-#                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_R
+#                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Version
 # uninitialized constant RDoc::RD::BlockParser::Racc_Runtime_Core_Version
 # Did you mean?  RDoc::RD::BlockParser::Racc_Runtime_Revision
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision
-#                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_R
-#                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_C
+#                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_R
+#                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_C
 #                RDoc::RD::BlockParser::Racc_Runtime_Version
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Id_C
 # uninitialized constant RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
 # Did you mean?  RDoc::RD::BlockParser::Racc_Runtime_Core_Version_R
-#                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_C
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_R
+#                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_C
 #                RDoc::RD::BlockParser::Racc_Runtime_Revision
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision
 #                RDoc::RD::BlockParser::Racc_Runtime_Version
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Id_C
 # uninitialized constant RDoc::RD::BlockParser::Racc_Runtime_Core_Version_R
 # Did you mean?  RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
-#                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_C
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_R
+#                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_C
 #                RDoc::RD::BlockParser::Racc_Runtime_Revision
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision
 #                RDoc::RD::BlockParser::Racc_Runtime_Version
@@ -1376,48 +2091,48 @@
 # uninitialized constant RDoc::RD::InlineParser::Racc_Runtime_Core_Id_C
 # Did you mean?  RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
 # uninitialized constant RDoc::RD::InlineParser::Racc_Runtime_Core_Revision
-# Did you mean?  RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_C
-#                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_R
+# Did you mean?  RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_R
+#                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_C
 #                RDoc::RD::InlineParser::Racc_Runtime_Revision
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Version
-#                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_R
+#                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
 #                RDoc::RD::InlineParser::Racc_Runtime_Version
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Id_C
 # uninitialized constant RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_C
 # Did you mean?  RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_R
 #                RDoc::RD::InlineParser::Racc_Runtime_Revision
-#                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_R
+#                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Version
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Id_C
 # uninitialized constant RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_R
 # Did you mean?  RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_C
 #                RDoc::RD::InlineParser::Racc_Runtime_Revision
-#                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_R
+#                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Version
 # uninitialized constant RDoc::RD::InlineParser::Racc_Runtime_Core_Version
 # Did you mean?  RDoc::RD::InlineParser::Racc_Runtime_Revision
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision
-#                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_R
-#                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_C
+#                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_R
+#                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_C
 #                RDoc::RD::InlineParser::Racc_Runtime_Version
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Id_C
 # uninitialized constant RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
 # Did you mean?  RDoc::RD::InlineParser::Racc_Runtime_Core_Version_R
-#                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_C
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_R
+#                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_C
 #                RDoc::RD::InlineParser::Racc_Runtime_Revision
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision
 #                RDoc::RD::InlineParser::Racc_Runtime_Version
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Id_C
 # uninitialized constant RDoc::RD::InlineParser::Racc_Runtime_Core_Version_R
 # Did you mean?  RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
-#                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_C
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_R
+#                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_C
 #                RDoc::RD::InlineParser::Racc_Runtime_Revision
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision
 #                RDoc::RD::InlineParser::Racc_Runtime_Version
@@ -1802,6 +2517,10 @@
 # wrong constant name diff_as_string
 # wrong constant name initialize
 # wrong constant name <static-init>
+# wrong constant name <Class:CparseParams>
+# wrong constant name <static-init>
+# uninitialized constant Ractor
+# uninitialized constant Ractor
 # uninitialized constant Rake::DSL::DEFAULT
 # uninitialized constant Rake::DSL::LN_SUPPORTED
 # uninitialized constant Rake::DSL::LOW_METHODS
@@ -1844,8 +2563,6 @@
 # uninitialized constant Rinda
 # uninitialized constant Rinda
 # wrong constant name <Class:Lexer>
-# wrong constant name <Class:SexpBuilder>
-# wrong constant name <Class:SexpBuilderPP>
 # wrong constant name <Class:TokenPattern>
 # wrong constant name column
 # wrong constant name debug_output
@@ -2298,113 +3015,6 @@
 # wrong constant name on_yield
 # wrong constant name on_yield0
 # wrong constant name on_zsuper
-# wrong constant name <static-init>
-# uninitialized constant Ripper::SexpBuilderPP::EVENTS
-# Did you mean?  Ripper::EVENTS
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_ARG
-# Did you mean?  Ripper::SexpBuilderPP::EXPR_BEG
-#                Ripper::EXPR_ARG
-#                Ripper::EXPR_BEG
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_ARG_ANY
-# Did you mean?  Ripper::SexpBuilderPP::EXPR_END_ANY
-#                Ripper::SexpBuilderPP::EXPR_BEG_ANY
-#                Ripper::EXPR_END_ANY
-#                Ripper::EXPR_ARG_ANY
-#                Ripper::EXPR_BEG_ANY
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_BEG
-# Did you mean?  Ripper::SexpBuilderPP::EXPR_ARG
-#                Ripper::EXPR_ARG
-#                Ripper::EXPR_BEG
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_BEG_ANY
-# Did you mean?  Ripper::SexpBuilderPP::EXPR_END_ANY
-#                Ripper::SexpBuilderPP::EXPR_ARG_ANY
-#                Ripper::EXPR_END_ANY
-#                Ripper::EXPR_ARG_ANY
-#                Ripper::EXPR_BEG_ANY
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_CLASS
-# Did you mean?  Ripper::EXPR_CLASS
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_CMDARG
-# Did you mean?  Ripper::SexpBuilderPP::EXPR_ARG
-#                Ripper::EXPR_ARG
-#                Ripper::SexpBuilderPP::EXPR_ENDARG
-#                Ripper::EXPR_CMDARG
-#                Ripper::EXPR_ENDARG
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_DOT
-# Did you mean?  Ripper::EXPR_DOT
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_END
-# Did you mean?  Ripper::SexpBuilderPP::EXPR_MID
-#                Ripper::EXPR_MID
-#                Ripper::EXPR_END
-#                Ripper::SexpBuilderPP::EXPR_ENDFN
-#                Ripper::EXPR_ENDFN
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_ENDARG
-# Did you mean?  Ripper::SexpBuilderPP::EXPR_ARG
-#                Ripper::EXPR_ARG
-#                Ripper::EXPR_END
-#                Ripper::SexpBuilderPP::EXPR_ENDFN
-#                Ripper::EXPR_ENDFN
-#                Ripper::SexpBuilderPP::EXPR_CMDARG
-#                Ripper::EXPR_CMDARG
-#                Ripper::EXPR_ENDARG
-#                Ripper::SexpBuilderPP::EXPR_END_ANY
-#                Ripper::EXPR_END_ANY
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_ENDFN
-# Did you mean?  Ripper::EXPR_END
-#                Ripper::EXPR_ENDFN
-#                Ripper::SexpBuilderPP::EXPR_ENDARG
-#                Ripper::EXPR_ENDARG
-#                Ripper::SexpBuilderPP::EXPR_END_ANY
-#                Ripper::EXPR_END_ANY
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_END_ANY
-# Did you mean?  Ripper::SexpBuilderPP::EXPR_ARG_ANY
-#                Ripper::SexpBuilderPP::EXPR_BEG_ANY
-#                Ripper::EXPR_END_ANY
-#                Ripper::EXPR_ARG_ANY
-#                Ripper::EXPR_BEG_ANY
-#                Ripper::SexpBuilderPP::EXPR_ENDFN
-#                Ripper::EXPR_ENDFN
-#                Ripper::SexpBuilderPP::EXPR_ENDARG
-#                Ripper::EXPR_ENDARG
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_FITEM
-# Did you mean?  Ripper::EXPR_FITEM
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_FNAME
-# Did you mean?  Ripper::SexpBuilderPP::EXPR_NONE
-#                Ripper::EXPR_NONE
-#                Ripper::EXPR_FNAME
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_LABEL
-# Did you mean?  Ripper::SexpBuilderPP::EXPR_BEG
-#                Ripper::EXPR_BEG
-#                Ripper::EXPR_LABEL
-#                Ripper::SexpBuilderPP::EXPR_LABELED
-#                Ripper::EXPR_LABELED
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_LABELED
-# Did you mean?  Ripper::EXPR_LABEL
-#                Ripper::EXPR_LABELED
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_MID
-# Did you mean?  Ripper::SexpBuilderPP::EXPR_END
-#                Ripper::EXPR_MID
-#                Ripper::EXPR_END
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_NONE
-# Did you mean?  Ripper::SexpBuilderPP::EXPR_DOT
-#                Ripper::SexpBuilderPP::EXPR_END
-#                Ripper::EXPR_DOT
-#                Ripper::EXPR_END
-#                Ripper::EXPR_NONE
-#                Ripper::SexpBuilderPP::EXPR_FNAME
-#                Ripper::EXPR_FNAME
-# uninitialized constant Ripper::SexpBuilderPP::EXPR_VALUE
-# Did you mean?  Ripper::EXPR_VALUE
-# uninitialized constant Ripper::SexpBuilderPP::PARSER_EVENTS
-# Did you mean?  Ripper::PARSER_EVENTS
-# uninitialized constant Ripper::SexpBuilderPP::PARSER_EVENT_TABLE
-# Did you mean?  Ripper::PARSER_EVENT_TABLE
-# uninitialized constant Ripper::SexpBuilderPP::SCANNER_EVENTS
-# Did you mean?  Ripper::SCANNER_EVENTS
-# uninitialized constant Ripper::SexpBuilderPP::SCANNER_EVENT_TABLE
-# Did you mean?  Ripper::SCANNER_EVENT_TABLE
-# uninitialized constant Ripper::SexpBuilderPP::Version
-# Did you mean?  Ripper::Version
-# wrong constant name <static-init>
 # wrong constant name <Class:CompileError>
 # wrong constant name <Class:Error>
 # wrong constant name <Class:MatchData>
