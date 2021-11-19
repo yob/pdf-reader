@@ -7,7 +7,7 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/rdoc/all/rdoc.rbi
 #
-# rdoc-4.2.2
+# rdoc-5.1.0
 
 module RDoc
   def self.load_yaml; end
@@ -95,7 +95,6 @@ class RDoc::Options
   def template_stylesheets=(arg0); end
   def title; end
   def title=(arg0); end
-  def to_yaml(opts = nil); end
   def update_output_dir; end
   def update_output_dir=(arg0); end
   def verbosity; end

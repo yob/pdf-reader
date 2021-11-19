@@ -106,57 +106,17 @@
 # wrong constant name interpret_loosely
 # wrong constant name clone
 # wrong constant name irb
-# wrong constant name status_code
-# wrong constant name <static-init>
-# wrong constant name jruby_30?
-# wrong constant name jruby_3?
-# wrong constant name maglev_30?
-# wrong constant name maglev_3?
-# wrong constant name mingw_30?
-# wrong constant name mingw_3?
-# wrong constant name mri_30?
-# wrong constant name mri_3?
-# wrong constant name mswin64_30?
-# wrong constant name mswin64_3?
-# wrong constant name mswin_30?
-# wrong constant name mswin_3?
-# wrong constant name on_30?
-# wrong constant name on_3?
-# wrong constant name rbx_30?
-# wrong constant name rbx_3?
-# wrong constant name ruby_30?
-# wrong constant name ruby_3?
-# wrong constant name truffleruby_30?
-# wrong constant name truffleruby_3?
-# wrong constant name x64_mingw_30?
-# wrong constant name x64_mingw_3?
-# uninitialized constant Bundler::Definition::GENERICS
-# uninitialized constant Bundler::Definition::GENERIC_CACHE
-# wrong constant name dependencies_for
-# wrong constant name most_specific_locked_platform
-# wrong constant name multisource_allowed?
-# wrong constant name requested_dependencies
-# wrong constant name resolve_only_locally!
-# wrong constant name clone
-# wrong constant name get_proxy
-# uninitialized constant Bundler::Dependency::TYPES
-# wrong constant name branch
-# wrong constant name expanded_platforms
-# wrong constant name git
-# wrong constant name check_primary_source_safety
 # wrong constant name <static-init>
 # wrong constant name environment
 # wrong constant name report
 # wrong constant name write
-# wrong constant name replace_with_backup
-# wrong constant name env_to_hash
-# wrong constant name from_env
+# wrong constant name github_https?
+# wrong constant name global_path_appends_ruby_scope?
 # wrong constant name <Class:Base>
 # wrong constant name <Class:CompactIndex>
 # wrong constant name <Class:Dependency>
 # wrong constant name <Class:Downloader>
 # wrong constant name <Class:Index>
-# wrong constant name <Class:TooManyRequestsError>
 # wrong constant name fetch_spec
 # wrong constant name fetchers
 # wrong constant name http_proxy
@@ -210,7 +170,6 @@
 # wrong constant name specs
 # wrong constant name <static-init>
 # wrong constant name initialize
-# wrong constant name <static-init>
 # wrong constant name api_timeout
 # wrong constant name api_timeout=
 # wrong constant name disable_endpoint
@@ -219,9 +178,6 @@
 # wrong constant name max_retries=
 # wrong constant name redirect_limit
 # wrong constant name redirect_limit=
-# wrong constant name link
-# wrong constant name cp_lr
-# wrong constant name link_entry
 # uninitialized constant Bundler::GemHelper::DEFAULT
 # uninitialized constant Bundler::GemHelper::LN_SUPPORTED
 # uninitialized constant Bundler::GemHelper::LOW_METHODS
@@ -235,14 +191,10 @@
 # wrong constant name allowed_push_host
 # wrong constant name already_tagged?
 # wrong constant name base
-# wrong constant name build_checksum
 # wrong constant name build_gem
 # wrong constant name built_gem_path
 # wrong constant name clean?
 # wrong constant name committed?
-# wrong constant name current_branch
-# wrong constant name default_remote
-# wrong constant name gem_command
 # wrong constant name gem_key
 # wrong constant name gem_push?
 # wrong constant name gem_push_host
@@ -256,10 +208,8 @@
 # wrong constant name perform_git_push
 # wrong constant name rubygem_push
 # wrong constant name sh
-# wrong constant name sh_with_input
-# wrong constant name sh_with_status
+# wrong constant name sh_with_code
 # wrong constant name spec_path
-# wrong constant name tag_prefix=
 # wrong constant name tag_version
 # wrong constant name version
 # wrong constant name version_tag
@@ -268,11 +218,7 @@
 # wrong constant name install_tasks
 # wrong constant name instance
 # wrong constant name instance=
-# wrong constant name tag_prefix=
-# wrong constant name specificity_score
-# wrong constant name local_platform
-# wrong constant name same_deps
-# wrong constant name same_specificity
+# wrong constant name <static-init>
 # wrong constant name initialize
 # wrong constant name level
 # wrong constant name level=
@@ -315,19 +261,7 @@
 # wrong constant name ambiguous_gems
 # wrong constant name ambiguous_gems=
 # wrong constant name install
-# uninitialized constant Bundler::LazySpecification::GENERICS
-# uninitialized constant Bundler::LazySpecification::GENERIC_CACHE
-# wrong constant name eql?
-# wrong constant name platform_string
-# uninitialized constant Bundler::LazySpecification::Identifier
-# uninitialized constant Bundler::LazySpecification::Identifier
-# uninitialized constant Bundler::Molinillo::Compatibility
-# Did you mean?  Comparable
-# uninitialized constant Bundler::Molinillo::Compatibility
-# Did you mean?  Comparable
-# wrong constant name dependencies_equal?
 # wrong constant name ==
-# wrong constant name add_dependency_names
 # wrong constant name app_cache_dirname
 # wrong constant name app_cache_path
 # wrong constant name bundler_plugin_api_source?
@@ -346,14 +280,12 @@
 # wrong constant name install
 # wrong constant name install_path
 # wrong constant name installed?
-# wrong constant name local!
 # wrong constant name name
 # wrong constant name options
 # wrong constant name options_to_lock
 # wrong constant name post_install
 # wrong constant name remote!
 # wrong constant name root
-# wrong constant name spec_names
 # wrong constant name specs
 # wrong constant name to_lock
 # wrong constant name to_s
@@ -362,11 +294,6 @@
 # wrong constant name uri
 # wrong constant name uri_hash
 # wrong constant name <static-init>
-# wrong constant name <Class:CommandConflict>
-# wrong constant name <Class:SourceConflict>
-# wrong constant name installed_plugins
-# wrong constant name plugin_commands
-# wrong constant name unregister_plugin
 # wrong constant name initialize
 # wrong constant name <static-init>
 # wrong constant name initialize
@@ -385,18 +312,8 @@
 # wrong constant name <static-init>
 # wrong constant name <static-init>
 # wrong constant name <static-init>
-# wrong constant name list
-# wrong constant name uninstall
 # wrong constant name <static-init>
 # wrong constant name lock
-# uninitialized constant Bundler::Resolver::GENERICS
-# uninitialized constant Bundler::Resolver::GENERIC_CACHE
-# wrong constant name results_for
-# wrong constant name source_for
-# wrong constant name activated_platforms
-# wrong constant name activated_platforms=
-# wrong constant name sorted_activated_platforms
-# wrong constant name create_for
 # wrong constant name attempt
 # wrong constant name attempts
 # wrong constant name current_run
@@ -410,43 +327,12 @@
 # wrong constant name attempts
 # wrong constant name default_attempts
 # wrong constant name default_retries
-# wrong constant name add_default_gems_to
-# wrong constant name add_to_load_path
-# wrong constant name all_specs
+# uninitialized constant Bundler::RubyGemsGemInstaller::ENV_PATHS
+# wrong constant name initialize
+# wrong constant name <static-init>
+# uninitialized constant Bundler::RubygemsIntegration::MoreFuture::EXT_LOCK
+# Did you mean?  Bundler::RubygemsIntegration::EXT_LOCK
 # wrong constant name backport_ext_builder_monitor
-# wrong constant name correct_for_windows_path
-# wrong constant name default_stubs
-# wrong constant name find_name
-# wrong constant name gem_remote_fetcher
-# wrong constant name load_env_plugins
-# wrong constant name plain_specs
-# wrong constant name plain_specs=
-# wrong constant name stub_rubygems
-# wrong constant name use_gemdeps
-# uninitialized constant Bundler::RubygemsIntegration::AlmostModern
-# uninitialized constant Bundler::RubygemsIntegration::AlmostModern
-# uninitialized constant Bundler::RubygemsIntegration::Ancient
-# uninitialized constant Bundler::RubygemsIntegration::Ancient
-# uninitialized constant Bundler::RubygemsIntegration::Future
-# uninitialized constant Bundler::RubygemsIntegration::Future
-# uninitialized constant Bundler::RubygemsIntegration::Legacy
-# uninitialized constant Bundler::RubygemsIntegration::Legacy
-# uninitialized constant Bundler::RubygemsIntegration::Modern
-# Did you mean?  Module
-# uninitialized constant Bundler::RubygemsIntegration::Modern
-# Did you mean?  Module
-# uninitialized constant Bundler::RubygemsIntegration::MoreFuture
-# uninitialized constant Bundler::RubygemsIntegration::MoreFuture
-# uninitialized constant Bundler::RubygemsIntegration::MoreModern
-# Did you mean?  Morecane
-# uninitialized constant Bundler::RubygemsIntegration::MoreModern
-# Did you mean?  Morecane
-# uninitialized constant Bundler::RubygemsIntegration::Transitional
-# uninitialized constant Bundler::RubygemsIntegration::Transitional
-# wrong constant name <Class:Mirror>
-# wrong constant name <Class:Mirrors>
-# wrong constant name <Class:Validator>
-# wrong constant name processor_count
 # wrong constant name ==
 # wrong constant name fallback_timeout
 # wrong constant name fallback_timeout=
@@ -471,567 +357,6 @@
 # wrong constant name <static-init>
 # wrong constant name <static-init>
 # wrong constant name validate!
-# wrong constant name key_for
-# wrong constant name <Class:RubygemsAggregate>
-# wrong constant name add_dependency_names
-# wrong constant name cached!
-# wrong constant name local!
-# wrong constant name local_only!
-# wrong constant name remote!
-# wrong constant name spec_names
-# uninitialized constant Bundler::Source::Git::DEFAULT_GLOB
-# wrong constant name glob
-# wrong constant name local?
-# wrong constant name dependency_api_available?
-# wrong constant name multiple_remotes?
-# wrong constant name no_remotes?
-# wrong constant name initialize
-# wrong constant name source_map
-# wrong constant name sources
-# wrong constant name specs
-# wrong constant name <static-init>
-# wrong constant name add_global_rubygems_remote
-# wrong constant name aggregate_global_source?
-# wrong constant name expired_sources?
-# wrong constant name global_path_source
-# wrong constant name implicit_global_source?
-# wrong constant name local_only!
-# wrong constant name lock_other_sources
-# wrong constant name lock_rubygems_sources
-# wrong constant name merged_gem_lockfile_sections!
-# wrong constant name merged_gem_lockfile_sections?
-# wrong constant name non_default_explicit_sources
-# wrong constant name non_global_rubygems_sources
-# wrong constant name all_requirements
-# wrong constant name dependencies
-# wrong constant name direct_requirements
-# wrong constant name initialize
-# wrong constant name pinned_spec_names
-# wrong constant name sources
-# wrong constant name <static-init>
-# wrong constant name missing_specs
-# uninitialized constant Bundler::StubSpecification::GENERICS
-# uninitialized constant Bundler::StubSpecification::GENERIC_CACHE
-# wrong constant name default_gem?
-# wrong constant name extensions
-# wrong constant name gem_build_complete_path
-# wrong constant name manually_installed?
-# wrong constant name <Class:Actions>
-# wrong constant name <Class:AmbiguousCommandError>
-# wrong constant name <Class:Argument>
-# wrong constant name <Class:Arguments>
-# wrong constant name <Class:Base>
-# wrong constant name <Class:Command>
-# wrong constant name <Class:CoreExt>
-# wrong constant name <Class:DynamicCommand>
-# wrong constant name <Class:Error>
-# wrong constant name <Class:Group>
-# wrong constant name <Class:HiddenCommand>
-# wrong constant name <Class:Invocation>
-# wrong constant name <Class:InvocationError>
-# wrong constant name <Class:LineEditor>
-# wrong constant name <Class:MalformattedArgumentError>
-# wrong constant name <Class:NestedContext>
-# wrong constant name <Class:NoKwargSpellChecker>
-# wrong constant name <Class:Option>
-# wrong constant name <Class:Options>
-# wrong constant name <Class:RakeCompat>
-# wrong constant name <Class:RequiredArgumentMissingError>
-# uninitialized constant Bundler::Thor::SHELL_DELEGATED_METHODS
-# wrong constant name <Class:Sandbox>
-# wrong constant name <Class:Shell>
-# wrong constant name <Class:UndefinedCommandError>
-# wrong constant name <Class:UnknownArgumentError>
-# wrong constant name <Class:Util>
-# wrong constant name help
-# wrong constant name <Class:CapturableERB>
-# wrong constant name <Class:ClassMethods>
-# wrong constant name <Class:CreateFile>
-# wrong constant name <Class:CreateLink>
-# wrong constant name <Class:Directory>
-# wrong constant name <Class:EmptyDirectory>
-# wrong constant name <Class:InjectIntoFile>
-# wrong constant name _cleanup_options_and_set
-# wrong constant name _shared_configuration
-# wrong constant name action
-# wrong constant name add_file
-# wrong constant name add_link
-# wrong constant name append_file
-# wrong constant name append_to_file
-# wrong constant name apply
-# wrong constant name behavior
-# wrong constant name behavior=
-# wrong constant name chmod
-# wrong constant name comment_lines
-# wrong constant name copy_file
-# wrong constant name create_file
-# wrong constant name create_link
-# wrong constant name destination_root
-# wrong constant name destination_root=
-# wrong constant name directory
-# wrong constant name empty_directory
-# wrong constant name find_in_source_paths
-# wrong constant name get
-# wrong constant name gsub_file
-# wrong constant name in_root
-# wrong constant name initialize
-# wrong constant name inject_into_class
-# wrong constant name inject_into_file
-# wrong constant name inject_into_module
-# wrong constant name insert_into_file
-# wrong constant name inside
-# wrong constant name link_file
-# wrong constant name prepend_file
-# wrong constant name prepend_to_file
-# wrong constant name relative_to_original_destination_root
-# wrong constant name remove_dir
-# wrong constant name remove_file
-# wrong constant name run
-# wrong constant name run_ruby_script
-# wrong constant name source_paths
-# wrong constant name template
-# wrong constant name thor
-# wrong constant name uncomment_lines
-# uninitialized constant Bundler::Thor::Actions::CapturableERB::Revision
-# wrong constant name <static-init>
-# wrong constant name add_runtime_options!
-# wrong constant name source_paths
-# wrong constant name source_paths_for_search
-# wrong constant name source_root
-# wrong constant name <static-init>
-# wrong constant name data
-# wrong constant name force_on_collision?
-# wrong constant name force_or_skip_or_conflict
-# wrong constant name identical?
-# wrong constant name initialize
-# wrong constant name on_conflict_behavior
-# wrong constant name render
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name execute!
-# wrong constant name file_level_lookup
-# wrong constant name files
-# wrong constant name initialize
-# wrong constant name source
-# wrong constant name <static-init>
-# wrong constant name base
-# wrong constant name config
-# wrong constant name convert_encoded_instructions
-# wrong constant name destination
-# wrong constant name destination=
-# wrong constant name exists?
-# wrong constant name given_destination
-# wrong constant name initialize
-# wrong constant name invoke!
-# wrong constant name invoke_with_conflict_check
-# wrong constant name on_conflict_behavior
-# wrong constant name on_file_clash_behavior
-# wrong constant name pretend?
-# wrong constant name relative_destination
-# wrong constant name revoke!
-# wrong constant name say_status
-# wrong constant name <static-init>
-# wrong constant name behavior
-# wrong constant name flag
-# wrong constant name initialize
-# wrong constant name replace!
-# wrong constant name replacement
-# wrong constant name say_status
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name included
-# wrong constant name <static-init>
-# wrong constant name banner
-# wrong constant name default
-# wrong constant name default_banner
-# wrong constant name description
-# wrong constant name enum
-# wrong constant name human_name
-# wrong constant name initialize
-# wrong constant name name
-# wrong constant name required
-# wrong constant name required?
-# wrong constant name show_default?
-# wrong constant name type
-# wrong constant name usage
-# wrong constant name valid_type?
-# wrong constant name validate!
-# wrong constant name <static-init>
-# wrong constant name initialize
-# wrong constant name parse
-# wrong constant name remaining
-# wrong constant name <static-init>
-# wrong constant name parse
-# wrong constant name split
-# wrong constant name <Class:ClassMethods>
-# wrong constant name args
-# wrong constant name args=
-# wrong constant name initialize
-# wrong constant name options
-# wrong constant name options=
-# wrong constant name parent_options
-# wrong constant name parent_options=
-# wrong constant name all_commands
-# wrong constant name all_tasks
-# wrong constant name allow_incompatible_default_type!
-# wrong constant name argument
-# wrong constant name arguments
-# wrong constant name attr_accessor
-# wrong constant name attr_reader
-# wrong constant name attr_writer
-# wrong constant name baseclass
-# wrong constant name basename
-# wrong constant name build_option
-# wrong constant name build_options
-# wrong constant name check_default_type
-# wrong constant name check_default_type!
-# wrong constant name check_unknown_options
-# wrong constant name check_unknown_options!
-# wrong constant name check_unknown_options?
-# wrong constant name class_option
-# wrong constant name class_options
-# wrong constant name class_options_help
-# wrong constant name commands
-# wrong constant name create_command
-# wrong constant name create_task
-# wrong constant name disable_required_check?
-# wrong constant name dispatch
-# wrong constant name exit_on_failure?
-# wrong constant name find_and_refresh_command
-# wrong constant name find_and_refresh_task
-# wrong constant name from_superclass
-# wrong constant name group
-# wrong constant name handle_argument_error
-# wrong constant name handle_no_command_error
-# wrong constant name handle_no_task_error
-# wrong constant name inherited
-# wrong constant name initialize_added
-# wrong constant name is_thor_reserved_word?
-# wrong constant name method_added
-# wrong constant name namespace
-# wrong constant name no_commands
-# wrong constant name no_commands?
-# wrong constant name no_commands_context
-# wrong constant name no_tasks
-# wrong constant name print_options
-# wrong constant name public_command
-# wrong constant name public_task
-# wrong constant name remove_argument
-# wrong constant name remove_class_option
-# wrong constant name remove_command
-# wrong constant name remove_task
-# wrong constant name start
-# wrong constant name stop_on_unknown_option?
-# wrong constant name strict_args_position
-# wrong constant name strict_args_position!
-# wrong constant name strict_args_position?
-# wrong constant name tasks
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name included
-# wrong constant name register_klass_file
-# wrong constant name shell
-# wrong constant name shell=
-# wrong constant name subclass_files
-# wrong constant name subclasses
-# wrong constant name formatted_usage
-# wrong constant name handle_argument_error?
-# wrong constant name handle_no_method_error?
-# wrong constant name hidden?
-# wrong constant name initialize
-# wrong constant name local_method?
-# wrong constant name not_debugging?
-# wrong constant name private_method?
-# wrong constant name public_method?
-# wrong constant name required_arguments_for
-# wrong constant name required_options
-# wrong constant name run
-# wrong constant name sans_backtrace
-# wrong constant name <static-init>
-# wrong constant name <Class:HashWithIndifferentAccess>
-# uninitialized constant Bundler::Thor::CoreExt::HashWithIndifferentAccess::Elem
-# uninitialized constant Bundler::Thor::CoreExt::HashWithIndifferentAccess::K
-# uninitialized constant Bundler::Thor::CoreExt::HashWithIndifferentAccess::V
-# wrong constant name []
-# wrong constant name []=
-# wrong constant name convert_key
-# wrong constant name delete
-# wrong constant name fetch
-# wrong constant name initialize
-# wrong constant name key?
-# wrong constant name merge
-# wrong constant name merge!
-# wrong constant name method_missing
-# wrong constant name replace
-# wrong constant name reverse_merge
-# wrong constant name reverse_merge!
-# wrong constant name values_at
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# uninitialized constant Bundler::Thor::DynamicCommand::FILE_REGEXP
-# wrong constant name initialize
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# uninitialized constant Bundler::Thor::Group::SHELL_DELEGATED_METHODS
-# Did you mean?  Bundler::Thor::SHELL_DELEGATED_METHODS
-# wrong constant name _invoke_for_class_method
-# wrong constant name <static-init>
-# wrong constant name banner
-# wrong constant name desc
-# wrong constant name get_options_from_invocations
-# wrong constant name handle_argument_error
-# wrong constant name help
-# wrong constant name invocation_blocks
-# wrong constant name invocations
-# wrong constant name invoke
-# wrong constant name invoke_from_option
-# wrong constant name printable_commands
-# wrong constant name printable_tasks
-# wrong constant name remove_invocation
-# wrong constant name self_command
-# wrong constant name self_task
-# uninitialized constant Bundler::Thor::HiddenCommand::FILE_REGEXP
-# wrong constant name <static-init>
-# wrong constant name <Class:ClassMethods>
-# wrong constant name _parse_initialization_options
-# wrong constant name _retrieve_class_and_command
-# wrong constant name _retrieve_class_and_task
-# wrong constant name _shared_configuration
-# wrong constant name current_command_chain
-# wrong constant name initialize
-# wrong constant name invoke
-# wrong constant name invoke_all
-# wrong constant name invoke_command
-# wrong constant name invoke_task
-# wrong constant name invoke_with_padding
-# wrong constant name prepare_for_invocation
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name included
-# wrong constant name <static-init>
-# wrong constant name <Class:Basic>
-# wrong constant name <Class:Readline>
-# wrong constant name initialize
-# wrong constant name options
-# wrong constant name prompt
-# wrong constant name readline
-# wrong constant name <static-init>
-# wrong constant name available?
-# wrong constant name <Class:PathCompletion>
-# wrong constant name initialize
-# wrong constant name matches
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name best_available
-# wrong constant name readline
-# wrong constant name <static-init>
-# wrong constant name enter
-# wrong constant name entered?
-# wrong constant name <static-init>
-# wrong constant name initialize
-# wrong constant name <static-init>
-# wrong constant name aliases
-# wrong constant name array?
-# wrong constant name boolean?
-# wrong constant name dasherize
-# wrong constant name dasherized?
-# wrong constant name group
-# wrong constant name hash?
-# wrong constant name hide
-# wrong constant name lazy_default
-# wrong constant name numeric?
-# wrong constant name repeatable
-# wrong constant name string?
-# wrong constant name switch_name
-# wrong constant name undasherize
-# wrong constant name usage
-# wrong constant name validate_default_type!
-# wrong constant name <static-init>
-# wrong constant name parse
-# uninitialized constant Bundler::Thor::Options::NUMERIC
-# Did you mean?  Numeric
-# wrong constant name assign_result!
-# wrong constant name check_unknown!
-# wrong constant name current_is_switch?
-# wrong constant name current_is_switch_formatted?
-# wrong constant name initialize
-# wrong constant name normalize_switch
-# wrong constant name parse_boolean
-# wrong constant name parse_peek
-# wrong constant name parsing_options?
-# wrong constant name switch?
-# wrong constant name switch_option
-# wrong constant name <static-init>
-# wrong constant name to_switches
-# uninitialized constant Bundler::Thor::RakeCompat::DEFAULT
-# uninitialized constant Bundler::Thor::RakeCompat::LN_SUPPORTED
-# uninitialized constant Bundler::Thor::RakeCompat::LOW_METHODS
-# Did you mean?  Bundler::Thor::RakeCompat::LowMethods
-# uninitialized constant Bundler::Thor::RakeCompat::METHODS
-# Did you mean?  Method
-# uninitialized constant Bundler::Thor::RakeCompat::OPT_TABLE
-# uninitialized constant Bundler::Thor::RakeCompat::RUBY
-# uninitialized constant Bundler::Thor::RakeCompat::VERSION
-# Did you mean?  Bundler::VERSION
-# wrong constant name <static-init>
-# wrong constant name included
-# wrong constant name rake_classes
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name <Class:Basic>
-# wrong constant name <Class:Color>
-# wrong constant name <Class:HTML>
-# wrong constant name _shared_configuration
-# wrong constant name ask
-# wrong constant name error
-# wrong constant name file_collision
-# wrong constant name initialize
-# wrong constant name no?
-# wrong constant name print_in_columns
-# wrong constant name print_table
-# wrong constant name print_wrapped
-# wrong constant name say
-# wrong constant name say_status
-# wrong constant name set_color
-# wrong constant name shell
-# wrong constant name shell=
-# wrong constant name terminal_width
-# wrong constant name with_padding
-# wrong constant name yes?
-# wrong constant name answer_match
-# wrong constant name as_unicode
-# wrong constant name ask
-# wrong constant name ask_filtered
-# wrong constant name ask_simply
-# wrong constant name base
-# wrong constant name base=
-# wrong constant name can_display_colors?
-# wrong constant name dynamic_width
-# wrong constant name dynamic_width_stty
-# wrong constant name dynamic_width_tput
-# wrong constant name error
-# wrong constant name file_collision
-# wrong constant name file_collision_help
-# wrong constant name git_merge_tool
-# wrong constant name indent
-# wrong constant name is?
-# wrong constant name lookup_color
-# wrong constant name merge
-# wrong constant name merge_tool
-# wrong constant name mute
-# wrong constant name mute?
-# wrong constant name no?
-# wrong constant name padding
-# wrong constant name padding=
-# wrong constant name prepare_message
-# wrong constant name print_in_columns
-# wrong constant name print_table
-# wrong constant name print_wrapped
-# wrong constant name quiet?
-# wrong constant name say
-# wrong constant name say_status
-# wrong constant name set_color
-# wrong constant name show_diff
-# wrong constant name stderr
-# wrong constant name stdout
-# wrong constant name terminal_width
-# wrong constant name truncate
-# wrong constant name unix?
-# wrong constant name yes?
-# wrong constant name <static-init>
-# uninitialized constant Bundler::Thor::Shell::Color::DEFAULT_TERMINAL_WIDTH
-# wrong constant name are_colors_disabled?
-# wrong constant name are_colors_supported?
-# wrong constant name diff_lcs_loaded?
-# wrong constant name output_diff_line
-# wrong constant name set_color
-# wrong constant name <static-init>
-# uninitialized constant Bundler::Thor::Shell::HTML::DEFAULT_TERMINAL_WIDTH
-# wrong constant name ask
-# wrong constant name diff_lcs_loaded?
-# wrong constant name output_diff_line
-# wrong constant name set_color
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name <Class:SpellChecker>
-# wrong constant name all_commands
-# wrong constant name command
-# wrong constant name initialize
-# wrong constant name corrections
-# wrong constant name error
-# wrong constant name initialize
-# wrong constant name spell_checker
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name <Class:SpellChecker>
-# wrong constant name initialize
-# wrong constant name switches
-# wrong constant name unknown
-# wrong constant name corrections
-# wrong constant name error
-# wrong constant name initialize
-# wrong constant name spell_checker
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name camel_case
-# wrong constant name escape_globs
-# wrong constant name escape_html
-# wrong constant name find_by_namespace
-# wrong constant name find_class_and_command_by_namespace
-# wrong constant name find_class_and_task_by_namespace
-# wrong constant name globs_for
-# wrong constant name load_thorfile
-# wrong constant name namespace_from_thor_class
-# wrong constant name namespaces_in_content
-# wrong constant name ruby_command
-# wrong constant name snake_case
-# wrong constant name thor_classes_in
-# wrong constant name thor_root
-# wrong constant name thor_root_glob
-# wrong constant name user_home
-# wrong constant name <static-init>
-# wrong constant name banner
-# wrong constant name check_unknown_options!
-# wrong constant name command_help
-# wrong constant name default_command
-# wrong constant name default_task
-# wrong constant name deprecation_warning
-# wrong constant name desc
-# wrong constant name disable_required_check
-# wrong constant name disable_required_check!
-# wrong constant name disable_required_check?
-# wrong constant name dispatch
-# wrong constant name dynamic_command_class
-# wrong constant name find_command_possibilities
-# wrong constant name find_task_possibilities
-# wrong constant name help
-# wrong constant name long_desc
-# wrong constant name map
-# wrong constant name method_option
-# wrong constant name method_options
-# wrong constant name normalize_command_name
-# wrong constant name normalize_task_name
-# wrong constant name option
-# wrong constant name options
-# wrong constant name package_name
-# wrong constant name printable_commands
-# wrong constant name printable_tasks
-# wrong constant name register
-# wrong constant name retrieve_command_name
-# wrong constant name retrieve_task_name
-# wrong constant name stop_on_unknown_option
-# wrong constant name stop_on_unknown_option!
-# wrong constant name stop_on_unknown_option?
-# wrong constant name subcommand
-# wrong constant name subcommand_classes
-# wrong constant name subcommand_help
-# wrong constant name subcommands
-# wrong constant name subtask
-# wrong constant name subtask_help
-# wrong constant name subtasks
-# wrong constant name task_help
 # wrong constant name add_color
 # wrong constant name ask
 # wrong constant name confirm
@@ -1051,665 +376,6 @@
 # wrong constant name warn
 # wrong constant name yes?
 # wrong constant name <static-init>
-# wrong constant name <Class:BadURIError>
-# wrong constant name <Class:Error>
-# wrong constant name <Class:Escape>
-# wrong constant name <Class:FTP>
-# wrong constant name <Class:File>
-# wrong constant name <Class:Generic>
-# wrong constant name <Class:HTTP>
-# wrong constant name <Class:HTTPS>
-# wrong constant name <Class:InvalidComponentError>
-# wrong constant name <Class:InvalidURIError>
-# wrong constant name <Class:LDAP>
-# wrong constant name <Class:LDAPS>
-# wrong constant name <Class:MailTo>
-# wrong constant name <Class:RFC2396_Parser>
-# wrong constant name <Class:RFC2396_REGEXP>
-# wrong constant name <Class:RFC3986_Parser>
-# wrong constant name <Class:Util>
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name decode
-# wrong constant name encode
-# wrong constant name escape
-# wrong constant name unescape
-# wrong constant name <static-init>
-# uninitialized constant Bundler::URI::FTP::ABS_PATH
-# Did you mean?  Bundler::URI::ABS_PATH
-# uninitialized constant Bundler::URI::FTP::ABS_URI
-# Did you mean?  Bundler::URI::ABS_URI
-# uninitialized constant Bundler::URI::FTP::ABS_URI_REF
-# Did you mean?  Bundler::URI::ABS_URI_REF
-# uninitialized constant Bundler::URI::FTP::DEFAULT_PARSER
-# Did you mean?  Bundler::URI::FTP::DEFAULT_PORT
-#                Bundler::URI::DEFAULT_PARSER
-# uninitialized constant Bundler::URI::FTP::ESCAPED
-# Did you mean?  Bundler::URI::FTP::Escape
-#                Bundler::URI::Escape
-#                Bundler::URI::ESCAPED
-# uninitialized constant Bundler::URI::FTP::FRAGMENT
-# Did you mean?  Bundler::URI::FRAGMENT
-# uninitialized constant Bundler::URI::FTP::HOST
-# Did you mean?  Bundler::URI::HOST
-# uninitialized constant Bundler::URI::FTP::OPAQUE
-# Did you mean?  Bundler::URI::OPAQUE
-# uninitialized constant Bundler::URI::FTP::PORT
-# Did you mean?  Bundler::URI::PORT
-# uninitialized constant Bundler::URI::FTP::QUERY
-# Did you mean?  Bundler::URI::QUERY
-# uninitialized constant Bundler::URI::FTP::REGISTRY
-# Did you mean?  Bundler::URI::REGISTRY
-# uninitialized constant Bundler::URI::FTP::REL_PATH
-# Did you mean?  Bundler::URI::REL_PATH
-# uninitialized constant Bundler::URI::FTP::REL_URI
-# Did you mean?  Bundler::URI::REL_URI
-# uninitialized constant Bundler::URI::FTP::REL_URI_REF
-# Did you mean?  Bundler::URI::REL_URI_REF
-# uninitialized constant Bundler::URI::FTP::RFC3986_PARSER
-# Did you mean?  Bundler::URI::FTP::RFC3986_Parser
-#                Bundler::URI::RFC3986_Parser
-#                Bundler::URI::FTP::RFC2396_Parser
-#                Bundler::URI::RFC2396_Parser
-#                Bundler::URI::RFC3986_PARSER
-# uninitialized constant Bundler::URI::FTP::SCHEME
-# Did you mean?  Bundler::URI::SCHEME
-# uninitialized constant Bundler::URI::FTP::TBLDECWWWCOMP_
-# Did you mean?  Bundler::URI::FTP::TBLENCWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
-#                Bundler::URI::TBLDECWWWCOMP_
-# uninitialized constant Bundler::URI::FTP::TBLENCWWWCOMP_
-# Did you mean?  Bundler::URI::FTP::TBLDECWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
-#                Bundler::URI::TBLDECWWWCOMP_
-# uninitialized constant Bundler::URI::FTP::UNSAFE
-# Did you mean?  Bundler::URI::UNSAFE
-# uninitialized constant Bundler::URI::FTP::URI_REF
-# Did you mean?  Bundler::URI::URI_REF
-# uninitialized constant Bundler::URI::FTP::USERINFO
-# Did you mean?  Bundler::URI::USERINFO
-# uninitialized constant Bundler::URI::FTP::USE_REGISTRY
-# uninitialized constant Bundler::URI::FTP::VERSION
-# Did you mean?  Bundler::URI::VERSION
-#                Bundler::VERSION
-# uninitialized constant Bundler::URI::FTP::VERSION_CODE
-# Did you mean?  Bundler::URI::VERSION_CODE
-# uninitialized constant Bundler::URI::FTP::WEB_ENCODINGS_
-# Did you mean?  Bundler::URI::WEB_ENCODINGS_
-# wrong constant name set_typecode
-# wrong constant name typecode
-# wrong constant name typecode=
-# wrong constant name <static-init>
-# wrong constant name new2
-# uninitialized constant Bundler::URI::File::ABS_PATH
-# Did you mean?  Bundler::URI::ABS_PATH
-# uninitialized constant Bundler::URI::File::ABS_URI
-# Did you mean?  Bundler::URI::ABS_URI
-# uninitialized constant Bundler::URI::File::ABS_URI_REF
-# Did you mean?  Bundler::URI::ABS_URI_REF
-# uninitialized constant Bundler::URI::File::DEFAULT_PARSER
-# Did you mean?  Bundler::URI::File::DEFAULT_PORT
-#                Bundler::URI::DEFAULT_PARSER
-# uninitialized constant Bundler::URI::File::ESCAPED
-# Did you mean?  Bundler::URI::File::Escape
-#                Bundler::URI::Escape
-#                Bundler::URI::ESCAPED
-# uninitialized constant Bundler::URI::File::FRAGMENT
-# Did you mean?  Bundler::URI::FRAGMENT
-# uninitialized constant Bundler::URI::File::HOST
-# Did you mean?  Bundler::URI::HOST
-# uninitialized constant Bundler::URI::File::OPAQUE
-# Did you mean?  Bundler::URI::OPAQUE
-# uninitialized constant Bundler::URI::File::PORT
-# Did you mean?  Bundler::URI::PORT
-# uninitialized constant Bundler::URI::File::QUERY
-# Did you mean?  Bundler::URI::QUERY
-# uninitialized constant Bundler::URI::File::REGISTRY
-# Did you mean?  Bundler::URI::REGISTRY
-# uninitialized constant Bundler::URI::File::REL_PATH
-# Did you mean?  Bundler::URI::REL_PATH
-# uninitialized constant Bundler::URI::File::REL_URI
-# Did you mean?  Bundler::URI::REL_URI
-# uninitialized constant Bundler::URI::File::REL_URI_REF
-# Did you mean?  Bundler::URI::REL_URI_REF
-# uninitialized constant Bundler::URI::File::RFC3986_PARSER
-# Did you mean?  Bundler::URI::File::RFC3986_Parser
-#                Bundler::URI::RFC3986_Parser
-#                Bundler::URI::File::RFC2396_Parser
-#                Bundler::URI::RFC2396_Parser
-#                Bundler::URI::RFC3986_PARSER
-# uninitialized constant Bundler::URI::File::SCHEME
-# Did you mean?  Bundler::URI::SCHEME
-# uninitialized constant Bundler::URI::File::TBLDECWWWCOMP_
-# Did you mean?  Bundler::URI::File::TBLENCWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
-#                Bundler::URI::TBLDECWWWCOMP_
-# uninitialized constant Bundler::URI::File::TBLENCWWWCOMP_
-# Did you mean?  Bundler::URI::File::TBLDECWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
-#                Bundler::URI::TBLDECWWWCOMP_
-# uninitialized constant Bundler::URI::File::UNSAFE
-# Did you mean?  Bundler::URI::UNSAFE
-# uninitialized constant Bundler::URI::File::URI_REF
-# Did you mean?  Bundler::URI::URI_REF
-# uninitialized constant Bundler::URI::File::USERINFO
-# Did you mean?  Bundler::URI::USERINFO
-# uninitialized constant Bundler::URI::File::USE_REGISTRY
-# uninitialized constant Bundler::URI::File::VERSION
-# Did you mean?  Bundler::URI::VERSION
-#                Bundler::VERSION
-# uninitialized constant Bundler::URI::File::VERSION_CODE
-# Did you mean?  Bundler::URI::VERSION_CODE
-# uninitialized constant Bundler::URI::File::WEB_ENCODINGS_
-# Did you mean?  Bundler::URI::WEB_ENCODINGS_
-# wrong constant name check_password
-# wrong constant name check_user
-# wrong constant name check_userinfo
-# wrong constant name set_userinfo
-# wrong constant name <static-init>
-# wrong constant name +
-# wrong constant name -
-# wrong constant name ==
-# uninitialized constant Bundler::URI::Generic::ABS_PATH
-# Did you mean?  Bundler::URI::ABS_PATH
-# uninitialized constant Bundler::URI::Generic::ABS_URI
-# Did you mean?  Bundler::URI::ABS_URI
-# uninitialized constant Bundler::URI::Generic::ABS_URI_REF
-# Did you mean?  Bundler::URI::ABS_URI_REF
-# uninitialized constant Bundler::URI::Generic::DEFAULT_PARSER
-# Did you mean?  Bundler::URI::Generic::DEFAULT_PORT
-#                Bundler::URI::DEFAULT_PARSER
-# uninitialized constant Bundler::URI::Generic::ESCAPED
-# Did you mean?  Bundler::URI::Generic::Escape
-#                Bundler::URI::Escape
-#                Bundler::URI::ESCAPED
-# uninitialized constant Bundler::URI::Generic::FRAGMENT
-# Did you mean?  Bundler::URI::FRAGMENT
-# uninitialized constant Bundler::URI::Generic::HOST
-# Did you mean?  Bundler::URI::HOST
-# uninitialized constant Bundler::URI::Generic::OPAQUE
-# Did you mean?  Bundler::URI::OPAQUE
-# uninitialized constant Bundler::URI::Generic::PORT
-# Did you mean?  Bundler::URI::PORT
-# uninitialized constant Bundler::URI::Generic::QUERY
-# Did you mean?  Bundler::URI::QUERY
-# uninitialized constant Bundler::URI::Generic::REGISTRY
-# Did you mean?  Bundler::URI::REGISTRY
-# uninitialized constant Bundler::URI::Generic::REL_PATH
-# Did you mean?  Bundler::URI::REL_PATH
-# uninitialized constant Bundler::URI::Generic::REL_URI
-# Did you mean?  Bundler::URI::REL_URI
-# uninitialized constant Bundler::URI::Generic::REL_URI_REF
-# Did you mean?  Bundler::URI::REL_URI_REF
-# uninitialized constant Bundler::URI::Generic::RFC3986_PARSER
-# Did you mean?  Bundler::URI::Generic::RFC3986_Parser
-#                Bundler::URI::RFC3986_Parser
-#                Bundler::URI::Generic::RFC2396_Parser
-#                Bundler::URI::RFC2396_Parser
-#                Bundler::URI::RFC3986_PARSER
-# uninitialized constant Bundler::URI::Generic::SCHEME
-# Did you mean?  Bundler::URI::SCHEME
-# uninitialized constant Bundler::URI::Generic::TBLDECWWWCOMP_
-# Did you mean?  Bundler::URI::Generic::TBLENCWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
-#                Bundler::URI::TBLDECWWWCOMP_
-# uninitialized constant Bundler::URI::Generic::TBLENCWWWCOMP_
-# Did you mean?  Bundler::URI::Generic::TBLDECWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
-#                Bundler::URI::TBLDECWWWCOMP_
-# uninitialized constant Bundler::URI::Generic::UNSAFE
-# Did you mean?  Bundler::URI::UNSAFE
-# uninitialized constant Bundler::URI::Generic::URI_REF
-# Did you mean?  Bundler::URI::URI_REF
-# uninitialized constant Bundler::URI::Generic::USERINFO
-# Did you mean?  Bundler::URI::USERINFO
-# uninitialized constant Bundler::URI::Generic::VERSION
-# Did you mean?  Bundler::URI::VERSION
-#                Bundler::VERSION
-# uninitialized constant Bundler::URI::Generic::VERSION_CODE
-# Did you mean?  Bundler::URI::VERSION_CODE
-# uninitialized constant Bundler::URI::Generic::WEB_ENCODINGS_
-# Did you mean?  Bundler::URI::WEB_ENCODINGS_
-# wrong constant name absolute
-# wrong constant name absolute?
-# wrong constant name coerce
-# wrong constant name component
-# wrong constant name component_ary
-# wrong constant name default_port
-# wrong constant name eql?
-# wrong constant name find_proxy
-# wrong constant name fragment
-# wrong constant name fragment=
-# wrong constant name hierarchical?
-# wrong constant name host
-# wrong constant name host=
-# wrong constant name hostname
-# wrong constant name hostname=
-# wrong constant name initialize
-# wrong constant name merge
-# wrong constant name merge!
-# wrong constant name normalize
-# wrong constant name normalize!
-# wrong constant name opaque
-# wrong constant name opaque=
-# wrong constant name parser
-# wrong constant name password
-# wrong constant name password=
-# wrong constant name path
-# wrong constant name path=
-# wrong constant name port
-# wrong constant name port=
-# wrong constant name query
-# wrong constant name query=
-# wrong constant name registry
-# wrong constant name registry=
-# wrong constant name relative?
-# wrong constant name route_from
-# wrong constant name route_to
-# wrong constant name scheme
-# wrong constant name scheme=
-# wrong constant name select
-# wrong constant name set_host
-# wrong constant name set_opaque
-# wrong constant name set_password
-# wrong constant name set_path
-# wrong constant name set_port
-# wrong constant name set_registry
-# wrong constant name set_scheme
-# wrong constant name set_user
-# wrong constant name set_userinfo
-# wrong constant name user
-# wrong constant name user=
-# wrong constant name userinfo
-# wrong constant name userinfo=
-# wrong constant name <static-init>
-# wrong constant name build
-# wrong constant name build2
-# wrong constant name component
-# wrong constant name default_port
-# wrong constant name use_proxy?
-# wrong constant name use_registry
-# uninitialized constant Bundler::URI::HTTP::ABS_PATH
-# Did you mean?  Bundler::URI::ABS_PATH
-# uninitialized constant Bundler::URI::HTTP::ABS_URI
-# Did you mean?  Bundler::URI::ABS_URI
-# uninitialized constant Bundler::URI::HTTP::ABS_URI_REF
-# Did you mean?  Bundler::URI::ABS_URI_REF
-# uninitialized constant Bundler::URI::HTTP::DEFAULT_PARSER
-# Did you mean?  Bundler::URI::HTTP::DEFAULT_PORT
-#                Bundler::URI::DEFAULT_PARSER
-# uninitialized constant Bundler::URI::HTTP::ESCAPED
-# Did you mean?  Bundler::URI::HTTP::Escape
-#                Bundler::URI::Escape
-#                Bundler::URI::ESCAPED
-# uninitialized constant Bundler::URI::HTTP::FRAGMENT
-# Did you mean?  Bundler::URI::FRAGMENT
-# uninitialized constant Bundler::URI::HTTP::HOST
-# Did you mean?  Bundler::URI::HOST
-# uninitialized constant Bundler::URI::HTTP::OPAQUE
-# Did you mean?  Bundler::URI::OPAQUE
-# uninitialized constant Bundler::URI::HTTP::PORT
-# Did you mean?  Bundler::URI::PORT
-# uninitialized constant Bundler::URI::HTTP::QUERY
-# Did you mean?  Bundler::URI::QUERY
-# uninitialized constant Bundler::URI::HTTP::REGISTRY
-# Did you mean?  Bundler::URI::REGISTRY
-# uninitialized constant Bundler::URI::HTTP::REL_PATH
-# Did you mean?  Bundler::URI::REL_PATH
-# uninitialized constant Bundler::URI::HTTP::REL_URI
-# Did you mean?  Bundler::URI::REL_URI
-# uninitialized constant Bundler::URI::HTTP::REL_URI_REF
-# Did you mean?  Bundler::URI::REL_URI_REF
-# uninitialized constant Bundler::URI::HTTP::RFC3986_PARSER
-# Did you mean?  Bundler::URI::HTTP::RFC3986_Parser
-#                Bundler::URI::RFC3986_Parser
-#                Bundler::URI::HTTP::RFC2396_Parser
-#                Bundler::URI::RFC2396_Parser
-#                Bundler::URI::RFC3986_PARSER
-# uninitialized constant Bundler::URI::HTTP::SCHEME
-# Did you mean?  Bundler::URI::SCHEME
-# uninitialized constant Bundler::URI::HTTP::TBLDECWWWCOMP_
-# Did you mean?  Bundler::URI::HTTP::TBLENCWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
-#                Bundler::URI::TBLDECWWWCOMP_
-# uninitialized constant Bundler::URI::HTTP::TBLENCWWWCOMP_
-# Did you mean?  Bundler::URI::HTTP::TBLDECWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
-#                Bundler::URI::TBLDECWWWCOMP_
-# uninitialized constant Bundler::URI::HTTP::UNSAFE
-# Did you mean?  Bundler::URI::UNSAFE
-# uninitialized constant Bundler::URI::HTTP::URI_REF
-# Did you mean?  Bundler::URI::URI_REF
-# uninitialized constant Bundler::URI::HTTP::USERINFO
-# Did you mean?  Bundler::URI::USERINFO
-# uninitialized constant Bundler::URI::HTTP::USE_REGISTRY
-# uninitialized constant Bundler::URI::HTTP::VERSION
-# Did you mean?  Bundler::URI::VERSION
-#                Bundler::VERSION
-# uninitialized constant Bundler::URI::HTTP::VERSION_CODE
-# Did you mean?  Bundler::URI::VERSION_CODE
-# uninitialized constant Bundler::URI::HTTP::WEB_ENCODINGS_
-# Did you mean?  Bundler::URI::WEB_ENCODINGS_
-# wrong constant name request_uri
-# wrong constant name <static-init>
-# uninitialized constant Bundler::URI::HTTPS::ABS_PATH
-# Did you mean?  Bundler::URI::ABS_PATH
-# uninitialized constant Bundler::URI::HTTPS::ABS_URI
-# Did you mean?  Bundler::URI::ABS_URI
-# uninitialized constant Bundler::URI::HTTPS::ABS_URI_REF
-# Did you mean?  Bundler::URI::ABS_URI_REF
-# uninitialized constant Bundler::URI::HTTPS::COMPONENT
-# uninitialized constant Bundler::URI::HTTPS::DEFAULT_PARSER
-# Did you mean?  Bundler::URI::HTTPS::DEFAULT_PORT
-#                Bundler::URI::DEFAULT_PARSER
-# uninitialized constant Bundler::URI::HTTPS::ESCAPED
-# Did you mean?  Bundler::URI::HTTPS::Escape
-#                Bundler::URI::Escape
-#                Bundler::URI::ESCAPED
-# uninitialized constant Bundler::URI::HTTPS::FRAGMENT
-# Did you mean?  Bundler::URI::FRAGMENT
-# uninitialized constant Bundler::URI::HTTPS::HOST
-# Did you mean?  Bundler::URI::HOST
-# uninitialized constant Bundler::URI::HTTPS::OPAQUE
-# Did you mean?  Bundler::URI::OPAQUE
-# uninitialized constant Bundler::URI::HTTPS::PORT
-# Did you mean?  Bundler::URI::PORT
-# uninitialized constant Bundler::URI::HTTPS::QUERY
-# Did you mean?  Bundler::URI::QUERY
-# uninitialized constant Bundler::URI::HTTPS::REGISTRY
-# Did you mean?  Bundler::URI::REGISTRY
-# uninitialized constant Bundler::URI::HTTPS::REL_PATH
-# Did you mean?  Bundler::URI::REL_PATH
-# uninitialized constant Bundler::URI::HTTPS::REL_URI
-# Did you mean?  Bundler::URI::REL_URI
-# uninitialized constant Bundler::URI::HTTPS::REL_URI_REF
-# Did you mean?  Bundler::URI::REL_URI_REF
-# uninitialized constant Bundler::URI::HTTPS::RFC3986_PARSER
-# Did you mean?  Bundler::URI::HTTPS::RFC3986_Parser
-#                Bundler::URI::RFC3986_Parser
-#                Bundler::URI::HTTPS::RFC2396_Parser
-#                Bundler::URI::RFC2396_Parser
-#                Bundler::URI::RFC3986_PARSER
-# uninitialized constant Bundler::URI::HTTPS::SCHEME
-# Did you mean?  Bundler::URI::SCHEME
-# uninitialized constant Bundler::URI::HTTPS::TBLDECWWWCOMP_
-# Did you mean?  Bundler::URI::HTTPS::TBLENCWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
-#                Bundler::URI::TBLDECWWWCOMP_
-# uninitialized constant Bundler::URI::HTTPS::TBLENCWWWCOMP_
-# Did you mean?  Bundler::URI::HTTPS::TBLDECWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
-#                Bundler::URI::TBLDECWWWCOMP_
-# uninitialized constant Bundler::URI::HTTPS::UNSAFE
-# Did you mean?  Bundler::URI::UNSAFE
-# uninitialized constant Bundler::URI::HTTPS::URI_REF
-# Did you mean?  Bundler::URI::URI_REF
-# uninitialized constant Bundler::URI::HTTPS::USERINFO
-# Did you mean?  Bundler::URI::USERINFO
-# uninitialized constant Bundler::URI::HTTPS::USE_REGISTRY
-# uninitialized constant Bundler::URI::HTTPS::VERSION
-# Did you mean?  Bundler::URI::VERSION
-#                Bundler::VERSION
-# uninitialized constant Bundler::URI::HTTPS::VERSION_CODE
-# Did you mean?  Bundler::URI::VERSION_CODE
-# uninitialized constant Bundler::URI::HTTPS::WEB_ENCODINGS_
-# Did you mean?  Bundler::URI::WEB_ENCODINGS_
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# uninitialized constant Bundler::URI::LDAP::ABS_PATH
-# Did you mean?  Bundler::URI::ABS_PATH
-# uninitialized constant Bundler::URI::LDAP::ABS_URI
-# Did you mean?  Bundler::URI::ABS_URI
-# uninitialized constant Bundler::URI::LDAP::ABS_URI_REF
-# Did you mean?  Bundler::URI::ABS_URI_REF
-# uninitialized constant Bundler::URI::LDAP::DEFAULT_PARSER
-# Did you mean?  Bundler::URI::LDAP::DEFAULT_PORT
-#                Bundler::URI::DEFAULT_PARSER
-# uninitialized constant Bundler::URI::LDAP::ESCAPED
-# Did you mean?  Bundler::URI::LDAP::Escape
-#                Bundler::URI::Escape
-#                Bundler::URI::ESCAPED
-# uninitialized constant Bundler::URI::LDAP::FRAGMENT
-# Did you mean?  Bundler::URI::FRAGMENT
-# uninitialized constant Bundler::URI::LDAP::HOST
-# Did you mean?  Bundler::URI::HOST
-# uninitialized constant Bundler::URI::LDAP::OPAQUE
-# Did you mean?  Bundler::URI::OPAQUE
-# uninitialized constant Bundler::URI::LDAP::PORT
-# Did you mean?  Bundler::URI::PORT
-# uninitialized constant Bundler::URI::LDAP::QUERY
-# Did you mean?  Bundler::URI::QUERY
-# uninitialized constant Bundler::URI::LDAP::REGISTRY
-# Did you mean?  Bundler::URI::REGISTRY
-# uninitialized constant Bundler::URI::LDAP::REL_PATH
-# Did you mean?  Bundler::URI::REL_PATH
-# uninitialized constant Bundler::URI::LDAP::REL_URI
-# Did you mean?  Bundler::URI::REL_URI
-# uninitialized constant Bundler::URI::LDAP::REL_URI_REF
-# Did you mean?  Bundler::URI::REL_URI_REF
-# uninitialized constant Bundler::URI::LDAP::RFC3986_PARSER
-# Did you mean?  Bundler::URI::LDAP::RFC3986_Parser
-#                Bundler::URI::RFC3986_Parser
-#                Bundler::URI::LDAP::RFC2396_Parser
-#                Bundler::URI::RFC2396_Parser
-#                Bundler::URI::RFC3986_PARSER
-# uninitialized constant Bundler::URI::LDAP::SCHEME
-# Did you mean?  Bundler::URI::SCHEME
-# uninitialized constant Bundler::URI::LDAP::TBLDECWWWCOMP_
-# Did you mean?  Bundler::URI::LDAP::TBLENCWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
-#                Bundler::URI::TBLDECWWWCOMP_
-# uninitialized constant Bundler::URI::LDAP::TBLENCWWWCOMP_
-# Did you mean?  Bundler::URI::LDAP::TBLDECWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
-#                Bundler::URI::TBLDECWWWCOMP_
-# uninitialized constant Bundler::URI::LDAP::UNSAFE
-# Did you mean?  Bundler::URI::UNSAFE
-# uninitialized constant Bundler::URI::LDAP::URI_REF
-# Did you mean?  Bundler::URI::URI_REF
-# uninitialized constant Bundler::URI::LDAP::USERINFO
-# Did you mean?  Bundler::URI::USERINFO
-# uninitialized constant Bundler::URI::LDAP::USE_REGISTRY
-# uninitialized constant Bundler::URI::LDAP::VERSION
-# Did you mean?  Bundler::URI::VERSION
-#                Bundler::VERSION
-# uninitialized constant Bundler::URI::LDAP::VERSION_CODE
-# Did you mean?  Bundler::URI::VERSION_CODE
-# uninitialized constant Bundler::URI::LDAP::WEB_ENCODINGS_
-# Did you mean?  Bundler::URI::WEB_ENCODINGS_
-# wrong constant name attributes
-# wrong constant name attributes=
-# wrong constant name dn
-# wrong constant name dn=
-# wrong constant name extensions
-# wrong constant name extensions=
-# wrong constant name filter
-# wrong constant name filter=
-# wrong constant name initialize
-# wrong constant name scope
-# wrong constant name scope=
-# wrong constant name set_attributes
-# wrong constant name set_dn
-# wrong constant name set_extensions
-# wrong constant name set_filter
-# wrong constant name set_scope
-# wrong constant name <static-init>
-# uninitialized constant Bundler::URI::LDAPS::ABS_PATH
-# Did you mean?  Bundler::URI::ABS_PATH
-# uninitialized constant Bundler::URI::LDAPS::ABS_URI
-# Did you mean?  Bundler::URI::ABS_URI
-# uninitialized constant Bundler::URI::LDAPS::ABS_URI_REF
-# Did you mean?  Bundler::URI::ABS_URI_REF
-# uninitialized constant Bundler::URI::LDAPS::COMPONENT
-# uninitialized constant Bundler::URI::LDAPS::DEFAULT_PARSER
-# Did you mean?  Bundler::URI::LDAPS::DEFAULT_PORT
-#                Bundler::URI::DEFAULT_PARSER
-# uninitialized constant Bundler::URI::LDAPS::ESCAPED
-# Did you mean?  Bundler::URI::LDAPS::Escape
-#                Bundler::URI::Escape
-#                Bundler::URI::ESCAPED
-# uninitialized constant Bundler::URI::LDAPS::FRAGMENT
-# Did you mean?  Bundler::URI::FRAGMENT
-# uninitialized constant Bundler::URI::LDAPS::HOST
-# Did you mean?  Bundler::URI::HOST
-# uninitialized constant Bundler::URI::LDAPS::OPAQUE
-# Did you mean?  Bundler::URI::OPAQUE
-# uninitialized constant Bundler::URI::LDAPS::PORT
-# Did you mean?  Bundler::URI::PORT
-# uninitialized constant Bundler::URI::LDAPS::QUERY
-# Did you mean?  Bundler::URI::QUERY
-# uninitialized constant Bundler::URI::LDAPS::REGISTRY
-# Did you mean?  Bundler::URI::REGISTRY
-# uninitialized constant Bundler::URI::LDAPS::REL_PATH
-# Did you mean?  Bundler::URI::REL_PATH
-# uninitialized constant Bundler::URI::LDAPS::REL_URI
-# Did you mean?  Bundler::URI::REL_URI
-# uninitialized constant Bundler::URI::LDAPS::REL_URI_REF
-# Did you mean?  Bundler::URI::REL_URI_REF
-# uninitialized constant Bundler::URI::LDAPS::RFC3986_PARSER
-# Did you mean?  Bundler::URI::LDAPS::RFC3986_Parser
-#                Bundler::URI::RFC3986_Parser
-#                Bundler::URI::LDAPS::RFC2396_Parser
-#                Bundler::URI::RFC2396_Parser
-#                Bundler::URI::RFC3986_PARSER
-# uninitialized constant Bundler::URI::LDAPS::SCHEME
-# Did you mean?  Bundler::URI::SCHEME
-# uninitialized constant Bundler::URI::LDAPS::SCOPE
-# uninitialized constant Bundler::URI::LDAPS::SCOPE_BASE
-# Did you mean?  Bundler::URI::LDAPS::SCOPE_ONE
-# uninitialized constant Bundler::URI::LDAPS::SCOPE_ONE
-# Did you mean?  Bundler::URI::LDAPS::SCOPE_SUB
-#                Bundler::URI::LDAPS::SCOPE_BASE
-# uninitialized constant Bundler::URI::LDAPS::SCOPE_SUB
-# Did you mean?  Bundler::URI::LDAPS::SCOPE_ONE
-# uninitialized constant Bundler::URI::LDAPS::TBLDECWWWCOMP_
-# Did you mean?  Bundler::URI::LDAPS::TBLENCWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
-#                Bundler::URI::TBLDECWWWCOMP_
-# uninitialized constant Bundler::URI::LDAPS::TBLENCWWWCOMP_
-# Did you mean?  Bundler::URI::LDAPS::TBLDECWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
-#                Bundler::URI::TBLDECWWWCOMP_
-# uninitialized constant Bundler::URI::LDAPS::UNSAFE
-# Did you mean?  Bundler::URI::UNSAFE
-# uninitialized constant Bundler::URI::LDAPS::URI_REF
-# Did you mean?  Bundler::URI::URI_REF
-# uninitialized constant Bundler::URI::LDAPS::USERINFO
-# Did you mean?  Bundler::URI::USERINFO
-# uninitialized constant Bundler::URI::LDAPS::USE_REGISTRY
-# uninitialized constant Bundler::URI::LDAPS::VERSION
-# Did you mean?  Bundler::URI::VERSION
-#                Bundler::VERSION
-# uninitialized constant Bundler::URI::LDAPS::VERSION_CODE
-# Did you mean?  Bundler::URI::VERSION_CODE
-# uninitialized constant Bundler::URI::LDAPS::WEB_ENCODINGS_
-# Did you mean?  Bundler::URI::WEB_ENCODINGS_
-# wrong constant name <static-init>
-# uninitialized constant Bundler::URI::MailTo::ABS_PATH
-# Did you mean?  Bundler::URI::ABS_PATH
-# uninitialized constant Bundler::URI::MailTo::ABS_URI
-# Did you mean?  Bundler::URI::ABS_URI
-# uninitialized constant Bundler::URI::MailTo::ABS_URI_REF
-# Did you mean?  Bundler::URI::ABS_URI_REF
-# uninitialized constant Bundler::URI::MailTo::DEFAULT_PARSER
-# Did you mean?  Bundler::URI::MailTo::DEFAULT_PORT
-#                Bundler::URI::DEFAULT_PARSER
-# uninitialized constant Bundler::URI::MailTo::ESCAPED
-# Did you mean?  Bundler::URI::MailTo::Escape
-#                Bundler::URI::Escape
-#                Bundler::URI::ESCAPED
-# uninitialized constant Bundler::URI::MailTo::FRAGMENT
-# Did you mean?  Bundler::URI::FRAGMENT
-# uninitialized constant Bundler::URI::MailTo::HOST
-# Did you mean?  Bundler::URI::HOST
-# uninitialized constant Bundler::URI::MailTo::OPAQUE
-# Did you mean?  Bundler::URI::OPAQUE
-# uninitialized constant Bundler::URI::MailTo::PORT
-# Did you mean?  Bundler::URI::PORT
-# uninitialized constant Bundler::URI::MailTo::QUERY
-# Did you mean?  Bundler::URI::QUERY
-# uninitialized constant Bundler::URI::MailTo::REGISTRY
-# Did you mean?  Bundler::URI::REGISTRY
-# uninitialized constant Bundler::URI::MailTo::REL_PATH
-# Did you mean?  Bundler::URI::REL_PATH
-# uninitialized constant Bundler::URI::MailTo::REL_URI
-# Did you mean?  Bundler::URI::REL_URI
-# uninitialized constant Bundler::URI::MailTo::REL_URI_REF
-# Did you mean?  Bundler::URI::REL_URI_REF
-# uninitialized constant Bundler::URI::MailTo::RFC3986_PARSER
-# Did you mean?  Bundler::URI::MailTo::RFC3986_Parser
-#                Bundler::URI::RFC3986_Parser
-#                Bundler::URI::MailTo::RFC2396_Parser
-#                Bundler::URI::RFC2396_Parser
-#                Bundler::URI::RFC3986_PARSER
-# uninitialized constant Bundler::URI::MailTo::SCHEME
-# Did you mean?  Bundler::URI::SCHEME
-# uninitialized constant Bundler::URI::MailTo::TBLDECWWWCOMP_
-# Did you mean?  Bundler::URI::MailTo::TBLENCWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
-#                Bundler::URI::TBLDECWWWCOMP_
-# uninitialized constant Bundler::URI::MailTo::TBLENCWWWCOMP_
-# Did you mean?  Bundler::URI::MailTo::TBLDECWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
-#                Bundler::URI::TBLDECWWWCOMP_
-# uninitialized constant Bundler::URI::MailTo::UNSAFE
-# Did you mean?  Bundler::URI::UNSAFE
-# uninitialized constant Bundler::URI::MailTo::URI_REF
-# Did you mean?  Bundler::URI::URI_REF
-# uninitialized constant Bundler::URI::MailTo::USERINFO
-# Did you mean?  Bundler::URI::USERINFO
-# uninitialized constant Bundler::URI::MailTo::USE_REGISTRY
-# uninitialized constant Bundler::URI::MailTo::VERSION
-# Did you mean?  Bundler::URI::VERSION
-#                Bundler::VERSION
-# uninitialized constant Bundler::URI::MailTo::VERSION_CODE
-# Did you mean?  Bundler::URI::VERSION_CODE
-# uninitialized constant Bundler::URI::MailTo::WEB_ENCODINGS_
-# Did you mean?  Bundler::URI::WEB_ENCODINGS_
-# wrong constant name headers
-# wrong constant name headers=
-# wrong constant name initialize
-# wrong constant name set_headers
-# wrong constant name set_to
-# wrong constant name to
-# wrong constant name to=
-# wrong constant name to_mailtext
-# wrong constant name to_rfc822text
-# wrong constant name <static-init>
-# wrong constant name escape
-# wrong constant name extract
-# wrong constant name initialize
-# wrong constant name join
-# wrong constant name make_regexp
-# wrong constant name parse
-# wrong constant name pattern
-# wrong constant name regexp
-# wrong constant name split
-# wrong constant name unescape
-# wrong constant name <static-init>
-# wrong constant name <Class:PATTERN>
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name join
-# wrong constant name parse
-# wrong constant name regexp
-# wrong constant name split
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name make_components_hash
-# wrong constant name <static-init>
-# wrong constant name decode_www_form
-# wrong constant name decode_www_form_component
-# wrong constant name encode_www_form
-# wrong constant name encode_www_form_component
-# wrong constant name extract
-# wrong constant name get_encoding
-# wrong constant name join
-# wrong constant name parse
-# wrong constant name regexp
-# wrong constant name scheme_list
-# wrong constant name split
 # wrong constant name <Class:NEq>
 # wrong constant name <Class:ReqR>
 # uninitialized constant Bundler::VersionRanges::NEq::Elem
@@ -1718,7 +384,6 @@
 # wrong constant name <static-init>
 # wrong constant name []
 # wrong constant name members
-# wrong constant name <=>
 # uninitialized constant Bundler::VersionRanges::ReqR::Elem
 # wrong constant name <Class:Endpoint>
 # wrong constant name cover?
@@ -1728,7 +393,6 @@
 # wrong constant name right
 # wrong constant name right=
 # wrong constant name single?
-# wrong constant name <=>
 # uninitialized constant Bundler::VersionRanges::ReqR::Endpoint::Elem
 # wrong constant name inclusive
 # wrong constant name inclusive=
@@ -1746,14 +410,6 @@
 # wrong constant name for_many
 # uninitialized constant Bundler::YAMLSerializer
 # uninitialized constant Bundler::YAMLSerializer
-# wrong constant name most_specific_locked_platform?
-# wrong constant name original_exec
-# wrong constant name original_system
-# wrong constant name preferred_gemfile_name
-# wrong constant name reset_settings_and_root!
-# wrong constant name unbundled_env
-# wrong constant name unbundled_exec
-# wrong constant name unbundled_system
 # wrong constant name a
 # wrong constant name base
 # wrong constant name blockquote
@@ -1801,6 +457,79 @@
 # uninitialized constant DBM
 # uninitialized constant DBMError
 # uninitialized constant DBMError
+# wrong constant name _dump
+# wrong constant name _load
+# wrong constant name alive?
+# wrong constant name close
+# wrong constant name initialize
+# wrong constant name send_message
+# wrong constant name uri
+# wrong constant name make_pool
+# wrong constant name open
+# wrong constant name stop_pool
+# wrong constant name dump
+# wrong constant name initialize
+# wrong constant name load
+# wrong constant name recv_reply
+# wrong constant name recv_request
+# wrong constant name send_reply
+# wrong constant name send_request
+# wrong constant name ==
+# wrong constant name eql?
+# wrong constant name initialize
+# wrong constant name prepare_backtrace
+# wrong constant name with_friend
+# wrong constant name auto_load
+# wrong constant name initialize
+# wrong constant name <Class:InvokeMethod>
+# wrong constant name <Class:InvokeMethod18Mixin>
+# wrong constant name initialize
+# wrong constant name safe_level
+# wrong constant name initialize
+# wrong constant name perform
+# wrong constant name <static-init>
+# wrong constant name block_yield
+# wrong constant name perform_with_block
+# wrong constant name <static-init>
+# wrong constant name default_safe_level
+# wrong constant name make_config
+# wrong constant name accept
+# wrong constant name alive?
+# wrong constant name close
+# wrong constant name initialize
+# wrong constant name peeraddr
+# wrong constant name recv_reply
+# wrong constant name recv_request
+# wrong constant name send_reply
+# wrong constant name send_request
+# wrong constant name set_sockopt
+# wrong constant name shutdown
+# wrong constant name stream
+# wrong constant name uri
+# wrong constant name getservername
+# wrong constant name open
+# wrong constant name open_server
+# wrong constant name open_server_inaddr_any
+# wrong constant name parse_uri
+# wrong constant name uri_option
+# wrong constant name ==
+# wrong constant name eql?
+# wrong constant name initialize
+# wrong constant name option
+# wrong constant name <static-init>
+# wrong constant name _dump
+# wrong constant name _dump
+# wrong constant name _load
+# wrong constant name _dump
+# wrong constant name initialize
+# wrong constant name _load
+# wrong constant name _execute
+# wrong constant name alive?
+# wrong constant name initialize
+# wrong constant name kill
+# wrong constant name method_missing
+# wrong constant name <static-init>
+# wrong constant name mutex
 # wrong constant name class_name
 # wrong constant name class_names
 # wrong constant name corrections
@@ -1961,18 +690,6 @@
 # wrong constant name <static-init>
 # wrong constant name build
 # wrong constant name get_relative_path
-# wrong constant name copy_to
-# wrong constant name data_mode
-# wrong constant name data_mode=
-# wrong constant name dir_mode
-# wrong constant name dir_mode=
-# wrong constant name extract_files
-# wrong constant name initialize
-# wrong constant name prog_mode
-# wrong constant name prog_mode=
-# wrong constant name spec
-# wrong constant name spec=
-# wrong constant name <static-init>
 # wrong constant name <Class:DigestIO>
 # wrong constant name <Class:FileSource>
 # wrong constant name <Class:IOSource>
@@ -2057,21 +774,6 @@
 # wrong constant name initialize
 # wrong constant name path
 # wrong constant name spec_cache_dir
-# wrong constant name match_gem?
-# wrong constant name match_spec?
-# wrong constant name initialize
-# wrong constant name uri
-# wrong constant name uri=
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name <Class:CorrectHashForLambdaOperator>
-# wrong constant name <Class:OrderIndependentComparison>
-# wrong constant name hash
-# wrong constant name <static-init>
-# wrong constant name ==
-# wrong constant name _requirements_sorted?
-# wrong constant name _with_sorted_requirements
-# wrong constant name <static-init>
 # wrong constant name <static-init>
 # wrong constant name <static-init>
 # wrong constant name add_edge_no_circular
@@ -2258,12 +960,8 @@
 # Did you mean?  DRb
 #                ERB
 # wrong constant name to_bn
-# wrong constant name quirks_mode
-# wrong constant name quirks_mode=
-# wrong constant name quirks_mode?
 # wrong constant name from_state
 # wrong constant name initialize
-# wrong constant name quirks_mode?
 # uninitialized constant Jacobian
 # uninitialized constant Jacobian
 # uninitialized constant Kconv
@@ -2304,8 +1002,6 @@
 # uninitialized constant Mutex_m
 # uninitialized constant NKF
 # uninitialized constant NKF
-# wrong constant name write_timeout
-# wrong constant name write_timeout=
 # uninitialized constant Net::DNS
 # uninitialized constant Net::DNS
 # uninitialized constant Net::FTP
@@ -2328,54 +1024,12 @@
 # Did you mean?  TypeError
 # uninitialized constant Net::FTPTempError
 # Did you mean?  TypeError
-# wrong constant name ipaddr
-# wrong constant name ipaddr=
-# wrong constant name max_retries
-# wrong constant name max_retries=
-# wrong constant name max_version
-# wrong constant name max_version=
-# wrong constant name min_version
-# wrong constant name min_version=
-# wrong constant name write_timeout
-# wrong constant name write_timeout=
 # uninitialized constant Net::HTTP::DigestAuth
 # uninitialized constant Net::HTTP::DigestAuth
-# uninitialized constant Net::HTTPAlreadyReported::CODE_CLASS_TO_OBJ
-# uninitialized constant Net::HTTPAlreadyReported::CODE_TO_OBJ
-# wrong constant name <static-init>
-# uninitialized constant Net::HTTPEarlyHints::CODE_CLASS_TO_OBJ
-# uninitialized constant Net::HTTPEarlyHints::CODE_TO_OBJ
-# wrong constant name <static-init>
-# uninitialized constant Net::HTTPLoopDetected::CODE_CLASS_TO_OBJ
-# uninitialized constant Net::HTTPLoopDetected::CODE_TO_OBJ
-# wrong constant name <static-init>
-# uninitialized constant Net::HTTPMisdirectedRequest::CODE_CLASS_TO_OBJ
-# uninitialized constant Net::HTTPMisdirectedRequest::CODE_TO_OBJ
-# wrong constant name <static-init>
-# uninitialized constant Net::HTTPNotExtended::CODE_CLASS_TO_OBJ
-# uninitialized constant Net::HTTPNotExtended::CODE_TO_OBJ
-# wrong constant name <static-init>
-# uninitialized constant Net::HTTPPayloadTooLarge::CODE_CLASS_TO_OBJ
-# uninitialized constant Net::HTTPPayloadTooLarge::CODE_TO_OBJ
-# wrong constant name <static-init>
-# uninitialized constant Net::HTTPProcessing::CODE_CLASS_TO_OBJ
-# uninitialized constant Net::HTTPProcessing::CODE_TO_OBJ
-# wrong constant name <static-init>
-# uninitialized constant Net::HTTPRangeNotSatisfiable::CODE_CLASS_TO_OBJ
-# uninitialized constant Net::HTTPRangeNotSatisfiable::CODE_TO_OBJ
-# wrong constant name <static-init>
-# uninitialized constant Net::HTTPURITooLong::CODE_CLASS_TO_OBJ
-# uninitialized constant Net::HTTPURITooLong::CODE_TO_OBJ
-# wrong constant name <static-init>
-# uninitialized constant Net::HTTPVariantAlsoNegotiates::CODE_CLASS_TO_OBJ
-# uninitialized constant Net::HTTPVariantAlsoNegotiates::CODE_TO_OBJ
-# wrong constant name <static-init>
 # uninitialized constant Net::IMAP
 # uninitialized constant Net::IMAP
 # uninitialized constant Net::NTLM
 # uninitialized constant Net::NTLM
-# wrong constant name initialize
-# wrong constant name io
 # uninitialized constant Net::SMTP
 # uninitialized constant Net::SMTP
 # uninitialized constant Net::SMTPAuthenticationError
@@ -2400,8 +1054,6 @@
 # uninitialized constant Net::SMTPUnknownError
 # uninitialized constant Net::SMTPUnsupportedCommand
 # uninitialized constant Net::SMTPUnsupportedCommand
-# wrong constant name initialize
-# wrong constant name io
 # uninitialized constant Newton
 # uninitialized constant Newton
 # wrong constant name <static-init>
@@ -2507,18 +1159,15 @@
 # uninitialized constant Proc8
 # uninitialized constant Proc9
 # uninitialized constant Proc9
+# uninitialized constant Pry::BasicObject::RUBYGEMS_ACTIVATION_MONITOR
 # uninitialized constant Pry::Command::COLORS
-# uninitialized constant Pry::Command::GemSearch::COLORS
-# Did you mean?  Pry::Command::COLORS
-# uninitialized constant Pry::Command::GemSearch::VOID_VALUE
-# Did you mean?  Pry::Command::VOID_VALUE
-# uninitialized constant Pry::Command::GemStat::COLORS
-# Did you mean?  Pry::Command::COLORS
-# uninitialized constant Pry::Command::GemStat::VOID_VALUE
-# Did you mean?  Pry::Command::VOID_VALUE
 # uninitialized constant Pry::Command::Ls::COLORS
 # Did you mean?  Pry::Command::COLORS
 # uninitialized constant Pry::Command::Ls::VOID_VALUE
+# Did you mean?  Pry::Command::VOID_VALUE
+# uninitialized constant Pry::Command::Wtf::COLORS
+# Did you mean?  Pry::Command::COLORS
+# uninitialized constant Pry::Command::Wtf::VOID_VALUE
 # Did you mean?  Pry::Command::VOID_VALUE
 # uninitialized constant Psych::UnsafeYAML
 # uninitialized constant Psych::UnsafeYAML
@@ -2667,48 +1316,48 @@
 # uninitialized constant RDoc::RD::BlockParser::Racc_Runtime_Core_Id_C
 # Did you mean?  RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
 # uninitialized constant RDoc::RD::BlockParser::Racc_Runtime_Core_Revision
-# Did you mean?  RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_R
-#                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_C
+# Did you mean?  RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_C
+#                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_R
 #                RDoc::RD::BlockParser::Racc_Runtime_Revision
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Version
-#                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_R
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
+#                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_R
 #                RDoc::RD::BlockParser::Racc_Runtime_Version
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Id_C
 # uninitialized constant RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_C
 # Did you mean?  RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_R
 #                RDoc::RD::BlockParser::Racc_Runtime_Revision
-#                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_R
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
+#                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_R
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Version
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Id_C
 # uninitialized constant RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_R
 # Did you mean?  RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_C
 #                RDoc::RD::BlockParser::Racc_Runtime_Revision
-#                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_R
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
+#                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_R
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Version
 # uninitialized constant RDoc::RD::BlockParser::Racc_Runtime_Core_Version
 # Did you mean?  RDoc::RD::BlockParser::Racc_Runtime_Revision
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision
-#                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_R
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
-#                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_R
+#                RDoc::RD::BlockParser::Racc_Runtime_Core_Version_R
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_C
+#                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_R
 #                RDoc::RD::BlockParser::Racc_Runtime_Version
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Id_C
 # uninitialized constant RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
 # Did you mean?  RDoc::RD::BlockParser::Racc_Runtime_Core_Version_R
-#                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_R
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_C
+#                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_R
 #                RDoc::RD::BlockParser::Racc_Runtime_Revision
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision
 #                RDoc::RD::BlockParser::Racc_Runtime_Version
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Id_C
 # uninitialized constant RDoc::RD::BlockParser::Racc_Runtime_Core_Version_R
 # Did you mean?  RDoc::RD::BlockParser::Racc_Runtime_Core_Version_C
-#                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_R
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_C
+#                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision_R
 #                RDoc::RD::BlockParser::Racc_Runtime_Revision
 #                RDoc::RD::BlockParser::Racc_Runtime_Core_Revision
 #                RDoc::RD::BlockParser::Racc_Runtime_Version
@@ -2727,48 +1376,48 @@
 # uninitialized constant RDoc::RD::InlineParser::Racc_Runtime_Core_Id_C
 # Did you mean?  RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
 # uninitialized constant RDoc::RD::InlineParser::Racc_Runtime_Core_Revision
-# Did you mean?  RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_R
-#                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_C
+# Did you mean?  RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_C
+#                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_R
 #                RDoc::RD::InlineParser::Racc_Runtime_Revision
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Version
-#                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_R
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
+#                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_R
 #                RDoc::RD::InlineParser::Racc_Runtime_Version
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Id_C
 # uninitialized constant RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_C
 # Did you mean?  RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_R
 #                RDoc::RD::InlineParser::Racc_Runtime_Revision
-#                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_R
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
+#                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_R
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Version
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Id_C
 # uninitialized constant RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_R
 # Did you mean?  RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_C
 #                RDoc::RD::InlineParser::Racc_Runtime_Revision
-#                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_R
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
+#                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_R
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Version
 # uninitialized constant RDoc::RD::InlineParser::Racc_Runtime_Core_Version
 # Did you mean?  RDoc::RD::InlineParser::Racc_Runtime_Revision
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision
-#                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_R
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
-#                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_R
+#                RDoc::RD::InlineParser::Racc_Runtime_Core_Version_R
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_C
+#                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_R
 #                RDoc::RD::InlineParser::Racc_Runtime_Version
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Id_C
 # uninitialized constant RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
 # Did you mean?  RDoc::RD::InlineParser::Racc_Runtime_Core_Version_R
-#                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_R
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_C
+#                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_R
 #                RDoc::RD::InlineParser::Racc_Runtime_Revision
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision
 #                RDoc::RD::InlineParser::Racc_Runtime_Version
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Id_C
 # uninitialized constant RDoc::RD::InlineParser::Racc_Runtime_Core_Version_R
 # Did you mean?  RDoc::RD::InlineParser::Racc_Runtime_Core_Version_C
-#                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_R
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_C
+#                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision_R
 #                RDoc::RD::InlineParser::Racc_Runtime_Revision
 #                RDoc::RD::InlineParser::Racc_Runtime_Core_Revision
 #                RDoc::RD::InlineParser::Racc_Runtime_Version
@@ -3143,288 +1792,9 @@
 # uninitialized constant RSpec::Core::ExampleGroup::HAS_REGEX
 # uninitialized constant RSpec::Core::ExampleGroup::NOT_YET_IMPLEMENTED
 # uninitialized constant RSpec::Core::ExampleGroup::NO_REASON_GIVEN
-# wrong constant name <Class:RunResults>
-# wrong constant name example_failed
-# wrong constant name example_passed
-# wrong constant name example_pending
-# wrong constant name example_started
-# wrong constant name initialize
-# wrong constant name start
-# wrong constant name start_dump
-# uninitialized constant RSpec::Core::Formatters::BisectFormatter::RunResults::Elem
-# wrong constant name all_example_ids
-# wrong constant name all_example_ids=
-# wrong constant name failed_example_ids
-# wrong constant name failed_example_ids=
-# wrong constant name <static-init>
-# wrong constant name []
-# wrong constant name members
-# wrong constant name <static-init>
-# wrong constant name aggregate
-# wrong constant name block_label
-# wrong constant name call
-# wrong constant name failures
-# wrong constant name initialize
-# wrong constant name metadata
-# wrong constant name other_errors
-# wrong constant name <static-init>
-# wrong constant name aggregation_block_label
-# wrong constant name aggregation_metadata
-# wrong constant name all_exceptions
-# wrong constant name exception_count_description
-# wrong constant name failures
-# wrong constant name initialize
-# wrong constant name other_errors
-# wrong constant name summary
-# uninitialized constant RSpec::Matchers::BuiltIn::All::UNDEFINED
-# wrong constant name does_not_match?
-# wrong constant name failed_objects
-# wrong constant name initialize
-# wrong constant name matcher
-# wrong constant name <static-init>
-# wrong constant name <
-# wrong constant name <=
-# wrong constant name ==
-# wrong constant name ===
-# wrong constant name =~
-# wrong constant name >
-# wrong constant name >=
-# uninitialized constant RSpec::Matchers::BuiltIn::Be::UNDEFINED
-# wrong constant name initialize
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::BeAKindOf::UNDEFINED
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::BeAnInstanceOf::UNDEFINED
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::BeBetween::UNDEFINED
-# wrong constant name exclusive
-# wrong constant name inclusive
-# wrong constant name initialize
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::BeComparedTo::UNDEFINED
-# wrong constant name initialize
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::BeFalsey::UNDEFINED
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::BeNil::UNDEFINED
-# wrong constant name <static-init>
 # uninitialized constant RSpec::Matchers::BuiltIn::BePredicate::UNDEFINED
-# wrong constant name does_not_match?
-# wrong constant name initialize
-# wrong constant name matches?
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::BeTruthy::UNDEFINED
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::BeWithin::UNDEFINED
-# wrong constant name initialize
-# wrong constant name of
-# wrong constant name percent_of
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::Change::UNDEFINED
-# wrong constant name by
-# wrong constant name by_at_least
-# wrong constant name by_at_most
-# wrong constant name does_not_match?
-# wrong constant name from
-# wrong constant name initialize
-# wrong constant name matches?
-# wrong constant name to
-# wrong constant name <static-init>
-# wrong constant name <Class:And>
-# wrong constant name <Class:NestedEvaluator>
-# wrong constant name <Class:Or>
-# wrong constant name <Class:SequentialEvaluator>
-# uninitialized constant RSpec::Matchers::BuiltIn::Compound::UNDEFINED
-# wrong constant name diffable_matcher_list
-# wrong constant name does_not_match?
-# wrong constant name evaluator
-# wrong constant name initialize
-# wrong constant name matcher_1
-# wrong constant name matcher_2
-# uninitialized constant RSpec::Matchers::BuiltIn::Compound::And::UNDEFINED
-# Did you mean?  RSpec::Matchers::BuiltIn::Compound::UNDEFINED
-# wrong constant name <static-init>
-# wrong constant name initialize
-# wrong constant name matcher_matches?
-# wrong constant name <static-init>
-# wrong constant name matcher_expects_call_stack_jump?
-# uninitialized constant RSpec::Matchers::BuiltIn::Compound::Or::UNDEFINED
-# Did you mean?  RSpec::Matchers::BuiltIn::Compound::UNDEFINED
-# wrong constant name <static-init>
-# wrong constant name initialize
-# wrong constant name matcher_matches?
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name <Class:PairingsMaximizer>
-# uninitialized constant RSpec::Matchers::BuiltIn::ContainExactly::UNDEFINED
-# wrong constant name <Class:NullSolution>
-# wrong constant name <Class:Solution>
-# wrong constant name actual_to_expected_matched_indexes
-# wrong constant name expected_to_actual_matched_indexes
-# wrong constant name find_best_solution
-# wrong constant name initialize
-# wrong constant name solution
-# wrong constant name <static-init>
-# wrong constant name worse_than?
-# wrong constant name +
-# uninitialized constant #<Class:0x000055812f51b368>::Elem
-# wrong constant name candidate?
-# wrong constant name ideal?
-# wrong constant name indeterminate_actual_indexes
-# wrong constant name indeterminate_actual_indexes=
-# wrong constant name indeterminate_expected_indexes
-# wrong constant name indeterminate_expected_indexes=
-# wrong constant name unmatched_actual_indexes
-# wrong constant name unmatched_actual_indexes=
-# wrong constant name unmatched_expected_indexes
-# wrong constant name unmatched_expected_indexes=
-# wrong constant name unmatched_item_count
-# wrong constant name worse_than?
-# wrong constant name <static-init>
-# wrong constant name []
-# wrong constant name members
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::Cover::UNDEFINED
-# wrong constant name does_not_match?
-# wrong constant name initialize
-# wrong constant name matches?
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::EndWith::UNDEFINED
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::Eq::UNDEFINED
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::Eql::UNDEFINED
-# wrong constant name <static-init>
 # uninitialized constant RSpec::Matchers::BuiltIn::Equal::UNDEFINED
-# wrong constant name <static-init>
-# wrong constant name <Class:ExistenceTest>
-# uninitialized constant RSpec::Matchers::BuiltIn::Exist::UNDEFINED
-# wrong constant name does_not_match?
-# wrong constant name initialize
-# wrong constant name actual_exists?
-# wrong constant name valid_test?
-# wrong constant name validity_message
-# wrong constant name <static-init>
-# wrong constant name <static-init>
 # uninitialized constant RSpec::Matchers::BuiltIn::Has::UNDEFINED
-# wrong constant name does_not_match?
-# wrong constant name initialize
-# wrong constant name matches?
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::HaveAttributes::UNDEFINED
-# wrong constant name does_not_match?
-# wrong constant name initialize
-# wrong constant name respond_to_failed
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::Include::UNDEFINED
-# wrong constant name does_not_match?
-# wrong constant name expecteds
-# wrong constant name initialize
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::Match::UNDEFINED
-# wrong constant name initialize
-# wrong constant name with_captures
-# wrong constant name <static-init>
-# wrong constant name __delegate_operator
-# wrong constant name <static-init>
-# wrong constant name !=
-# wrong constant name !~
-# wrong constant name <
-# wrong constant name <=
-# wrong constant name ==
-# wrong constant name ===
-# wrong constant name =~
-# wrong constant name >
-# wrong constant name >=
-# wrong constant name description
-# wrong constant name fail_with_message
-# wrong constant name initialize
-# wrong constant name <static-init>
-# wrong constant name get
-# wrong constant name register
-# wrong constant name registry
-# wrong constant name unregister
-# wrong constant name use_custom_matcher_or_delegate
-# uninitialized constant RSpec::Matchers::BuiltIn::Output::UNDEFINED
-# wrong constant name does_not_match?
-# wrong constant name initialize
-# wrong constant name matches?
-# wrong constant name to_stderr
-# wrong constant name to_stderr_from_any_process
-# wrong constant name to_stdout
-# wrong constant name to_stdout_from_any_process
-# wrong constant name <static-init>
-# wrong constant name __delegate_operator
-# wrong constant name <static-init>
-# wrong constant name description
-# wrong constant name does_not_match?
-# wrong constant name expects_call_stack_jump?
-# wrong constant name failure_message
-# wrong constant name failure_message_when_negated
-# wrong constant name initialize
-# wrong constant name matches?
-# wrong constant name supports_block_expectations?
-# wrong constant name with_message
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::RespondTo::UNDEFINED
-# wrong constant name and_any_keywords
-# wrong constant name and_keywords
-# wrong constant name and_unlimited_arguments
-# wrong constant name argument
-# wrong constant name arguments
-# wrong constant name does_not_match?
-# wrong constant name initialize
-# wrong constant name with
-# wrong constant name with_any_keywords
-# wrong constant name with_keywords
-# wrong constant name with_unlimited_arguments
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::Satisfy::UNDEFINED
-# wrong constant name initialize
-# wrong constant name matches?
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::StartOrEndWith::UNDEFINED
-# wrong constant name initialize
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::StartWith::UNDEFINED
-# wrong constant name <static-init>
-# wrong constant name description
-# wrong constant name does_not_match?
-# wrong constant name expects_call_stack_jump?
-# wrong constant name failure_message
-# wrong constant name failure_message_when_negated
-# wrong constant name initialize
-# wrong constant name matches?
-# wrong constant name supports_block_expectations?
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::YieldControl::UNDEFINED
-# wrong constant name at_least
-# wrong constant name at_most
-# wrong constant name does_not_match?
-# wrong constant name exactly
-# wrong constant name initialize
-# wrong constant name matches?
-# wrong constant name once
-# wrong constant name thrice
-# wrong constant name times
-# wrong constant name twice
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::YieldSuccessiveArgs::UNDEFINED
-# wrong constant name does_not_match?
-# wrong constant name initialize
-# wrong constant name matches?
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::YieldWithArgs::UNDEFINED
-# wrong constant name does_not_match?
-# wrong constant name initialize
-# wrong constant name matches?
-# wrong constant name <static-init>
-# uninitialized constant RSpec::Matchers::BuiltIn::YieldWithNoArgs::UNDEFINED
-# wrong constant name does_not_match?
-# wrong constant name matches?
-# wrong constant name <static-init>
 # wrong constant name <Class:Differ>
 # wrong constant name color?
 # wrong constant name diff
@@ -4402,12 +2772,12 @@
 # Did you mean?  URI::SCHEME
 # uninitialized constant URI::File::TBLDECWWWCOMP_
 # Did you mean?  URI::File::TBLENCWWWCOMP_
-#                URI::TBLENCWWWCOMP_
 #                URI::TBLDECWWWCOMP_
+#                URI::TBLENCWWWCOMP_
 # uninitialized constant URI::File::TBLENCWWWCOMP_
 # Did you mean?  URI::File::TBLDECWWWCOMP_
-#                URI::TBLENCWWWCOMP_
 #                URI::TBLDECWWWCOMP_
+#                URI::TBLENCWWWCOMP_
 # uninitialized constant URI::File::UNSAFE
 # Did you mean?  URI::UNSAFE
 # uninitialized constant URI::File::URI_REF

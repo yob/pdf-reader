@@ -5,6 +5,5 @@
 module ::Ascii85Native; end
 module ::Memprof; end
 module ::PerfTools::CpuProfiler; end
-module ::Prawn::Document; end
-module T::CompatibilityPatches::RSpecCompatibility::MethodDoubleExtensions; end
-module T::CompatibilityPatches::RSpecCompatibility::RecorderExtensions; end
+module T::Private::Methods::MethodHooks; end
+module T::Private::Methods::SingletonMethodHooks; end

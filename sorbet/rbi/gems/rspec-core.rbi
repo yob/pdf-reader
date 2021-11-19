@@ -7,7 +7,7 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/rspec-core/all/rspec-core.rbi
 #
-# rspec-core-3.5.4
+# rspec-core-3.10.1
 
 module RSpec
   def self.clear_examples; end
@@ -44,6 +44,7 @@ module RSpec::Core::Warnings
 end
 class RSpec::Core::Set
   def <<(key); end
+  def clear; end
   def delete(key); end
   def each(&block); end
   def empty?; end
@@ -113,85 +114,16 @@ module RSpec::Core::DSL
   def self.top_level; end
   def self.top_level=(arg0); end
 end
-class RSpec::Core::Source
-  def ast; end
-  def initialize(source_string, path = nil); end
-  def inspect; end
-  def lines; end
-  def nodes_by_line_number; end
-  def path; end
-  def self.from_file(path); end
-  def source; end
-  def tokens; end
-  def tokens_by_line_number; end
-end
-class RSpec::Core::Source::Location < Struct
-  def column; end
-  def column=(_); end
-  def line; end
-  def line=(_); end
-  def self.[](*arg0); end
-  def self.inspect; end
-  def self.location?(array); end
-  def self.members; end
-  def self.new(*arg0); end
-end
-class RSpec::Core::Source::Node
-  def args; end
-  def children; end
-  def each(&block); end
-  def each_ancestor; end
-  def initialize(ripper_sexp, parent = nil); end
-  def inspect; end
-  def location; end
-  def parent; end
-  def raw_args; end
-  def self.sexp?(array); end
-  def sexp; end
-  def type; end
-  include Enumerable
-end
-class RSpec::Core::Source::GroupNode < RSpec::Core::Source::Node
-  def raw_args; end
-  def type; end
-end
-class RSpec::Core::Source::SyntaxHighlighter
-  def color_enabled_implementation; end
-  def highlight(lines); end
-  def implementation; end
-  def initialize(configuration); end
-end
-module RSpec::Core::Source::SyntaxHighlighter::CodeRayImplementation
-  def self.highlight_syntax(lines); end
-end
-module RSpec::Core::Source::SyntaxHighlighter::NoSyntaxHighlightingImplementation
-  def self.highlight_syntax(lines); end
-end
-class RSpec::Core::Source::Token
-  def ==(other); end
-  def closed_by?(other); end
-  def closed_by_delimiter?(other); end
-  def closed_by_keyword?(other); end
-  def eql?(other); end
-  def initialize(ripper_token); end
-  def inspect; end
-  def keyword?; end
-  def location; end
-  def opening?; end
-  def opening_delimiter?; end
-  def opening_keyword?; end
-  def self.tokens_from_ripper_tokens(ripper_tokens); end
-  def string; end
-  def token; end
-  def type; end
-end
-class RSpec::Core::Source::Cache
-  def initialize(configuration); end
-  def source_from_file(path); end
-  def syntax_highlighter; end
-end
 module RSpec::Core::Formatters
   def self.register(formatter_class, *notifications); end
+end
+module RSpec::Core::Formatters::ConsoleCodes
+  def config_colors_to_methods; end
+  def console_code_for(code_or_symbol); end
+  def self.config_colors_to_methods; end
+  def self.console_code_for(code_or_symbol); end
+  def self.wrap(text, code_or_symbol); end
+  def wrap(text, code_or_symbol); end
 end
 class RSpec::Core::Formatters::SnippetExtractor
   def beginning_line_number; end
@@ -216,6 +148,19 @@ class RSpec::Core::Formatters::SnippetExtractor::NoSuchLineError < StandardError
 end
 class RSpec::Core::Formatters::SnippetExtractor::NoExpressionAtLineError < StandardError
 end
+class RSpec::Core::Formatters::SyntaxHighlighter
+  def color_enabled_implementation; end
+  def highlight(lines); end
+  def implementation; end
+  def initialize(configuration); end
+  def self.attempt_to_add_rspec_terms_to_coderay_keywords; end
+end
+module RSpec::Core::Formatters::SyntaxHighlighter::CodeRayImplementation
+  def self.highlight_syntax(lines); end
+end
+module RSpec::Core::Formatters::SyntaxHighlighter::NoSyntaxHighlightingImplementation
+  def self.highlight_syntax(lines); end
+end
 class RSpec::Core::Formatters::ExceptionPresenter
   def add_shared_group_lines(lines, colorizer); end
   def backtrace_formatter; end
@@ -223,6 +168,7 @@ class RSpec::Core::Formatters::ExceptionPresenter
   def colorized_message_lines(colorizer = nil); end
   def description; end
   def detail_formatter; end
+  def encoded_description(description); end
   def encoded_string(string); end
   def encoding_of(string); end
   def example; end
@@ -230,6 +176,7 @@ class RSpec::Core::Formatters::ExceptionPresenter
   def exception_backtrace; end
   def exception_class_name(exception = nil); end
   def exception_lines; end
+  def exception_message_string(exception); end
   def extra_detail_formatter; end
   def extra_failure_lines; end
   def failure_lines; end
@@ -341,6 +288,7 @@ class RSpec::Core::Notifications::FailedExampleNotification < RSpec::Core::Notif
   def exception; end
   def formatted_backtrace; end
   def fully_formatted(failure_number, colorizer = nil); end
+  def fully_formatted_lines(failure_number, colorizer = nil); end
   def initialize(example, exception_presenter = nil); end
   def message_lines; end
   def self.new(*arg0); end
@@ -387,6 +335,8 @@ class RSpec::Core::Notifications::SummaryNotification < Struct
   def duplicate_rerun_locations; end
   def duration; end
   def duration=(_); end
+  def errors_outside_of_examples_count; end
+  def errors_outside_of_examples_count=(_); end
   def example_count; end
   def examples; end
   def examples=(_); end
@@ -445,6 +395,7 @@ class RSpec::Core::Reporter
   def close; end
   def close_after; end
   def deprecation(hash); end
+  def ensure_listeners_ready; end
   def example_failed(example); end
   def example_finished(example); end
   def example_group_finished(group); end
@@ -453,6 +404,7 @@ class RSpec::Core::Reporter
   def example_pending(example); end
   def example_started(example); end
   def examples; end
+  def exit_early(exit_code); end
   def fail_fast_limit_met?; end
   def failed_examples; end
   def finish; end
@@ -462,13 +414,12 @@ class RSpec::Core::Reporter
   def notify(event, notification); end
   def notify_non_example_exception(exception, context_description); end
   def pending_examples; end
+  def prepare_default(loader, output_stream, deprecation_stream); end
   def publish(event, options = nil); end
   def register_listener(listener, *notifications); end
   def registered_listeners(notification); end
   def report(expected_example_count); end
-  def reset; end
   def seed_used?; end
-  def setup_profiler; end
   def start(expected_example_count, time = nil); end
   def stop; end
 end
@@ -751,7 +702,7 @@ class RSpec::Core::LegacyExampleGroupHash
 end
 module RSpec::Core::MetadataFilter
   def self.apply?(predicate, filters, metadata); end
-  def self.filter_applies?(key, value, metadata); end
+  def self.filter_applies?(key, filter_value, metadata); end
   def self.filter_applies_to_any_value?(key, value, metadata); end
   def self.filters_apply?(key, value, metadata); end
   def self.id_filter_applies?(rerun_paths_to_scoped_ids, metadata); end
@@ -763,6 +714,7 @@ module RSpec::Core::FilterableItemRepository
 end
 class RSpec::Core::FilterableItemRepository::UpdateOptimized
   def append(item, metadata); end
+  def delete(item, metadata); end
   def initialize(applies_predicate); end
   def items_and_filters; end
   def items_for(request_meta); end
@@ -771,12 +723,14 @@ end
 class RSpec::Core::FilterableItemRepository::QueryOptimized < RSpec::Core::FilterableItemRepository::UpdateOptimized
   def append(item, metadata); end
   def applicable_metadata_from(metadata); end
+  def delete(item, metadata); end
   def find_items_for(request_meta); end
   def handle_mutation(metadata); end
   def initialize(applies_predicate); end
   def items_for(metadata); end
   def prepend(item, metadata); end
   def proc_keys_from(metadata); end
+  def reconstruct_caches; end
 end
 module RSpec::Core::Pending
   def pending(message = nil); end
@@ -799,12 +753,13 @@ class RSpec::Core::Formatters::Loader
   def default_formatter=(arg0); end
   def duplicate_formatter_exists?(new_formatter); end
   def existing_formatter_implements?(notification); end
-  def file_at(path); end
   def find_formatter(formatter_to_use); end
   def formatters; end
   def initialize(reporter); end
   def notifications_for(formatter_class); end
+  def open_stream(path_or_wrapper); end
   def path_for(const_ref); end
+  def prepare_default(output_stream, deprecation_stream); end
   def register(formatter, notifications); end
   def reporter; end
   def self.formatters; end
@@ -853,6 +808,7 @@ class RSpec::Core::World
   def descending_declaration_line_numbers_by_file; end
   def everything_filtered_message; end
   def example_count(groups = nil); end
+  def example_group_counts_by_spec_file; end
   def example_groups; end
   def exclusion_filter; end
   def fail_if_config_and_cli_options_invalid; end
@@ -865,13 +821,15 @@ class RSpec::Core::World
   def num_example_groups_defined_in(file); end
   def ordered_example_groups; end
   def preceding_declaration_line(absolute_file_name, filter_line); end
+  def prepare_example_filtering; end
   def record(example_group); end
   def registered_example_group_files; end
   def report_filter_message(message); end
   def reporter; end
   def reset; end
   def shared_example_group_registry; end
-  def source_cache; end
+  def source_from_file(path); end
+  def syntax_highlighter; end
   def traverse_example_group_trees_until(&block); end
   def wants_to_quit; end
   def wants_to_quit=(arg0); end
@@ -976,9 +934,98 @@ class RSpec::Core::Formatters::DeprecationFormatter::FileStream
 end
 class RSpec::Core::DeprecationError < StandardError
 end
+class RSpec::Core::OutputWrapper
+  def <<(*args, &block); end
+  def advise(*args, &block); end
+  def autoclose=(*args, &block); end
+  def autoclose?(*args, &block); end
+  def binmode(*args, &block); end
+  def binmode?(*args, &block); end
+  def bytes(*args, &block); end
+  def chars(*args, &block); end
+  def close(*args, &block); end
+  def close_on_exec=(*args, &block); end
+  def close_on_exec?(*args, &block); end
+  def close_read(*args, &block); end
+  def close_write(*args, &block); end
+  def closed?(*args, &block); end
+  def codepoints(*args, &block); end
+  def each(*args, &block); end
+  def each_byte(*args, &block); end
+  def each_char(*args, &block); end
+  def each_codepoint(*args, &block); end
+  def each_line(*args, &block); end
+  def eof(*args, &block); end
+  def eof?(*args, &block); end
+  def external_encoding(*args, &block); end
+  def fcntl(*args, &block); end
+  def fdatasync(*args, &block); end
+  def fileno(*args, &block); end
+  def flush(*args, &block); end
+  def fsync(*args, &block); end
+  def getbyte(*args, &block); end
+  def getc(*args, &block); end
+  def gets(*args, &block); end
+  def initialize(output); end
+  def inspect(*args, &block); end
+  def internal_encoding(*args, &block); end
+  def ioctl(*args, &block); end
+  def isatty(*args, &block); end
+  def lineno(*args, &block); end
+  def lineno=(*args, &block); end
+  def lines(*args, &block); end
+  def method_missing(name, *args, &block); end
+  def nonblock(*args, &block); end
+  def nonblock=(*args, &block); end
+  def nonblock?(*args, &block); end
+  def nread(*args, &block); end
+  def output; end
+  def output=(arg0); end
+  def pathconf(*args, &block); end
+  def pid(*args, &block); end
+  def pos(*args, &block); end
+  def pos=(*args, &block); end
+  def pread(*args, &block); end
+  def print(*args, &block); end
+  def printf(*args, &block); end
+  def putc(*args, &block); end
+  def puts(*args, &block); end
+  def pwrite(*args, &block); end
+  def read(*args, &block); end
+  def read_nonblock(*args, &block); end
+  def readbyte(*args, &block); end
+  def readchar(*args, &block); end
+  def readline(*args, &block); end
+  def readlines(*args, &block); end
+  def readpartial(*args, &block); end
+  def ready?(*args, &block); end
+  def reopen(*args, &block); end
+  def respond_to?(name, priv = nil); end
+  def rewind(*args, &block); end
+  def seek(*args, &block); end
+  def set_encoding(*args, &block); end
+  def set_encoding_by_bom(*args, &block); end
+  def stat(*args, &block); end
+  def sync(*args, &block); end
+  def sync=(*args, &block); end
+  def sysread(*args, &block); end
+  def sysseek(*args, &block); end
+  def syswrite(*args, &block); end
+  def tell(*args, &block); end
+  def to_i(*args, &block); end
+  def to_io(*args, &block); end
+  def tty?(*args, &block); end
+  def ungetbyte(*args, &block); end
+  def ungetc(*args, &block); end
+  def wait(*args, &block); end
+  def wait_readable(*args, &block); end
+  def wait_writable(*args, &block); end
+  def write(*args, &block); end
+  def write_nonblock(*args, &block); end
+end
 class RSpec::Core::Configuration
   def absolute_pattern?(pattern); end
-  def add_formatter(formatter_to_use, *paths); end
+  def add_formatter(formatter, output = nil); end
   def add_hook_to_existing_matching_groups(meta, scope, &block); end
   def add_setting(name, opts = nil); end
   def after(scope = nil, *meta, &block); end
@@ -997,10 +1044,15 @@ class RSpec::Core::Configuration
   def backtrace_inclusion_patterns; end
   def backtrace_inclusion_patterns=(patterns); end
   def before(scope = nil, *meta, &block); end
+  def bisect_runner; end
+  def bisect_runner=(value); end
+  def bisect_runner_class; end
   def clear_values_derived_from_example_status_persistence_file_path; end
   def color; end
   def color=(arg0); end
   def color_enabled?(output = nil); end
+  def color_mode; end
+  def color_mode=(arg0); end
   def command; end
   def conditionally_disable_expectations_monkey_patching; end
   def conditionally_disable_mocks_monkey_patching; end
@@ -1037,6 +1089,9 @@ class RSpec::Core::Configuration
   def dry_run; end
   def dry_run=(arg0); end
   def dry_run?; end
+  def error_exit_code; end
+  def error_exit_code=(arg0); end
+  def error_exit_code?; end
   def error_stream; end
   def error_stream=(arg0); end
   def error_stream?; end
@@ -1055,8 +1110,10 @@ class RSpec::Core::Configuration
   def extend(mod, *filters); end
   def extract_location(path); end
   def fail_fast; end
-  def fail_fast=(arg0); end
-  def fail_fast?; end
+  def fail_fast=(value); end
+  def fail_if_no_examples; end
+  def fail_if_no_examples=(arg0); end
+  def fail_if_no_examples?; end
   def failure_color; end
   def failure_color=(arg0); end
   def failure_color?; end
@@ -1082,7 +1139,7 @@ class RSpec::Core::Configuration
   def force(hash); end
   def format_docstrings(&block); end
   def format_docstrings_block; end
-  def formatter=(formatter_to_use, *paths); end
+  def formatter=(formatter, output = nil); end
   def formatter_loader; end
   def formatters; end
   def full_backtrace=(true_or_false); end
@@ -1103,6 +1160,7 @@ class RSpec::Core::Configuration
   def last_run_statuses; end
   def libs; end
   def libs=(libs); end
+  def load_file_handling_errors(method, file); end
   def load_spec_files; end
   def loaded_spec_files; end
   def max_displayed_failure_line_count; end
@@ -1124,6 +1182,7 @@ class RSpec::Core::Configuration
   def output_stream; end
   def output_stream=(value); end
   def output_to_tty?(output = nil); end
+  def output_wrapper; end
   def paths_to_check(paths); end
   def pattern; end
   def pattern=(value); end
@@ -1148,6 +1207,7 @@ class RSpec::Core::Configuration
   def requires=(paths); end
   def reset; end
   def reset_filters; end
+  def reset_reporter; end
   def rspec_expectations_loaded?; end
   def rspec_mocks_loaded?; end
   def run_all_when_everything_filtered; end
@@ -1162,8 +1222,8 @@ class RSpec::Core::Configuration
   def seed_used?(*args, &block); end
   def self.add_read_only_setting(name, opts = nil); end
   def self.add_setting(name, opts = nil); end
-  def self.define_aliases(name, alias_name); end
-  def self.define_predicate_for(*names); end
+  def self.define_alias(name, alias_name); end
+  def self.define_predicate(name); end
   def self.define_reader(name); end
   def self.delegate_to_ordering_manager(*methods); end
   def shared_context_metadata_behavior; end
@@ -1191,7 +1251,7 @@ class RSpec::Core::Configuration
   def value_for(key); end
   def warnings=(value); end
   def warnings?; end
-  def when_first_matching_example_defined(*filters, &block); end
+  def when_first_matching_example_defined(*filters); end
   def with_suite_hooks; end
   def world; end
   def world=(arg0); end
@@ -1206,10 +1266,12 @@ module RSpec::Core::Configuration::Readers
   def drb; end
   def drb_port; end
   def dry_run; end
+  def error_exit_code; end
   def error_stream; end
   def example_status_persistence_file_path; end
   def exclude_pattern; end
   def fail_fast; end
+  def fail_if_no_examples; end
   def failure_color; end
   def failure_exit_code; end
   def fixed_color; end
@@ -1219,7 +1281,6 @@ module RSpec::Core::Configuration::Readers
   def output_stream; end
   def pattern; end
   def pending_color; end
-  def profile_examples; end
   def project_source_dirs; end
   def requires; end
   def run_all_when_everything_filtered; end
@@ -1262,6 +1323,7 @@ class RSpec::Core::ConfigurationOptions
   def force?(key); end
   def global_options; end
   def global_options_file; end
+  def home_options_file_path; end
   def initialize(args); end
   def load_formatters_into(config); end
   def local_options; end
@@ -1275,9 +1337,14 @@ class RSpec::Core::ConfigurationOptions
   def process_options_into(config); end
   def project_options; end
   def project_options_file; end
+  def resolve_xdg_config_home; end
+  def xdg_options_file_if_exists; end
+  def xdg_options_file_path; end
 end
 class RSpec::Core::Runner
   def configuration; end
+  def configure(err, out); end
+  def exit_code(examples_passed = nil); end
   def initialize(options, configuration = nil, world = nil); end
   def options; end
   def persist_example_statuses; end
@@ -1305,16 +1372,16 @@ class RSpec::Core::Invocations::DRbWithFallback
   def call(options, err, out); end
 end
 class RSpec::Core::Invocations::Bisect
-  def bisect_formatter_for(argument); end
-  def call(options, _err, _out); end
+  def bisect_formatter_klass_for(argument); end
+  def call(options, err, out); end
 end
 class RSpec::Core::Invocations::PrintVersion
   def call(_options, _err, out); end
 end
 class RSpec::Core::Invocations::PrintHelp < Struct
   def call(_options, _err, out); end
-  def invalid_options; end
-  def invalid_options=(_); end
+  def hidden_options; end
+  def hidden_options=(_); end
   def parser; end
   def parser=(_); end
   def self.[](*arg0); end
@@ -1352,7 +1419,7 @@ class RSpec::Core::Example
   def mocks_need_verification?; end
   def pending; end
   def pending?; end
-  def record_finished(status); end
+  def record_finished(status, reporter); end
   def reporter; end
   def rerun_argument; end
   def run(example_group_instance, reporter); end
@@ -1679,6 +1746,157 @@ class RSpec::Core::Profiler
   def example_groups; end
   def example_started(notification); end
   def initialize; end
+end
+class RSpec::Core::DidYouMean
+  def call; end
+  def formats(probables); end
+  def initialize(relative_file_name); end
+  def red_font(mytext); end
+  def relative_file_name; end
+  def top_and_tail(rspec_format); end
+end
+class RSpec::Core::Formatters::BaseFormatter
+  def close(_notification); end
+  def example_group; end
+  def example_group=(arg0); end
+  def example_group_started(notification); end
+  def initialize(output); end
+  def output; end
+  def output_supports_sync; end
+  def restore_sync_output; end
+  def start(notification); end
+  def start_sync_output; end
+end
+class RSpec::Core::Formatters::BaseTextFormatter < RSpec::Core::Formatters::BaseFormatter
+  def close(_notification); end
+  def dump_failures(notification); end
+  def dump_pending(notification); end
+  def dump_summary(summary); end
+  def message(notification); end
+  def seed(notification); end
+end
+class RSpec::Core::Formatters::DocumentationFormatter < RSpec::Core::Formatters::BaseTextFormatter
+  def current_indentation(offset = nil); end
+  def example_failed(failure); end
+  def example_group_finished(_notification); end
+  def example_group_started(notification); end
+  def example_passed(passed); end
+  def example_pending(pending); end
+  def example_started(_notification); end
+  def failure_output(example); end
+  def flush_messages; end
+  def initialize(output); end
+  def message(notification); end
+  def next_failure_index; end
+  def passed_output(example); end
+  def pending_output(example, message); end
+end
+class RSpec::Core::Formatters::HtmlPrinter
+  def flush; end
+  def indentation_style(number_of_parents); end
+  def initialize(output); end
+  def make_example_group_header_red(group_id); end
+  def make_example_group_header_yellow(group_id); end
+  def make_header_red; end
+  def make_header_yellow; end
+  def move_progress(percent_done); end
+  def print_example_failed(pending_fixed, description, run_time, failure_id, exception, extra_content); end
+  def print_example_group_end; end
+  def print_example_group_start(group_id, description, number_of_parents); end
+  def print_example_passed(description, run_time); end
+  def print_example_pending(description, pending_message); end
+  def print_html_start; end
+  def print_summary(duration, example_count, failure_count, pending_count); end
+  include ERB::Util
+end
+class RSpec::Core::Formatters::HtmlFormatter < RSpec::Core::Formatters::BaseFormatter
+  def dump_summary(summary); end
+  def example_failed(failure); end
+  def example_group_number; end
+  def example_group_started(notification); end
+  def example_number; end
+  def example_passed(passed); end
+  def example_pending(pending); end
+  def example_started(_notification); end
+  def extra_failure_content(failure); end
+  def initialize(output); end
+  def percent_done; end
+  def start(notification); end
+  def start_dump(_notification); end
+end
+class RSpec::Core::Formatters::FallbackMessageFormatter
+  def initialize(output); end
+  def message(notification); end
+  def output; end
+end
+class RSpec::Core::Formatters::ProgressFormatter < RSpec::Core::Formatters::BaseTextFormatter
+  def example_failed(_notification); end
+  def example_passed(_notification); end
+  def example_pending(_notification); end
+  def start_dump(_notification); end
+end
+class RSpec::Core::Formatters::ProfileFormatter
+  def bold(text); end
+  def dump_profile(profile); end
+  def dump_profile_slowest_example_groups(profile); end
+  def dump_profile_slowest_examples(profile); end
+  def format_caller(caller_info); end
+  def initialize(output); end
+  def output; end
+end
+class RSpec::Core::Formatters::JsonFormatter < RSpec::Core::Formatters::BaseFormatter
+  def close(_notification); end
+  def dump_profile(profile); end
+  def dump_profile_slowest_example_groups(profile); end
+  def dump_profile_slowest_examples(profile); end
+  def dump_summary(summary); end
+  def format_example(example); end
+  def initialize(output); end
+  def message(notification); end
+  def output_hash; end
+  def seed(notification); end
+  def stop(notification); end
+end
+module RSpec::Core::Bisect
+end
+class RSpec::Core::Bisect::ExampleSetDescriptor < Struct
+  def all_example_ids; end
+  def all_example_ids=(_); end
+  def failed_example_ids; end
+  def failed_example_ids=(_); end
+  def self.[](*arg0); end
+  def self.inspect; end
+  def self.members; end
+  def self.new(*arg0); end
+end
+class RSpec::Core::Bisect::BisectFailedError < StandardError
+  def self.for_failed_spec_run(spec_output); end
+end
+class RSpec::Core::Bisect::Notifier
+  def initialize(formatter); end
+  def publish(event, *args); end
+end
+class RSpec::Core::Bisect::Channel
+  def close; end
+  def initialize; end
+  def receive; end
+  def send(message); end
+end
+class RSpec::Core::Formatters::BaseBisectFormatter
+  def example_failed(notification); end
+  def example_finished(notification); end
+  def initialize(expected_failures); end
+  def self.inherited(formatter); end
+  def start_dump(_notification); end
+end
+class RSpec::Core::Formatters::BisectDRbFormatter < RSpec::Core::Formatters::BaseBisectFormatter
+  def initialize(_output); end
+  def notify_results(results); end
+end
+class RSpec::Core::Formatters::FailureListFormatter < RSpec::Core::Formatters::BaseFormatter
+  def dump_profile(_profile); end
+  def example_failed(failure); end
+  def message(_message); end
 end
 module RSpec::Core::MockingAdapters
 end

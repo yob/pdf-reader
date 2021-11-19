@@ -7,7 +7,7 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/rspec-mocks/all/rspec-mocks.rbi
 #
-# rspec-mocks-3.5.0
+# rspec-mocks-3.10.2
 
 module RSpec
 end
@@ -186,6 +186,7 @@ module RSpec::Mocks::ExampleMethods
   def self.included(klass); end
   def spy(*args); end
   def stub_const(constant_name, value, options = nil); end
+  def without_partial_double_verification; end
   include RSpec::Mocks::ArgumentMatchers
 end
 module RSpec::Mocks::ExampleMethods::ExpectHost
@@ -199,6 +200,7 @@ class RSpec::Mocks::Proxy
   def as_null_object; end
   def build_expectation(method_name); end
   def check_for_unexpected_arguments(expectation); end
+  def ensure_can_be_proxied!(object); end
   def ensure_implemented(*_args); end
   def find_almost_matching_expectation(method_name, *args); end
   def find_almost_matching_stub(method_name, *args); end
@@ -264,7 +266,6 @@ class RSpec::Mocks::PartialClassDoubleProxy < RSpec::Mocks::PartialDoubleProxy
 end
 class RSpec::Mocks::ProxyForNil < RSpec::Mocks::PartialDoubleProxy
   def add_message_expectation(method_name, opts = nil, &block); end
-  def add_negative_message_expectation(location, method_name, &implementation); end
   def add_stub(method_name, opts = nil, &implementation); end
   def disallow_expectations; end
   def disallow_expectations=(arg0); end
@@ -334,6 +335,7 @@ class RSpec::Mocks::MessageExpectation
   def once(&block); end
   def ordered(&block); end
   def thrice(&block); end
+  def time(&block); end
   def times(&block); end
   def to_s; end
   def twice(&block); end
@@ -680,6 +682,8 @@ class RSpec::Mocks::Configuration
   def reset_syntaxes_to_default; end
   def syntax; end
   def syntax=(*values); end
+  def temporarily_suppress_partial_double_verification; end
+  def temporarily_suppress_partial_double_verification=(arg0); end
   def transfer_nested_constants=(arg0); end
   def transfer_nested_constants?; end
   def verify_doubled_constant_names=(arg0); end
@@ -749,6 +753,7 @@ class RSpec::Mocks::VerifyingProxy < RSpec::Mocks::TestDoubleProxy
   include RSpec::Mocks::VerifyingProxyMethods
 end
 class RSpec::Mocks::VerifyingPartialDoubleProxy < RSpec::Mocks::PartialDoubleProxy
+  def ensure_implemented(_method_name); end
   def initialize(object, expectation_ordering, optional_callback_invocation_strategy = nil); end
   def method_reference; end
   include RSpec::Mocks::VerifyingProxyMethods
@@ -841,6 +846,7 @@ module RSpec::Mocks::AnyInstance::Chain::Customizations
   def once(*args, &block); end
   def self.record(method_name); end
   def thrice(*args, &block); end
+  def time(*args, &block); end
   def times(*args, &block); end
   def twice(*args, &block); end
   def with(*args, &block); end
@@ -988,9 +994,11 @@ class RSpec::Mocks::Matchers::HaveReceived
   def setup_allowance(_subject, &_block); end
   def setup_any_instance_allowance(_subject, &_block); end
   def setup_any_instance_expectation(_subject, &_block); end
+  def setup_any_instance_negative_expectation(_subject, &_block); end
   def setup_expectation(subject, &block); end
   def setup_negative_expectation(subject, &block); end
   def thrice(*args); end
+  def time(*args); end
   def times(*args); end
   def twice(*args); end
   def with(*args); end
@@ -1032,6 +1040,7 @@ class RSpec::Mocks::Matchers::Receive
   def setup_mock_proxy_method_substitute(subject, method, block); end
   def setup_negative_expectation(subject, &block); end
   def thrice(*args, &block); end
+  def time(*args, &block); end
   def times(*args, &block); end
   def twice(*args, &block); end
   def warn_if_any_instance(expression, subject); end

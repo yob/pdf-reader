@@ -7,7 +7,7 @@
 #
 #   https://github.com/sorbet/sorbet-typed/new/master?filename=lib/coderay/all/coderay.rbi
 #
-# coderay-1.1.2
+# coderay-1.1.3
 
 module CodeRay
   def self.coderay_path(*path); end
