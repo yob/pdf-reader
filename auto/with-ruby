@@ -7,6 +7,7 @@ cd $(dirname $0)/..
 docker_image="${DOCKER_IMAGE:=ruby}"
 ruby_version="${RUBY_VERSION:-2.7}"
 docker_volume_name="pdf-reader-gem-cache-${docker_image}${ruby_version}"
+gemfile="${BUNDLE_GEMFILE:=/work/Gemfile}"
 
 docker volume create ${docker_volume_name} > /dev/null
 
@@ -16,6 +17,7 @@ docker run \
   -w /work \
   --entrypoint /work/auto/bundle-exec \
   --rm \
+  -e BUNDLE_GEMFILE=${gemfile} \
   -i \
   -t ${docker_image}:${ruby_version} \
   "${@-bash}"
