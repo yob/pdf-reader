@@ -21,12 +21,11 @@ class PDF::Reader
 
       runs = ZeroWidthRunsFilter.exclude_zero_width_runs(runs)
       runs = OverlappingRunsFilter.exclude_redundant_runs(runs)
+      @mediabox = mediabox
       @runs = merge_runs(runs)
       @mean_font_size   = mean(@runs.map(&:font_size)) || DEFAULT_FONT_SIZE
       @mean_font_size = DEFAULT_FONT_SIZE if @mean_font_size == 0
       @median_glyph_width = median(@runs.map(&:mean_character_width)) || 0
-      @page_width  = (mediabox[2] - mediabox[0]).abs
-      @page_height = (mediabox[3] - mediabox[1]).abs
       @x_offset = @runs.map(&:x).sort.first || 0
       lowest_y = @runs.map(&:y).sort.first || 0
       @y_offset = lowest_y > 0 ? 0 : lowest_y
@@ -49,6 +48,14 @@ class PDF::Reader
 
     private
 
+    def page_width
+      (@mediabox[2].to_f - @mediabox[0].to_f).abs
+    end
+
+    def page_height
+      (@mediabox[3].to_f - @mediabox[1].to_f).abs
+    end
+
     # given an array of strings, return a new array with empty rows from the
     # beginning and end removed.
     #
@@ -67,19 +74,19 @@ class PDF::Reader
     end
 
     def row_count
-      @row_count ||= (@page_height / @mean_font_size).floor
+      @row_count ||= (page_height / @mean_font_size).floor
     end
 
     def col_count
-      @col_count ||= ((@page_width  / @median_glyph_width) * 1.05).floor
+      @col_count ||= ((page_width  / @median_glyph_width) * 1.05).floor
     end
 
     def row_multiplier
-      @row_multiplier ||= @page_height.to_f / row_count.to_f
+      @row_multiplier ||= page_height.to_f / row_count.to_f
     end
 
     def col_multiplier
-      @col_multiplier ||= @page_width.to_f / col_count.to_f
+      @col_multiplier ||= page_width.to_f / col_count.to_f
     end
 
     def mean(collection)
