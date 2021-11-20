@@ -2,4 +2,13 @@
 #
 # Run the tests
 
-$(dirname $0)/with-ruby srb tc
+# Disable 7006 (https://sorbet.org/docs/error-reference#7006)
+# This error is sorbet warning about dead code. So far I've found this 
+# more harmful than helpful.
+#
+# A concrete example: I'm storing the type information in external rbi files, so the gem
+# doesn't pick up a runtime dependency on sorbet. However, that means I still need runtime
+# guard clauses in some methods to check the type or shape of an argument... but sorbet
+# considers these dead code. It thinks the type of the argument is guaranteed.
+
+$(dirname $0)/with-ruby srb tc --suppress-error-code 7006

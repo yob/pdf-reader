@@ -4,28 +4,28 @@ module PDF
     sig { returns(T.untyped) }
     attr_reader :objects
 
-    sig { params(input: T.untyped, opts: T.untyped).void }
+    sig { params(input: T.any(String, IO), opts: T::Hash[T.untyped, T.untyped]).void }
     def initialize(input, opts = {}); end
 
-    sig { returns(T.untyped) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     def info; end
 
-    sig { returns(T.untyped) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     def metadata; end
 
-    sig { returns(T.untyped) }
+    sig { returns(Integer) }
     def page_count; end
 
-    sig { returns(T.untyped) }
+    sig { returns(Float) }
     def pdf_version; end
 
-    sig { params(input: T.untyped, opts: T.untyped, block: T.untyped).returns(T.untyped) }
+    sig { params(input: T.any(String, IO), opts: T::Hash[T.untyped, T.untyped], block: T.proc.params(arg0: PDF::Reader).void).returns(T.untyped) }
     def self.open(input, opts = {}, &block); end
 
-    sig { returns(T.untyped) }
+    sig { returns(T::Array[PDF::Reader::Page]) }
     def pages; end
 
-    sig { params(num: T.untyped).returns(T.untyped) }
+    sig { params(num: Integer).returns(PDF::Reader::Page) }
     def page(num); end
 
     sig { params(obj: T.untyped).returns(T.untyped) }
@@ -34,13 +34,13 @@ module PDF
     sig { params(str: String).returns(T::Boolean)}
     def has_utf16_bom?(str); end
 
-    sig { params(obj: T.untyped).returns(T.untyped) }
+    sig { params(obj: String).returns(String) }
     def pdfdoc_to_utf8(obj); end
 
-    sig { params(obj: T.untyped).returns(T.untyped) }
+    sig { params(obj: String).returns(String) }
     def utf16_to_utf8(obj); end
 
-    sig { returns(T.untyped) }
+    sig { returns(T::Hash[Symbol, T.untyped]) }
     def root; end
 
     class Buffer
@@ -722,7 +722,7 @@ module PDF
     class Page
       include ResourceMethods
 
-      sig { returns(T.untyped) }
+      sig { returns(PDF::Reader::ObjectHash) }
       attr_reader :objects
 
       sig { returns(T.untyped) }
@@ -731,34 +731,34 @@ module PDF
       sig { returns(T.untyped) }
       attr_reader :cache
 
-      sig { params(objects: T.untyped, pagenum: T.untyped, options: T.untyped).void }
+      sig { params(objects: PDF::Reader::ObjectHash, pagenum: Integer, options: T::Hash[Symbol, T.untyped]).void }
       def initialize(objects, pagenum, options = {}); end
 
-      sig { returns(T.untyped) }
+      sig { returns(Integer) }
       def number; end
 
-      sig { returns(T.untyped) }
+      sig { returns(String) }
       def inspect; end
 
       sig { returns(T.untyped) }
       def attributes; end
 
-      sig { returns(T.untyped) }
+      sig { returns(String) }
       def orientation; end
 
-      sig { returns(T.untyped) }
+      sig { returns(String) }
       def text; end
 
-      sig { params(receivers: T.untyped).returns(T.untyped) }
+      sig { params(receivers: T.untyped).void }
       def walk(*receivers); end
 
-      sig { returns(T.untyped) }
+      sig { returns(String) }
       def raw_content; end
 
-      sig { returns(T.untyped) }
+      sig { returns(Integer) }
       def rotate; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Hash[Symbol, T.untyped]) }
       def boxes; end
 
       sig { returns(T.untyped) }
@@ -787,10 +787,10 @@ module PDF
       extend T::Sig
       DEFAULT_FONT_SIZE = 12
 
-      sig { params(runs: T.untyped, mediabox: T.untyped).void }
+      sig { params(runs: T::Array[PDF::Reader::TextRun], mediabox: T::Array[Numeric]).void }
       def initialize(runs, mediabox); end
 
-      sig { returns(T.untyped) }
+      sig { returns(String) }
       def to_s; end
 
       sig { params(rows: T.untyped).returns(T.untyped) }
