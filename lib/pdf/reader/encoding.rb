@@ -69,7 +69,7 @@ class PDF::Reader
     #
     #   [25, :A, :B]
     def differences=(diff)
-      raise ArgumentError, "diff must be an array" unless diff.kind_of?(Array)
+      PDF::Reader::Error.validate_type(diff, "diff", Array)
 
       @differences = {}
       byte = 0
