@@ -17,7 +17,7 @@ class PDF::Reader
     DEFAULT_FONT_SIZE = 12
 
     def initialize(runs, mediabox)
-      raise ArgumentError, "a mediabox must be provided" if mediabox.nil?
+      PDF::Reader::Error.validate_not_nil(mediabox, "mediabox")
 
       runs = ZeroWidthRunsFilter.exclude_zero_width_runs(runs)
       runs = OverlappingRunsFilter.exclude_redundant_runs(runs)

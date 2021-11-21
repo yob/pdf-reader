@@ -243,6 +243,12 @@ module PDF
 
       sig { params(lvalue: T.untyped, rvalue: T.untyped).returns(T.untyped) }
       def self.assert_equal(lvalue, rvalue); end
+
+      sig { params(object: Object, name: String, klass: Module).void }
+      def self.validate_type(object, name, klass); end
+
+      sig { params(object: Object, name: String).void }
+		  def self.validate_not_nil(object, name); end
     end
 
     class MalformedPDFError < RuntimeError

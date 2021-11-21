@@ -47,6 +47,13 @@ class PDF::Reader
       raise MalformedPDFError, "PDF malformed, expected '#{rvalue}' but found '#{lvalue}' instead" if lvalue != rvalue
     end
     ################################################################################
+    def self.validate_type(object, name, klass)
+      raise ArgumentError, "#{name} (#{object}) must be a #{klass}" unless object.is_a?(klass)
+    end
+    ################################################################################
+    def self.validate_not_nil(object, name)
+      raise ArgumentError, "#{object} must not be nil" if object.nil?
+    end
   end
 
   ################################################################################
