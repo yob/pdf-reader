@@ -69,6 +69,60 @@ module PDF
         @attributes
       end
 
+      # Convenience method to retrieve he named destinations present in the document.
+      # implemented as port of https://github.com/mstamy2/PyPDF2/blob/18a2627adac13124d4122c8b92aaa863ccfb8c29/PyPDF2/pdf.py#L1350-L1389
+      def named_destinations( tree = nil, retval = nil)
+        if retval.nil?               # if initial call
+            retval = {}
+            tree = root[:Dests]      # get dests from Catalog
+            if tree.nil?             # if no global dests 
+               names = root[:Names]  # get name tree
+               if names
+                  dests = @objects.deref(names)[:Dests]
+                  if dests
+                    tree = dests
+                  end
+              end
+           end
+        end
+
+        return retval if tree.nil?
+
+        kids = @objects.deref(tree)[:Kids]       # recurse down the tree
+        if kids
+            kids.each do |kid|
+                named_destinations(@objects.deref(kid), retval)
+            end
+        end
+
+        names = @objects.deref(tree)[:Names]
+        if names
+            (0...names.length).step(2) do |i|
+                key = @objects.deref(names[i])
+                val = @objects.deref(names[i+1])
+                val_d = val[:D]
+                if val_d
+                   dest = _build_destination(key, val_d)
+                   retval[key] = dest
+                else
+                    # this shoud not happen 
+                    # require 'pry';binding.pry
+                end
+            end
+        end
+
+        retval
+      end
+
+      private def _build_destination(title, array)
+        page, typ = array[0..2]
+        array = array[2..-1]
+        typ = @objects.deref(typ)
+
+        {page: page, typ: typ}
+      end
+
+
       # Convenience method to identify the page's orientation.
       #
       def orientation

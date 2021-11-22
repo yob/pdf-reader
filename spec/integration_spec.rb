@@ -298,6 +298,26 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "extracts named destinations  p" do
+    let(:filename){pdf_spec_file("pdflatex")}
+
+    it "extracts named destinations correctly" do 
+        PDF::Reader.open(filename) do |reader|
+            named_destinations = reader.named_destinations   
+            expect(named_destinations.count).to eql(90)
+            expect(named_destinations.keys.first).to eql('Doc-Start')
+        end
+    end
+
+    it "extracts named destinations correctly via page" do 
+        PDF::Reader.open(filename) do |reader|
+            named_destinations = reader.page(10).named_destinations   
+            expect(named_destinations.count).to eql(90)
+            expect(named_destinations.keys.first).to eql('Doc-Start')
+        end
+    end
+  end
+
   context "encrypted_version1_revision2_40bit_rc4_user_pass_apples" do
     let(:filename) { pdf_spec_file("encrypted_version1_revision2_40bit_rc4_user_pass_apples") }
 

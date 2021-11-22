@@ -187,6 +187,12 @@ module PDF
       end
     end
 
+    # return named detinations fo the document
+    def named_destinations
+        pages.first.named_destinations
+    end
+
+
     # returns a single PDF::Reader::Page for the specified page.
     # Use this instead of pages method when you need to access just a single
     # page
