@@ -81,6 +81,13 @@ module PDF
         rect.width
       end
 
+      def origin
+        rect = Rectangle.new(*attributes[:MediaBox])
+        rect.apply_rotation(rotate) if rotate > 0
+
+        rect.bottom_left
+      end
+
       # Convenience method to identify the page's orientation.
       #
       def orientation
