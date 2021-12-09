@@ -23,6 +23,10 @@ module PDF
         @x1, @y1, @x2, @y2 = x1, y1, x2, y2
       end
 
+      def ==(other)
+        to_a == other.to_a
+      end
+
       def bottom_left
         [
           [@x1, @x2].min,
@@ -57,6 +61,16 @@ module PDF
 
       def width
         bottom_right[0] - bottom_left[0]
+      end
+
+      # A pdf-style 4-number array
+      def to_a
+        [
+          bottom_left[0],
+          bottom_left[1],
+          top_right[0],
+          top_right[1],
+        ]
       end
 
       def apply_rotation(degrees)

@@ -71,6 +71,45 @@ describe PDF::Reader::Page do
     end
   end
 
+  describe "#rectangles" do
+    let!(:page)    { browser.page(1) }
+    let!(:browser) { PDF::Reader.new(pdf_spec_file("all_page_boxes_exist")) }
+
+    it "returns a hash of all the different boxes" do
+      expect(page.attributes[:ArtBox]).to_not be_empty
+      expect(page.attributes[:BleedBox]).to_not be_empty
+      expect(page.attributes[:CropBox]).to_not be_empty
+      expect(page.attributes[:MediaBox]).to_not be_empty
+      expect(page.attributes[:TrimBox]).to_not be_empty
+
+      expect(page.rectangles).to eq(
+        {
+          ArtBox: PDF::Reader::Rectangle.new(0, 0, 612, 792),
+          BleedBox: PDF::Reader::Rectangle.new(0, 0, 612, 792),
+          CropBox: PDF::Reader::Rectangle.new(0, 0, 612, 792),
+          MediaBox: PDF::Reader::Rectangle.new(0, 0, 612, 792),
+          TrimBox: PDF::Reader::Rectangle.new(0, 0, 612, 792),
+        }
+      )
+    end
+
+    context "mediabox and cropbox are references" do
+      let!(:browser) { PDF::Reader.new(pdf_spec_file("mediabox_and_cropbox_are_references")) }
+
+      it "returns a non-reference for the dimensions of the boxes" do
+        expect(page.rectangles).to eq(
+          {
+            ArtBox: PDF::Reader::Rectangle.new(0, 0, 612, 792),
+            BleedBox: PDF::Reader::Rectangle.new(0, 0, 612, 792),
+            CropBox: PDF::Reader::Rectangle.new(0, 0, 612, 792),
+            MediaBox: PDF::Reader::Rectangle.new(0, 0, 612, 792),
+            TrimBox: PDF::Reader::Rectangle.new(0, 0, 612, 792),
+          }
+        )
+      end
+    end
+  end
+
   describe "#walk" do
 
     context "with page 1 of cairo-basic.pdf" do

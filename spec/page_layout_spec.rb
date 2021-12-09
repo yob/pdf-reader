@@ -4,7 +4,7 @@
 describe PDF::Reader::PageLayout do
   describe "#to_s" do
     context "with an A4 page" do
-      let(:mediabox) { [0, 0, 595.28, 841.89 ]}
+      let(:mediabox) { [0, 0, 595.28, 841.89]}
 
       context "with no words" do
         subject { PDF::Reader::PageLayout.new([], mediabox)}
