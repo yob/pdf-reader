@@ -45,6 +45,19 @@ describe PDF::Reader::OverlappingRunsFilter, "#exclude_redundant_runs" do
     end
   end
 
+  context "when there's two identically positioned runs with different text" do
+    let(:runs) do
+      [
+        PDF::Reader::TextRun.new(30, 700, 50, 12, "Hello"),
+        PDF::Reader::TextRun.new(30, 700, 50, 12, "Bacon"),
+      ]
+    end
+
+    it "returns both of the runs" do
+      expect(result).to match_array(runs)
+    end
+  end
+
   context "when the second run overlaps the right edge of the first" do
     context "by 50%" do
       let(:runs) do

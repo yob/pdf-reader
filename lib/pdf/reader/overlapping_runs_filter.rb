@@ -40,7 +40,8 @@ class PDF::Reader
 
     def self.detect_intersection(sweep_line_status, event_point)
       sweep_line_status.each do |open_text_run|
-        if event_point.x >= open_text_run.x &&
+        if open_text_run.text == event_point.run.text &&
+            event_point.x >= open_text_run.x &&
             event_point.x <= open_text_run.endx &&
             open_text_run.intersection_area_percent(event_point.run) >= OVERLAPPING_THRESHOLD
           return true
