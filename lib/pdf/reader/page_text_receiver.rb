@@ -119,6 +119,12 @@ module PDF
         end
       end
 
+      # TODO: revist this. It rotates the co-ordinates to the right direction, but I don't
+      #       think it sets the correct x,y values. We get away with it because we don't
+      #       return the text with co-ordinates, only the full text arranged in a string.
+      #
+      #       We should provide an API for extracting the text with positioning data and spec
+      #       that. I suspect the co-ords might be wrong for rotated pages
       def apply_rotation(x, y)
         if @page.rotate == 90
           tmp = x
@@ -126,10 +132,11 @@ module PDF
           y = tmp * -1
         elsif @page.rotate == 180
           y *= -1
+          x *= -1
         elsif @page.rotate == 270
-          tmp = x
-          x = y * -1
-          y = tmp * -1
+          tmp = y
+          y = x
+          x = tmp * -1
         end
         return x, y
       end

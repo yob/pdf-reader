@@ -344,6 +344,9 @@ data/prince2.pdf:
 data/rotate-180.pdf:
   :bytes: 17738
   :md5: 5ab145b4527aabb75532d9b990f6df0c
+data/rotate-270-then-undo-inside-bt.pdf:
+  :bytes: 1091
+  :md5: 1a27af6fc501499dc89f728db0526240
 data/rotate-90-then-undo-with-br-text.pdf:
   :bytes: 1202
   :md5: d86bb1a0cb9b2fdde5bb43d3f7cd1e9a

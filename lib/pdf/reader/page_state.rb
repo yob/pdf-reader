@@ -313,7 +313,7 @@ class PDF::Reader
       #                 may need to be added
       #
       def process_glyph_displacement(w0, tj, word_boundary)
-        fs = font_size # font size
+        fs = state[:text_font_size]
         tc = state[:char_spacing]
         if word_boundary
           tw = state[:word_spacing]
@@ -331,16 +331,16 @@ class PDF::Reader
           # apply horizontal scaling to spacing values but not font size
           tx = ((w0 * fs) + tc + tw) * th
         end
-
-        # TODO: I'm pretty sure that tx shouldn't need to be divided by
-        #       ctm[0] here, but this gets my tests green and I'm out of
-        #       ideas for now
         # TODO: support ty > 0
-        if ctm.a == 1 || ctm.a == 0
-          @text_matrix.horizontal_displacement_multiply!(tx)
-        else
-          @text_matrix.horizontal_displacement_multiply!(tx/ctm.a)
-        end
+        ty = 0
+        temp = TransformationMatrix.new(1, 0,
+                                        0, 1,
+                                        tx, ty)
+        @text_matrix = temp.multiply!(
+          @text_matrix.a, @text_matrix.b,
+          @text_matrix.c, @text_matrix.d,
+          @text_matrix.e, @text_matrix.f
+        )
         @font_size = @text_rendering_matrix = nil # invalidate cached value
       end
 
