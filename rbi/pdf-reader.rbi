@@ -747,6 +747,9 @@ module PDF
       sig { returns(String) }
       def orientation; end
 
+      sig { returns(T::Array[Numeric]) }
+      def origin; end
+
       sig { returns(String) }
       def text; end
 

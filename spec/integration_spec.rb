@@ -36,6 +36,13 @@ describe PDF::Reader, "integration specs" do
         expect(page.height).to be_within(0.1).of(841.89)
       end
     end
+
+    it "returns correct origin" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.origin).to eq [0,0]
+      end
+    end
   end
 
   context "vertical-text-in-identity-v" do
@@ -1327,6 +1334,16 @@ describe PDF::Reader, "integration specs" do
         expect(page.height).to be_within(0.1).of(841.88)
       end
     end
+
+    it "returns correct origin" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.origin).to match [
+          be_within(0.1).of(-595.30),
+          be_within(0.1).of(-841.88),
+        ]
+      end
+    end
   end
 
   context "PDF with page rotation followed by matrix transformations to undo it" do
@@ -1356,6 +1373,16 @@ describe PDF::Reader, "integration specs" do
         # A4 portrait
         expect(page.width).to be_within(0.1).of(595.30)
         expect(page.height).to be_within(0.1).of(841.88)
+      end
+    end
+
+    it "returns correct origin" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.origin).to match [
+          be_within(0.1).of(-595.30),
+          be_within(0.1).of(0),
+        ]
       end
     end
   end
@@ -1390,6 +1417,16 @@ describe PDF::Reader, "integration specs" do
         expect(page.height).to be_within(0.1).of(595)
       end
     end
+
+    it "returns correct origin" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.origin).to match [
+          be_within(0.1).of(0),
+          be_within(0.1).of(-595),
+        ]
+      end
+    end
   end
 
   context "PDF with page rotation of 90 degrees followed by matrix transformations to undo it" do
@@ -1408,6 +1445,25 @@ describe PDF::Reader, "integration specs" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
         expect(page.orientation).to eql("landscape")
+      end
+    end
+
+    it "returns correct page dimensions" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        # A4 landscape
+        expect(page.width).to be_within(0.1).of(842)
+        expect(page.height).to be_within(0.1).of(595)
+      end
+    end
+
+    it "returns correct origin" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.origin).to match [
+          be_within(0.1).of(0),
+          be_within(0.1).of(-595),
+        ]
       end
     end
   end
