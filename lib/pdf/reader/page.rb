@@ -69,10 +69,26 @@ module PDF
         @attributes
       end
 
+      def height
+        rect = Rectangle.new(*attributes[:MediaBox])
+        rect.apply_rotation(rotate) if rotate > 0
+        rect.height
+      end
+
+      def width
+        rect = Rectangle.new(*attributes[:MediaBox])
+        rect.apply_rotation(rotate) if rotate > 0
+        rect.width
+      end
+
       # Convenience method to identify the page's orientation.
       #
       def orientation
-        OrientationDetector.new(attributes).orientation
+        if height > width
+          "portrait"
+        else
+          "landscape"
+        end
       end
 
       # returns the plain text content of this page encoded as UTF-8. Any

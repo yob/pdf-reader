@@ -20,6 +20,22 @@ describe PDF::Reader, "integration specs" do
         expect(page.text).to eql("Chunky Bacon")
       end
     end
+
+    it "is portrait orientation" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.orientation).to eql("portrait")
+      end
+    end
+
+    it "returns correct page dimensions" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        # A4 portrait
+        expect(page.width).to be_within(0.1).of(595.28)
+        expect(page.height).to be_within(0.1).of(841.89)
+      end
+    end
   end
 
   context "vertical-text-in-identity-v" do
@@ -1042,6 +1058,21 @@ describe PDF::Reader, "integration specs" do
         expect(page.text[0,54]).to eq("This page is missing the compulsory MediaBox attribute")
       end
     end
+
+    it "is portrait orientation" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.orientation).to eql("portrait")
+      end
+    end
+
+    it "returns correct page dimensions (defaults to portrait US letter)" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.width).to be_within(0.1).of(612)
+        expect(page.height).to be_within(0.1).of(792)
+      end
+    end
   end
 
   context "PDF using a standard fint and no difference table" do
@@ -1280,6 +1311,22 @@ describe PDF::Reader, "integration specs" do
         expect(page.text).to eq(text)
       end
     end
+
+    it "is portrait orientation" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.orientation).to eql("portrait")
+      end
+    end
+
+    it "returns correct page dimensions" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        # A4 portrait
+        expect(page.width).to be_within(0.1).of(595.30)
+        expect(page.height).to be_within(0.1).of(841.88)
+      end
+    end
   end
 
   context "PDF with page rotation followed by matrix transformations to undo it" do
@@ -1293,6 +1340,22 @@ describe PDF::Reader, "integration specs" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
         expect(page.text).to eq(text)
+      end
+    end
+
+    it "is portrait orientation" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.orientation).to eql("portrait")
+      end
+    end
+
+    it "returns correct page dimensions" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        # A4 portrait
+        expect(page.width).to be_within(0.1).of(595.30)
+        expect(page.height).to be_within(0.1).of(841.88)
       end
     end
   end
@@ -1311,6 +1374,22 @@ describe PDF::Reader, "integration specs" do
         expect(page.text).to eq(text)
       end
     end
+
+    it "is portrait landscape" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.orientation).to eql("landscape")
+      end
+    end
+
+    it "returns correct page dimensions" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        # A4 landscape
+        expect(page.width).to be_within(0.1).of(842)
+        expect(page.height).to be_within(0.1).of(595)
+      end
+    end
   end
 
   context "PDF with page rotation of 90 degrees followed by matrix transformations to undo it" do
@@ -1322,6 +1401,13 @@ describe PDF::Reader, "integration specs" do
         expect(page.text).to include("This PDF ha  sRotate:90 in the page")
         expect(page.text).to include("metadata to get a landscape layout")
         expect(page.text).to include("and text in bottom right quadrant")
+      end
+    end
+
+    it "is landscape orientation" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.orientation).to eql("landscape")
       end
     end
   end
