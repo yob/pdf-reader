@@ -687,17 +687,6 @@ module PDF
       def buffer; end
     end
 
-    class OrientationDetector
-      sig { params(attributes: T.untyped).void }
-      def initialize(attributes); end
-
-      sig { returns(T.untyped) }
-      def orientation; end
-
-      sig { returns(T.untyped) }
-      def detect_orientation; end
-    end
-
     class OverlappingRunsFilter
       extend T::Sig
       OVERLAPPING_THRESHOLD = 0.5
@@ -748,6 +737,12 @@ module PDF
 
       sig { returns(T.untyped) }
       def attributes; end
+
+      sig { returns(T.untyped) }
+      def height; end
+
+      sig { returns(T.untyped) }
+      def width; end
 
       sig { returns(String) }
       def orientation; end
@@ -1098,6 +1093,39 @@ module PDF
 
       sig { params(methodname: T.untyped, args: T.untyped).returns(T.untyped) }
       def method_missing(methodname, *args); end
+    end
+
+    class Rectangle
+      sig do
+        params(
+          x1: T.untyped,
+          y1: T.untyped,
+          x2: T.untyped,
+          y2: T.untyped
+        ).void
+      end
+      def initialize(x1, y1, x2, y2); end
+
+      sig { returns(T.untyped) }
+      def bottom_left; end
+
+      sig { returns(T.untyped) }
+      def bottom_right; end
+
+      sig { returns(T.untyped) }
+      def top_left; end
+
+      sig { returns(T.untyped) }
+      def top_right; end
+
+      sig { returns(Numeric) }
+      def height; end
+
+      sig { returns(Numeric) }
+      def width; end
+
+      sig { params(degrees: Integer).void }
+      def apply_rotation(degrees); end
     end
 
     class Reference
