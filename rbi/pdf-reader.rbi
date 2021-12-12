@@ -765,6 +765,9 @@ module PDF
       sig { returns(T::Hash[Symbol, T.untyped]) }
       def boxes; end
 
+      sig { returns(T::Hash[Symbol, PDF::Reader::Rectangle]) }
+      def rectangles; end
+
       sig { returns(T.untyped) }
       def root; end
 

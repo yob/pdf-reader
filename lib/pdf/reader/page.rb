@@ -163,16 +163,43 @@ module PDF
       # returns the "boxes" that define the page object.
       # values are defaulted according to section 7.7.3.3 of the PDF Spec 1.7
       #
+      # DEPRECATED. Recommend using Page#rectangles instead
+      #
       def boxes
-        mediabox = attributes[:MediaBox]
-        cropbox = attributes[:Cropbox] || mediabox
+        # In ruby 2.4+ we could use Hash#transform_values
+        Hash[rectangles.map{ |k,rect| [k,rect.to_a] } ]
+      end
+
+      # returns the "boxes" that define the page object.
+      # values are defaulted according to section 7.7.3.3 of the PDF Spec 1.7
+      #
+      def rectangles
+        mediabox = objects.deref!(attributes[:MediaBox])
+        cropbox = objects.deref!(attributes[:Cropbox]) || mediabox
+        bleedbox = objects.deref!(attributes[:BleedBox]) || cropbox
+        trimbox = objects.deref!(attributes[:TrimBox]) || cropbox
+        artbox = objects.deref!(attributes[:ArtBox]) || cropbox
+
+        mediarect = Rectangle.new(*mediabox)
+        croprect = Rectangle.new(*cropbox)
+        bleedrect = Rectangle.new(*bleedbox)
+        trimrect = Rectangle.new(*trimbox)
+        artrect = Rectangle.new(*artbox)
+
+        if rotate > 0
+          mediarect.apply_rotation(rotate)
+          croprect.apply_rotation(rotate)
+          bleedrect.apply_rotation(rotate)
+          trimrect.apply_rotation(rotate)
+          artrect.apply_rotation(rotate)
+        end
 
         {
-          MediaBox: objects.deref!(mediabox),
-          CropBox: objects.deref!(cropbox),
-          BleedBox: objects.deref!(attributes[:BleedBox] || cropbox),
-          TrimBox: objects.deref!(attributes[:TrimBox] || cropbox),
-          ArtBox: objects.deref!(attributes[:ArtBox] || cropbox)
+          MediaBox: mediarect,
+          CropBox: croprect,
+          BleedBox: bleedrect,
+          TrimBox: trimrect,
+          ArtBox: artrect,
         }
       end
 

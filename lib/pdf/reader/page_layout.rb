@@ -17,6 +17,8 @@ class PDF::Reader
     DEFAULT_FONT_SIZE = 12
 
     def initialize(runs, mediabox)
+      # mediabox is a 4-element array for now, but it'd be nice to switch to a
+      # PDF::Reader::Rectangle at some point
       PDF::Reader::Error.validate_not_nil(mediabox, "mediabox")
 
       runs = ZeroWidthRunsFilter.exclude_zero_width_runs(runs)
@@ -49,10 +51,12 @@ class PDF::Reader
     private
 
     def page_width
+      # TODO once @mediabox is a Rectangle, this can be just `@mediabox.width`
       (@mediabox[2].to_f - @mediabox[0].to_f).abs
     end
 
     def page_height
+      # TODO once @mediabox is a Rectangle, this can be just `@mediabox.height`
       (@mediabox[3].to_f - @mediabox[1].to_f).abs
     end
 
