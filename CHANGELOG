@@ -7,6 +7,7 @@ v2.7.0 (13th December 2021)
 - Add PDF::Reader::Page#rectangles (http://github.com/yob/pdf-reader/pull/402)
   - Returns page boxes (MediaBox, etc) with rotation applied, and as PORO rather than arrays of numbers
 - Add PDF::Reader::Page#origin (http://github.com/yob/pdf-reader/pull/400)
+- Add PDF::Reader::Page#{height,width} (http://github.com/yob/pdf-reader/pull/399)
 - Overlap filter should only drop characters that overlap *and* match (http://github.com/yob/pdf-reader/pull/401)
 
 v2.6.0 (12th November 2021)
