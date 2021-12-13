@@ -735,13 +735,13 @@ module PDF
       sig { returns(String) }
       def inspect; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Hash[Symbol, T.untyped]) }
       def attributes; end
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       def height; end
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       def width; end
 
       sig { returns(String) }
@@ -762,16 +762,16 @@ module PDF
       sig { returns(Integer) }
       def rotate; end
 
-      sig { returns(T::Hash[Symbol, T.untyped]) }
+      sig { returns(T::Hash[Symbol, T::Array[Numeric]]) }
       def boxes; end
 
       sig { returns(T::Hash[Symbol, PDF::Reader::Rectangle]) }
       def rectangles; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Hash[Symbol, T.untyped]) }
       def root; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Hash[Symbol, T.untyped]) }
       def resources; end
 
       sig { params(receivers: T.untyped, instructions: T.untyped).returns(T.untyped) }
