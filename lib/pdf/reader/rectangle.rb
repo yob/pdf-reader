@@ -19,57 +19,32 @@ module PDF
     # we don't assume which is which.
     #
     class Rectangle
+
+      attr_reader :bottom_left, :bottom_right, :top_left, :top_right
+
       def initialize(x1, y1, x2, y2)
-        @x1, @y1, @x2, @y2 = x1, y1, x2, y2
+        set_corners(x1, y1, x2, y2)
       end
 
       def ==(other)
         to_a == other.to_a
       end
 
-      def bottom_left
-        [
-          [@x1, @x2].min,
-          [@y1, @y2].min,
-        ]
-      end
-
-      def bottom_right
-        [
-          [@x1, @x2].max,
-          [@y1, @y2].min,
-        ]
-      end
-
-      def top_left
-        [
-          [@x1, @x2].min,
-          [@y1, @y2].max,
-        ]
-      end
-
-      def top_right
-        [
-          [@x1, @x2].max,
-          [@y1, @y2].max,
-        ]
-      end
-
       def height
-        top_right[1].to_f - bottom_right[1].to_f
+        top_right.y - bottom_right.y
       end
 
       def width
-        bottom_right[0].to_f - bottom_left[0].to_f
+        bottom_right.x - bottom_left.x
       end
 
       # A pdf-style 4-number array
       def to_a
         [
-          bottom_left[0].to_f,
-          bottom_left[1].to_f,
-          top_right[0].to_f,
-          top_right[1].to_f,
+          bottom_left.x,
+          bottom_left.y,
+          top_right.x,
+          top_right.y,
         ]
       end
 
@@ -77,25 +52,43 @@ module PDF
         return if degrees != 90 && degrees != 180 && degrees != 270
 
         if degrees == 90
-          new_x1 = @x1
-          new_y1 = @y1 - width
-          new_x2 = @x1 + height
-          new_y2 = @y1
+          new_x1 = bottom_left.x
+          new_y1 = bottom_left.y - width
+          new_x2 = bottom_left.x + height
+          new_y2 = bottom_left.y
         elsif degrees == 180
-          new_x1 = @x1 - width
-          new_y1 = @y1 - height
-          new_x2 = @x1
-          new_y2 = @y1
+          new_x1 = bottom_left.x - width
+          new_y1 = bottom_left.y - height
+          new_x2 = bottom_left.x
+          new_y2 = bottom_left.y
         elsif degrees == 270
-          new_x1 = @x1 - height
-          new_y1 = @y1
-          new_x2 = @x1
-          new_y2 = @y1 + width
+          new_x1 = bottom_left.x - height
+          new_y1 = bottom_left.y
+          new_x2 = bottom_left.x
+          new_y2 = bottom_left.y + width
         end
-        @x1 = new_x1
-        @y1 = new_y1
-        @x2 = new_x2
-        @y2 = new_y2
+        set_corners(new_x1, new_y1, new_x2, new_y2)
+      end
+
+      private
+
+      def set_corners(x1, y1, x2, y2)
+        @bottom_left = PDF::Reader::Point.new(
+          [x1, x2].min,
+          [y1, y2].min,
+        )
+        @bottom_right = PDF::Reader::Point.new(
+          [x1, x2].max,
+          [y1, y2].min,
+        )
+        @top_left = PDF::Reader::Point.new(
+          [x1, x2].min,
+          [y1, y2].max,
+        )
+        @top_right = PDF::Reader::Point.new(
+          [x1, x2].max,
+          [y1, y2].max,
+        )
       end
     end
   end
