@@ -1087,6 +1087,26 @@ module PDF
     }
     end
 
+    class Point
+      sig do
+        params(
+          x: Numeric,
+          y: Numeric,
+        ).void
+      end
+      def initialize(x, y); end
+
+      sig { returns(Numeric) }
+      def x; end
+
+      sig { returns(Numeric) }
+      def y; end
+
+      sig { params(other: PDF::Reader::Point).returns(T::Boolean) }
+      def ==(other); end
+
+    end
+
     class PrintReceiver
       sig { returns(T.untyped) }
       attr_accessor :callbacks
@@ -1112,16 +1132,16 @@ module PDF
       end
       def initialize(x1, y1, x2, y2); end
 
-      sig { returns(T::Array[Numeric]) }
+      sig { returns(PDF::Reader::Point) }
       def bottom_left; end
 
-      sig { returns(T::Array[Numeric]) }
+      sig { returns(PDF::Reader::Point) }
       def bottom_right; end
 
-      sig { returns(T::Array[Numeric]) }
+      sig { returns(PDF::Reader::Point) }
       def top_left; end
 
-      sig { returns(T::Array[Numeric]) }
+      sig { returns(PDF::Reader::Point) }
       def top_right; end
 
       sig { returns(Numeric) }

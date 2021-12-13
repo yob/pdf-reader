@@ -40,7 +40,7 @@ describe PDF::Reader, "integration specs" do
     it "returns correct origin" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
-        expect(page.origin).to eq [0,0]
+        expect(page.origin).to eq PDF::Reader::Point.new(0,0)
       end
     end
   end
@@ -1347,10 +1347,8 @@ describe PDF::Reader, "integration specs" do
     it "returns correct origin" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
-        expect(page.origin).to match [
-          be_within(0.1).of(-595.30),
-          be_within(0.1).of(-841.88),
-        ]
+        expect(page.origin.x).to be_within(0.1).of(-595.30)
+        expect(page.origin.y).to be_within(0.1).of(-841.88)
       end
     end
   end
@@ -1388,10 +1386,8 @@ describe PDF::Reader, "integration specs" do
     it "returns correct origin" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
-        expect(page.origin).to match [
-          be_within(0.1).of(-595.30),
-          be_within(0.1).of(0),
-        ]
+        expect(page.origin.x).to be_within(0.1).of(-595.30)
+        expect(page.origin.y).to be_within(0.1).of(0)
       end
     end
   end
@@ -1426,10 +1422,8 @@ describe PDF::Reader, "integration specs" do
     it "returns correct origin" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
-        expect(page.origin).to match [
-          be_within(0.1).of(-595.30),
-          be_within(0.1).of(0),
-        ]
+        expect(page.origin.x).to be_within(0.1).of(-595.30)
+        expect(page.origin.y).to be_within(0.1).of(0)
       end
     end
   end
@@ -1468,10 +1462,8 @@ describe PDF::Reader, "integration specs" do
     it "returns correct origin" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
-        expect(page.origin).to match [
-          be_within(0.1).of(0),
-          be_within(0.1).of(-595),
-        ]
+        expect(page.origin.x).to be_within(0.1).of(0)
+        expect(page.origin.y).to be_within(0.1).of(-595)
       end
     end
   end
@@ -1507,10 +1499,8 @@ describe PDF::Reader, "integration specs" do
     it "returns correct origin" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
-        expect(page.origin).to match [
-          be_within(0.1).of(0),
-          be_within(0.1).of(-595),
-        ]
+        expect(page.origin.x).to be_within(0.1).of(0)
+        expect(page.origin.y).to be_within(0.1).of(-595)
       end
     end
   end
