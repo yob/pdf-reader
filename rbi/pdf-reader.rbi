@@ -1104,24 +1104,24 @@ module PDF
     class Rectangle
       sig do
         params(
-          x1: T.untyped,
-          y1: T.untyped,
-          x2: T.untyped,
-          y2: T.untyped
+          x1: Numeric,
+          y1: Numeric,
+          x2: Numeric,
+          y2: Numeric
         ).void
       end
       def initialize(x1, y1, x2, y2); end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Array[Numeric]) }
       def bottom_left; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Array[Numeric]) }
       def bottom_right; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Array[Numeric]) }
       def top_left; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Array[Numeric]) }
       def top_right; end
 
       sig { returns(Numeric) }
@@ -1129,6 +1129,9 @@ module PDF
 
       sig { returns(Numeric) }
       def width; end
+
+      sig { returns(T::Array[Numeric]) }
+      def to_a; end
 
       sig { params(degrees: Integer).void }
       def apply_rotation(degrees); end

@@ -56,20 +56,20 @@ module PDF
       end
 
       def height
-        top_right[1] - bottom_right[1]
+        top_right[1].to_f - bottom_right[1].to_f
       end
 
       def width
-        bottom_right[0] - bottom_left[0]
+        bottom_right[0].to_f - bottom_left[0].to_f
       end
 
       # A pdf-style 4-number array
       def to_a
         [
-          bottom_left[0],
-          bottom_left[1],
-          top_right[0],
-          top_right[1],
+          bottom_left[0].to_f,
+          bottom_left[1].to_f,
+          top_right[0].to_f,
+          top_right[1].to_f,
         ]
       end
 
