@@ -1514,4 +1514,16 @@ describe PDF::Reader, "integration specs" do
       end
     end
   end
+
+  context "Content stream with indirect object for filters array" do
+    let(:filename) { pdf_spec_file("stream-with-indirect-filters") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        expect(reader.page(1).text).to eql(
+          "The content stream for this page stores the filter in an indirect object"
+        )
+      end
+    end
+  end
 end
