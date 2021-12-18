@@ -23,7 +23,7 @@ class PDF::Reader
 
       runs = ZeroWidthRunsFilter.exclude_zero_width_runs(runs)
       runs = OverlappingRunsFilter.exclude_redundant_runs(runs)
-      @mediabox = mediabox
+      @mediabox = process_mediabox(mediabox)
       @runs = merge_runs(runs)
       @mean_font_size   = mean(@runs.map(&:font_size)) || DEFAULT_FONT_SIZE
       @mean_font_size = DEFAULT_FONT_SIZE if @mean_font_size == 0
@@ -51,13 +51,11 @@ class PDF::Reader
     private
 
     def page_width
-      # TODO once @mediabox is a Rectangle, this can be just `@mediabox.width`
-      (@mediabox[2].to_f - @mediabox[0].to_f).abs
+      @mediabox.width
     end
 
     def page_height
-      # TODO once @mediabox is a Rectangle, this can be just `@mediabox.height`
-      (@mediabox[3].to_f - @mediabox[1].to_f).abs
+      @mediabox.height
     end
 
     # given an array of strings, return a new array with empty rows from the
@@ -134,5 +132,17 @@ class PDF::Reader
     def local_string_insert(haystack, needle, index)
       haystack[Range.new(index, index + needle.length - 1)] = String.new(needle)
     end
+
+    def process_mediabox(mediabox)
+      if mediabox.is_a?(Array)
+        msg = "Passing the mediabox to PageLayout as an Array is deprecated," +
+          " please use a Rectangle instead"
+        $stderr.puts msg
+        PDF::Reader::Rectangle.from_array(mediabox)
+      else
+        mediabox
+      end
+    end
+
   end
 end

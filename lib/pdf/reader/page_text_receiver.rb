@@ -48,7 +48,7 @@ module PDF
       end
 
       def content
-        mediabox = @page.rectangles[:MediaBox].to_a
+        mediabox = @page.rectangles[:MediaBox]
         PageLayout.new(@characters, mediabox).to_s
       end
 

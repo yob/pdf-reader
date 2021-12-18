@@ -26,6 +26,19 @@ module PDF
         set_corners(x1, y1, x2, y2)
       end
 
+      def self.from_array(arr)
+        if arr.size != 4
+          raise ArgumentError, "Only 4-element Arrays can be converted to a Rectangle"
+        end
+
+        PDF::Reader::Rectangle.new(
+          arr[0].to_f,
+          arr[1].to_f,
+          arr[2].to_f,
+          arr[3].to_f,
+        )
+      end
+
       def ==(other)
         to_a == other.to_a
       end
