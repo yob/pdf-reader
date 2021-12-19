@@ -2,4 +2,4 @@
 #
 # Run the tests
 
-$(dirname $0)/with-ruby rake
+$(dirname $0)/with-ruby rspec
