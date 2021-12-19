@@ -794,7 +794,7 @@ module PDF
       extend T::Sig
       DEFAULT_FONT_SIZE = 12
 
-      sig { params(runs: T::Array[PDF::Reader::TextRun], mediabox: T::Array[Numeric]).void }
+      sig { params(runs: T::Array[PDF::Reader::TextRun], mediabox: T.any(T::Array[Numeric], PDF::Reader::Rectangle)).void }
       def initialize(runs, mediabox); end
 
       sig { returns(String) }
@@ -829,6 +829,9 @@ module PDF
 
       sig { params(haystack: T.untyped, needle: T.untyped, index: T.untyped).returns(T.untyped) }
       def local_string_insert(haystack, needle, index); end
+
+      sig { params(mediabox: T.untyped).returns(T.untyped) }
+      def process_mediabox(mediabox); end
     end
 
     class PageState
@@ -1122,6 +1125,9 @@ module PDF
     end
 
     class Rectangle
+      sig { params(arr: T::Array[Numeric]).returns(PDF::Reader::Rectangle) }
+      def self.from_array(arr); end
+
       sig do
         params(
           x1: Numeric,

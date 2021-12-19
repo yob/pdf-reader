@@ -4,7 +4,7 @@
 describe PDF::Reader::PageLayout do
   describe "#to_s" do
     context "with an A4 page" do
-      let(:mediabox) { [0, 0, 595.28, 841.89]}
+      let(:mediabox) { PDF::Reader::Rectangle.new(0, 0, 595.28, 841.89)}
 
       context "with no words" do
         subject { PDF::Reader::PageLayout.new([], mediabox)}
@@ -201,9 +201,21 @@ describe PDF::Reader::PageLayout do
           expect(subject.to_s).to eq("bold")
         end
       end
+      context "with one word and the mediabox is provided as a 4-element array" do
+        let!(:runs) do
+          [
+            PDF::Reader::TextRun.new(30, 700, 50, 12, "Hello")
+          ]
+        end
+        subject { PDF::Reader::PageLayout.new(runs, mediabox.to_a)}
+
+        it "returns a correct string and prints a deprecation warning" do
+          expect(subject.to_s).to eq("Hello")
+        end
+      end
     end
     context "with a page that's too small to fit any of the text" do
-      let(:mediabox) { [0, 0, 46.560, 32.640]}
+      let(:mediabox) { PDF::Reader::Rectangle.new(0, 0, 46.560, 32.640)}
       let(:font_size) { 72 }
 
       it "returns an empty string" do
@@ -212,5 +224,6 @@ describe PDF::Reader::PageLayout do
         expect(layout.to_s).to eq("")
       end
     end
+
   end
 end
