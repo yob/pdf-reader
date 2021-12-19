@@ -757,8 +757,11 @@ module PDF
       sig { returns(T::Array[Numeric]) }
       def origin; end
 
-      sig { returns(String) }
-      def text; end
+      sig { params(opts: T::Hash[Symbol, T.untyped]).returns(T::Array[PDF::Reader::TextRun]) }
+      def runs(opts = {}); end
+
+      sig { params(opts: T::Hash[Symbol, T.untyped]).returns(String) }
+      def text(opts = {}); end
 
       sig { params(receivers: T.untyped).void }
       def walk(*receivers); end
@@ -1005,6 +1008,9 @@ module PDF
 
       sig { params(str: T.untyped).returns(T.untyped) }
       def move_to_next_line_and_show_text(str); end
+
+      sig { params(opts: T::Hash[Symbol, T.untyped]).returns(T::Array[PDF::Reader::TextRun]) }
+      def runs(opts = {}); end
 
       sig { params(aw: T.untyped, ac: T.untyped, string: T.untyped).returns(T.untyped) }
       def set_spacing_next_line_show_text(aw, ac, string); end

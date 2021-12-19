@@ -14,10 +14,54 @@ describe PDF::Reader, "integration specs" do
   context "cairo-unicode-short" do
     let(:filename) { pdf_spec_file("cairo-unicode-short") }
 
-    it "interprets unicode strings correctly" do
+    it "extracts unicode strings correctly" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
         expect(page.text).to eql("Chunky Bacon")
+      end
+    end
+
+    it "extracts unicode strings correctly from part of the page" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(
+          page.text(rect: PDF::Reader::Rectangle.new(29, 779, 100, 800))
+        ).to eql("Chunky")
+      end
+    end
+
+    # This spec assumes high precision in our glyph positioning calcualtions. It's likely
+    # that the specific x,y co-ords tested here might change a bit over time as small bugs
+    # in glyph positioning are ironed out (kerning, etc). I still think this test is worthwhile,
+    # to confirm the positions don't change unintentionally.
+    #
+    # pitstop co-ords
+    # C 32.0176, 779.5879
+    # h 48.8279, 779.89
+    # u 60.2067, 779.5879
+    # n 73.8355, 779.89
+    # k 87.3393, 779.89
+    # y 97.3745, 775.4526
+    it "extracts individual chars with correct positions" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        some_runs = page.runs(
+          merge: false,
+          rect: PDF::Reader::Rectangle.new(29, 779, 100, 800)
+        )
+        expect(some_runs.size).to eql(6)
+        expect(some_runs[0].text).to eql("C")
+        expect(some_runs[0].origin).to be_close_to(PDF::Reader::Point.new(30,779.89))
+        expect(some_runs[1].text).to eql("h")
+        expect(some_runs[1].origin).to be_close_to(PDF::Reader::Point.new(44.89,779.89))
+        expect(some_runs[2].text).to eql("u")
+        expect(some_runs[2].origin).to be_close_to(PDF::Reader::Point.new(58.39, 779.89))
+        expect(some_runs[3].text).to eql("n")
+        expect(some_runs[3].origin).to be_close_to(PDF::Reader::Point.new(71.89, 779.89))
+        expect(some_runs[4].text).to eql("k")
+        expect(some_runs[4].origin).to be_close_to(PDF::Reader::Point.new(85.40, 779.89))
+        expect(some_runs[5].text).to eql("y")
+        expect(some_runs[5].origin).to be_close_to(PDF::Reader::Point.new(96.73, 779.89))
       end
     end
 
@@ -76,7 +120,9 @@ describe PDF::Reader, "integration specs" do
         expect(reader.pages.size).to eql(3)
 
         page = reader.page(1)
-        expect(page.text).to include("Dit\302\240is\302\240een\302\240pdf\302\240test\302\240van\302\240drie\302\240pagina")
+        expect(page.text).to include(
+          "Dit\302\240is\302\240een\302\240pdf\302\240test\302\240van\302\240drie\302\240pagina"
+        )
         expect(page.text).to include("’s")
         expect(page.text).to include("Pagina\302\2401")
       end
@@ -177,7 +223,7 @@ describe PDF::Reader, "integration specs" do
   # PDF::Reader::XRef#object was saving an incorrect position when seeking. We
   # were saving the current pos of the underlying IO stream, then seeking back
   # to it. This was fine, except when there was still content in the buffer.
-  context "PDF with a stream that has its length specified as an indirect reference and uses windows line breaks" do
+  context "PDF with a stream length specified via indirect object and uses windows line breaks" do
     let(:filename) { pdf_spec_file("content_stream_with_length_as_ref_and_windows_breaks") }
 
     it "extracts text correctly" do
@@ -209,8 +255,8 @@ describe PDF::Reader, "integration specs" do
   context "PDF that uses an ASCII85Decode filter" do
     let(:filename) { pdf_spec_file("ascii85_filter") }
 
-    # The text on this page is rotated 45 degrees, so mapping it to plain text isn't straight forward.
-    # Still, it'd be nice to see if this can be improved somehow
+    # The text on this page is rotated 45 degrees, so mapping it to plain text isn't straight
+    # forward. Still, it'd be nice to see if this can be improved somehow
     #
     # If not, maybe it'd be good to drop this spec, and replace it with one that confirms the text
     # position if a few key characters
@@ -861,7 +907,10 @@ describe PDF::Reader, "integration specs" do
       expect(callbacks[0]).to eql(:name => :begin_inline_image, :args => [])
 
       # the second with the image header (colorspace, etc)
-      expect(callbacks[1]).to eql(:name => :begin_inline_image_data, :args => [:CS, :RGB, :I, true, :W, 234, :H, 70, :BPC, 8])
+      expect(callbacks[1]).to eql(
+        :name => :begin_inline_image_data,
+        :args => [:CS, :RGB, :I, true, :W, 234, :H, 70, :BPC, 8]
+      )
 
       # the last with the image data
       expect(callbacks[2][:name]).to eql :end_inline_image
@@ -1316,6 +1365,42 @@ describe PDF::Reader, "integration specs" do
       end
     end
 
+    # This spec assumes high precision in our glyph positioning calcualtions. It's likely
+    # that the specific x,y co-ords tested here might change a bit over time as small bugs
+    # in glyph positioning are ironed out (kerning, etc). I still think this test is worthwhile,
+    # to confirm the positions don't change unintentionally.
+    #
+    # Pitstop numbers
+    #
+    # u -437.08, -68.018
+    # p -431.054, -70.4555
+    # s -424.851, -68.018
+    # i -420.4, -67.9
+    # d -416.918, -68.018
+    # e -410.978, -68.018
+    it "extracts individual chars with correct positions" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        some_runs = page.runs(
+          merge: false,
+          rect: PDF::Reader::Rectangle.new(-438, -68, -405, -62)
+        )
+        expect(some_runs.size).to eql(6)
+        expect(some_runs[0].text).to eql("u")
+        expect(some_runs[0].origin).to be_close_to(PDF::Reader::Point.new(-437.24, -67.9))
+        expect(some_runs[1].text).to eql("p")
+        expect(some_runs[1].origin).to be_close_to(PDF::Reader::Point.new(-431.24, -67.9))
+        expect(some_runs[2].text).to eql("s")
+        expect(some_runs[2].origin).to be_close_to(PDF::Reader::Point.new(-425.34, -67.9))
+        expect(some_runs[3].text).to eql("i")
+        expect(some_runs[3].origin).to be_close_to(PDF::Reader::Point.new(-420.65, -67.9))
+        expect(some_runs[4].text).to eql("d")
+        expect(some_runs[4].origin).to be_close_to(PDF::Reader::Point.new(-417.35, -67.9))
+        expect(some_runs[5].text).to eql("e")
+        expect(some_runs[5].origin).to be_close_to(PDF::Reader::Point.new(-411.26, -67.9))
+      end
+    end
+
     it "is portrait orientation" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
@@ -1355,6 +1440,37 @@ describe PDF::Reader, "integration specs" do
       end
     end
 
+    # This spec assumes high precision in our glyph positioning calcualtions. It's likely
+    # that the specific x,y co-ords tested here might change a bit over time as small bugs
+    # in glyph positioning are ironed out (kerning, etc). I still think this test is worthwhile,
+    # to confirm the positions don't change unintentionally.
+    #
+    # Pitstop Numbers
+    #
+    # T -570.28, 750.95
+    # h -560.86, 750.95
+    # i -553.38, 750.95
+    # s -550.68, 750.76
+    #
+    it "extracts individual chars with correct positions" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        some_runs = page.runs(
+          merge: false,
+          rect: PDF::Reader::Rectangle.new(-572, 749, -545, 760)
+        )
+        expect(some_runs.size).to eql(4)
+        expect(some_runs[0].text).to eql("T")
+        expect(some_runs[0].origin).to be_close_to(PDF::Reader::Point.new(-570.24, 750.95))
+        expect(some_runs[1].text).to eql("h")
+        expect(some_runs[1].origin).to be_close_to(PDF::Reader::Point.new(-561.95, 750.95))
+        expect(some_runs[2].text).to eql("i")
+        expect(some_runs[2].origin).to be_close_to(PDF::Reader::Point.new(-554.40, 750.95))
+        expect(some_runs[3].text).to eql("s")
+        expect(some_runs[3].origin).to be_close_to(PDF::Reader::Point.new(-551.39, 750.95))
+      end
+    end
+
     it "is portrait orientation" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
@@ -1388,6 +1504,37 @@ describe PDF::Reader, "integration specs" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
         expect(page.text).to eq(text)
+      end
+    end
+
+    # This spec assumes high precision in our glyph positioning calcualtions. It's likely
+    # that the specific x,y co-ords tested here might change a bit over time as small bugs
+    # in glyph positioning are ironed out (kerning, etc). I still think this test is worthwhile,
+    # to confirm the positions don't change unintentionally.
+    #
+    # Pitstop numbers
+    #
+    # T -320.736, 534
+    # h -312.408, 534
+    # i -305.796, 534
+    # s -303.408, 533.832
+    #
+    it "extracts individual chars with correct positions" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        some_runs = page.runs(
+          merge: false,
+          rect: PDF::Reader::Rectangle.new(-322, 534, -300, 550)
+        )
+        expect(some_runs.size).to eql(4)
+        expect(some_runs[0].text).to eql("T")
+        expect(some_runs[0].origin).to be_close_to(PDF::Reader::Point.new(-320.2, 534.5))
+        expect(some_runs[1].text).to eql("h")
+        expect(some_runs[1].origin).to be_close_to(PDF::Reader::Point.new(-312.86, 534.5))
+        expect(some_runs[2].text).to eql("i")
+        expect(some_runs[2].origin).to be_close_to(PDF::Reader::Point.new(-306.19, 534.5))
+        expect(some_runs[3].text).to eql("s")
+        expect(some_runs[3].origin).to be_close_to(PDF::Reader::Point.new(-303.532, 534.5))
       end
     end
 
@@ -1431,6 +1578,37 @@ describe PDF::Reader, "integration specs" do
       end
     end
 
+    # This spec assumes high precision in our glyph positioning calcualtions. It's likely
+    # that the specific x,y co-ords tested here might change a bit over time as small bugs
+    # in glyph positioning are ironed out (kerning, etc). I still think this test is worthwhile,
+    # to confirm the positions don't change unintentionally.
+    #
+    # Pitstop numbers
+    #
+    # T 287.298, -45.49
+    # h 295.626, -45.49
+    # i 302.238, -45.49
+    # s 304.626, -45.658
+    #
+    it "extracts individual chars with correct positions" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        some_runs = page.runs(
+          merge: false,
+          rect: PDF::Reader::Rectangle.new(285, -47, 310, -35)
+        )
+        expect(some_runs.size).to eql(4)
+        expect(some_runs[0].text).to eql("T")
+        expect(some_runs[0].origin).to be_close_to(PDF::Reader::Point.new(287.33, -45.49))
+        expect(some_runs[1].text).to eql("h")
+        expect(some_runs[1].origin).to be_close_to(PDF::Reader::Point.new(294.66, -45.49))
+        expect(some_runs[2].text).to eql("i")
+        expect(some_runs[2].origin).to be_close_to(PDF::Reader::Point.new(301.33, -45.49))
+        expect(some_runs[3].text).to eql("s")
+        expect(some_runs[3].origin).to be_close_to(PDF::Reader::Point.new(304, -45.49))
+      end
+    end
+
     it "is portrait landscape" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
@@ -1465,6 +1643,37 @@ describe PDF::Reader, "integration specs" do
         expect(page.text).to include("This PDF ha  sRotate:90 in the page")
         expect(page.text).to include("metadata to get a landscape layout")
         expect(page.text).to include("and text in bottom right quadrant")
+      end
+    end
+
+    # This spec assumes high precision in our glyph positioning calcualtions. It's likely
+    # that the specific x,y co-ords tested here might change a bit over time as small bugs
+    # in glyph positioning are ironed out (kerning, etc). I still think this test is worthwhile,
+    # to confirm the positions don't change unintentionally.
+    #
+    # Pitstop Numbers
+    #
+    # p 216.026, -525.906
+    # a 222.398, -523.578
+    # g 228.986, -525.906
+    # e 235.682, -523.578
+    #
+    it "extracts individual chars with correct positions" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        some_runs = page.runs(
+          merge: false,
+          rect: PDF::Reader::Rectangle.new(212, -524, 239, -520)
+        )
+        expect(some_runs.size).to eql(4)
+        expect(some_runs[0].text).to eql("p")
+        expect(some_runs[0].origin).to be_close_to(PDF::Reader::Point.new(215.06, -523.41))
+        expect(some_runs[1].text).to eql("a")
+        expect(some_runs[1].origin).to be_close_to(PDF::Reader::Point.new(221.73, -523.41))
+        expect(some_runs[2].text).to eql("g")
+        expect(some_runs[2].origin).to be_close_to(PDF::Reader::Point.new(228.41, -523.41))
+        expect(some_runs[3].text).to eql("e")
+        expect(some_runs[3].origin).to be_close_to(PDF::Reader::Point.new(235.08, -523.41))
       end
     end
 

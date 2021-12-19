@@ -22,10 +22,7 @@ class PDF::Reader
       PDF::Reader::Error.validate_not_nil(mediabox, "mediabox")
 
       @mediabox = process_mediabox(mediabox)
-      runs = ZeroWidthRunsFilter.exclude_zero_width_runs(runs)
-      runs = OverlappingRunsFilter.exclude_redundant_runs(runs)
-      runs = BoundingRectangleRunsFilter.runs_within_rect(runs, @mediabox)
-      @runs = merge_runs(runs)
+      @runs = runs
       @mean_font_size   = mean(@runs.map(&:font_size)) || DEFAULT_FONT_SIZE
       @mean_font_size = DEFAULT_FONT_SIZE if @mean_font_size == 0
       @median_glyph_width = median(@runs.map(&:mean_character_width)) || 0
@@ -105,28 +102,6 @@ class PDF::Reader
         0
       else
         collection.sort[(collection.size * 0.5).floor]
-      end
-    end
-
-    # take a collection of TextRun objects and merge any that are in close
-    # proximity
-    def merge_runs(runs)
-      runs.group_by { |char|
-        char.y.to_i
-      }.map { |y, chars|
-        group_chars_into_runs(chars.sort)
-      }.flatten.sort
-    end
-
-    def group_chars_into_runs(chars)
-      chars.each_with_object([]) do |char, runs|
-        if runs.empty?
-          runs << char
-        elsif runs.last.mergable?(char)
-          runs[-1] = runs.last + char
-        else
-          runs << char
-        end
       end
     end
 
