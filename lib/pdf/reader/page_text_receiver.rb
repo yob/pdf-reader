@@ -109,7 +109,7 @@ module PDF
 
           # apply to glyph displacment for the current glyph so the next
           # glyph will appear in the correct position
-          glyph_width = @state.current_font.glyph_width(glyph_code) / 1000.0
+          glyph_width = @state.current_font.glyph_width_in_text_space(glyph_code)
           th = 1
           scaled_glyph_width = glyph_width * @state.font_size * th
           unless utf8_chars == SPACE

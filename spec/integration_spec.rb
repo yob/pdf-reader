@@ -218,7 +218,7 @@ describe PDF::Reader, "integration specs" do
       PDF::Reader.open(filename) do |reader|
         lines = reader.page(1).text.split("\n")
         expect(lines[0].strip).to eq("E")
-        expect(lines[1].strip).to eq("t I")
+        expect(lines[1].strip).to eq("t Iu")
       end
     end
   end
@@ -995,22 +995,10 @@ describe PDF::Reader, "integration specs" do
   context "PDF that uses a type3 bitmap font with a rare FontMatrix" do
     let(:filename) { pdf_spec_file("type3_font_with_rare_font_matrix") }
 
-    # TODO most type3 fonts have a FontMatrix entry of [ 0.001 0 0 0.001 0 0 ],
-    # which matches the glyph scale factor of 1000 that non-type3 fonts use.
-    # It's permitted for type3 fonts to use other FontMatrix values though,
-    # and we should do a better job of extracting the text.
-    # The Page is 200pts wide and 50pts high. The first letters for each word
-    # *should* be positioned like so:
-    #
-    #   P - X: 10.3 Y: 20   Width: 7.35 Height: 8.55
-    #   G - X: 56.5 Y: 19.7 Width: 8.25 Height: 9.15
-    #   A - X: 101.5 Y: 20  Width: 8.25 Height: 9
-    #
     it "extracts text correctly" do
-      pending
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
-        expect(page.text).to include("Parallel Genetic Algorithms")
+        expect(page.text).to include("ParallelGenetic Algorithms")
       end
     end
   end
@@ -1038,7 +1026,7 @@ describe PDF::Reader, "integration specs" do
     it "extracts text without raising an exception" do
       PDF::Reader.open(filename) do |reader|
         page = reader.page(1)
-        expect(page.text.split("\n").map(&:strip).slice(0,2)).to eq(["°","9"])
+        expect(page.text.split("\n").map(&:strip).slice(0,2)).to eq(["0","9"])
       end
     end
   end
@@ -1356,7 +1344,7 @@ describe PDF::Reader, "integration specs" do
   context "PDF with page rotation of 270 degrees followed by matrix transformations to undo it" do
     let(:filename) { pdf_spec_file("rotate-then-undo") }
     let(:text) {
-      "This page uses matrix transformations to print text sideways, " +
+      "This page uses matrix transformations to print text   sideways, " +
       "then has a Rotate key to fix it"
     }
 

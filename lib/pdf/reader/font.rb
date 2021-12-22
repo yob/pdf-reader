@@ -43,6 +43,7 @@ class PDF::Reader
       @tounicode = nil
 
       extract_base_info(obj)
+      extract_type3_info(obj)
       extract_descriptor(obj)
       extract_descendants(obj)
       @width_calc = build_width_calculator
@@ -73,7 +74,43 @@ class PDF::Reader
       @cached_widths[code_point] ||= @width_calc.glyph_width(code_point)
     end
 
+    # In most cases glyph width is converted into text space with a simple divide by 1000.
+    #
+    # However, Type3 fonts provide their own FontMatrix that's used for the transformation.
+    #
+    def glyph_width_in_text_space(code_point)
+      glyph_width_in_glyph_space = glyph_width(code_point)
+
+      if @subtype == :Type3
+        x1, y1 = font_matrix_transform(0,0)
+        x2, y2 = font_matrix_transform(glyph_width_in_glyph_space, 0)
+        (x2 - x1).abs.round(2)
+      else
+        glyph_width_in_glyph_space / 1000.0
+      end
+    end
+
     private
+
+    # Only valid for Type3 fonts
+    def font_matrix_transform(x, y)
+      return x, y if @font_matrix.nil?
+
+      matrix = TransformationMatrix.new(
+        @font_matrix[0], @font_matrix[1],
+        @font_matrix[2], @font_matrix[3],
+        @font_matrix[4], @font_matrix[5],
+      )
+
+      if x == 0 && y == 0
+        [matrix.e, matrix.f]
+      else
+        [
+          (matrix.a * x) + (matrix.c * y) + (matrix.e),
+          (matrix.b * x) + (matrix.d * y) + (matrix.f)
+        ]
+      end
+    end
 
     def default_encoding(font_name)
       case font_name.to_s
@@ -135,6 +172,12 @@ class PDF::Reader
         if stream.is_a?(PDF::Reader::Stream)
           @tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
         end
+      end
+    end
+
+    def extract_type3_info(obj)
+      if @subtype == :Type3
+        @font_matrix = @ohash.object(obj[:FontMatrix]) || [ 0.001, 0, 0, 0.001, 0, 0 ]
       end
     end
 
