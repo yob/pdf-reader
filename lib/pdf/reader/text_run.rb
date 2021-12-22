@@ -15,7 +15,7 @@ class PDF::Reader
       @x = x
       @y = y
       @width = width
-      @font_size = font_size.floor
+      @font_size = font_size
       @text = text
     end
 
