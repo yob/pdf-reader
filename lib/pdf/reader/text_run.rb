@@ -7,13 +7,12 @@ class PDF::Reader
   class TextRun
     include Comparable
 
-    attr_reader :x, :y, :width, :font_size, :text
+    attr_reader :origin, :width, :font_size, :text
 
     alias :to_s :text
 
     def initialize(x, y, width, font_size, text)
-      @x = x
-      @y = y
+      @origin = PDF::Reader::Point.new(x, y)
       @width = width
       @font_size = font_size
       @text = text
@@ -35,12 +34,20 @@ class PDF::Reader
       end
     end
 
+    def x
+      @origin.x
+    end
+
+    def y
+      @origin.y
+    end
+
     def endx
-      @endx ||= x + width
+      @endx ||= @origin.x + width
     end
 
     def endy
-      @endy ||= y + font_size
+      @endy ||= @origin.y + font_size
     end
 
     def mean_character_width

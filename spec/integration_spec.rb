@@ -1514,4 +1514,8 @@ describe PDF::Reader, "integration specs" do
       end
     end
   end
+
+  context "PDF with glyphs positioned outside the MediaBox" do
+    it "skips the characteers off the page"
+  end
 end
