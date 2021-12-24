@@ -21,9 +21,10 @@ class PDF::Reader
       # PDF::Reader::Rectangle at some point
       PDF::Reader::Error.validate_not_nil(mediabox, "mediabox")
 
+      @mediabox = process_mediabox(mediabox)
       runs = ZeroWidthRunsFilter.exclude_zero_width_runs(runs)
       runs = OverlappingRunsFilter.exclude_redundant_runs(runs)
-      @mediabox = process_mediabox(mediabox)
+      runs = BoundingRectangleRunsFilter.runs_within_rect(runs, @mediabox)
       @runs = merge_runs(runs)
       @mean_font_size   = mean(@runs.map(&:font_size)) || DEFAULT_FONT_SIZE
       @mean_font_size = DEFAULT_FONT_SIZE if @mean_font_size == 0

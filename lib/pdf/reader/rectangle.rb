@@ -51,6 +51,11 @@ module PDF
         bottom_right.x - bottom_left.x
       end
 
+      def contains?(point)
+        point.x >= bottom_left.x && point.x <= top_right.x &&
+          point.y >= bottom_left.y && point.y <= top_right.y
+      end
+
       # A pdf-style 4-number array
       def to_a
         [

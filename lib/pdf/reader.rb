@@ -273,6 +273,7 @@ end
 
 require 'pdf/reader/resource_methods'
 require 'pdf/reader/buffer'
+require 'pdf/reader/bounding_rectangle_runs_filter'
 require 'pdf/reader/cid_widths'
 require 'pdf/reader/cmap'
 require 'pdf/reader/encoding'

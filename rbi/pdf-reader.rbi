@@ -43,6 +43,13 @@ module PDF
     sig { returns(T::Hash[Symbol, T.untyped]) }
     def root; end
 
+    class BoundingRectangleRunsFilter
+      extend T::Sig
+
+      sig { params(runs: T::Array[PDF::Reader::TextRun], rect: PDF::Reader::Rectangle).returns(T::Array[PDF::Reader::TextRun]) }
+      def self.runs_within_rect(runs, rect); end
+    end
+
     class Buffer
       TOKEN_WHITESPACE = [0x00, 0x09, 0x0A, 0x0C, 0x0D, 0x20]
       TOKEN_DELIMITER = [0x25, 0x3C, 0x3E, 0x28, 0x5B, 0x7B, 0x29, 0x5D, 0x7D, 0x2F]
