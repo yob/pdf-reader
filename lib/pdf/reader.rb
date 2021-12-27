@@ -112,17 +112,25 @@ module PDF
     #
     #   reader = PDF::Reader.new("somefile.pdf", :password => "apples")
     #
+    # Using this method directly is supported, but it's more common to use
+    # `PDF::Reader.open`
+    #
     def initialize(input, opts = {})
       @cache   = PDF::Reader::ObjectCache.new
       opts.merge!(:cache => @cache)
       @objects = PDF::Reader::ObjectHash.new(input, opts)
     end
 
+    # Return a Hash with some basic information about the PDF file
+    #
     def info
       dict = @objects.deref(@objects.trailer[:Info])
       doc_strings_to_utf8(dict)
     end
 
+    # Return a Hash with extra metadata provided by the author of the PDF file. Not
+    # always present.
+    #
     def metadata
       stream = @objects.deref(root[:Metadata])
       if stream.nil?
@@ -134,6 +142,8 @@ module PDF
       end
     end
 
+    # To number of pages in this PDF
+    #
     def page_count
       pages = @objects.deref(root[:Pages])
       unless pages.kind_of?(::Hash)
@@ -142,12 +152,14 @@ module PDF
       @page_count ||= @objects.deref(pages[:Count])
     end
 
+    # The PDF version this file uses
+    #
     def pdf_version
       @objects.pdf_version
     end
 
-    # syntactic sugar for opening a PDF file. Accepts the same arguments
-    # as new().
+    # syntactic sugar for opening a PDF file and the most common approach. Accepts the
+    # same arguments as new().
     #
     #   PDF::Reader.open("somefile.pdf") do |reader|
     #     puts reader.pdf_version
