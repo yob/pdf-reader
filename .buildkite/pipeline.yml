@@ -71,11 +71,10 @@ steps:
       RUBY_VERSION: "3.0"
 
   - command: "auto/run-specs"
-    label: "rspec (3.1-preview1)"
+    label: "rspec (3.1)"
     env:
       DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "3.1.0-preview1"
-    soft_fail: true
+      RUBY_VERSION: "3.1"
 
   - command: "auto/run-specs"
     label: "rspec (jruby-9.1)"
