@@ -1,3 +1,11 @@
+v2.8.0 (XXX)
+- Add PDF::Reader::Page#runs for extracting text from a page with positioning metadata (http://github.com/yob/pdf-reader/pull/411)
+- Add options to PDF::Reader::Page#text to make some behaviour configurable (http://github.com/yob/pdf-reader/pull/411)
+    - including extracting the text for only part of the page
+- Improve text positioning and extraction for Type3 fonts (http://github.com/yob/pdf-reader/pull/412)
+- Skip extracting text that is positioned outside the page (http://github.com/yob/pdf-reader/pull/413)
+- Fix occasional crash when reading some streams (http://github.com/yob/pdf-reader/pull/405)
+
 v2.7.0 (13th December 2021)
 - Include RBI type files in the gem
   - Downstream users of pdf-reader who also use sorbet *should* find many parts of the API will
