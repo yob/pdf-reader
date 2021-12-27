@@ -101,12 +101,23 @@ module PDF
       # returns the plain text content of this page encoded as UTF-8. Any
       # characters that can't be translated will be returned as a ▯
       #
-      def text
+      def text(opts = {})
         receiver = PageTextReceiver.new
         walk(receiver)
-        receiver.content
+        runs = receiver.runs(opts)
+
+        # rectangles[:MediaBox] can never be nil, but I have no easy way to tell sorbet that atm
+        mediabox = rectangles[:MediaBox] || Rectangle.new(0, 0, 0, 0)
+
+        PageLayout.new(runs, mediabox).to_s
       end
       alias :to_s :text
+
+      def runs(opts = {})
+        receiver = PageTextReceiver.new
+        walk(receiver)
+        receiver.runs(opts)
+      end
 
       # processes the raw content stream for this page in sequential order and
       # passes callbacks to the receiver objects.
