@@ -1,4 +1,4 @@
-v2.8.0 (XXX)
+v2.8.0 (28th Decemeber 2021)
 - Add PDF::Reader::Page#runs for extracting text from a page with positioning metadata (http://github.com/yob/pdf-reader/pull/411)
 - Add options to PDF::Reader::Page#text to make some behaviour configurable (http://github.com/yob/pdf-reader/pull/411)
     - including extracting the text for only part of the page
