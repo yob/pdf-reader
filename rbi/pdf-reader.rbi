@@ -1110,7 +1110,10 @@ module PDF
           y: Numeric,
         ).void
       end
-      def initialize(x, y); end
+      def initialize(x, y)
+        @x = T.let(0, Numeric)
+        @y = T.let(0, Numeric)
+      end
 
       sig { returns(Numeric) }
       def x; end
@@ -1138,6 +1141,7 @@ module PDF
     end
 
     class Rectangle
+
       sig { params(arr: T::Array[Numeric]).returns(PDF::Reader::Rectangle) }
       def self.from_array(arr); end
 
@@ -1149,7 +1153,13 @@ module PDF
           y2: Numeric
         ).void
       end
-      def initialize(x1, y1, x2, y2); end
+
+      def initialize(x1, y1, x2, y2)
+        @bottom_left = T.let(PDF::Reader::Point.new(0,0), PDF::Reader::Point)
+        @bottom_right = T.let(PDF::Reader::Point.new(0,0), PDF::Reader::Point)
+        @top_left = T.let(PDF::Reader::Point.new(0,0), PDF::Reader::Point)
+        @top_right = T.let(PDF::Reader::Point.new(0,0), PDF::Reader::Point)
+      end
 
       sig { returns(PDF::Reader::Point) }
       def bottom_left; end
@@ -1174,6 +1184,15 @@ module PDF
 
       sig { params(degrees: Integer).void }
       def apply_rotation(degrees); end
+
+      sig { params(point: PDF::Reader::Point).void }
+      def contains?(point); end
+
+      sig { params(other: PDF::Reader::Rectangle).void }
+      def ==(other); end
+
+      sig { params(x1: Numeric, y1: Numeric, x2: Numeric, y2: Numeric).void }
+      def set_corners(x1, y1, x2, y2); end
     end
 
     class Reference

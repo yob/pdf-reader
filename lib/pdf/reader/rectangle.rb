@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 module PDF
@@ -85,7 +85,7 @@ module PDF
           new_x2 = bottom_left.x
           new_y2 = bottom_left.y + width
         end
-        set_corners(new_x1, new_y1, new_x2, new_y2)
+        set_corners(new_x1 || 0, new_y1 || 0, new_x2 || 0, new_y2 || 0)
       end
 
       private
