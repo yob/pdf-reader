@@ -1111,8 +1111,8 @@ module PDF
         ).void
       end
       def initialize(x, y)
-        @x = T.let(0, Numeric)
-        @y = T.let(0, Numeric)
+        @x = T.let(T.unsafe(nil), Numeric)
+        @y = T.let(T.unsafe(nil), Numeric)
       end
 
       sig { returns(Numeric) }
@@ -1155,10 +1155,10 @@ module PDF
       end
 
       def initialize(x1, y1, x2, y2)
-        @bottom_left = T.let(PDF::Reader::Point.new(0,0), PDF::Reader::Point)
-        @bottom_right = T.let(PDF::Reader::Point.new(0,0), PDF::Reader::Point)
-        @top_left = T.let(PDF::Reader::Point.new(0,0), PDF::Reader::Point)
-        @top_right = T.let(PDF::Reader::Point.new(0,0), PDF::Reader::Point)
+        @bottom_left = T.let(T.unsafe(nil), PDF::Reader::Point)
+        @bottom_right = T.let(T.unsafe(nil), PDF::Reader::Point)
+        @top_left = T.let(T.unsafe(nil), PDF::Reader::Point)
+        @top_right = T.let(T.unsafe(nil), PDF::Reader::Point)
       end
 
       sig { returns(PDF::Reader::Point) }
