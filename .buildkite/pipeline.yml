@@ -5,6 +5,12 @@ steps:
       DOCKER_IMAGE: "ruby"
       RUBY_VERSION: "2.7"
 
+  - command: "auto/run-require-strict-typing"
+    label: "typed: strict"
+    env:
+      DOCKER_IMAGE: "ruby"
+      RUBY_VERSION: "2.7"
+
   - command: "auto/run-quality"
     label: "quality"
     env:
