@@ -1,4 +1,6 @@
 # coding: utf-8
+# typed: strict
+# frozen_string_literal: true
 
 class PDF::Reader
   # Examines the Encrypt entry of a PDF trailer (if any) and returns an object that's

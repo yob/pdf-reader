@@ -43,6 +43,27 @@ module PDF
     sig { returns(T::Hash[Symbol, T.untyped]) }
     def root; end
 
+    class AesV2SecurityHandler
+      sig { params(key: String).void }
+      def initialize(key)
+        @encrypt_key = T.let(T.unsafe(nil), String)
+      end
+
+      sig { params(buf: String, ref: PDF::Reader::Reference).returns(String) }
+      def decrypt(buf, ref); end
+    end
+
+    class AesV3SecurityHandler
+      sig { params(key: String).void }
+      def initialize(key)
+        @encrypt_key = T.let(T.unsafe(nil), String)
+        @cipher = T.let(T.unsafe(nil), String)
+      end
+
+      sig { params(buf: String, ref: PDF::Reader::Reference).returns(String) }
+      def decrypt(buf, ref); end
+    end
+
     class BoundingRectangleRunsFilter
       sig { params(runs: T::Array[PDF::Reader::TextRun], rect: PDF::Reader::Rectangle).returns(T::Array[PDF::Reader::TextRun]) }
       def self.runs_within_rect(runs, rect); end
@@ -449,6 +470,26 @@ module PDF
       def load_adobe_glyph_mapping; end
     end
 
+    class KeyBuilderV5
+      sig { params(opts: T::Hash[Symbol, String]).void }
+      def initialize(opts = {})
+        @key_length = T.let(T.unsafe(nil), Integer)
+        @owner_key = T.let(T.unsafe(nil), String)
+        @user_key = T.let(T.unsafe(nil), String)
+        @owner_encryption_key = T.let(T.unsafe(nil), String)
+        @user_encryption_key = T.let(T.unsafe(nil), String)
+      end
+
+      sig { params(pass: String).returns(String) }
+      def key(pass); end
+
+      sig { params(password: T.untyped).returns(T.untyped) }
+      def auth_owner_pass(password); end
+
+      sig { params(password: T.untyped).returns(T.untyped) }
+      def auth_user_pass(password); end
+    end
+
     class LZW
       CODE_EOD = 257
       CODE_CLEAR_TABLE = 256
@@ -486,9 +527,6 @@ module PDF
     end
 
     class NullSecurityHandler
-      sig { params(encrypt: T.untyped).returns(T.untyped) }
-      def self.supports?(encrypt); end
-
       sig { params(buf: T.untyped, _ref: T.untyped).returns(T.untyped) }
       def decrypt(buf, _ref); end
     end
@@ -640,9 +678,6 @@ module PDF
 
       sig { params(key: T.untyped, seen: T.untyped).returns(T.untyped) }
       def deref_internal!(key, seen); end
-
-      sig { params(opts: T.untyped).returns(T.untyped) }
-      def build_security_handler(opts = {}); end
 
       sig { params(ref: T.untyped, obj: T.untyped).returns(T.untyped) }
       def decrypt(ref, obj); end
@@ -1131,6 +1166,16 @@ module PDF
       def method_missing(methodname, *args); end
     end
 
+    class Rc4SecurityHandler
+      sig { params(key: String).void }
+      def initialize(key)
+        @encrypt_key = T.let(T.unsafe(nil), String)
+      end
+
+      sig { params(buf: T.untyped, ref: T.untyped).returns(T.untyped) }
+      def decrypt(buf, ref); end
+    end
+
     class Rectangle
 
       sig { params(arr: T::Array[Numeric]).returns(PDF::Reader::Rectangle) }
@@ -1269,50 +1314,34 @@ module PDF
       def xobjects; end
     end
 
-    class StandardSecurityHandler
+    class SecurityHandlerFactory
+      sig { params(encrypt: T.untyped, doc_id: T.untyped, password: T.untyped).returns(T.untyped) }
+      def self.build(encrypt, doc_id, password); end
+
+      sig { params(encrypt: T.untyped, doc_id: T.untyped, password: T.untyped).returns(T.untyped) }
+      def self.build_standard_handler(encrypt, doc_id, password); end
+
+      sig { params(encrypt: T.untyped, doc_id: T.untyped, password: T.untyped).returns(T.untyped) }
+      def self.build_v5_handler(encrypt, doc_id, password); end
+
+      sig { params(encrypt: T.untyped).returns(T.untyped) }
+      def self.standard?(encrypt); end
+
+      sig { params(encrypt: T.untyped).returns(T.untyped) }
+      def self.standard_v5?(encrypt); end
+    end
+
+    class StandardKeyBuilder
       PassPadBytes = [ 0x28, 0xbf, 0x4e, 0x5e, 0x4e, 0x75, 0x8a, 0x41,
                      0x64, 0x00, 0x4e, 0x56, 0xff, 0xfa, 0x01, 0x08,
                      0x2e, 0x2e, 0x00, 0xb6, 0xd0, 0x68, 0x3e, 0x80,
                      0x2f, 0x0c, 0xa9, 0xfe, 0x64, 0x53, 0x69, 0x7a ]
 
-      sig { returns(T.untyped) }
-      attr_reader :key_length
-
-      sig { returns(T.untyped) }
-      attr_reader :revision
-
-      sig { returns(T.untyped) }
-      attr_reader :encrypt_key
-
-      sig { returns(T.untyped) }
-      attr_reader :owner_key
-
-      sig { returns(T.untyped) }
-      attr_reader :user_key
-
-      sig { returns(T.untyped) }
-      attr_reader :permissions
-
-      sig { returns(T.untyped) }
-      attr_reader :file_id
-
-      sig { returns(T.untyped) }
-      attr_reader :password
-
-      sig { params(opts: T.untyped).void }
+      sig { params(opts: T::Hash[Symbol, T.untyped]).void }
       def initialize(opts = {}); end
 
-      sig { params(encrypt: T.untyped).returns(T.untyped) }
-      def self.supports?(encrypt); end
-
-      sig { params(buf: T.untyped, ref: T.untyped).returns(T.untyped) }
-      def decrypt(buf, ref); end
-
-      sig { params(buf: T.untyped, ref: T.untyped).returns(T.untyped) }
-      def decrypt_rc4(buf, ref); end
-
-      sig { params(buf: T.untyped, ref: T.untyped).returns(T.untyped) }
-      def decrypt_aes128(buf, ref); end
+      sig { params(pass: String).returns(String) }
+      def key(pass); end
 
       sig { params(p: T.untyped).returns(T.untyped) }
       def pad_pass(p = ""); end
@@ -1328,35 +1357,6 @@ module PDF
 
       sig { params(user_pass: T.untyped).returns(T.untyped) }
       def make_file_key(user_pass); end
-
-      sig { params(pass: T.untyped).returns(T.untyped) }
-      def build_standard_key(pass); end
-    end
-
-    class StandardSecurityHandlerV5
-      sig { returns(T.untyped) }
-      attr_reader :key_length
-
-      sig { returns(T.untyped) }
-      attr_reader :encrypt_key
-
-      sig { params(opts: T.untyped).void }
-      def initialize(opts = {}); end
-
-      sig { params(encrypt: T.untyped).returns(T.untyped) }
-      def self.supports?(encrypt); end
-
-      sig { params(buf: T.untyped, ref: T.untyped).returns(T.untyped) }
-      def decrypt(buf, ref); end
-
-      sig { params(password: T.untyped).returns(T.untyped) }
-      def auth_owner_pass(password); end
-
-      sig { params(password: T.untyped).returns(T.untyped) }
-      def auth_user_pass(password); end
-
-      sig { params(pass: T.untyped).returns(T.untyped) }
-      def build_standard_key(pass); end
     end
 
     class Stream
