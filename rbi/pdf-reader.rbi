@@ -44,8 +44,6 @@ module PDF
     def root; end
 
     class BoundingRectangleRunsFilter
-      extend T::Sig
-
       sig { params(runs: T::Array[PDF::Reader::TextRun], rect: PDF::Reader::Rectangle).returns(T::Array[PDF::Reader::TextRun]) }
       def self.runs_within_rect(runs, rect); end
     end
@@ -124,8 +122,6 @@ module PDF
     end
 
     class CidWidths
-      extend Forwardable
-
       sig { params(default: T.untyped, array: T.untyped).void }
       def initialize(default, array); end
 
@@ -140,7 +136,6 @@ module PDF
     end
 
     class CMap
-      extend T::Sig
       CMAP_KEYWORDS = {
       "begincodespacerange" => 1,
       "endcodespacerange" => 1,
@@ -695,7 +690,6 @@ module PDF
     end
 
     class OverlappingRunsFilter
-      extend T::Sig
       OVERLAPPING_THRESHOLD = 0.5
 
       sig { params(runs: T::Array[PDF::Reader::TextRun]).returns(T::Array[PDF::Reader::TextRun]) }
@@ -706,8 +700,6 @@ module PDF
     end
 
     class EventPoint
-      extend T::Sig
-
       sig { returns(Numeric) }
       attr_reader :x
 
@@ -801,7 +793,6 @@ module PDF
     end
 
     class PageLayout
-      extend T::Sig
       DEFAULT_FONT_SIZE = 12
 
       sig { params(runs: T::Array[PDF::Reader::TextRun], mediabox: T.any(T::Array[Numeric], PDF::Reader::Rectangle)).void }
@@ -1395,7 +1386,6 @@ module PDF
 
     class TextRun
       include Comparable
-      extend T::Sig
 
       sig { returns(T.untyped) }
       attr_reader :x
@@ -1627,8 +1617,6 @@ module PDF
     end
 
     class ZeroWidthRunsFilter
-      extend T::Sig
-
       sig { params(runs: T::Array[PDF::Reader::TextRun]).returns(T::Array[PDF::Reader::TextRun]) }
       def self.exclude_zero_width_runs(runs); end
     end
@@ -1638,8 +1626,6 @@ module PDF
       def self.with(name, options = {}); end
 
       class Ascii85
-        extend T::Sig
-
         sig { params(options: T.untyped).void }
         def initialize(options = {}); end
 
@@ -1648,8 +1634,6 @@ module PDF
       end
 
       class AsciiHex
-        extend T::Sig
-
         sig { params(options: T.untyped).void }
         def initialize(options = {}); end
 
@@ -1658,8 +1642,6 @@ module PDF
       end
 
       class Depredict
-        extend T::Sig
-
         sig { params(options: T.untyped).void }
         def initialize(options = {}); end
 
@@ -1674,7 +1656,6 @@ module PDF
       end
 
       class Flate
-        extend T::Sig
         ZLIB_AUTO_DETECT_ZLIB_OR_GZIP = 47
         ZLIB_RAW_DEFLATE = -15
 
@@ -1689,8 +1670,6 @@ module PDF
       end
 
       class Lzw
-        extend T::Sig
-
         sig { params(options: T.untyped).void }
         def initialize(options = {}); end
 
@@ -1707,8 +1686,6 @@ module PDF
       end
 
       class RunLength
-        extend T::Sig
-
         sig { params(options: T.untyped).void }
         def initialize(options = {}); end
 
