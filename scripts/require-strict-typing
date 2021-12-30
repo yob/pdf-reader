@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+sha_that_introduced_sorbet = 'feb9203'
+
+raw_files_added = `git diff --numstat --diff-filter=A #{sha_that_introduced_sorbet} HEAD -- lib/`
+
+just_files_added = raw_files_added.split("\n").map { |line|
+  line.split(/\s+/).last
+}
+
+files_added_without_strict_typing = just_files_added.reject { |path|
+  File.read(path).include?("typed: strict")
+}
+
+if files_added_without_strict_typing.any?
+  $stderr.puts "The following source files added since #{sha_that_introduced_sorbet} need 'typed: strict' added:'"
+  files_added_without_strict_typing.each do |path|
+    $stderr.puts "- #{path}"
+  end
+  exit 1
+else
+  puts "All source files added since #{sha_that_introduced_sorbet} have strict typing"
+end

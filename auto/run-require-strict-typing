@@ -1,0 +1,5 @@
+#! /bin/bash -eu
+#
+# Confirm recent ruby files use strict typing
+
+$(dirname $0)/with-ruby ./scripts/require-strict-typing 
