@@ -488,6 +488,18 @@ module PDF
 
       sig { params(password: T.untyped).returns(T.untyped) }
       def auth_user_pass(password); end
+
+      sig { params(password: String).returns(T.nilable(String)) }
+      def auth_owner_pass_r6(password); end
+
+      sig { params(password: String).returns(T.nilable(String)) }
+      def auth_user_pass_r6(password); end
+
+      sig { params(password: String, salt: String, user_key: String).returns(String)}
+      def r6_digest(password, salt, user_key = ''); end
+
+      sig { params(str: String).returns(Integer)}
+      def unpack_128bit_bigendian_int(str); end
     end
 
     class LZW
