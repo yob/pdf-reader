@@ -827,22 +827,45 @@ describe PDF::Reader, "integration specs" do
     context "with the user pass" do
       let(:pass) { "apples" }
 
-      # TODO: remove this spec
-      it "raises UnsupportedFeatureError" do
-        expect {
-          PDF::Reader.open(filename, :password => pass) do |reader|
-            reader.page(1).text
-          end
-        }.to raise_error(PDF::Reader::EncryptedPDFError)
+      it "correctly extracts text" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.page(1).text).to start_with(
+            "This sample file is encrypted with a user password"
+          )
+        end
       end
-
-      it "correctly extracts text"
-      it "correctly extracts info"
+      it "correctly extracts info" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.info).to eq(
+            :Creator=>"Writer",
+            :Producer=>"LibreOffice 3.3",
+            :CreationDate=>"D:20110814231057+10'00'",
+            :ModDate=>"D:20170115224358+11'00'"
+          )
+        end
+      end
     end
 
     context "with the owner pass" do
-      it "correctly extracts text"
-      it "correctly extracts info"
+      let(:pass) { "password" }
+
+      it "correctly extracts text" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.page(1).text).to start_with(
+            "This sample file is encrypted with a user password"
+          )
+        end
+      end
+      it "correctly extracts info" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.info).to eq(
+            :Creator=>"Writer",
+            :Producer=>"LibreOffice 3.3",
+            :CreationDate=>"D:20110814231057+10'00'",
+            :ModDate=>"D:20170115224358+11'00'"
+          )
+        end
+      end
     end
   end
 
@@ -854,22 +877,46 @@ describe PDF::Reader, "integration specs" do
     context "with the user pass" do
       let(:pass) { "apples" }
 
-      # TODO: remove this spec
-      it "raises UnsupportedFeatureError" do
-        expect {
-          PDF::Reader.open(filename, :password => pass) do |reader|
-            reader.page(1).text
-          end
-        }.to raise_error(PDF::Reader::EncryptedPDFError)
+      it "correctly extracts text" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.page(1).text).to start_with(
+            "This sample file is encrypted with a user password"
+          )
+        end
       end
 
-      it "correctly extracts text"
-      it "correctly extracts info"
+      it "correctly extracts info" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.info).to eq(
+            :Creator=>"Writer",
+            :Producer=>"LibreOffice 3.3",
+            :CreationDate=>"D:20110814231057+10'00'",
+            :ModDate=>"D:20170115224526+11'00'"
+          )
+        end
+      end
     end
 
     context "with the owner pass" do
-      it "correctly extracts text"
-      it "correctly extracts info"
+      let(:pass) { "password" }
+
+      it "correctly extracts text" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.page(1).text).to start_with(
+            "This sample file is encrypted with a user password"
+          )
+        end
+      end
+      it "correctly extracts info" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.info).to eq(
+            :Creator=>"Writer",
+            :Producer=>"LibreOffice 3.3",
+            :CreationDate=>"D:20110814231057+10'00'",
+            :ModDate=>"D:20170115224526+11'00'"
+          )
+        end
+      end
     end
   end
 

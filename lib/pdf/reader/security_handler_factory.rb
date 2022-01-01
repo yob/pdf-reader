@@ -62,7 +62,9 @@ class PDF::Reader
         (version <= 3 || (version == 4 && ((algorithm == :V2) || (algorithm == :AESV2))))
     end
 
-    # This handler supports AES-256 encryption defined in PDF 1.7 Extension Level 3
+    # This handler supports both
+    # - AES-256 encryption defined in PDF 1.7 Extension Level 3 ('revision 5')
+    # - AES-256 encryption defined in PDF 2.0 ('revision 6')
     def self.standard_v5?(encrypt)
       return false if encrypt.nil?
 
@@ -71,9 +73,7 @@ class PDF::Reader
       revision = encrypt.fetch(:R, 0)
       algorithm = encrypt.fetch(:CF, {}).fetch(encrypt[:StmF], {}).fetch(:CFM, nil)
       (filter == :Standard) && (encrypt[:StmF] == encrypt[:StrF]) &&
-          ((version == 5) && (revision == 5) && (algorithm == :AESV3))
+          ((version == 5) && (revision == 5 || revision == 6) && (algorithm == :AESV3))
     end
-
-
   end
 end
