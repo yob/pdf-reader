@@ -1771,7 +1771,67 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
-  context "PDF with glyphs positioned outside the MediaBox" do
-    it "skips the characteers off the page"
+  context "PDF with text outside the CropBox and MediaBox" do
+    let(:filename) { pdf_spec_file("text_outside_cropbox_and_mediabox") }
+
+    it "returns the correct rectangles for the page 1" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.rectangles[:MediaBox]).to eq(PDF::Reader::Rectangle.new(0, 0, 612, 792))
+        expect(page.rectangles[:CropBox]).to eq(PDF::Reader::Rectangle.new(100, 100, 412, 592))
+      end
+    end
+
+    it "by default only extracts text inside the CropBox" do
+      PDF::Reader.open(filename) do |reader|
+        text = reader.page(1).text
+        expect(text).to include("This text is inside the CropBox")
+        expect(text).to_not include("Between CropBox and MediaBox")
+        expect(text).to_not include("Outside MediaBox")
+      end
+    end
+
+    it "by default only extracts runs inside the CropBox" do
+      PDF::Reader.open(filename) do |reader|
+        text_from_runs = reader.page(1).runs.map(&:text).join(" ")
+        expect(text_from_runs).to include("This text is inside the CropBox")
+        expect(text_from_runs).to_not include("Between CropBox and MediaBox")
+        expect(text_from_runs).to_not include("Outside MediaBox")
+      end
+    end
+
+    it "can extract text between CropBox and MediaBox with a custom option" do
+      PDF::Reader.open(filename) do |reader|
+        text = reader.page(1).text(rect: PDF::Reader::Rectangle.new(0, 0, 612, 792))
+        expect(text).to include("This text is inside the CropBox")
+        expect(text).to include("Between CropBox and MediaBox")
+        expect(text).to_not include("Outside MediaBox")
+      end
+    end
+
+    it "can extract runs between CropBox and MediaBox with a custom option" do
+      mediabox = PDF::Reader::Rectangle.new(0, 0, 612, 792)
+      PDF::Reader.open(filename) do |reader|
+        text_from_runs = reader.page(1).runs(rect: mediabox).map(&:text).join(" ")
+        expect(text_from_runs).to include("This text is inside the CropBox")
+        expect(text_from_runs).to include("Between CropBox and MediaBox")
+        expect(text_from_runs).to_not include("Outside MediaBox")
+      end
+    end
+
+    # This currently doesn't work - PDF::Reader::PageLayout skips text that's outside the MediaBox
+    # I'm not sure we want it to work either, but I'm adding it as a pending spec for completeness
+    # while I consider the best options
+    it "can extract text outside the MediaBox with a custom option"
+
+    it "can extract runs outside the MediaBox with a custom option" do
+      larger_than_mediabox = PDF::Reader::Rectangle.new(0, 0, 900, 900)
+      PDF::Reader.open(filename) do |reader|
+        text_from_runs = reader.page(1).runs(rect: larger_than_mediabox).map(&:text).join(" ")
+        expect(text_from_runs).to include("This text is inside the CropBox")
+        expect(text_from_runs).to include("Between CropBox and MediaBox")
+        expect(text_from_runs).to include("Outside MediaBox")
+      end
+    end
   end
 end

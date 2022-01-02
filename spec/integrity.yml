@@ -386,6 +386,9 @@ data/surrogate_pair_integration_sample.pdf:
 data/symbol.pdf:
   :bytes: 1055
   :md5: 57941286e6442f5c0b295611a99e0f56
+data/text_outside_cropbox_and_mediabox.pdf:
+  :bytes: 1388
+  :md5: 853edffb3c14d2e223e6f895e503097c
 data/textwrapcr.pdf:
   :bytes: 739
   :md5: 9700990dd8adb5d2bb83fc5f4af5c2ae

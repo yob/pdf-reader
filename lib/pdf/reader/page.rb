@@ -186,7 +186,7 @@ module PDF
       #
       def rectangles
         mediabox = objects.deref!(attributes[:MediaBox])
-        cropbox = objects.deref!(attributes[:Cropbox]) || mediabox
+        cropbox = objects.deref!(attributes[:CropBox]) || mediabox
         bleedbox = objects.deref!(attributes[:BleedBox]) || cropbox
         trimbox = objects.deref!(attributes[:TrimBox]) || cropbox
         artbox = objects.deref!(attributes[:ArtBox]) || cropbox
