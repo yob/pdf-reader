@@ -709,7 +709,7 @@ module PDF
       sig { returns(T.untyped) }
       def object_streams; end
 
-      sig { params(ref: T.untyped).returns(T.untyped) }
+      sig { params(ref: PDF::Reader::Reference).returns(T::Array[PDF::Reader::Reference]) }
       def get_page_objects(ref); end
 
       sig { returns(T.untyped) }
@@ -1044,8 +1044,8 @@ module PDF
       sig { returns(T.untyped) }
       def content; end
 
-      sig { params(string: T.untyped).returns(T.untyped) }
-      def show_text(string); end
+      sig { params(string: T.untyped, args: T::Array[T.untyped]).returns(T.untyped) }
+      def show_text(string, *args); end
 
       sig { params(params: T.untyped).returns(T.untyped) }
       def show_text_with_positioning(params); end

@@ -15,6 +15,9 @@ class PDF::Reader
                 :x_height, :font_flags
 
     def initialize(ohash, fd_hash)
+      PDF::Reader::Error.validate_type_as_malformed(ohash, "Object hash", PDF::Reader::ObjectHash)
+      PDF::Reader::Error.validate_type_as_malformed(fd_hash, "Font descriptor", ::Hash)
+
       @ascent                = ohash.object(fd_hash[:Ascent])    || 0
       @descent               = ohash.object(fd_hash[:Descent])   || 0
       @missing_width         = ohash.object(fd_hash[:MissingWidth]) || 0

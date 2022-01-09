@@ -79,7 +79,7 @@ module PDF
       # Text Showing Operators
       #####################################################
       # record text that is drawn on the page
-      def show_text(string) # Tj (AWAY)
+      def show_text(string, *args) # Tj (AWAY)
         internal_show_text(string)
       end
 
@@ -119,6 +119,7 @@ module PDF
       private
 
       def internal_show_text(string)
+        PDF::Reader::Error.validate_type_as_malformed(string, "string", String)
         if @state.current_font.nil?
           raise PDF::Reader::MalformedPDFError, "current font is invalid"
         end

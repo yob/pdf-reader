@@ -42,7 +42,9 @@ class PDF::Reader
     # returned untouched. At this stage PDF::Reader has no need to decode images.
     #
     def self.with(name, options = {})
-      case name.to_sym
+      PDF::Reader::Error.validate_type_as_malformed(name, "filter name", Symbol)
+
+      case name
       when :ASCII85Decode   then PDF::Reader::Filter::Ascii85.new(options)
       when :ASCIIHexDecode  then PDF::Reader::Filter::AsciiHex.new(options)
       when :CCITTFaxDecode  then PDF::Reader::Filter::Null.new(options)

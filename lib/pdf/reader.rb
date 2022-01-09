@@ -150,6 +150,7 @@ module PDF
         raise MalformedPDFError, "Pages structure is missing #{pages.class}"
       end
       @page_count ||= @objects.deref(pages[:Count])
+      @page_count ||= 0
     end
 
     # The PDF version this file uses
@@ -190,6 +191,8 @@ module PDF
     # methods available on each page
     #
     def pages
+      return [] if page_count <= 0
+
       (1..self.page_count).map do |num|
         begin
           PDF::Reader::Page.new(@objects, num, :cache => @cache)

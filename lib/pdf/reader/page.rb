@@ -200,11 +200,15 @@ module PDF
         trimbox = objects.deref!(attributes[:TrimBox]) || cropbox
         artbox = objects.deref!(attributes[:ArtBox]) || cropbox
 
-        mediarect = Rectangle.new(*mediabox)
-        croprect = Rectangle.new(*cropbox)
-        bleedrect = Rectangle.new(*bleedbox)
-        trimrect = Rectangle.new(*trimbox)
-        artrect = Rectangle.new(*artbox)
+        begin
+          mediarect = Rectangle.new(*mediabox)
+          croprect = Rectangle.new(*cropbox)
+          bleedrect = Rectangle.new(*bleedbox)
+          trimrect = Rectangle.new(*trimbox)
+          artrect = Rectangle.new(*artbox)
+        rescue ArgumentError => e
+          raise MalformedPDFError, e.message
+        end
 
         if rotate > 0
           mediarect.apply_rotation(rotate)
@@ -270,6 +274,7 @@ module PDF
           []
         else
           obj = objects.deref(origin)
+          PDF::Reader::Error.validate_type_as_malformed(obj, "Page object", Hash)
           [ select_inheritable(obj) ] + ancestors(obj[:Parent])
         end
       end

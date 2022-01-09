@@ -348,7 +348,11 @@ class PDF::Reader
       if obj[:Type] == :Page
         ref
       elsif obj[:Kids]
-        deref(obj[:Kids]).map { |kid| get_page_objects(kid) }
+        kids = deref(obj[:Kids])
+        PDF::Reader::Error.validate_type_as_malformed(kids, "kids", Array)
+        kids.map { |kid| get_page_objects(kid) }
+      else
+        raise MalformedPDFError, "Kids entry missing"
       end
     end
 
