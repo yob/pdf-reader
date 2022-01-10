@@ -103,7 +103,7 @@ class PDF::Reader
       obj = parse_token
       post_obj = parse_token
 
-      if post_obj == "stream"
+      if obj.is_a?(Hash) && post_obj == "stream"
         stream(obj)
       else
         obj

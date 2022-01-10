@@ -143,7 +143,7 @@ class PDF::Reader
         params << buf.token
       end
 
-      trailer = Parser.new(buf, self).parse_token
+      trailer = Parser.new(buf).parse_token
 
       unless trailer.kind_of?(Hash)
         raise MalformedPDFError, "PDF malformed, trailer should be a dictionary"
