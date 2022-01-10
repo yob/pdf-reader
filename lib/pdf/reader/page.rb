@@ -43,7 +43,7 @@ module PDF
       #
       def initialize(objects, pagenum, options = {})
         @objects, @pagenum = objects, pagenum
-        @page_object = objects.deref(objects.page_references[pagenum - 1])
+        @page_object = objects.deref_hash(objects.page_references[pagenum - 1])
         @cache       = options[:cache] || {}
 
         unless @page_object.is_a?(::Hash)
@@ -69,7 +69,7 @@ module PDF
       def attributes
         @attributes ||= {}.tap { |hash|
           page_with_ancestors.reverse.each do |obj|
-            hash.merge!(@objects.deref(obj))
+            hash.merge!(@objects.deref_hash(obj) || {})
           end
         }
         # This shouldn't be necesary, but some non compliant PDFs leave MediaBox
@@ -160,10 +160,10 @@ module PDF
       # see here unless you're a PDF nerd like me.
       #
       def raw_content
-        contents = objects.deref(@page_object[:Contents])
+        contents = objects.deref_stream_or_array(@page_object[:Contents])
         [contents].flatten.compact.map { |obj|
-          objects.deref(obj)
-        }.map { |obj|
+          objects.deref_stream(obj)
+        }.compact.map { |obj|
           obj.unfiltered_data
         }.join(" ")
       end
@@ -194,18 +194,19 @@ module PDF
       # values are defaulted according to section 7.7.3.3 of the PDF Spec 1.7
       #
       def rectangles
-        mediabox = objects.deref!(attributes[:MediaBox])
-        cropbox = objects.deref!(attributes[:CropBox]) || mediabox
-        bleedbox = objects.deref!(attributes[:BleedBox]) || cropbox
-        trimbox = objects.deref!(attributes[:TrimBox]) || cropbox
-        artbox = objects.deref!(attributes[:ArtBox]) || cropbox
+        # attributes[:MediaBox] can never be nil, but I have no easy way to tell sorbet that atm
+        mediabox = objects.deref_array_of_numbers(attributes[:MediaBox]) || []
+        cropbox = objects.deref_array_of_numbers(attributes[:CropBox]) || mediabox
+        bleedbox = objects.deref_array_of_numbers(attributes[:BleedBox]) || cropbox
+        trimbox = objects.deref_array_of_numbers(attributes[:TrimBox]) || cropbox
+        artbox = objects.deref_array_of_numbers(attributes[:ArtBox]) || cropbox
 
         begin
-          mediarect = Rectangle.new(*mediabox)
-          croprect = Rectangle.new(*cropbox)
-          bleedrect = Rectangle.new(*bleedbox)
-          trimrect = Rectangle.new(*trimbox)
-          artrect = Rectangle.new(*artbox)
+          mediarect = Rectangle.from_array(mediabox)
+          croprect = Rectangle.from_array(cropbox)
+          bleedrect = Rectangle.from_array(bleedbox)
+          trimrect = Rectangle.from_array(trimbox)
+          artrect = Rectangle.from_array(artbox)
         rescue ArgumentError => e
           raise MalformedPDFError, e.message
         end
@@ -230,14 +231,14 @@ module PDF
       private
 
       def root
-       @root ||= objects.deref(@objects.trailer[:Root])
+        @root ||= objects.deref_hash(@objects.trailer[:Root]) || {}
       end
 
       # Returns the resources that accompany this page. Includes
       # resources inherited from parents.
       #
       def resources
-        @resources ||= Resources.new(@objects, @objects.deref(attributes[:Resources]) || {})
+        @resources ||= Resources.new(@objects, @objects.deref_hash(attributes[:Resources]) || {})
       end
 
       def content_stream(receivers, instructions)
@@ -273,8 +274,8 @@ module PDF
         if origin.nil?
           []
         else
-          obj = objects.deref(origin)
-          PDF::Reader::Error.validate_type_as_malformed(obj, "Page object", Hash)
+          obj = objects.deref_hash(origin)
+          PDF::Reader::Error.validate_not_nil_as_malformed(obj, "parent")
           [ select_inheritable(obj) ] + ancestors(obj[:Parent])
         end
       end

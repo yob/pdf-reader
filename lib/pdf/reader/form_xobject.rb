@@ -32,7 +32,7 @@ module PDF
         @page    = page
         @objects = page.objects
         @cache   = options[:cache] || {}
-        @xobject = @objects.deref(xobject)
+        @xobject = @objects.deref_stream(xobject)
       end
 
       # return a hash of fonts used on this form.
@@ -43,9 +43,9 @@ module PDF
       # to most available metrics for each font.
       #
       def font_objects
-        raw_fonts = @objects.deref(fonts)
+        raw_fonts = @objects.deref_hash(fonts)
         ::Hash[raw_fonts.map { |label, font|
-          [label, PDF::Reader::Font.new(@objects, @objects.deref(font))]
+          [label, PDF::Reader::Font.new(@objects, @objects.deref_hash(font))]
         }]
       end
 
@@ -70,7 +70,7 @@ module PDF
       # Returns the resources that accompany this form.
       #
       def resources
-        @resources ||= Resources.new(@objects, @objects.deref(@xobject.hash[:Resources]) || {})
+        @resources ||= Resources.new(@objects, @objects.deref_hash(@xobject.hash[:Resources]) || {})
       end
 
       def callback(receivers, name, params=[])

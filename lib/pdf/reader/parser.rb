@@ -209,9 +209,9 @@ class PDF::Reader
     def stream(dict)
       raise MalformedPDFError, "PDF malformed, missing stream length" unless dict.has_key?(:Length)
       if @objects
-        length = @objects.deref(dict[:Length])
+        length = @objects.deref_integer(dict[:Length])
         if dict[:Filter]
-          dict[:Filter] = @objects.deref(dict[:Filter])
+          dict[:Filter] = @objects.deref_name_or_array(dict[:Filter])
         end
       else
         length = dict[:Length] || 0

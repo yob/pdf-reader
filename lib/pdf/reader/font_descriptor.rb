@@ -15,25 +15,23 @@ class PDF::Reader
                 :x_height, :font_flags
 
     def initialize(ohash, fd_hash)
-      PDF::Reader::Error.validate_type_as_malformed(ohash, "Object hash", PDF::Reader::ObjectHash)
-      PDF::Reader::Error.validate_type_as_malformed(fd_hash, "Font descriptor", ::Hash)
-
-      @ascent                = ohash.object(fd_hash[:Ascent])    || 0
-      @descent               = ohash.object(fd_hash[:Descent])   || 0
-      @missing_width         = ohash.object(fd_hash[:MissingWidth]) || 0
-      @font_bounding_box     = ohash.object(fd_hash[:FontBBox])  || [0,0,0,0]
-      @avg_width             = ohash.object(fd_hash[:AvgWidth])  || 0
-      @cap_height            = ohash.object(fd_hash[:CapHeight]) || 0
-      @font_flags            = ohash.object(fd_hash[:Flags])     || 0
-      @italic_angle          = ohash.object(fd_hash[:ItalicAngle])
-      @font_name             = ohash.object(fd_hash[:FontName]).to_s
-      @leading               = ohash.object(fd_hash[:Leading])   || 0
-      @max_width             = ohash.object(fd_hash[:MaxWidth])  || 0
-      @stem_v                = ohash.object(fd_hash[:StemV])
-      @x_height              = ohash.object(fd_hash[:XHeight])
-      @font_stretch          = ohash.object(fd_hash[:FontStretch]) || :Normal
-      @font_weight           = ohash.object(fd_hash[:FontWeight])  || 400
-      @font_family           = ohash.object(fd_hash[:FontFamily])
+      # TODO change these to typed derefs
+      @ascent                = ohash.deref_number(fd_hash[:Ascent])    || 0
+      @descent               = ohash.deref_number(fd_hash[:Descent])   || 0
+      @missing_width         = ohash.deref_number(fd_hash[:MissingWidth]) || 0
+      @font_bounding_box     = ohash.deref_array_of_numbers(fd_hash[:FontBBox])  || [0,0,0,0]
+      @avg_width             = ohash.deref_number(fd_hash[:AvgWidth])  || 0
+      @cap_height            = ohash.deref_number(fd_hash[:CapHeight]) || 0
+      @font_flags            = ohash.deref_integer(fd_hash[:Flags])     || 0
+      @italic_angle          = ohash.deref_number(fd_hash[:ItalicAngle])
+      @font_name             = ohash.deref_name(fd_hash[:FontName]).to_s
+      @leading               = ohash.deref_number(fd_hash[:Leading])   || 0
+      @max_width             = ohash.deref_number(fd_hash[:MaxWidth])  || 0
+      @stem_v                = ohash.deref_number(fd_hash[:StemV])
+      @x_height              = ohash.deref_number(fd_hash[:XHeight])
+      @font_stretch          = ohash.deref_name(fd_hash[:FontStretch]) || :Normal
+      @font_weight           = ohash.deref_number(fd_hash[:FontWeight])  || 400
+      @font_family           = ohash.deref_string(fd_hash[:FontFamily])
 
       # A FontDescriptor may have an embedded font program in FontFile
       # (Type 1 Font Program), FontFile2 (TrueType font program), or
@@ -43,7 +41,7 @@ class PDF::Reader
       # 2) CIDFontType0C: Type 0 Font Program in Compact Font Format
       # 3) OpenType:      OpenType Font Program
       # see Section 9.9, PDF 32000-1:2008, pp 288-292
-      @font_program_stream = ohash.object(fd_hash[:FontFile2])
+      @font_program_stream = ohash.deref_stream(fd_hash[:FontFile2])
       #TODO handle FontFile and FontFile3
 
       @is_ttf = true if @font_program_stream

@@ -20,7 +20,7 @@ describe PDF::Reader::FontDescriptor do
         :XHeight      => 0,
         :FontStretch  => :Condensed,
         :FontWeight   => 500,
-        :FontFamily   => :BoldItalic
+        :FontFamily   => "BoldItalic"
       }
     end
     let!(:objects) { PDF::Reader::ObjectHash.allocate }
@@ -42,7 +42,7 @@ describe PDF::Reader::FontDescriptor do
       expect(subject.x_height).to          eq(0)
       expect(subject.font_stretch).to      eq(:Condensed)
       expect(subject.font_weight).to       eq(500)
-      expect(subject.font_family).to       eq(:BoldItalic)
+      expect(subject.font_family).to       eq("BoldItalic")
     end
 
   end
