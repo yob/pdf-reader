@@ -15,7 +15,6 @@ module PDF
     # This behaves and looks much like a limited PDF::Reader::Page class.
     #
     class FormXObject
-      include ResourceMethods
 
       attr_reader :xobject
 
@@ -34,7 +33,7 @@ module PDF
       # to most available metrics for each font.
       #
       def font_objects
-        raw_fonts = @objects.deref(resources[:Font] || {})
+        raw_fonts = @objects.deref(fonts)
         ::Hash[raw_fonts.map { |label, font|
           [label, PDF::Reader::Font.new(@objects, @objects.deref(font))]
         }]
@@ -56,12 +55,44 @@ module PDF
         @xobject.unfiltered_data
       end
 
+      def color_spaces
+        resources.color_spaces
+      end
+
+      def fonts
+        resources.fonts
+      end
+
+      def graphic_states
+        resources.graphic_states
+      end
+
+      def patterns
+        resources.patterns
+      end
+
+      def procedure_sets
+        resources.procedure_sets
+      end
+
+      def properties
+        resources.properties
+      end
+
+      def shadings
+        resources.shadings
+      end
+
+      def xobjects
+        resources.xobjects
+      end
+
       private
 
       # Returns the resources that accompany this form.
       #
       def resources
-        @resources ||= @objects.deref(@xobject.hash[:Resources]) || {}
+        @resources ||= Resources.new(@objects, @objects.deref(@xobject.hash[:Resources]) || {})
       end
 
       def callback(receivers, name, params=[])

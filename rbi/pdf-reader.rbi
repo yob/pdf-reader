@@ -270,6 +270,9 @@ module PDF
       sig { params(object: Object, name: String, klass: Module).void }
       def self.validate_type(object, name, klass); end
 
+      sig { params(object: Object, name: String, klass: Module).void }
+      def self.validate_type_as_malformed(object, name, klass); end
+
       sig { params(object: Object, name: String).void }
 		  def self.validate_not_nil(object, name); end
     end
@@ -784,6 +787,9 @@ module PDF
       sig { returns(T::Hash[Symbol, T.untyped]) }
       def attributes; end
 
+      sig { returns(T::Hash[Symbol, PDF::Reader::Font]) }
+      def fonts; end
+
       sig { returns(Numeric) }
       def height; end
 
@@ -820,7 +826,7 @@ module PDF
       sig { returns(T::Hash[Symbol, T.untyped]) }
       def root; end
 
-      sig { returns(T::Hash[Symbol, T.untyped]) }
+      sig { returns(PDF::Reader::Resources) }
       def resources; end
 
       sig { params(receivers: T.untyped, instructions: T.untyped).returns(T.untyped) }

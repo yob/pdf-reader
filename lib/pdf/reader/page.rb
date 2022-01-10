@@ -14,7 +14,6 @@ module PDF
     # objects accessor to help walk the page dictionary in any useful way.
     #
     class Page
-      include ResourceMethods
 
       # lowlevel hash-like access to all objects in the underlying PDF
       attr_reader :objects
@@ -214,6 +213,38 @@ module PDF
         }
       end
 
+      def color_spaces
+        resources.color_spaces
+      end
+
+      def fonts
+        resources.fonts
+      end
+
+      def graphic_states
+        resources.graphic_states
+      end
+
+      def patterns
+        resources.patterns
+      end
+
+      def procedure_sets
+        resources.procedure_sets
+      end
+
+      def properties
+        resources.properties
+      end
+
+      def shadings
+        resources.shadings
+      end
+
+      def xobjects
+        resources.xobjects
+      end
+
       private
 
       def root
@@ -224,7 +255,7 @@ module PDF
       # resources inherited from parents.
       #
       def resources
-        @resources ||= @objects.deref(attributes[:Resources]) || {}
+        @resources ||= Resources.new(@objects, @objects.deref(attributes[:Resources]) || {})
       end
 
       def content_stream(receivers, instructions)
