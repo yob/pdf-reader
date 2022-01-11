@@ -1141,6 +1141,48 @@ module PDF
     }
     end
 
+    class Parser
+      sig { params(buffer: PDF::Reader::Buffer, objects: T.nilable(PDF::Reader::ObjectHash)).void }
+      def initialize(buffer, objects=nil); end
+
+      sig {
+        params(
+          operators: T::Hash[T.any(String, PDF::Reader::Token), Symbol]
+        ).returns(
+          T.any(PDF::Reader::Reference, PDF::Reader::Token, Numeric, String, Symbol, T::Array[T.untyped], T::Hash[T.untyped, T.untyped], NilClass)
+        )
+      }
+      def parse_token(operators={}); end
+
+      sig {
+        params(
+         id: Integer,
+         gen: Integer
+        ).returns(
+          T.any(PDF::Reader::Reference, PDF::Reader::Token, PDF::Reader::Stream, Numeric, String, Symbol, T::Array[T.untyped], T::Hash[T.untyped, T.untyped], NilClass)
+        )
+      }
+      def object(id, gen); end
+
+      sig { returns(T::Hash[T.untyped, T.untyped]) }
+      def dictionary; end
+
+      sig { returns(Symbol) }
+      def pdf_name; end
+
+      sig { returns(T::Array[T.untyped]) }
+      def array; end
+
+      sig { returns(String) }
+      def hex_string; end
+
+      sig { returns(String) }
+      def string; end
+
+      sig { params(dict: T::Hash[T.untyped, T.untyped]).returns(PDF::Reader::Stream) }
+      def stream(dict); end
+    end
+
     class Point
       sig do
         params(
