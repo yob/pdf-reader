@@ -17,9 +17,6 @@ data/all_page_boxes_exist.pdf:
 data/ascii85_filter.pdf:
   :bytes: 21288
   :md5: 49502f60a3f058e20d0564312c9dda2b
-data/broken_string.pdf:
-  :bytes: 929
-  :md5: f717634f2e419e496e1e93a0cb5b7d18
 data/cairo-basic.pdf:
   :bytes: 9659
   :md5: 88be82e60534bfa5f85b9ec0697ec6d6
@@ -80,9 +77,6 @@ data/content_stream_cr_only.pdf:
 data/content_stream_missing_final_operator.pdf:
   :bytes: 46799
   :md5: 8b3d2706526dcf684dad80b53bf6dc94
-data/content_stream_refers_to_invalid_font.pdf:
-  :bytes: 598
-  :md5: e4a711b9d2fbc3ebe0e16c7498563521
 data/content_stream_trailing_whitespace.pdf:
   :bytes: 55688
   :md5: 5dad57e5cae55c8b305a0853c8e3d067
@@ -209,6 +203,12 @@ data/inline_image.pdf:
 data/inline_image_single_line_content_stream.pdf:
   :bytes: 130786
   :md5: '096fb28baf29a716066768cb31182b73'
+data/invalid/broken_string.pdf:
+  :bytes: 929
+  :md5: f717634f2e419e496e1e93a0cb5b7d18
+data/invalid/content_stream_refers_to_invalid_font.pdf:
+  :bytes: 598
+  :md5: e4a711b9d2fbc3ebe0e16c7498563521
 data/invalid/data.csv:
   :bytes: 26
   :md5: 7168179491824d651a304cbb83c16964
@@ -272,12 +272,12 @@ data/mediabox_and_cropbox_are_references.pdf:
 data/mediabox_missing.pdf:
   :bytes: 14875
   :md5: 51560e94565ee1cd9583c388b5aa545a
-data/minimal.pdf:
-  :bytes: 739
-  :md5: b5808604069f9f61d94e0660409616ba
 data/minimal-xref-1.pdf:
   :bytes: 739
   :md5: c9ef70bcf0d39ce90e993b6aec606b42
+data/minimal.pdf:
+  :bytes: 739
+  :md5: b5808604069f9f61d94e0660409616ba
 data/nested_form_xobject.pdf:
   :bytes: 30365
   :md5: 441fd2c734e81784d7db0a86bf4c11e5
