@@ -283,7 +283,7 @@ module PDF
 end
 ################################################################################
 
-require 'pdf/reader/resource_methods'
+require 'pdf/reader/resources'
 require 'pdf/reader/buffer'
 require 'pdf/reader/bounding_rectangle_runs_filter'
 require 'pdf/reader/cid_widths'

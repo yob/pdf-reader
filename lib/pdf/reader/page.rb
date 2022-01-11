@@ -14,7 +14,7 @@ module PDF
     # objects accessor to help walk the page dictionary in any useful way.
     #
     class Page
-      include ResourceMethods
+      extend Forwardable
 
       # lowlevel hash-like access to all objects in the underlying PDF
       attr_reader :objects
@@ -26,6 +26,15 @@ module PDF
       # the current document and is used to avoid repeating expensive
       # operations
       attr_reader :cache
+
+      def_delegators :resources, :color_spaces
+      def_delegators :resources, :fonts
+      def_delegators :resources, :graphic_states
+      def_delegators :resources, :patterns
+      def_delegators :resources, :procedure_sets
+      def_delegators :resources, :properties
+      def_delegators :resources, :shadings
+      def_delegators :resources, :xobjects
 
       # creates a new page wrapper.
       #
@@ -224,7 +233,7 @@ module PDF
       # resources inherited from parents.
       #
       def resources
-        @resources ||= @objects.deref(attributes[:Resources]) || {}
+        @resources ||= Resources.new(@objects, @objects.deref(attributes[:Resources]) || {})
       end
 
       def content_stream(receivers, instructions)
