@@ -15,8 +15,18 @@ module PDF
     # This behaves and looks much like a limited PDF::Reader::Page class.
     #
     class FormXObject
+      extend Forwardable
 
       attr_reader :xobject
+
+      def_delegators :resources, :color_spaces
+      def_delegators :resources, :fonts
+      def_delegators :resources, :graphic_states
+      def_delegators :resources, :patterns
+      def_delegators :resources, :procedure_sets
+      def_delegators :resources, :properties
+      def_delegators :resources, :shadings
+      def_delegators :resources, :xobjects
 
       def initialize(page, xobject, options = {})
         @page    = page
@@ -53,38 +63,6 @@ module PDF
       #
       def raw_content
         @xobject.unfiltered_data
-      end
-
-      def color_spaces
-        resources.color_spaces
-      end
-
-      def fonts
-        resources.fonts
-      end
-
-      def graphic_states
-        resources.graphic_states
-      end
-
-      def patterns
-        resources.patterns
-      end
-
-      def procedure_sets
-        resources.procedure_sets
-      end
-
-      def properties
-        resources.properties
-      end
-
-      def shadings
-        resources.shadings
-      end
-
-      def xobjects
-        resources.xobjects
       end
 
       private

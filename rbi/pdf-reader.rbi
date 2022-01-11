@@ -787,9 +787,6 @@ module PDF
       sig { returns(T::Hash[Symbol, T.untyped]) }
       def attributes; end
 
-      sig { returns(T::Hash[Symbol, PDF::Reader::Font]) }
-      def fonts; end
-
       sig { returns(Numeric) }
       def height; end
 
