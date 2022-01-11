@@ -126,6 +126,10 @@ class PDF::Reader
 
       while !params.include?("trailer") && !params.include?(nil)
         if params.size == 2
+          unless params[0].to_s.match(/\A\d+\z/)
+            raise MalformedPDFError, "invalid xref table, expected object ID"
+          end
+
           objid, count = params[0].to_i, params[1].to_i
           count.times do
             offset = buf.token.to_i

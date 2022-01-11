@@ -212,6 +212,9 @@ data/invalid/content_stream_refers_to_invalid_font.pdf:
 data/invalid/data.csv:
   :bytes: 26
   :md5: 7168179491824d651a304cbb83c16964
+data/invalid/gh-217.pdf:
+  :bytes: 108807
+  :md5: 3739eb2731370bd7923c3f418c0bd73e
 data/invalid/invalid_pages.pdf:
   :bytes: 108807
   :md5: 345670e7d5533a831184603d31dfc2bb
