@@ -87,40 +87,40 @@ module PDF
       sig { returns(T.untyped) }
       attr_reader :pos
 
-      sig { params(io: T.untyped, opts: T.untyped).void }
+      sig { params(io: T.any(StringIO, File), opts: T::Hash[Symbol, T.untyped]).void }
       def initialize(io, opts = {}); end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Boolean) }
       def empty?; end
 
-      sig { params(bytes: T.untyped, opts: T.untyped).returns(T.untyped) }
+      sig { params(bytes: Integer, opts: T::Hash[Symbol, T.untyped]).returns(String) }
       def read(bytes, opts = {}); end
 
       sig { returns(T.untyped) }
       def token; end
 
-      sig { returns(T.untyped) }
+      sig { returns(Integer) }
       def find_first_xref_offset; end
 
-      sig { returns(T.untyped) }
+      sig { void }
       def check_size_is_non_zero; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Boolean) }
       def in_content_stream?; end
 
-      sig { returns(T.untyped) }
+      sig { void }
       def reset_pos; end
 
-      sig { returns(T.untyped) }
+      sig { void }
       def save_pos; end
 
-      sig { returns(T.untyped) }
+      sig { void }
       def prepare_tokens; end
 
-      sig { returns(T.untyped) }
+      sig { returns(Symbol) }
       def state; end
 
-      sig { returns(T.untyped) }
+      sig { void }
       def merge_indirect_reference; end
 
       sig { returns(T.untyped) }
@@ -135,7 +135,7 @@ module PDF
       sig { returns(T.untyped) }
       def prepare_regular_token; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T.nilable(String)) }
       def peek_byte; end
 
       sig { params(token: T.untyped).returns(T.untyped) }
@@ -181,7 +181,7 @@ module PDF
       sig { returns(Integer) }
       def size; end
 
-      sig { params(c: T.untyped).returns(T.untyped) }
+      sig { params(c: Integer).returns(T::Array[Integer]) }
       def decode(c); end
 
       sig { params(instructions: T.untyped).returns(T.untyped) }
@@ -220,13 +220,13 @@ module PDF
       sig { returns(T.untyped) }
       def differences; end
 
-      sig { params(str: T.untyped).returns(T.untyped) }
+      sig { params(str: String).returns(String) }
       def to_utf8(str); end
 
-      sig { params(glyph_code: T.untyped).returns(T.untyped) }
+      sig { params(glyph_code: Integer).returns(String) }
       def int_to_utf8_string(glyph_code); end
 
-      sig { params(glyph_code: T.untyped).returns(T.untyped) }
+      sig { params(glyph_code: Integer).returns(T::Array[Symbol]) }
       def int_to_name(glyph_code); end
 
       sig { returns(T.untyped) }
@@ -275,6 +275,9 @@ module PDF
 
       sig { params(object: Object, name: String).void }
 		  def self.validate_not_nil(object, name); end
+
+      sig { params(object: Object, name: String).void }
+		  def self.validate_not_nil_as_malformed(object, name); end
     end
 
     class MalformedPDFError < RuntimeError
@@ -409,7 +412,7 @@ module PDF
       sig { returns(T.untyped) }
       attr_reader :font_flags
 
-      sig { params(ohash: T.untyped, fd_hash: T.untyped).void }
+      sig { params(ohash: PDF::Reader::ObjectHash, fd_hash: T::Hash[T.untyped, T.untyped]).void }
       def initialize(ohash, fd_hash); end
 
       sig { params(char_code: T.untyped).returns(T.untyped) }
@@ -649,22 +652,22 @@ module PDF
       sig { params(block: T.untyped).returns(T.untyped) }
       def each_value(&block); end
 
-      sig { returns(T.untyped) }
+      sig { returns(Integer) }
       def size; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Boolean) }
       def empty?; end
 
-      sig { params(check_key: T.untyped).returns(T.untyped) }
+      sig { params(check_key: T.untyped).returns(T::Boolean) }
       def has_key?(check_key); end
 
-      sig { params(value: T.untyped).returns(T.untyped) }
+      sig { params(value: T.untyped).returns(T::Boolean) }
       def has_value?(value); end
 
-      sig { returns(T.untyped) }
+      sig { returns(String) }
       def to_s; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Array[PDF::Reader::Reference]) }
       def keys; end
 
       sig { returns(T.untyped) }
@@ -676,13 +679,13 @@ module PDF
       sig { returns(T.untyped) }
       def to_a; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Array[PDF::Reader::Reference]) }
       def page_references; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Boolean) }
       def encrypted?; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Boolean) }
       def sec_handler?; end
 
       sig { params(key: T.untyped).returns(T.untyped) }
@@ -697,7 +700,7 @@ module PDF
       sig { params(ref: T.untyped, obj: T.untyped).returns(T.untyped) }
       def decrypt(ref, obj); end
 
-      sig { params(offset: T.untyped).returns(T.untyped) }
+      sig { params(offset: Integer).returns(PDF::Reader::Buffer) }
       def new_buffer(offset = 0); end
 
       sig { returns(T.untyped) }
@@ -838,7 +841,7 @@ module PDF
       sig { params(origin: T.untyped).returns(T.untyped) }
       def ancestors(origin = @page_object[:Parent]); end
 
-      sig { params(obj: T.untyped).returns(T.untyped) }
+      sig { params(obj: T::Hash[T.untyped, T.untyped]).returns(T::Hash[Symbol, T.untyped]) }
       def select_inheritable(obj); end
     end
 
@@ -1167,7 +1170,7 @@ module PDF
       }
       def object(id, gen); end
 
-      sig { returns(T::Hash[T.untyped, T.untyped]) }
+      sig { returns(T::Hash[Symbol, T.untyped]) }
       def dictionary; end
 
       sig { returns(Symbol) }
@@ -1182,7 +1185,7 @@ module PDF
       sig { returns(String) }
       def string; end
 
-      sig { params(dict: T::Hash[T.untyped, T.untyped]).returns(PDF::Reader::Stream) }
+      sig { params(dict: T::Hash[Symbol, T.untyped]).returns(PDF::Reader::Stream) }
       def stream(dict); end
     end
 
@@ -1349,7 +1352,7 @@ module PDF
       sig { returns(T.untyped) }
       def color_spaces; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Hash[T.untyped, T.untyped]) }
       def fonts; end
 
       sig { returns(T.untyped) }
@@ -1679,7 +1682,7 @@ module PDF
     end
 
     module Filter
-      sig { params(name: T.untyped, options: T.untyped).returns(T.untyped) }
+      sig { params(name: Symbol, options: T::Hash[T.untyped, T.untyped]).returns(T.untyped) }
       def self.with(name, options = {}); end
 
       class Ascii85
