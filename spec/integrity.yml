@@ -215,6 +215,69 @@ data/invalid/data.csv:
 data/invalid/gh-217.pdf:
   :bytes: 108807
   :md5: 3739eb2731370bd7923c3f418c0bd73e
+data/invalid/gh-222.pdf:
+  :bytes: 108807
+  :md5: dbe939f42fdfc4aeda52fc7c5809052e
+data/invalid/gh-223.pdf:
+  :bytes: 108807
+  :md5: 227b93c7734118d3147e9ec6e4950653
+data/invalid/gh-224.pdf:
+  :bytes: 108807
+  :md5: 3e5a57f61754826fbbbbd653e73167dc
+data/invalid/gh-227.pdf:
+  :bytes: 108807
+  :md5: 73a3be1957f118f36fb92d677f962a2d
+data/invalid/gh-228.pdf:
+  :bytes: 108807
+  :md5: 0a58afacb9d6f43cbf9e1afaac934b87
+data/invalid/gh-229.pdf:
+  :bytes: 89283
+  :md5: e70783e6b59764932e745f55e2647ff9
+data/invalid/gh-230.pdf:
+  :bytes: 89283
+  :md5: ddc6c8bb189c23a24937dcc7a1154bd1
+data/invalid/gh-231.pdf:
+  :bytes: 89283
+  :md5: '024844d3602ad508e57b9ca5602a913c'
+data/invalid/gh-232.pdf:
+  :bytes: 89283
+  :md5: e5c8f6e8e2a98edf78a0a4a2c87aa6b3
+data/invalid/gh-234.pdf:
+  :bytes: 108807
+  :md5: bfa0291807642919d6bf62de68044fef
+data/invalid/gh-235.pdf:
+  :bytes: 108807
+  :md5: e594ba3eb27a8aca07f023cd161faa50
+data/invalid/gh-236.pdf:
+  :bytes: 108807
+  :md5: a300e41135e95dbd4608109ba9703328
+data/invalid/gh-237.pdf:
+  :bytes: 89283
+  :md5: 561700c4ae0936f4822531466762d875
+data/invalid/gh-238.pdf:
+  :bytes: 108807
+  :md5: 5c885f481556eb84f1ee858d105401a1
+data/invalid/gh-239.pdf:
+  :bytes: 89283
+  :md5: 1088d8fbb4adada3ed14fb8bf36434f0
+data/invalid/gh-240.pdf:
+  :bytes: 89283
+  :md5: 2b63985a234cacf82de883c0d0495eef
+data/invalid/gh-241.pdf:
+  :bytes: 6332178
+  :md5: 6286a6ad6ceb676f9a1ae955432e7279
+data/invalid/gh-242.pdf:
+  :bytes: 6332178
+  :md5: f37d3261253f2c3a129baad8407397a8
+data/invalid/gh-243.pdf:
+  :bytes: 1093
+  :md5: b05f1de30a2b356c9fe807cf59452ee8
+data/invalid/gh-244.pdf:
+  :bytes: 1093
+  :md5: dfd286c1cd402c4eb77a869aaf370c62
+data/invalid/gh-245.pdf:
+  :bytes: 19262
+  :md5: de39ddcfe81cedb111304ad6988a2484
 data/invalid/invalid_pages.pdf:
   :bytes: 108807
   :md5: 345670e7d5533a831184603d31dfc2bb

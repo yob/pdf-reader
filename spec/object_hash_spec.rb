@@ -375,28 +375,6 @@ describe PDF::Reader::ObjectHash do
 
   describe "#page_references" do
 
-    context "with cairo-unicode.pdf" do
-      it "returns an ordered array of references to page objects" do
-        filename = pdf_spec_file("cairo-unicode")
-        h = PDF::Reader::ObjectHash.new(filename)
-
-        arr = h.page_references
-        expect(arr.size).to eql(4)
-        expect(arr.map { |ref| ref.id }).to eql([4, 7, 10, 13])
-      end
-    end
-
-    context "with indirect_kids_array.pdf" do
-      it "returns an ordered array of references to page objects" do
-        filename = pdf_spec_file("indirect_kids_array")
-        h = PDF::Reader::ObjectHash.new(filename)
-
-        arr = h.page_references
-        expect(arr.size).to eql(1)
-        expect(arr.map { |ref| ref.id }).to eql([6])
-      end
-    end
-
     it "raises a MalformedPDFError if dereferenced value is not a dict" do
       filename = pdf_spec_file("page_reference_is_not_a_dict")
       h = PDF::Reader::ObjectHash.new(filename)

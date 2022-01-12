@@ -96,11 +96,239 @@ class PDF::Reader
     end
     alias :deref :object
 
+    # If key is a PDF::Reader::Reference object, lookup the corresponding
+    # object in the PDF and return it. Otherwise return key untouched.
+    #
+    # Guaranteed to only return an Array or nil. If the dereference results in
+    # any other type then a MalformedPDFError exception will raise. Useful when
+    # expecting an Array and no other type will do.
+    def deref_array(key)
+      obj = deref(key)
+
+      return obj if obj.nil?
+
+      obj.tap { |obj|
+        raise MalformedPDFError, "expected object to be an Array or nil" if !obj.is_a?(Array)
+      }
+    end
+
+    # If key is a PDF::Reader::Reference object, lookup the corresponding
+    # object in the PDF and return it. Otherwise return key untouched.
+    #
+    # Guaranteed to only return an Array of Numerics or nil. If the dereference results in
+    # any other type then a MalformedPDFError exception will raise. Useful when
+    # expecting an Array and no other type will do.
+    #
+    # Some effort to cast array elements to a number is made for any non-numeric elements.
+    def deref_array_of_numbers(key)
+      arr = deref(key)
+
+      return arr if arr.nil?
+
+      raise MalformedPDFError, "expected object to be an Array" unless arr.is_a?(Array)
+
+      arr.map { |item|
+        if item.is_a?(Numeric)
+          item
+        elsif item.respond_to?(:to_f)
+          item.to_f
+        elsif item.respond_to?(:to_i)
+          item.to_i
+        else
+          raise MalformedPDFError, "expected object to be a number"
+        end
+      }
+    end
+
+    # If key is a PDF::Reader::Reference object, lookup the corresponding
+    # object in the PDF and return it. Otherwise return key untouched.
+    #
+    # Guaranteed to only return a Hash or nil. If the dereference results in
+    # any other type then a MalformedPDFError exception will raise. Useful when
+    # expecting an Array and no other type will do.
+    def deref_hash(key)
+      obj = deref(key)
+
+      return obj if obj.nil?
+
+      obj.tap { |obj|
+        raise MalformedPDFError, "expected object to be a Hash or nil" if !obj.is_a?(Hash)
+      }
+    end
+
+    # If key is a PDF::Reader::Reference object, lookup the corresponding
+    # object in the PDF and return it. Otherwise return key untouched.
+    #
+    # Guaranteed to only return a PDF name (Symbol) or nil. If the dereference results in
+    # any other type then a MalformedPDFError exception will raise. Useful when
+    # expecting an Array and no other type will do.
+    #
+    # Some effort to cast to a symbol is made when the reference points to a non-symbol.
+    def deref_name(key)
+      obj = deref(key)
+
+      return obj if obj.nil?
+
+      if !obj.is_a?(Symbol)
+        if obj.respond_to?(:to_sym)
+          obj = obj.to_sym
+        else
+          raise MalformedPDFError, "expected object to be a Name"
+        end
+      end
+
+      obj
+    end
+
+    # If key is a PDF::Reader::Reference object, lookup the corresponding
+    # object in the PDF and return it. Otherwise return key untouched.
+    #
+    # Guaranteed to only return an Integer or nil. If the dereference results in
+    # any other type then a MalformedPDFError exception will raise. Useful when
+    # expecting an Array and no other type will do.
+    #
+    # Some effort to cast to an int is made when the reference points to a non-integer.
+    def deref_integer(key)
+      obj = deref(key)
+
+      return obj if obj.nil?
+
+      if !obj.is_a?(Integer)
+        if obj.respond_to?(:to_i)
+          obj = obj.to_i
+        else
+          raise MalformedPDFError, "expected object to be an Integer"
+        end
+      end
+
+      obj
+    end
+
+    # If key is a PDF::Reader::Reference object, lookup the corresponding
+    # object in the PDF and return it. Otherwise return key untouched.
+    #
+    # Guaranteed to only return a Numeric or nil. If the dereference results in
+    # any other type then a MalformedPDFError exception will raise. Useful when
+    # expecting an Array and no other type will do.
+    #
+    # Some effort to cast to a number is made when the reference points to a non-number.
+    def deref_number(key)
+      obj = deref(key)
+
+      return obj if obj.nil?
+
+      if !obj.is_a?(Numeric)
+        if obj.respond_to?(:to_f)
+          obj = obj.to_f
+        elsif obj.respond_to?(:to_i)
+          obj.to_i
+        else
+          raise MalformedPDFError, "expected object to be a number"
+        end
+      end
+
+      obj
+    end
+
+    # If key is a PDF::Reader::Reference object, lookup the corresponding
+    # object in the PDF and return it. Otherwise return key untouched.
+    #
+    # Guaranteed to only return a PDF::Reader::Stream or nil. If the dereference results in
+    # any other type then a MalformedPDFError exception will raise. Useful when
+    # expecting a stream and no other type will do.
+    def deref_stream(key)
+      obj = deref(key)
+
+      return obj if obj.nil?
+
+      obj.tap { |obj|
+        if !obj.is_a?(PDF::Reader::Stream)
+          raise MalformedPDFError, "expected object to be an Array or nil"
+        end
+      }
+    end
+
+    # If key is a PDF::Reader::Reference object, lookup the corresponding
+    # object in the PDF and return it. Otherwise return key untouched.
+    #
+    # Guaranteed to only return a String or nil. If the dereference results in
+    # any other type then a MalformedPDFError exception will raise. Useful when
+    # expecting a string and no other type will do.
+    #
+    # Some effort to cast to a string is made when the reference points to a non-string.
+    def deref_string(key)
+      obj = deref(key)
+
+      return obj if obj.nil?
+
+      if !obj.is_a?(String)
+        if obj.respond_to?(:to_s)
+          obj = obj.to_s
+        else
+          raise MalformedPDFError, "expected object to be a string"
+        end
+      end
+
+      obj
+    end
+
+    # If key is a PDF::Reader::Reference object, lookup the corresponding
+    # object in the PDF and return it. Otherwise return key untouched.
+    #
+    # Guaranteed to only return a PDF Name (symbol), Array or nil. If the dereference results in
+    # any other type then a MalformedPDFError exception will raise. Useful when
+    # expecting a Name or Array and no other type will do.
+    def deref_name_or_array(key)
+      obj = deref(key)
+
+      return obj if obj.nil?
+
+      obj.tap { |obj|
+        if !obj.is_a?(Symbol) && !obj.is_a?(Array)
+          raise MalformedPDFError, "expected object to be an Array or Name"
+        end
+      }
+    end
+
+    # If key is a PDF::Reader::Reference object, lookup the corresponding
+    # object in the PDF and return it. Otherwise return key untouched.
+    #
+    # Guaranteed to only return a PDF::Reader::Stream, Array or nil. If the dereference results in
+    # any other type then a MalformedPDFError exception will raise. Useful when
+    # expecting a stream or Array and no other type will do.
+    def deref_stream_or_array(key)
+      obj = deref(key)
+
+      return obj if obj.nil?
+
+      obj.tap { |obj|
+        if !obj.is_a?(PDF::Reader::Stream) && !obj.is_a?(Array)
+          raise MalformedPDFError, "expected object to be an Array or Stream"
+        end
+      }
+    end
+
     # Recursively dereferences the object refered to be +key+. If +key+ is not
     # a PDF::Reader::Reference, the key is returned unchanged.
     #
     def deref!(key)
       deref_internal!(key, {})
+    end
+
+    def deref_array!(key)
+      deref!(key).tap { |obj|
+        if !obj.nil? && !obj.is_a?(Array)
+          raise MalformedPDFError, "expected object (#{obj.inspect}) to be an Array or nil"
+        end
+      }
+    end
+
+    def deref_hash!(key)
+      deref!(key).tap { |obj|
+        if !obj.nil? && !obj.is_a?(Hash)
+          raise MalformedPDFError, "expected object (#{obj.inspect}) to be a Hash or nil"
+        end
+      }
     end
 
     # Access an object from the PDF. key can be an int or a PDF::Reader::Reference
@@ -237,7 +465,10 @@ class PDF::Reader
     #
     def page_references
       root  = fetch(trailer[:Root])
-      @page_references ||= get_page_objects(root[:Pages]).flatten
+      @page_references ||= begin
+                             pages_root = deref_hash(root[:Pages]) || {}
+                             get_page_objects(pages_root)
+                           end
     end
 
     def encrypted?
@@ -336,19 +567,19 @@ class PDF::Reader
       @object_stream ||= {}
     end
 
-    # returns a nested array of object references for all pages in this object store.
+    # returns an array of object references for all pages in this object store. The ordering of
+    # the Array is significant and matches the page ordering of the document
     #
-    def get_page_objects(ref)
-      obj = deref(ref)
-
-      unless obj.kind_of?(::Hash)
-        raise MalformedPDFError, "Dereferenced page object must be a dict"
-      end
-
+    def get_page_objects(obj)
       if obj[:Type] == :Page
-        ref
+        [obj]
       elsif obj[:Kids]
-        deref(obj[:Kids]).map { |kid| get_page_objects(kid) }
+        kids = deref_array(obj[:Kids]) || []
+        kids.map { |kid|
+          get_page_objects(deref_hash(kid) || {})
+        }.flatten
+      else
+        raise MalformedPDFError, "Expected Page or Pages object"
       end
     end
 

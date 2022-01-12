@@ -104,13 +104,18 @@ class PDF::Reader
       buf = new_buffer(offset)
       tok_one = buf.token
 
+      # we have a traditional xref table
       return load_xref_table(buf) if tok_one == "xref" || tok_one == "ref"
 
       tok_two   = buf.token
       tok_three = buf.token
 
+      # we have an XRef stream
       if tok_one.to_i >= 0 && tok_two.to_i >= 0 && tok_three == "obj"
         buf = new_buffer(offset)
+        # Maybe we should be parsing the ObjectHash second argument to the Parser here,
+        # to handle the case where an XRef Stream has the Length specified via an
+        # indirect object
         stream = PDF::Reader::Parser.new(buf).object(tok_one.to_i, tok_two.to_i)
         return load_xref_stream(stream)
       end
@@ -172,8 +177,16 @@ class PDF::Reader
         [:Size, :Prev, :Root, :Encrypt, :Info, :ID].include?(key)
       }]
 
-      widths       = stream.hash[:W]
-      entry_length = widths.inject(0) { |s, w| s + w }
+      widths = stream.hash[:W]
+
+      PDF::Reader::Error.validate_type_as_malformed(widths, "xref stream widths", Array)
+
+      entry_length = widths.inject(0) { |s, w|
+        unless w.is_a?(Integer)
+          w = 0
+        end
+        s + w
+      }
       raw_data     = StringIO.new(stream.unfiltered_data)
       if stream.hash[:Index]
         index = stream.hash[:Index]

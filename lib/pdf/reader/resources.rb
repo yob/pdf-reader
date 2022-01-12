@@ -24,9 +24,7 @@ module PDF
       #       of calling it over and over.
       #
       def color_spaces
-        (@objects.deref!(@resources[:ColorSpace]) || {}).tap { |obj|
-          PDF::Reader::Error.validate_type_as_malformed(obj, "ColorSpace dictionary", Hash)
-        }
+        @objects.deref_hash!(@resources[:ColorSpace]) || {}
       end
 
       # Returns a Hash of fonts that are available to this page
@@ -36,9 +34,7 @@ module PDF
       #       of calling it over and over.
       #
       def fonts
-        (@objects.deref!(@resources[:Font]) || {}).tap { |obj|
-          PDF::Reader::Error.validate_type_as_malformed(obj, "Fonts dictionary", Hash)
-        }
+        @objects.deref_hash!(@resources[:Font]) || {}
       end
 
       # Returns a Hash of external graphic states that are available to this
@@ -49,9 +45,7 @@ module PDF
       #       of calling it over and over.
       #
       def graphic_states
-        (@objects.deref!(@resources[:ExtGState]) || {}).tap { |obj|
-          PDF::Reader::Error.validate_type_as_malformed(obj, "ExtGState dictionary", Hash)
-        }
+        @objects.deref_hash!(@resources[:ExtGState]) || {}
       end
 
       # Returns a Hash of patterns that are available to this page
@@ -61,9 +55,7 @@ module PDF
       #       of calling it over and over.
       #
       def patterns
-        (@objects.deref!(@resources[:Pattern]) || {}).tap { |obj|
-          PDF::Reader::Error.validate_type_as_malformed(obj, "Patterns dictionary", Hash)
-        }
+        @objects.deref_hash!(@resources[:Pattern]) || {}
       end
 
       # Returns an Array of procedure sets that are available to this page
@@ -73,9 +65,7 @@ module PDF
       #       of calling it over and over.
       #
       def procedure_sets
-        (@objects.deref!(@resources[:ProcSet]) || []).tap { |obj|
-          PDF::Reader::Error.validate_type_as_malformed(obj, "ProcSet array", Array)
-        }
+        @objects.deref_array!(@resources[:ProcSet]) || []
       end
 
       # Returns a Hash of properties sets that are available to this page
@@ -85,9 +75,7 @@ module PDF
       #       of calling it over and over.
       #
       def properties
-        (@objects.deref!(@resources[:Properties]) || {}).tap { |obj|
-          PDF::Reader::Error.validate_type_as_malformed(obj, "Properties dictionary", Hash)
-        }
+        @objects.deref_hash!(@resources[:Properties]) || {}
       end
 
       # Returns a Hash of shadings that are available to this page
@@ -97,9 +85,7 @@ module PDF
       #       of calling it over and over.
       #
       def shadings
-        (@objects.deref!(@resources[:Shading]) || {}).tap { |obj|
-          PDF::Reader::Error.validate_type_as_malformed(obj, "Shading dictionary", Hash)
-        }
+        @objects.deref_hash!(@resources[:Shading]) || {}
       end
 
       # Returns a Hash of XObjects that are available to this page
@@ -109,9 +95,7 @@ module PDF
       #       of calling it over and over.
       #
       def xobjects
-        (@objects.deref!(@resources[:XObject]) || {}).tap { |obj|
-          PDF::Reader::Error.validate_type_as_malformed(obj, "XObject dictionary", Hash)
-        }
+        @objects.deref_hash!(@resources[:XObject]) || {}
       end
 
     end

@@ -384,7 +384,7 @@ class PDF::Reader
       #
       def build_fonts(raw_fonts)
         wrapped_fonts = raw_fonts.map { |label, font|
-          [label, PDF::Reader::Font.new(@objects, @objects.deref(font))]
+          [label, PDF::Reader::Font.new(@objects, @objects.deref_hash(font) || {})]
         }
 
         ::Hash[wrapped_fonts]

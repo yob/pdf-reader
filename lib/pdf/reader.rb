@@ -124,7 +124,7 @@ module PDF
     # Return a Hash with some basic information about the PDF file
     #
     def info
-      dict = @objects.deref(@objects.trailer[:Info])
+      dict = @objects.deref_hash(@objects.trailer[:Info]) || {}
       doc_strings_to_utf8(dict)
     end
 
@@ -132,7 +132,7 @@ module PDF
     # always present.
     #
     def metadata
-      stream = @objects.deref(root[:Metadata])
+      stream = @objects.deref_stream(root[:Metadata])
       if stream.nil?
         nil
       else
@@ -145,11 +145,11 @@ module PDF
     # To number of pages in this PDF
     #
     def page_count
-      pages = @objects.deref(root[:Pages])
+      pages = @objects.deref_hash(root[:Pages])
       unless pages.kind_of?(::Hash)
         raise MalformedPDFError, "Pages structure is missing #{pages.class}"
       end
-      @page_count ||= @objects.deref(pages[:Count])
+      @page_count ||= @objects.deref_integer(pages[:Count]) || 0
     end
 
     # The PDF version this file uses
@@ -190,6 +190,8 @@ module PDF
     # methods available on each page
     #
     def pages
+      return [] if page_count <= 0
+
       (1..self.page_count).map do |num|
         begin
           PDF::Reader::Page.new(@objects, num, :cache => @cache)
@@ -240,7 +242,7 @@ module PDF
           pdfdoc_to_utf8(obj)
         end
       else
-        @objects.deref(obj)
+        obj
       end
     end
 
@@ -271,7 +273,7 @@ module PDF
 
     def root
       @root ||= begin
-        obj = @objects.deref(@objects.trailer[:Root])
+        obj = @objects.deref_hash(@objects.trailer[:Root]) || {}
         unless obj.kind_of?(::Hash)
           raise MalformedPDFError, "PDF malformed, trailer Root should be a dictionary"
         end

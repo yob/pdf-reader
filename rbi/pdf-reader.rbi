@@ -637,8 +637,44 @@ module PDF
       sig { params(key: T.untyped).returns(T.untyped) }
       def object(key); end
 
+      sig { params(key: T.untyped).returns(T.nilable(T::Array[T.untyped])) }
+      def deref_array(key); end
+
+      sig { params(key: T.untyped).returns(T.nilable(T::Array[Numeric])) }
+      def deref_array_of_numbers(key); end
+
+      sig { params(key: T.untyped).returns(T.nilable(T:Hash[Symbol, T.untyped])) }
+      def deref_hash(key); end
+
+      sig { params(key: T.untyped).returns(T.nilable(Symbol)) }
+      def deref_name(key); end
+
+      sig { params(key: T.untyped).returns(T.any(Symbol, T::Array[T.untyped], NilClass)) }
+      def deref_name_or_array(key); end
+
+      sig { params(key: T.untyped).returns(T.nilable(Integer)) }
+      def deref_integer(key); end
+
+      sig { params(key: T.untyped).returns(T.nilable(Numeric)) }
+      def deref_number(key); end
+
+      sig { params(key: T.untyped).returns(T.nilable(PDF::Reader::Stream)) }
+      def deref_stream(key); end
+
+      sig { params(key: T.untyped).returns(T.nilable(String)) }
+      def deref_string(key); end
+
+      sig { params(key: T.untyped).returns(T.any(PDF::Reader::Stream, T::Array[T.untyped], NilClass)) }
+      def deref_stream_or_array(key); end
+
       sig { params(key: T.untyped).returns(T.untyped) }
       def deref!(key); end
+
+      sig { params(key: T.untyped).returns(T::Array[T.untyped]) }
+      def deref_array!(key); end
+
+      sig { params(key: T.untyped).returns(T::Hash[Symbol, T.untyped]) }
+      def deref_hash!(key); end
 
       sig { params(key: T.untyped, local_default: T.untyped).returns(T.untyped) }
       def fetch(key, local_default = nil); end
@@ -709,13 +745,13 @@ module PDF
       sig { returns(T.untyped) }
       def object_streams; end
 
-      sig { params(ref: T.untyped).returns(T.untyped) }
-      def get_page_objects(ref); end
+      sig { params(obj: T::Hash[T.untyped, T.untyped]).returns(T::Array[T::Hash[T.untyped, T.untyped]]) }
+      def get_page_objects(obj); end
 
-      sig { returns(T.untyped) }
+      sig { returns(Float) }
       def read_version; end
 
-      sig { params(input: T.untyped).returns(T.untyped) }
+      sig { params(input: T.untyped).returns(IO) }
       def extract_io_from(input); end
 
       sig { params(input: T.untyped).returns(T.untyped) }
@@ -1044,8 +1080,8 @@ module PDF
       sig { returns(T.untyped) }
       def content; end
 
-      sig { params(string: T.untyped).returns(T.untyped) }
-      def show_text(string); end
+      sig { params(string: T.untyped, args: T::Array[T.untyped]).returns(T.untyped) }
+      def show_text(string, *args); end
 
       sig { params(params: T.untyped).returns(T.untyped) }
       def show_text_with_positioning(params); end

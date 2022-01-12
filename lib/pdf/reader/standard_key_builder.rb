@@ -37,7 +37,7 @@ class PDF::Reader
       if @key_length != 5 && @key_length != 16
         msg = "StandardKeyBuilder only supports 40 and 128 bit\
                encryption (#{@key_length * 8}bit)"
-        raise ArgumentError, msg
+        raise UnsupportedFeatureError, msg
       end
     end
 

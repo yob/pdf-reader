@@ -149,27 +149,37 @@ class PDF::Reader
       end
     end
 
-    def extract_base_info(obj)
-      @subtype  = @ohash.object(obj[:Subtype])
-      @basefont = @ohash.object(obj[:BaseFont])
-      if @ohash.object(obj[:Encoding])
-        @encoding = PDF::Reader::Encoding.new(@ohash.object(obj[:Encoding]))
+    def build_encoding(obj)
+      if obj[:Encoding].is_a?(Symbol)
+        # one of the standard encodings, referenced by name
+        # TODO pass in a standard shape, always a Hash
+        PDF::Reader::Encoding.new(obj[:Encoding])
+      elsif obj[:Encoding].is_a?(Hash) || obj[:Encoding].is_a?(PDF::Reader::Stream)
+        PDF::Reader::Encoding.new(obj[:Encoding])
+      elsif obj[:Encoding].nil?
+        default_encoding(@basefont)
       else
-        @encoding = default_encoding(@basefont)
+        raise MalformedPDFError, "Unexpected type for Encoding (#{obj[:Encoding].class})"
       end
-      @widths   = @ohash.object(obj[:Widths]) || []
-      @first_char = @ohash.object(obj[:FirstChar])
-      @last_char = @ohash.object(obj[:LastChar])
+    end
+
+    def extract_base_info(obj)
+      @subtype  = @ohash.deref_name(obj[:Subtype])
+      @basefont = @ohash.deref_name(obj[:BaseFont])
+      @encoding = build_encoding(obj)
+      @widths   = @ohash.deref_array_of_numbers(obj[:Widths]) || []
+      @first_char = @ohash.deref_integer(obj[:FirstChar])
+      @last_char = @ohash.deref_integer(obj[:LastChar])
 
       # CID Fonts are not required to have a W or DW entry, if they don't exist,
       # the default cid width = 1000, see Section 9.7.4.1 PDF 32000-1:2008 pp 269
-      @cid_widths         = @ohash.object(obj[:W])  || []
-      @cid_default_width  = @ohash.object(obj[:DW]) || 1000
+      @cid_widths         = @ohash.deref_array(obj[:W])  || []
+      @cid_default_width  = @ohash.deref_number(obj[:DW]) || 1000
 
       if obj[:ToUnicode]
         # ToUnicode is optional for Type1 and Type3
-        stream = @ohash.object(obj[:ToUnicode])
-        if stream.is_a?(PDF::Reader::Stream)
+        stream = @ohash.deref_stream(obj[:ToUnicode])
+        if stream
           @tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
         end
       end
@@ -177,7 +187,7 @@ class PDF::Reader
 
     def extract_type3_info(obj)
       if @subtype == :Type3
-        @font_matrix = @ohash.object(obj[:FontMatrix]) || [ 0.001, 0, 0, 0.001, 0, 0 ]
+        @font_matrix = @ohash.deref_array_of_numbers(obj[:FontMatrix]) || [ 0.001, 0, 0, 0.001, 0, 0 ]
       end
     end
 
@@ -185,7 +195,7 @@ class PDF::Reader
       if obj[:FontDescriptor]
         # create a font descriptor object if we can, in other words, unless this is
         # a CID Font
-        fd = @ohash.object(obj[:FontDescriptor])
+        fd = @ohash.deref_hash(obj[:FontDescriptor])
         @font_descriptor = PDF::Reader::FontDescriptor.new(@ohash, fd)
       else
         @font_descriptor = nil
@@ -197,9 +207,9 @@ class PDF::Reader
       # per PDF 32000-1:2008 pp. 280 :DescendentFonts is:
       # A one-element array specifying the CIDFont dictionary that is the
       # descendant of this Type 0 font.
-      descendants = @ohash.object(obj[:DescendantFonts])
+      descendants = @ohash.deref_array(obj[:DescendantFonts])
       @descendantfonts = descendants.map { |desc|
-        PDF::Reader::Font.new(@ohash, @ohash.object(desc))
+        PDF::Reader::Font.new(@ohash, @ohash.deref_hash(desc))
       }
     end
 

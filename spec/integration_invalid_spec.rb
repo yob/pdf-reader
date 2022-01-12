@@ -69,6 +69,231 @@ describe PDF::Reader, "integration specs with invalid PDF files" do
     end
   end
 
+  context "gh-222" do
+    let(:filename) { pdf_spec_file("gh-222") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
+  # The top level Pages object is corrupted and has no Count or Type key
+  context "gh-223" do
+    let(:filename) { pdf_spec_file("gh-223") }
+
+    it "parses without error" do
+      expect {
+        parse_pdf(filename)
+      }.to_not raise_error
+    end
+
+    it "has zero pages" do
+      PDF::Reader.open(filename) do |reader|
+        expect(reader.page_count).to eq 0
+        expect(reader.pages).to eq []
+      end
+    end
+  end
+
+  context "gh-224" do
+    let(:filename) { pdf_spec_file("gh-224") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
+  context "gh-227" do
+    let(:filename) { pdf_spec_file("gh-227") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
+  context "gh-228" do
+    let(:filename) { pdf_spec_file("gh-228") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
+  context "gh-229" do
+    let(:filename) { pdf_spec_file("gh-229") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
+  context "gh-230" do
+    let(:filename) { pdf_spec_file("gh-230") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
+  context "gh-231" do
+    let(:filename) { pdf_spec_file("gh-231") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
+  context "gh-232" do
+    let(:filename) { pdf_spec_file("gh-232") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
+  context "gh-234" do
+    let(:filename) { pdf_spec_file("gh-234") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
+  context "gh-235" do
+    let(:filename) { pdf_spec_file("gh-235") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
+  context "gh-236" do
+    let(:filename) { pdf_spec_file("gh-236") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
+  context "gh-237" do
+    let(:filename) { pdf_spec_file("gh-237") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
+  context "gh-238" do
+    let(:filename) { pdf_spec_file("gh-238") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
+  context "gh-239" do
+    let(:filename) { pdf_spec_file("gh-239") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
+  context "gh-240" do
+    let(:filename) { pdf_spec_file("gh-240") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
+  context "gh-241" do
+    let(:filename) { pdf_spec_file("gh-241") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
+  context "gh-242" do
+    let(:filename) { pdf_spec_file("gh-242") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
+  # This one raised an unexpected exception in v2.0.0, but since v2.6.0 (and PR #372) it works
+  # without error
+  context "gh-243" do
+    let(:filename) { pdf_spec_file("gh-243") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to_not raise_error
+    end
+  end
+
+  # This one raised an unexpected exception in v2.0.0, but since v2.4.0 (and PR #309) it works
+  # without error
+  context "gh-244" do
+    let(:filename) { pdf_spec_file("gh-244") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to_not raise_error
+    end
+  end
+
+  # This encrypted PDF declares an invalid key length. It's not really that we don't support a
+  # feature - we'll never support an invalid key length. We raise an unsupported fature error
+  # anyway.
+  context "gh-245" do
+    let(:filename) { pdf_spec_file("gh-245") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::UnsupportedFeatureError)
+    end
+  end
+
   # a very basic sanity check that we can open this file and extract interesting data
   def parse_pdf(filename)
     PDF::Reader.open(filename) do |reader|

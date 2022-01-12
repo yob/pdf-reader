@@ -121,7 +121,7 @@ class PDF::Reader
         key = parse_token
         break if key.kind_of?(Token) and key == ">>"
         raise MalformedPDFError, "unterminated dict" if @buffer.empty?
-        raise MalformedPDFError, "Dictionary key (#{key.inspect}) is not a name" unless key.kind_of?(Symbol)
+        PDF::Reader::Error.validate_type_as_malformed(key, "Dictionary key", Symbol)
 
         value = parse_token
         value.kind_of?(Token) and Error.str_assert_not(value, ">>")
@@ -209,13 +209,16 @@ class PDF::Reader
     def stream(dict)
       raise MalformedPDFError, "PDF malformed, missing stream length" unless dict.has_key?(:Length)
       if @objects
-        length = @objects.deref(dict[:Length])
+        length = @objects.deref_integer(dict[:Length])
         if dict[:Filter]
-          dict[:Filter] = @objects.deref(dict[:Filter])
+          dict[:Filter] = @objects.deref_name_or_array(dict[:Filter])
         end
       else
         length = dict[:Length] || 0
       end
+
+      PDF::Reader::Error.validate_type_as_malformed(length, "length", Numeric)
+
       data = @buffer.read(length, :skip_eol => true)
 
       Error.str_assert(parse_token, "endstream")
