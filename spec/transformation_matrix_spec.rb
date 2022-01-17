@@ -6,14 +6,18 @@
 
 describe PDF::Reader::TransformationMatrix do
   describe "#multiply!" do
-    class PDF::Reader::TransformationMatrix
-      # a helper method for tests
-      def multiply_with_an_object!(m2)
-        multiply!(
-          m2.a, m2.b,
-          m2.c, m2.d,
-          m2.e, m2.f
-        )
+    module PDF
+      class Reader
+        class TransformationMatrix
+          # a helper method for tests
+          def multiply_with_an_object!(m2)
+            multiply!(
+              m2.a, m2.b,
+              m2.c, m2.d,
+              m2.e, m2.f
+            )
+          end
+        end
       end
     end
     context "with [2,3,0   4,5,0   6 7 1]" do
