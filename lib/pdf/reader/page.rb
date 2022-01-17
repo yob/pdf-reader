@@ -152,6 +152,9 @@ module PDF
       # the program in the correct order and calls out to your implementation.
       #
       def walk(*receivers)
+        receivers = receivers.map { |receiver|
+          ValidatingReceiver.new(receiver)
+        }
         callback(receivers, :page=, [self])
         content_stream(receivers, raw_content)
       end

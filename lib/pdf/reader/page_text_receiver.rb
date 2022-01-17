@@ -79,7 +79,7 @@ module PDF
       # Text Showing Operators
       #####################################################
       # record text that is drawn on the page
-      def show_text(string, *args) # Tj (AWAY)
+      def show_text(string) # Tj (AWAY)
         internal_show_text(string)
       end
 
@@ -87,8 +87,10 @@ module PDF
         params.each do |arg|
           if arg.is_a?(String)
             internal_show_text(arg)
-          else
+          elsif arg.is_a?(Numeric)
             @state.process_glyph_displacement(0, arg, false)
+          else
+            # skip it
           end
         end
       end
