@@ -182,7 +182,7 @@ def parse(reader)
   contents = ''
   reader.pages.each do |page|
     contents << page.fonts.to_s
-    contents << page.text.force_encoding('utf-8')
+    contents << page.text #.force_encoding('utf-8')
     contents << page.raw_content.force_encoding('utf-8')
   end
   # puts contents if VERBOSE
