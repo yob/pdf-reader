@@ -1724,7 +1724,7 @@ module PDF
       def self.with(name, options = {}); end
 
       class Ascii85
-        sig { params(options: T.untyped).void }
+        sig { params(options: T::Hash[T.untyped, T.untyped]).void }
         def initialize(options = {}); end
 
         sig { params(data: String).returns(String) }
@@ -1732,7 +1732,7 @@ module PDF
       end
 
       class AsciiHex
-        sig { params(options: T.untyped).void }
+        sig { params(options: T::Hash[T.untyped, T.untyped]).void }
         def initialize(options = {}); end
 
         sig { params(data: String).returns(String) }
@@ -1757,7 +1757,7 @@ module PDF
         ZLIB_AUTO_DETECT_ZLIB_OR_GZIP = 47
         ZLIB_RAW_DEFLATE = -15
 
-        sig { params(options: T.untyped).void }
+        sig { params(options: T::Hash[T.untyped, T.untyped]).void }
         def initialize(options = {}); end
 
         sig { params(data: String).returns(String) }
@@ -1768,7 +1768,7 @@ module PDF
       end
 
       class Lzw
-        sig { params(options: T.untyped).void }
+        sig { params(options: T::Hash[T.untyped, T.untyped]).void }
         def initialize(options = {}); end
 
         sig { params(data: String).returns(String) }
@@ -1776,7 +1776,7 @@ module PDF
       end
 
       class Null
-        sig { params(options: T.untyped).void }
+        sig { params(options: T::Hash[T.untyped, T.untyped]).void }
         def initialize(options = {}); end
 
         sig { params(data: T.untyped).returns(T.untyped) }
@@ -1784,7 +1784,7 @@ module PDF
       end
 
       class RunLength
-        sig { params(options: T.untyped).void }
+        sig { params(options: T::Hash[T.untyped, T.untyped]).void }
         def initialize(options = {}); end
 
         sig { params(data: String).returns(String) }
