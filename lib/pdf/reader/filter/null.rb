@@ -1,8 +1,7 @@
 # coding: utf-8
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
-#
 class PDF::Reader
   module Filter # :nodoc:
     # implementation of the null stream filter

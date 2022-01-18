@@ -62,7 +62,7 @@ class PDF::Reader
         end
 
         Array(hash[:Filter]).each_with_index do |filter, index|
-          @udata = Filter.with(filter, options[index]).filter(@udata)
+          @udata = Filter.with(filter, options[index] || {}).filter(@udata)
         end
       end
       @udata

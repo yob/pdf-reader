@@ -9,7 +9,7 @@ class PDF::Reader
     class Depredict
 
       def initialize(options = {})
-        @options = options || {}
+        @options = options
       end
 
       ################################################################################
