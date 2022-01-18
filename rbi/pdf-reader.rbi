@@ -1458,16 +1458,16 @@ module PDF
     end
 
     class Stream
-      sig { returns(T.untyped) }
+      sig { returns(T::Hash[T.untyped, T.untyped]) }
       attr_accessor :hash
 
-      sig { returns(T.untyped) }
+      sig { returns(String) }
       attr_accessor :data
 
-      sig { params(hash: T.untyped, data: T.untyped).void }
+      sig { params(hash: T::Hash[T.untyped, T.untyped], data: String).void }
       def initialize(hash, data); end
 
-      sig { returns(T.untyped) }
+      sig { returns(String) }
       def unfiltered_data; end
     end
 
@@ -1725,7 +1725,9 @@ module PDF
 
       class Ascii85
         sig { params(options: T::Hash[T.untyped, T.untyped]).void }
-        def initialize(options = {}); end
+        def initialize(options = {})
+          @options = T.let(T.unsafe(nil), T::Hash[T.untyped, T.untyped])
+        end
 
         sig { params(data: String).returns(String) }
         def filter(data); end
@@ -1733,14 +1735,16 @@ module PDF
 
       class AsciiHex
         sig { params(options: T::Hash[T.untyped, T.untyped]).void }
-        def initialize(options = {}); end
+        def initialize(options = {})
+          @options = T.let(T.unsafe(nil), T::Hash[T.untyped, T.untyped])
+        end
 
         sig { params(data: String).returns(String) }
         def filter(data); end
       end
 
       class Depredict
-        sig { params(options: T.untyped).void }
+        sig { params(options: T::Hash[T.untyped, T.untyped]).void }
         def initialize(options = {}); end
 
         sig { params(data: String).returns(String) }
@@ -1758,7 +1762,9 @@ module PDF
         ZLIB_RAW_DEFLATE = -15
 
         sig { params(options: T::Hash[T.untyped, T.untyped]).void }
-        def initialize(options = {}); end
+        def initialize(options = {})
+          @options = T.let(T.unsafe(nil), T::Hash[T.untyped, T.untyped])
+        end
 
         sig { params(data: String).returns(String) }
         def filter(data); end
@@ -1769,7 +1775,9 @@ module PDF
 
       class Lzw
         sig { params(options: T::Hash[T.untyped, T.untyped]).void }
-        def initialize(options = {}); end
+        def initialize(options = {})
+          @options = T.let(T.unsafe(nil), T::Hash[T.untyped, T.untyped])
+        end
 
         sig { params(data: String).returns(String) }
         def filter(data); end
@@ -1777,7 +1785,9 @@ module PDF
 
       class Null
         sig { params(options: T::Hash[T.untyped, T.untyped]).void }
-        def initialize(options = {}); end
+        def initialize(options = {})
+          @options = T.let(T.unsafe(nil), T::Hash[T.untyped, T.untyped])
+        end
 
         sig { params(data: T.untyped).returns(T.untyped) }
         def filter(data); end
@@ -1785,7 +1795,9 @@ module PDF
 
       class RunLength
         sig { params(options: T::Hash[T.untyped, T.untyped]).void }
-        def initialize(options = {}); end
+        def initialize(options = {})
+          @options = T.let(T.unsafe(nil), T::Hash[T.untyped, T.untyped])
+        end
 
         sig { params(data: String).returns(String) }
         def filter(data); end
