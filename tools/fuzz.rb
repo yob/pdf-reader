@@ -226,7 +226,7 @@ rescue Timeout::Error => e
 rescue SyntaxError => e
   report_crash e
 rescue => e
-  raise e unless e.backtrace.join("\n") =~ %r{gems/pdf-reader}
+  raise e unless e.backtrace.join("\n") =~ %r{pdf-reader}
   report_crash e
 end
 
