@@ -34,7 +34,7 @@ class PDF::Reader
       def zlib_inflate(data)
         begin
           return Zlib::Inflate.new(ZLIB_AUTO_DETECT_ZLIB_OR_GZIP).inflate(data)
-        rescue Zlib::DataError
+        rescue Zlib::Error
           # by default, Ruby's Zlib assumes the data it's inflating
           # is RFC1951 deflated data, wrapped in a RFC1950 zlib container. If that
           # fails, swallow the exception and attempt to inflate the data as a raw
@@ -43,7 +43,7 @@ class PDF::Reader
 
         begin
           return Zlib::Inflate.new(ZLIB_RAW_DEFLATE).inflate(data)
-        rescue StandardError
+        rescue Zlib::Error
           # swallow this one too, so we can try some other fallback options
         end
 
