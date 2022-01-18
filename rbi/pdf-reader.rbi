@@ -173,10 +173,12 @@ module PDF
       attr_reader :map
 
       sig { params(data: String).void }
-      def initialize(data); end
+      def initialize(data)
+        @map = T.let(T.unsafe(nil), T::Hash[Integer, T::Array[Integer]])
+      end
 
-      sig { params(data: String).void }
-      def process_data(data); end
+      sig { params(data: String, initial_mode: Symbol).void }
+      def process_data(data, initial_mode = :none); end
 
       sig { returns(Integer) }
       def size; end
@@ -184,22 +186,22 @@ module PDF
       sig { params(c: Integer).returns(T::Array[Integer]) }
       def decode(c); end
 
-      sig { params(instructions: T.untyped).returns(T.untyped) }
+      sig { params(instructions: String).returns(PDF::Reader::Parser) }
       def build_parser(instructions); end
 
-      sig { params(str: T.untyped).returns(T.untyped) }
+      sig { params(str: String).returns(T::Array[Integer]) }
       def str_to_int(str); end
 
-      sig { params(instructions: T.untyped).returns(T.untyped) }
+      sig { params(instructions: T::Array[String]).void }
       def process_bfchar_instructions(instructions); end
 
-      sig { params(instructions: T.untyped).returns(T.untyped) }
+      sig { params(instructions: T::Array[T.any(T::Array[String], String)]).void }
       def process_bfrange_instructions(instructions); end
 
-      sig { params(start_code: T.untyped, end_code: T.untyped, dst: T.untyped).returns(T.untyped) }
+      sig { params(start_code: String, end_code: String, dst: String).void }
       def bfrange_type_one(start_code, end_code, dst); end
 
-      sig { params(start_code: T.untyped, end_code: T.untyped, dst: T.untyped).returns(T.untyped) }
+      sig { params(start_code: String, end_code: String, dst: T::Array[String]).void }
       def bfrange_type_two(start_code, end_code, dst); end
     end
 

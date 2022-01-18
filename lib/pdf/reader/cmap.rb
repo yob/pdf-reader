@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: false
+# typed: true
 # frozen_string_literal: true
 
 ################################################################################
@@ -35,15 +35,15 @@ class PDF::Reader
   class CMap # :nodoc:
 
     CMAP_KEYWORDS = {
-      "begincodespacerange" => 1,
-      "endcodespacerange" => 1,
-      "beginbfchar" => 1,
-      "endbfchar" => 1,
-      "beginbfrange" => 1,
-      "endbfrange" => 1,
-      "begin" => 1,
-      "begincmap" => 1,
-      "def" => 1
+      "begincodespacerange" => :noop,
+      "endcodespacerange" => :noop,
+      "beginbfchar" => :noop,
+      "endbfchar" => :noop,
+      "beginbfrange" => :noop,
+      "endbfrange" => :noop,
+      "begin" => :noop,
+      "begincmap" => :noop,
+      "def" => :noop
     }
 
     attr_reader :map
@@ -51,30 +51,6 @@ class PDF::Reader
     def initialize(data)
       @map = {}
       process_data(data)
-    end
-
-    def process_data(data)
-      parser = build_parser(data)
-      mode = :none
-      instructions = []
-
-      while token = parser.parse_token(CMAP_KEYWORDS)
-        if token == "beginbfchar"
-          mode = :char
-        elsif token == "endbfchar"
-          process_bfchar_instructions(instructions)
-          instructions = []
-          mode = :none
-        elsif token == "beginbfrange"
-          mode = :range
-        elsif token == "endbfrange"
-          process_bfrange_instructions(instructions)
-          instructions = []
-          mode = :none
-        elsif mode == :char || mode == :range
-          instructions << token
-        end
-      end
     end
 
     def size
@@ -86,12 +62,39 @@ class PDF::Reader
     # Returns an array of Integers.
     #
     def decode(c)
-      # TODO: implement the conversion
-      return c unless Integer === c
-      @map[c]
+      @map.fetch(c, [])
     end
 
     private
+
+    def process_data(data, initial_mode = :none)
+      parser = build_parser(data)
+      mode = initial_mode
+      instructions = []
+
+      while token = parser.parse_token(CMAP_KEYWORDS)
+        if token.is_a?(String) || token.is_a?(Array)
+          if token == "beginbfchar"
+            mode = :char
+          elsif token == "endbfchar"
+            process_bfchar_instructions(instructions)
+            instructions = []
+            mode = :none
+          elsif token == "beginbfrange"
+            mode = :range
+          elsif token == "endbfrange"
+            process_bfrange_instructions(instructions)
+            instructions = []
+            mode = :none
+          elsif mode == :char
+            instructions << token.to_s
+          elsif mode == :range
+            instructions << token
+          end
+        end
+      end
+    end
+
 
     def build_parser(instructions)
       buffer = Buffer.new(StringIO.new(instructions))
@@ -107,7 +110,6 @@ class PDF::Reader
     # exception when we try converting broken UTF-16 to UTF-8
     #
     def str_to_int(str)
-      return nil if str.nil? || str.size == 0
       unpacked_string = if str.bytesize == 1 # UTF-8
         str.unpack("C*")
       else # UTF-16
@@ -115,12 +117,15 @@ class PDF::Reader
       end
       result = []
       while unpacked_string.any? do
-        if unpacked_string.size >= 2 && unpacked_string[0] > 0xD800 && unpacked_string[0] < 0xDBFF
+        if unpacked_string.size >= 2 &&
+            unpacked_string.first.to_i > 0xD800 &&
+            unpacked_string.first.to_i < 0xDBFF
           # this is a Unicode UTF-16 "Surrogate Pair" see Unicode Spec. Chapter 3.7
           # lets convert to a UTF-32. (the high bit is between 0xD800-0xDBFF, the
           # low bit is between 0xDC00-0xDFFF) for example: U+1D44E (U+D835 U+DC4E)
-          points = [unpacked_string.shift, unpacked_string.shift]
-          result << (points[0] - 0xD800) * 0x400 + (points[1] - 0xDC00) + 0x10000
+          point_one = unpacked_string.shift.to_i
+          point_two = unpacked_string.shift.to_i
+          result << (point_one - 0xD800) * 0x400 + (point_two - 0xDC00) + 0x10000
         else
           result << unpacked_string.shift
         end
@@ -130,9 +135,11 @@ class PDF::Reader
 
     def process_bfchar_instructions(instructions)
       instructions.each_slice(2) do |one, two|
-        find    = str_to_int(one)
-        replace = str_to_int(two)
-        @map[find.first] = replace
+        find    = str_to_int(one.to_s)
+        replace = str_to_int(two.to_s)
+        if find.any? && replace.any?
+          @map[find.first.to_i] = replace
+        end
       end
     end
 
@@ -143,30 +150,36 @@ class PDF::Reader
         elsif start.kind_of?(String) && finish.kind_of?(String) && to.kind_of?(Array)
           bfrange_type_two(start, finish, to)
         else
-          raise "invalid bfrange section"
+          raise MalformedPDFError, "invalid bfrange section"
         end
       end
     end
 
     def bfrange_type_one(start_code, end_code, dst)
-      start_code = str_to_int(start_code)[0]
-      end_code   = str_to_int(end_code)[0]
+      start_code = str_to_int(start_code).first
+      end_code   = str_to_int(end_code).first
       dst        = str_to_int(dst)
+
+      return if start_code.nil? || end_code.nil?
 
       # add all values in the range to our mapping
       (start_code..end_code).each_with_index do |val, idx|
-        @map[val] = dst.length == 1 ? [dst[0] + idx] : [dst[0], dst[1] + 1]
+        @map[val] = dst.length == 1 ? [dst[0].to_i + idx] : [dst[0].to_i, dst[1].to_i + 1]
       end
     end
 
     def bfrange_type_two(start_code, end_code, dst)
-      start_code = str_to_int(start_code)[0]
-      end_code   = str_to_int(end_code)[0]
+      start_code = str_to_int(start_code).first
+      end_code   = str_to_int(end_code).first
+
+      return if start_code.nil? || end_code.nil?
+
       from_range = (start_code..end_code)
 
       # add all values in the range to our mapping
       from_range.each_with_index do |val, idx|
-        @map[val] = str_to_int(dst[idx])
+        dst_char = dst[idx]
+        @map[val.to_i] = str_to_int(dst_char) if dst_char
       end
     end
   end
