@@ -90,6 +90,8 @@ module PDF
       sig { params(io: T.any(StringIO, File), opts: T::Hash[Symbol, T.untyped]).void }
       def initialize(io, opts = {})
         @pos = T.let(T.unsafe(nil), Integer)
+        @tokens = T.let(T.unsafe(nil), T::Array[T.any(String, PDF::Reader::Reference)])
+        @io = T.let(T.unsafe(nil), T.any(StringIO, File))
         @in_content_stream = T.let(T.unsafe(nil), T::Boolean)
       end
 
@@ -99,7 +101,7 @@ module PDF
       sig { params(bytes: Integer, opts: T::Hash[Symbol, T.untyped]).returns(T.nilable(String)) }
       def read(bytes, opts = {}); end
 
-      sig { returns(T.nilable(String)) }
+      sig { returns(T.any(NilClass, String, PDF::Reader::Reference)) }
       def token; end
 
       sig { returns(Integer) }
@@ -138,7 +140,7 @@ module PDF
       sig { void }
       def prepare_regular_token; end
 
-      sig { returns(T.nilable(String)) }
+      sig { returns(T.nilable(Integer)) }
       def peek_byte; end
     end
 

@@ -59,6 +59,9 @@ class PDF::Reader
     # Allow for this here
     TRAILING_BYTECOUNT = 5000
 
+    # must match whole tokens
+    DIGITS_ONLY = %r{\A\d+\z}
+
     attr_reader :pos
 
     # Creates a new buffer.
@@ -142,6 +145,8 @@ class PDF::Reader
       check_size_is_non_zero
       @io.seek(-TRAILING_BYTECOUNT, IO::SEEK_END) rescue @io.seek(0)
       data = @io.read(TRAILING_BYTECOUNT)
+
+      raise MalformedPDFError, "PDF does not contain EOF marker" if data.nil?
 
       # the PDF 1.7 spec (section #3.4) says that EOL markers can be either \r, \n, or both.
       lines = data.split(/[\n\r]+/).reverse
@@ -235,13 +240,12 @@ class PDF::Reader
       return if @tokens.size < 3
       return if @tokens[2] != "R"
 
-      # must match whole tokens
-      digits_only = %r{\A\d+\z}
-      if @tokens[0].match(digits_only) && @tokens[1].match(digits_only)
-        @tokens[0] = PDF::Reader::Reference.new(@tokens[0].to_i, @tokens[1].to_i)
-        @tokens[1] = nil
-        @tokens[2] = nil
-        @tokens.compact!
+      token_one = @tokens[0]
+      token_two = @tokens[1]
+      if token_one.is_a?(String) && token_two.is_a?(String) && token_one.match(DIGITS_ONLY) && token_two.match(DIGITS_ONLY)
+        @tokens[0] = PDF::Reader::Reference.new(token_one.to_i, token_two.to_i)
+        @tokens.delete_at(2)
+        @tokens.delete_at(1)
       end
     end
 
@@ -289,7 +293,7 @@ class PDF::Reader
       eiend = @io.pos
       @io.seek(idstart, IO::SEEK_SET)
       str = @io.read(eiend - eisize - idstart) # get the ID content
-      @tokens << str.freeze
+      @tokens << str.freeze if str
     end
 
     # if we're currently inside a hex string, read hex nibbles until
@@ -367,8 +371,8 @@ class PDF::Reader
         when 0x25
           # comment, ignore everything until the next EOL char
           loop do
-            byte = @io.getbyte
-            break if byte.nil? || byte == 0x0A || byte == 0x0D
+            commentbyte = @io.getbyte
+            break if commentbyte.nil? || commentbyte == 0x0A || commentbyte == 0x0D
           end
         when *TOKEN_WHITESPACE
           # white space, token finished
