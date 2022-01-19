@@ -2,9 +2,6 @@
 # typed: true
 # frozen_string_literal: true
 
-# Setting this file to "typed: true" is difficult because it's a mixin that assumes some things
-# are aavailable from the class, like @objects and resources. Sorbet doesn't know about them.
-
 module PDF
   class Reader
 
