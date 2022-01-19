@@ -187,7 +187,9 @@ class PDF::Reader
 
     def extract_type3_info(obj)
       if @subtype == :Type3
-        @font_matrix = @ohash.deref_array_of_numbers(obj[:FontMatrix]) || [ 0.001, 0, 0, 0.001, 0, 0 ]
+        @font_matrix = @ohash.deref_array_of_numbers(obj[:FontMatrix]) || [
+          0.001, 0, 0, 0.001, 0, 0
+        ]
       end
     end
 
