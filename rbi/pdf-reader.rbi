@@ -84,19 +84,22 @@ module PDF
       WHITE_SPACE = [LF, CR, ' ']
       TRAILING_BYTECOUNT = 5000
 
-      sig { returns(T.untyped) }
+      sig { returns(Integer) }
       attr_reader :pos
 
       sig { params(io: T.any(StringIO, File), opts: T::Hash[Symbol, T.untyped]).void }
-      def initialize(io, opts = {}); end
+      def initialize(io, opts = {})
+        @pos = T.let(T.unsafe(nil), Integer)
+        @in_content_stream = T.let(T.unsafe(nil), T::Boolean)
+      end
 
       sig { returns(T::Boolean) }
       def empty?; end
 
-      sig { params(bytes: Integer, opts: T::Hash[Symbol, T.untyped]).returns(String) }
+      sig { params(bytes: Integer, opts: T::Hash[Symbol, T.untyped]).returns(T.nilable(String)) }
       def read(bytes, opts = {}); end
 
-      sig { returns(T.untyped) }
+      sig { returns(T.nilable(String)) }
       def token; end
 
       sig { returns(Integer) }
@@ -123,23 +126,20 @@ module PDF
       sig { void }
       def merge_indirect_reference; end
 
-      sig { returns(T.untyped) }
+      sig { void }
       def prepare_inline_token; end
 
-      sig { returns(T.untyped) }
+      sig { void }
       def prepare_hex_token; end
 
-      sig { returns(T.untyped) }
+      sig { void }
       def prepare_literal_token; end
 
-      sig { returns(T.untyped) }
+      sig { void }
       def prepare_regular_token; end
 
       sig { returns(T.nilable(String)) }
       def peek_byte; end
-
-      sig { params(token: T.untyped).returns(T.untyped) }
-      def string_token(token); end
     end
 
     class CidWidths
