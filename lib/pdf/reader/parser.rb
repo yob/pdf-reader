@@ -80,8 +80,8 @@ class PDF::Reader
         token
       elsif operators.has_key? token
         Token.new(token)
-      elsif token.respond_to?(:to_token)
-        token.to_token
+      elsif token.frozen?
+        token
       elsif token =~ /\d*\.\d/
         token.to_f
       else

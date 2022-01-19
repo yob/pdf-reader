@@ -1,5 +1,5 @@
 # coding: ASCII-8BIT
-# typed: false
+# typed: true
 # frozen_string_literal: true
 
 ################################################################################
@@ -246,7 +246,7 @@ class PDF::Reader
     # This is to reduce the chance of accidentally matching an embedded EI
     def prepare_inline_token
       idstart = @io.pos
-      chr = prevchr = nil
+      prevchr = ''
       eisize = 0 # how many chars in the end marker
       seeking = 'E' # what are we looking for now?
       loop do
@@ -264,11 +264,11 @@ class PDF::Reader
           end
         when 'I'
           if chr == 'I'
-            seeking = :END
+            seeking = ''
           else
             seeking = 'E'
           end
-        when :END
+        when ''
           if WHITE_SPACE.include? chr
             eisize += 1 # Drop trailer
             break
@@ -276,28 +276,28 @@ class PDF::Reader
             seeking = 'E'
           end
         end
-        prevchr = chr
+        prevchr = chr.is_a?(String) ? chr : ''
       end
-      unless seeking == :END
+      unless seeking == ''
         raise MalformedPDFError, "EI terminator not found"
       end
       eiend = @io.pos
       @io.seek(idstart, IO::SEEK_SET)
       str = @io.read(eiend - eisize - idstart) # get the ID content
-      @tokens << string_token(str)
+      @tokens << str.freeze
     end
 
     # if we're currently inside a hex string, read hex nibbles until
     # we find a closing >
     #
     def prepare_hex_token
+      finished = :false
       str = "".dup
-      finished = false
 
-      while !finished
+      until finished == :true
         byte = @io.getbyte
         if byte.nil?
-          finished = true # unbalanced params
+          finished = :true # unbalanced params
         elsif (48..57).include?(byte) || (65..90).include?(byte) || (97..122).include?(byte)
           str << byte
         elsif byte <= 32
@@ -306,7 +306,7 @@ class PDF::Reader
           @tokens << str if str.size > 0
           @tokens << ">" if byte != 0x3E # '>'
           @tokens << byte.chr
-          finished = true
+          finished = :true
         end
       end
     end
@@ -353,14 +353,17 @@ class PDF::Reader
     def prepare_regular_token
       tok = "".dup
 
-      while byte = @io.getbyte
+      loop do
+        byte = @io.getbyte
+
         case byte
+        when nil
+          break
         when 0x25
           # comment, ignore everything until the next EOL char
-          done = false
-          while !done
+          loop do
             byte = @io.getbyte
-            done = true if byte.nil? || byte == 0x0A || byte == 0x0D
+            break if byte.nil? || byte == 0x0A || byte == 0x0D
           end
         when *TOKEN_WHITESPACE
           # white space, token finished
@@ -430,15 +433,5 @@ class PDF::Reader
       byte
     end
 
-    # for a handful of tokens we want to tell the parser how to convert them
-    # into higher level tokens. This methods adds a to_token() method
-    # to tokens that should remain as strings.
-    #
-    def string_token(token)
-      def token.to_token
-        to_s
-      end
-      token
-    end
   end
 end
