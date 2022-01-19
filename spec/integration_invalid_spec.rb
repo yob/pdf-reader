@@ -294,6 +294,16 @@ describe PDF::Reader, "integration specs with invalid PDF files" do
     end
   end
 
+  context "negative-xref-offset.pdf" do
+    let(:filename) { pdf_spec_file("negative-xref-offset") }
+
+    it "raises MalformedPDFError when parsed" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
+  end
+
   # a very basic sanity check that we can open this file and extract interesting data
   def parse_pdf(filename)
     PDF::Reader.open(filename) do |reader|

@@ -149,7 +149,12 @@ class PDF::Reader
 
       raise MalformedPDFError, "PDF does not contain EOF marker" if eof_index.nil?
       raise MalformedPDFError, "PDF EOF marker does not follow offset" if eof_index >= lines.size-1
-      lines[eof_index+1].to_i
+      offset = lines[eof_index+1].to_i
+
+      # a byte offset < 0 doesn't make much sense. This is unlikely to happen, but in theory some
+      # corrupted PDFs might have a line that looks like a negative int preceding the `%%EOF`
+      raise MalformedPDFError, "invalid xref offset" if offset < 0
+      offset
     end
 
     private
