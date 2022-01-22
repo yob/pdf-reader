@@ -1460,14 +1460,18 @@ module PDF
     end
 
     class Stream
-      sig { returns(T::Hash[T.untyped, T.untyped]) }
+      sig { returns(T::Hash[Symbol, T.untyped]) }
       attr_accessor :hash
 
       sig { returns(String) }
       attr_accessor :data
 
-      sig { params(hash: T::Hash[T.untyped, T.untyped], data: String).void }
-      def initialize(hash, data); end
+      sig { params(hash: T::Hash[Symbol, T.untyped], data: String).void }
+      def initialize(hash, data)
+        @hash = T.let(T.unsafe(nil), T::Hash[Symbol, T.untyped])
+        @data = T.let(T.unsafe(nil), String)
+        @udata = T.let(T.unsafe(nil), T.nilable(String))
+      end
 
       sig { returns(String) }
       def unfiltered_data; end
