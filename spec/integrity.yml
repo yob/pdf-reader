@@ -209,6 +209,9 @@ data/invalid/broken_string.pdf:
 data/invalid/content_stream_refers_to_invalid_font.pdf:
   :bytes: 598
   :md5: e4a711b9d2fbc3ebe0e16c7498563521
+data/invalid/content_stream_wrong_args.pdf:
+  :bytes: 378345
+  :md5: 8da6f39e6f1c557c8514f1e124ea137d
 data/invalid/data.csv:
   :bytes: 26
   :md5: 7168179491824d651a304cbb83c16964

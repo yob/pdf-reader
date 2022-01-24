@@ -1084,25 +1084,25 @@ module PDF
       sig { returns(T.untyped) }
       def content; end
 
-      sig { params(string: T.untyped, args: T::Array[T.untyped]).returns(T.untyped) }
-      def show_text(string, *args); end
+      sig { params(string: String).void }
+      def show_text(string); end
 
-      sig { params(params: T.untyped).returns(T.untyped) }
+      sig { params(params: T::Array[T.untyped]).void }
       def show_text_with_positioning(params); end
 
-      sig { params(str: T.untyped).returns(T.untyped) }
+      sig { params(str: String).void }
       def move_to_next_line_and_show_text(str); end
 
       sig { params(opts: T::Hash[Symbol, T.untyped]).returns(T::Array[PDF::Reader::TextRun]) }
       def runs(opts = {}); end
 
-      sig { params(aw: T.untyped, ac: T.untyped, string: T.untyped).returns(T.untyped) }
+      sig { params(aw: Numeric, ac: Numeric, string: String).void }
       def set_spacing_next_line_show_text(aw, ac, string); end
 
       sig { params(label: T.untyped).returns(T.untyped) }
       def invoke_xobject(label); end
 
-      sig { params(string: T.untyped).returns(T.untyped) }
+      sig { params(string: String).void }
       def internal_show_text(string); end
 
       sig { params(x: T.untyped, y: T.untyped).returns(T.untyped) }
@@ -1670,6 +1670,109 @@ module PDF
         ).returns(T.untyped)
       end
       def faster_multiply!(a2, b2, c2, d2, e2, f2); end
+    end
+
+    class TypeCheck
+
+      sig { params(obj: T.untyped).returns(Numeric) }
+      def self.cast_to_numeric!(obj); end
+
+      sig { params(string: T.untyped).returns(String) }
+      def self.cast_to_string!(string); end
+
+      sig { params(obj: T.untyped).returns(T.nilable(Symbol)) }
+      def self.cast_to_symbol(obj); end
+    end
+
+    class ValidatingReceiver
+      sig { params(wrapped: T.untyped).void }
+      def initialize(wrapped)
+        @wrapped = T.let(T.unsafe(nil), T.untyped)
+      end
+
+      sig { params(page: PDF::Reader::Page).void }
+      def page=(page); end
+
+      sig { params(args: T.untyped).void }
+      def save_graphics_state(*args); end
+
+      sig { params(args: T.untyped).void }
+      def restore_graphics_state(*args); end
+
+      sig { params(args: T.untyped).void }
+      def concatenate_matrix(*args); end
+
+      sig { params(args: T.untyped).void }
+      def begin_text_object(*args); end
+
+      sig { params(args: T.untyped).void }
+      def end_text_object(*args); end
+
+      sig { params(args: T.untyped).void }
+      def set_character_spacing(*args); end
+
+      sig { params(args: T.untyped).void }
+      def set_horizontal_text_scaling(*args); end
+
+      sig { params(args: T.untyped).void }
+      def set_text_font_and_size(*args); end
+
+      sig { params(args: T.untyped).void }
+      def set_text_leading(*args); end
+
+      sig { params(args: T.untyped).void }
+      def set_text_rendering_mode(*args); end
+
+      sig { params(args: T.untyped).void }
+      def set_text_rise(*args); end
+
+      sig { params(args: T.untyped).void }
+      def set_word_spacing(*args); end
+
+      sig { params(args: T.untyped).void }
+      def move_text_position(*args); end
+
+      sig { params(args: T.untyped).void }
+      def move_text_position_and_set_leading(*args); end
+
+      sig { params(args: T.untyped).void }
+      def set_text_matrix_and_text_line_matrix(*args); end
+
+      sig { params(args: T.untyped).void }
+      def move_to_start_of_next_line(*args); end
+
+      sig { params(args: T.untyped).void }
+      def show_text(*args); end
+
+      sig { params(args: T.untyped).void }
+      def show_text_with_positioning(*args); end
+
+      sig { params(args: T.untyped).void }
+      def move_to_next_line_and_show_text(*args); end
+
+      sig { params(args: T.untyped).void }
+      def set_spacing_next_line_show_text(*args); end
+
+      sig { params(args: T.untyped).void }
+      def invoke_xobject(*args); end
+
+      sig { params(args: T.untyped).void }
+      def begin_inline_image(*args); end
+
+      sig { params(args: T.untyped).void }
+      def begin_inline_image_data(*args); end
+
+      sig { params(args: T.untyped).void }
+      def end_inline_image(*args); end
+
+      sig { params(meth: T.untyped).returns(T::Boolean) }
+      def respond_to?(meth); end
+
+      sig { params(methodname: Symbol, args: T.untyped).void }
+      def method_missing(methodname, *args); end
+
+      sig { params(methodname: T.untyped, args: T.untyped).void }
+      def call_wrapped(methodname, *args); end
     end
 
     class UnimplementedSecurityHandler
