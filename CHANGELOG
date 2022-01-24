@@ -1,3 +1,8 @@
+v2.9.0 (24th January 2022)
+- Support additional encryption standards (http://github.com/yob/pdf-reader/pull/419)
+- Return CropBox correctly from Page#rectangles (https://github.com/yob/pdf-reader/pull/420)
+- For sorbet users, additional type annotations are included in the gem
+
 v2.8.0 (28th Decemeber 2021)
 - Add PDF::Reader::Page#runs for extracting text from a page with positioning metadata (http://github.com/yob/pdf-reader/pull/411)
 - Add options to PDF::Reader::Page#text to make some behaviour configurable (http://github.com/yob/pdf-reader/pull/411)
