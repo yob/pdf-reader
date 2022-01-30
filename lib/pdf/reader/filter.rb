@@ -43,16 +43,15 @@ class PDF::Reader
     #
     def self.with(name, options = {})
       case name
-      when :ASCII85Decode   then PDF::Reader::Filter::Ascii85.new(options)
-      when :ASCIIHexDecode  then PDF::Reader::Filter::AsciiHex.new(options)
-      when :CCITTFaxDecode  then PDF::Reader::Filter::Null.new(options)
-      when :DCTDecode       then PDF::Reader::Filter::Null.new(options)
-      when :FlateDecode     then PDF::Reader::Filter::Flate.new(options)
-      when :Fl              then PDF::Reader::Filter::Flate.new(options)
-      when :JBIG2Decode     then PDF::Reader::Filter::Null.new(options)
-      when :JPXDecode       then PDF::Reader::Filter::Null.new(options)
-      when :LZWDecode       then PDF::Reader::Filter::Lzw.new(options)
-      when :RunLengthDecode then PDF::Reader::Filter::RunLength.new(options)
+      when :ASCII85Decode, :A85   then PDF::Reader::Filter::Ascii85.new(options)
+      when :ASCIIHexDecode, :AHx  then PDF::Reader::Filter::AsciiHex.new(options)
+      when :CCITTFaxDecode, :CCF  then PDF::Reader::Filter::Null.new(options)
+      when :DCTDecode, :DCT       then PDF::Reader::Filter::Null.new(options)
+      when :FlateDecode, :Fl      then PDF::Reader::Filter::Flate.new(options)
+      when :JBIG2Decode           then PDF::Reader::Filter::Null.new(options)
+      when :JPXDecode             then PDF::Reader::Filter::Null.new(options)
+      when :LZWDecode, :LZW       then PDF::Reader::Filter::Lzw.new(options)
+      when :RunLengthDecode, :RL  then PDF::Reader::Filter::RunLength.new(options)
       else
         raise UnsupportedFeatureError, "Unknown filter: #{name}"
       end
