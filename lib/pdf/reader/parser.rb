@@ -228,7 +228,10 @@ class PDF::Reader
       data = @buffer.read(length, :skip_eol => true)
 
       Error.str_assert(parse_token, "endstream")
-      Error.str_assert(parse_token, "endobj")
+
+      # We used to assert that the stream had the correct closing token, but it doesn't *really*
+      # matter if it's missing, and other readers seems to handle its absence just fine
+      # Error.str_assert(parse_token, "endobj")
 
       PDF::Reader::Stream.new(dict, data)
     end
