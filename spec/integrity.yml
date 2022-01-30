@@ -302,6 +302,9 @@ data/invalid/no_trailer.pdf:
 data/invalid/page_reference_is_not_a_dict.pdf:
   :bytes: 108807
   :md5: 7a6da0a240b4c3dea52308502b051cb5
+data/invalid/stream_missing_endobj.pdf:
+  :bytes: 998
+  :md5: 624687838f3445a4bd8a1f8dafe65810
 data/invalid/trailer_is_not_a_dict.pdf:
   :bytes: 9651
   :md5: 2cf861306cb9d19e926a079f54ad4e19

@@ -330,6 +330,22 @@ describe PDF::Reader, "integration specs with invalid PDF files" do
     end
   end
 
+  context "stream_missing_endobj.pdf" do
+    let(:filename) { pdf_spec_file("stream_missing_endobj") }
+
+    it "compensates for the error and can extract the paage text" do
+      expect {
+        parse_pdf(filename)
+      }.to_not raise_error
+
+      PDF::Reader.open(filename) do |pdf|
+        expect(pdf.page(1).text).to eql(
+          "Object 4 (content stream) is missing the endobj token"
+        )
+      end
+    end
+  end
+
   # a very basic sanity check that we can open this file and extract interesting data
   def parse_pdf(filename)
     PDF::Reader.open(filename) do |reader|
