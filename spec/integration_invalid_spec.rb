@@ -314,6 +314,22 @@ describe PDF::Reader, "integration specs with invalid PDF files" do
     end
   end
 
+  context "xref_offset_too_low.pdf" do
+    let(:filename) { pdf_spec_file("xref_offset_too_low") }
+
+    it "compensates for the error and can extract the paage text" do
+      expect {
+        parse_pdf(filename)
+      }.to_not raise_error
+
+      PDF::Reader.open(filename) do |pdf|
+        expect(pdf.page(1).text).to eql(
+          "The xref offset for the root object (obj 2) is a few bytes too low"
+        )
+      end
+    end
+  end
+
   # a very basic sanity check that we can open this file and extract interesting data
   def parse_pdf(filename)
     PDF::Reader.open(filename) do |reader|

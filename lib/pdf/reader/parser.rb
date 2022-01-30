@@ -96,7 +96,13 @@ class PDF::Reader
     # id  - the object ID to return
     # gen - the object revision number to return
     def object(id, gen)
-      Error.assert_equal(parse_token, id)
+      idCheck = parse_token
+
+      # Sometimes the xref table is corrupt and points to an offset slightly too early in the file.
+      # check the next token, maybe we can find the start of the object we're looking for
+      if idCheck != id
+        Error.assert_equal(parse_token, id)
+      end
       Error.assert_equal(parse_token, gen)
       Error.str_assert(parse_token, "obj")
 
