@@ -249,7 +249,7 @@ module PDF
       end
 
       def method_missing(methodname, *args)
-        @wrapped.call(methodname, *args)
+        @wrapped.send(methodname, *args)
       end
 
       private

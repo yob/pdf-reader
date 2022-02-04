@@ -151,6 +151,26 @@ describe PDF::Reader::Page do
         expect(callbacks.size).to eql(16)
         expect(callbacks.first).to eql(:page=)
       end
+
+      context "with a receiver that implements a method not type checked by ValidatingReceiver" do
+
+        before do
+          # This test is speecifically for confirming a receiver method is called, even if that
+          # method isn't one that ValidatingReceiver is type checking. If the following assertion
+          # ever fails, then we should update this spec to a different method not mentioned in
+          # ValidatingReceiver
+          expect(PDF::Reader::ValidatingReceiver.methods).to_not include(
+            :set_rgb_color_for_nonstroking
+          )
+        end
+
+        it "calls the receiver method as expected" do
+          receiver = double(set_rgb_color_for_nonstroking: true)
+          page.walk(receiver)
+          expect(receiver).to have_received(:set_rgb_color_for_nonstroking).twice
+        end
+      end
+
     end
   end
 
