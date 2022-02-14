@@ -375,6 +375,15 @@ describe PDF::Reader::ObjectHash do
 
   describe "#page_references" do
 
+    it "returns an Array of PDF::Reader::Reference objs" do
+      filename = pdf_spec_file("cairo-unicode")
+      h = PDF::Reader::ObjectHash.new(filename)
+      expect(h.page_references).to be_a(Array)
+      h.page_references.each do |ref|
+        expect(ref).to be_a(PDF::Reader::Reference)
+      end
+    end
+
     it "raises a MalformedPDFError if dereferenced value is not a dict" do
       filename = pdf_spec_file("page_reference_is_not_a_dict")
       h = PDF::Reader::ObjectHash.new(filename)
