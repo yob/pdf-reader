@@ -571,12 +571,14 @@ class PDF::Reader
     # the Array is significant and matches the page ordering of the document
     #
     def get_page_objects(obj)
-      if obj[:Type] == :Page
+      derefed_obj = deref_hash(obj)
+
+      if derefed_obj[:Type] == :Page
         [obj]
-      elsif obj[:Kids]
-        kids = deref_array(obj[:Kids]) || []
+      elsif derefed_obj[:Kids]
+        kids = deref_array(derefed_obj[:Kids]) || []
         kids.map { |kid|
-          get_page_objects(deref_hash(kid) || {})
+          get_page_objects(kid)
         }.flatten
       else
         raise MalformedPDFError, "Expected Page or Pages object"
