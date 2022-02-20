@@ -1,3 +1,6 @@
+v2.9.2 (20th February 2022)
+- Fix PDF::Reader::ObjectHash#page_references to return an Array of PDF::Reader::Reference (http://github.com/yob/pdf-reader/pull/444)
+
 v2.9.1 (4th February 2022)
 - Fix exception in Page#walk introduced in 2.9.0 (http://github.com/yob/pdf-reader/pull/442)
 - Other small bug fixes
