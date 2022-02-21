@@ -21,9 +21,9 @@ Gem::Specification.new do |spec|
   if spec.respond_to?(:metadata)
     spec.metadata = {
       "bug_tracker_uri"   => "https://github.com/yob/pdf-reader/issues",
-      "changelog_uri"     => "https://github.com/yob/pdf-reader/blob/v#{spec.version}/CHANGELOG",
-      "documentation_uri" => "https://www.rubydoc.info/gems/pdf-reader/#{spec.version}",
-      "source_code_uri"   => "https://github.com/yob/pdf-reader/tree/v#{spec.version}",
+      "changelog_uri"     => "https://github.com/yob/pdf-reader/CHANGELOG",
+      "documentation_uri" => "https://www.rubydoc.info/gems/pdf-reader",
+      "source_code_uri"   => "https://github.com/yob/pdf-reader",
     }
   end
 
