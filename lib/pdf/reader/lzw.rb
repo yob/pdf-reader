@@ -119,8 +119,8 @@ module PDF
         result
       end
 
-      def self.create_new_string(string_table,some_code, other_code)
-        string_table[some_code] + string_table[other_code][0].chr
+      def self.create_new_string(string_table, some_code, other_code)
+        string_table[some_code].to_s + string_table[other_code][0].chr
       end
       private_class_method :create_new_string
 
