@@ -55,6 +55,9 @@ module PDF
       # See the comments on PDF::Reader::Page#walk for more detail.
       #
       def walk(*receivers)
+        receivers = receivers.map { |receiver|
+          ValidatingReceiver.new(receiver)
+        }
         content_stream(receivers, raw_content)
       end
 
