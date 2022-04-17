@@ -58,10 +58,6 @@ class PDF::Reader
     def self.validate_not_nil(object, name)
       raise ArgumentError, "#{object} must not be nil" if object.nil?
     end
-    ################################################################################
-    def self.validate_not_nil_as_malformed(object, name)
-      raise MalformedPDFError, "#{object} must not be nil" if object.nil?
-    end
   end
 
   ################################################################################

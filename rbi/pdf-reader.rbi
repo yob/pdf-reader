@@ -279,9 +279,6 @@ module PDF
 
       sig { params(object: Object, name: String).void }
 		  def self.validate_not_nil(object, name); end
-
-      sig { params(object: Object, name: String).void }
-		  def self.validate_not_nil_as_malformed(object, name); end
     end
 
     class MalformedPDFError < RuntimeError
@@ -657,7 +654,7 @@ module PDF
       sig { params(key: T.untyped).returns(T.nilable(T::Array[Numeric])) }
       def deref_array_of_numbers(key); end
 
-      sig { params(key: T.untyped).returns(T.nilable(T:Hash[Symbol, T.untyped])) }
+      sig { params(key: T.untyped).returns(T.nilable(T::Hash[Symbol, T.untyped])) }
       def deref_hash(key); end
 
       sig { params(key: T.untyped).returns(T.nilable(Symbol)) }
@@ -891,7 +888,7 @@ module PDF
       sig { params(origin: T.untyped).returns(T.untyped) }
       def ancestors(origin = @page_object[:Parent]); end
 
-      sig { params(obj: T::Hash[T.untyped, T.untyped]).returns(T::Hash[Symbol, T.untyped]) }
+      sig { params(obj: T::Hash[Symbol, T.untyped]).returns(T::Hash[Symbol, T.untyped]) }
       def select_inheritable(obj); end
     end
 
