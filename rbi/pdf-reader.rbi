@@ -333,99 +333,109 @@ module PDF
       sig { returns(Numeric) }
       attr_reader :cid_default_width
 
-      sig { params(ohash: T.untyped, obj: T.untyped).void }
+      sig { params(ohash: PDF::Reader::ObjectHash, obj: T::Hash[Symbol, T.untyped]).void }
       def initialize(ohash, obj); end
 
-      sig { params(params: T.untyped).returns(T.untyped) }
+      sig { params(params: T.any(Integer, String, T::Array[T.untyped])).returns(String) }
       def to_utf8(params); end
 
-      sig { params(data: T.untyped).returns(T.untyped) }
+      sig { params(data: String).returns(T::Array[T.nilable(T.any(Numeric, String))]) }
       def unpack(data); end
 
-      sig { params(code_point: T.untyped).returns(T.untyped) }
+      sig { params(code_point: T.any(String, Integer)).returns(T.untyped) }
       def glyph_width(code_point); end
 
-      sig { params(font_name: T.untyped).returns(T.untyped) }
+      sig { params(font_name: Symbol).returns(PDF::Reader::Encoding) }
       def default_encoding(font_name); end
 
-      sig { returns(T.untyped) }
+      sig {
+        returns(
+          T.any(
+            PDF::Reader::WidthCalculator::BuiltIn,
+            PDF::Reader::WidthCalculator::Composite,
+            PDF::Reader::WidthCalculator::TrueType,
+            PDF::Reader::WidthCalculator::TypeOneOrThree,
+            PDF::Reader::WidthCalculator::TypeZero,
+          )
+        )
+      }
       def build_width_calculator; end
 
-      sig { params(obj: T.untyped).returns(T.untyped) }
+      sig { params(obj: T.untyped).void }
       def extract_base_info(obj); end
 
-      sig { params(obj: T.untyped).returns(T.untyped) }
+      sig { params(obj: T.untyped).void }
       def extract_descriptor(obj); end
 
-      sig { params(obj: T.untyped).returns(T.untyped) }
+      sig { params(obj: T.untyped).void }
       def extract_descendants(obj); end
 
-      sig { params(params: T.untyped).returns(T.untyped) }
+      sig { params(params: T.any(Integer, String, T::Array[T.untyped])).returns(String) }
       def to_utf8_via_cmap(params); end
 
-      sig { params(params: T.untyped).returns(T.untyped) }
+      sig { params(params: T.any(Integer, String, T::Array[T.untyped])).returns(String) }
       def to_utf8_via_encoding(params); end
     end
 
     class FontDescriptor
-      sig { returns(T.untyped) }
+      sig { returns(String) }
       attr_reader :font_name
 
-      sig { returns(T.untyped) }
+      sig { returns(T.nilable(String)) }
       attr_reader :font_family
 
-      sig { returns(T.untyped) }
+      sig { returns(Symbol) }
       attr_reader :font_stretch
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       attr_reader :font_weight
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Array[Numeric]) }
       attr_reader :font_bounding_box
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       attr_reader :cap_height
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       attr_reader :ascent
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       attr_reader :descent
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       attr_reader :leading
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       attr_reader :avg_width
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       attr_reader :max_width
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       attr_reader :missing_width
 
-      sig { returns(T.untyped) }
+      sig { returns(T.nilable(Numeric)) }
       attr_reader :italic_angle
 
-      sig { returns(T.untyped) }
+      sig { returns(T.nilable(Numeric)) }
       attr_reader :stem_v
 
-      sig { returns(T.untyped) }
+      sig { returns(T.nilable(Numeric)) }
       attr_reader :x_height
 
-      sig { returns(T.untyped) }
+      sig { returns(Integer) }
       attr_reader :font_flags
 
       sig { params(ohash: PDF::Reader::ObjectHash, fd_hash: T::Hash[T.untyped, T.untyped]).void }
       def initialize(ohash, fd_hash); end
 
-      sig { params(char_code: T.untyped).returns(T.untyped) }
+      sig { params(char_code: Integer).returns(Numeric) }
       def glyph_width(char_code); end
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       def glyph_to_pdf_scale_factor; end
 
-      sig { returns(T.untyped) }
+      sig { returns(TTFunk::File) }
       def ttf_program_stream; end
     end
 

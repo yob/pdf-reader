@@ -56,7 +56,9 @@ class PDF::Reader
         end
         char_metric = ttf_program_stream.horizontal_metrics.metrics[glyph_id]
         if char_metric
-          return char_metric.advance_width
+          char_metric.advance_width
+        else
+          0
         end
       end
     end
