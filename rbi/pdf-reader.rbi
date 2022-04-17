@@ -527,7 +527,13 @@ module PDF
 
       class BitStream
         sig { params(data: String, bits_in_chunk: Integer).void }
-        def initialize(data, bits_in_chunk); end
+        def initialize(data, bits_in_chunk)
+          @data = T.let(T.unsafe(nil), String)
+          @bits_in_chunk = T.let(T.unsafe(nil), Integer)
+          @current_pos = T.let(T.unsafe(nil), Integer)
+          @bits_left_in_byte = T.let(T.unsafe(nil), Integer)
+
+        end
 
         sig { params(bits_in_chunk: Integer).void }
         def set_bits_in_chunk(bits_in_chunk); end
@@ -536,12 +542,15 @@ module PDF
         def read; end
       end
 
-      class StringTable < Hash
-        sig { returns(T.untyped) }
+      class StringTable
+        sig { returns(Integer) }
         attr_reader :string_table_pos
 
         sig { void }
-        def initialize; end
+        def initialize
+          @data = T.let(T.unsafe(nil), T::Hash[Integer, String])
+          @string_table_pos = T.let(T.unsafe(nil), Integer)
+        end
 
         sig { params(key: Integer).returns(T.nilable(String)) }
         def [](key); end
