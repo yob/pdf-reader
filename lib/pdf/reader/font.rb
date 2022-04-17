@@ -205,14 +205,17 @@ class PDF::Reader
     end
 
     def extract_descendants(obj)
-      return unless obj[:DescendantFonts]
       # per PDF 32000-1:2008 pp. 280 :DescendentFonts is:
       # A one-element array specifying the CIDFont dictionary that is the
       # descendant of this Type 0 font.
-      descendants = @ohash.deref_array(obj[:DescendantFonts])
-      @descendantfonts = descendants.map { |desc|
-        PDF::Reader::Font.new(@ohash, @ohash.deref_hash(desc))
-      }
+      if obj[:DescendantFonts]
+        descendants = @ohash.deref_array(obj[:DescendantFonts])
+        @descendantfonts = descendants.map { |desc|
+          PDF::Reader::Font.new(@ohash, @ohash.deref_hash(desc))
+        }
+      else
+        @descendantfonts = []
+      end
     end
 
     def to_utf8_via_cmap(params)
