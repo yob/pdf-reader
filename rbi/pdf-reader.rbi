@@ -527,13 +527,13 @@ module PDF
       CODE_CLEAR_TABLE = 256
 
       class BitStream
-        sig { params(data: T.untyped, bits_in_chunk: T.untyped).void }
+        sig { params(data: String, bits_in_chunk: Integer).void }
         def initialize(data, bits_in_chunk); end
 
-        sig { params(bits_in_chunk: T.untyped).returns(T.untyped) }
+        sig { params(bits_in_chunk: Integer).void }
         def set_bits_in_chunk(bits_in_chunk); end
 
-        sig { returns(T.untyped) }
+        sig { returns(Integer) }
         def read; end
       end
 
@@ -544,17 +544,17 @@ module PDF
         sig { void }
         def initialize; end
 
-        sig { params(key: T.untyped).returns(T.untyped) }
+        sig { params(key: Integer).returns(T.nilable(String)) }
         def [](key); end
 
-        sig { params(string: T.untyped).returns(T.untyped) }
+        sig { params(string: String).void }
         def add(string); end
       end
 
-      sig { params(data: T.untyped).returns(T.untyped) }
+      sig { params(data: String).returns(String) }
       def self.decode(data); end
 
-      sig { params(string_table: T.untyped, some_code: T.untyped, other_code: T.untyped).returns(T.untyped) }
+      sig { params(string_table: PDF::Reader::LZW::StringTable, some_code: T.nilable(Integer), other_code: T.nilable(Integer)).returns(String) }
       def self.create_new_string(string_table, some_code, other_code); end
     end
 
