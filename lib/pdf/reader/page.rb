@@ -278,7 +278,9 @@ module PDF
           []
         else
           obj = objects.deref_hash(origin)
-          PDF::Reader::Error.validate_not_nil_as_malformed(obj, "parent")
+          if obj.nil?
+            raise MalformedPDFError, "parent mus not be nil"
+          end
           [ select_inheritable(obj) ] + ancestors(obj[:Parent])
         end
       end

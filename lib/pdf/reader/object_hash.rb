@@ -573,7 +573,9 @@ class PDF::Reader
     def get_page_objects(obj)
       derefed_obj = deref_hash(obj)
 
-      if derefed_obj[:Type] == :Page
+      if derefed_obj.nil?
+        raise MalformedPDFError, "Expected Page or Pages object, got nil"
+      elsif derefed_obj[:Type] == :Page
         [obj]
       elsif derefed_obj[:Kids]
         kids = deref_array(derefed_obj[:Kids]) || []
