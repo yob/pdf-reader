@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class PDF::Reader
@@ -32,7 +32,7 @@ class PDF::Reader
         # which is undesireable in this case.
         first_char = @font.first_char
         if first_char && first_char <= code_point
-          @font.widths.fetch(code_point - first_char, @missing_width).to_f
+          @font.widths.fetch(code_point - first_char, @missing_width.to_i).to_f
         else
           @missing_width.to_f
         end
