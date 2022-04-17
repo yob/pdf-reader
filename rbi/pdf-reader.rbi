@@ -300,37 +300,37 @@ module PDF
     end
 
     class Font
-      sig { returns(T.untyped) }
+      sig { returns(T.nilable(Symbol)) }
       attr_accessor :subtype
 
-      sig { returns(T.untyped) }
+      sig { returns(PDF::Reader::Encoding) }
       attr_accessor :encoding
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Array[PDF::Reader::Font]) }
       attr_accessor :descendantfonts
 
-      sig { returns(T.untyped) }
+      sig { returns(PDF::Reader::CMap) }
       attr_accessor :tounicode
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Array[Integer]) }
       attr_reader :widths
 
-      sig { returns(T.untyped) }
+      sig { returns(T.nilable(Integer)) }
       attr_reader :first_char
 
-      sig { returns(T.untyped) }
+      sig { returns(T.nilable(Integer)) }
       attr_reader :last_char
 
-      sig { returns(T.untyped) }
+      sig { returns(T.nilable(Symbol)) }
       attr_reader :basefont
 
-      sig { returns(T.untyped) }
+      sig { returns(T.nilable(PDF::Reader::FontDescriptor)) }
       attr_reader :font_descriptor
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Array[Numeric]) }
       attr_reader :cid_widths
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       attr_reader :cid_default_width
 
       sig { params(ohash: T.untyped, obj: T.untyped).void }
@@ -1923,54 +1923,64 @@ module PDF
         :ZapfDingbats
       ]
 
-        sig { params(font: T.untyped).void }
-        def initialize(font); end
+        sig { params(font: PDF::Reader::Font).void }
+        def initialize(font)
+          @font = T.let(T.unsafe(nil), PDF::Reader::Font)
+        end
 
-        sig { params(code_point: T.untyped).returns(T.untyped) }
+        sig { params(code_point: T.nilable(Integer)).returns(Numeric) }
         def glyph_width(code_point); end
 
-        sig { params(code_point: T.untyped).returns(T.untyped) }
+        sig { params(code_point: Integer).returns(T::Boolean) }
         def control_character?(code_point); end
 
-        sig { params(font_name: T.untyped).returns(T.untyped) }
+        sig { params(font_name: T.nilable(Symbol)).returns(String) }
         def extract_basefont(font_name); end
       end
 
       class Composite
-        sig { params(font: T.untyped).void }
-        def initialize(font); end
+        sig { params(font: PDF::Reader::Font).void }
+        def initialize(font)
+          @font = T.let(T.unsafe(nil), PDF::Reader::Font)
+        end
 
-        sig { params(code_point: T.untyped).returns(T.untyped) }
+        sig { params(code_point: T.nilable(Integer)).returns(Numeric) }
         def glyph_width(code_point); end
       end
 
       class TrueType
-        sig { params(font: T.untyped).void }
-        def initialize(font); end
+        sig { params(font: PDF::Reader::Font).void }
+        def initialize(font)
+          @font = T.let(T.unsafe(nil), PDF::Reader::Font)
+        end
 
-        sig { params(code_point: T.untyped).returns(T.untyped) }
+        sig { params(code_point: T.nilable(Integer)).returns(Numeric) }
         def glyph_width(code_point); end
 
-        sig { params(code_point: T.untyped).returns(T.untyped) }
+        sig { params(code_point: Integer).returns(T.nilable(Numeric)) }
         def glyph_width_from_font(code_point); end
 
-        sig { params(code_point: T.untyped).returns(T.untyped) }
+        sig { params(code_point: Integer).returns(T.nilable(Numeric)) }
         def glyph_width_from_descriptor(code_point); end
       end
 
       class TypeOneOrThree
-        sig { params(font: T.untyped).void }
-        def initialize(font); end
+        sig { params(font: PDF::Reader::Font).void }
+        def initialize(font)
+          @font = T.let(T.unsafe(nil), PDF::Reader::Font)
+        end
 
-        sig { params(code_point: T.untyped).returns(T.untyped) }
+        sig { params(code_point: T.nilable(Integer)).returns(Numeric) }
         def glyph_width(code_point); end
       end
 
       class TypeZero
-        sig { params(font: T.untyped).void }
-        def initialize(font); end
+        sig { params(font: PDF::Reader::Font).void }
+        def initialize(font)
+          @font = T.let(T.unsafe(nil), PDF::Reader::Font)
+        end
 
-        sig { params(code_point: T.untyped).returns(T.untyped) }
+        sig { params(code_point: T.nilable(Integer)).returns(Numeric) }
         def glyph_width(code_point); end
       end
     end
