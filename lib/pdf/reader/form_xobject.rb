@@ -45,7 +45,7 @@ module PDF
       def font_objects
         raw_fonts = @objects.deref_hash(fonts)
         ::Hash[raw_fonts.map { |label, font|
-          [label, PDF::Reader::Font.new(@objects, @objects.deref_hash(font))]
+          [label, PDF::Reader::Font.new(@objects, @objects.deref_hash(font) || {})]
         }]
       end
 
