@@ -16,7 +16,7 @@ class PDF::Reader
         :h_scaling      => 1.0,
         :text_leading   => 0,
         :text_font      => nil,
-        :text_font_size => nil,
+        :text_font_size => 0,
         :text_mode      => 0,
         :text_rise      => 0,
         :text_knockout  => 0
@@ -32,6 +32,12 @@ class PDF::Reader
         @cs_stack      = [page.color_spaces]
         @stack         = [DEFAULT_GRAPHICS_STATE.dup]
         state[:ctm]  = identity_matrix
+
+        # These are only valid when inside a `BT` block and we re-initialize them on each
+        # `BT`. However, we need the instance variables set so PDFs with the text operators
+        # out order don't trigger NoMethodError when these are nil
+        @text_matrix      = identity_matrix
+        @text_line_matrix = identity_matrix
       end
 
       #####################################################
