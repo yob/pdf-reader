@@ -24,7 +24,7 @@ class PDF::Reader
     end
 
     def size
-      @dict[:N]
+      TypeCheck.cast_to_int!(@dict[:N])
     end
 
     private
@@ -40,7 +40,7 @@ class PDF::Reader
     end
 
     def first
-      @dict[:First]
+      TypeCheck.cast_to_int!(@dict[:First])
     end
 
     def buffer
