@@ -23,7 +23,7 @@ class PDF::Reader
 
         # in ruby a negative index is valid, and will go from the end of the array
         # which is undesireable in this case.
-        if @font.first_char <= code_point
+        if @font.first_char && @font.first_char <= code_point
           @font.widths.fetch(code_point - @font.first_char, @missing_width).to_f
         else
           @missing_width.to_f
