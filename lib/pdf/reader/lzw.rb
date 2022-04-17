@@ -25,12 +25,14 @@ module PDF
         def initialize(data, bits_in_chunk)
           @data = data
           @data.force_encoding("BINARY")
-          @bits_in_chunk = bits_in_chunk
+          set_bits_in_chunk(bits_in_chunk)
           @current_pos = 0
           @bits_left_in_byte = 8
         end
 
         def set_bits_in_chunk(bits_in_chunk)
+          raise MalformedPDFError, "invalid LZW bits" if bits_in_chunk < 9 || bits_in_chunk > 12
+
           @bits_in_chunk = bits_in_chunk
         end
 
@@ -83,7 +85,7 @@ module PDF
       # Decompresses a LZW compressed string.
       #
       def self.decode(data)
-        stream = BitStream.new data.to_s, 9 # size of codes between 9 and 12 bits
+        stream = BitStream.new(data.to_s, 9) # size of codes between 9 and 12 bits
         string_table = StringTable.new
         result = "".dup
         until (code = stream.read) == CODE_EOD
@@ -120,11 +122,13 @@ module PDF
       end
 
       def self.create_new_string(string_table, some_code, other_code)
+        raise MalformedPDFError, "invalid LZW data" if some_code.nil? || other_code.nil?
+
         item_one = string_table[some_code]
         item_two = string_table[other_code]
 
         if item_one && item_two
-          item_one + item_two[0].chr
+          item_one + item_two.chr
         else
           raise MalformedPDFError, "invalid LZW data"
         end
