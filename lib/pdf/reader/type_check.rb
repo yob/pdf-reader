@@ -9,6 +9,18 @@ module PDF
     #
     class TypeCheck
 
+      def self.cast_to_int!(obj)
+        if obj.is_a?(Integer)
+          obj
+        elsif obj.nil?
+          0
+        elsif obj.respond_to?(:to_i)
+          obj.to_i
+        else
+          raise MalformedPDFError, "Unable to cast to integer"
+        end
+      end
+
       def self.cast_to_numeric!(obj)
         if obj.is_a?(Numeric)
           obj

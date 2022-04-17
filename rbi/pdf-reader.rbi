@@ -772,22 +772,25 @@ module PDF
     end
 
     class ObjectStream
-      sig { params(stream: T.untyped).void }
-      def initialize(stream); end
+      sig { params(stream: PDF::Reader::Stream).void }
+      def initialize(stream)
+        @dict = T.let(T.unsafe(nil), T::Hash[Symbol, T.untyped])
+        @data = T.let(T.unsafe(nil), String)
+      end
 
       sig { params(objid: T.untyped).returns(T.untyped) }
       def [](objid); end
 
-      sig { returns(T.untyped) }
+      sig { returns(Integer) }
       def size; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Hash[Integer, Integer]) }
       def offsets; end
 
-      sig { returns(T.untyped) }
+      sig { returns(Integer) }
       def first; end
 
-      sig { returns(T.untyped) }
+      sig { returns(PDF::Reader::Buffer) }
       def buffer; end
     end
 
@@ -1682,6 +1685,9 @@ module PDF
     end
 
     class TypeCheck
+
+      sig { params(obj: T.untyped).returns(Integer) }
+      def self.cast_to_int!(obj); end
 
       sig { params(obj: T.untyped).returns(Numeric) }
       def self.cast_to_numeric!(obj); end
