@@ -226,9 +226,7 @@ class PDF::Reader
           @tounicode.decode(c) || PDF::Reader::Encoding::UNKNOWN_CHAR
         }.flatten.pack("U*")
       when Array
-        params.collect { |param| to_utf8_via_cmap(param) }
-      else
-        params
+        params.collect { |param| to_utf8_via_cmap(param) }.join("")
       end
     end
 
@@ -243,9 +241,7 @@ class PDF::Reader
       when String
         encoding.to_utf8(params)
       when Array
-        params.collect { |param| to_utf8_via_encoding(param) }
-      else
-        params
+        params.collect { |param| to_utf8_via_encoding(param) }.join("")
       end
     end
 

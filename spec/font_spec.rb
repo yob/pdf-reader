@@ -24,9 +24,9 @@ describe PDF::Reader::Font do
         font.to_utf8(["hello", "howdy"])
       end
 
-      it "returns the same type when to_utf8 is called with a string or array" do
+      it "returns a string when to_utf8 is called with a string or array" do
         expect(font.to_utf8("abc")).to be_a_kind_of(String)
-        expect(font.to_utf8(["abc"])).to be_a_kind_of(Array)
+        expect(font.to_utf8(["abc"])).to be_a_kind_of(String)
       end
 
       it "converts integers to a utf-8 string" do
