@@ -338,6 +338,9 @@ data/lzw_compressed.dat:
 data/lzw_compressed2.dat:
   :bytes: 7279
   :md5: 77d850609610846d06dac6b80b10c25a
+data/lzw_compressed_corrupt.dat:
+  :bytes: 238
+  :md5: 254d00a22e904863dee946a4da7eda68
 data/lzw_decompressed.dat:
   :bytes: 347
   :md5: 4abd51aa78c14ed837d834e181216787
