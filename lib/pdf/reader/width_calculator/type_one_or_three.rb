@@ -10,8 +10,8 @@ class PDF::Reader
       def initialize(font)
         @font = font
 
-        if @font.font_descriptor
-          @missing_width = @font.font_descriptor.missing_width
+        if fd = @font.font_descriptor
+          @missing_width = fd.missing_width
         else
           @missing_width = 0
         end
@@ -23,8 +23,9 @@ class PDF::Reader
 
         # in ruby a negative index is valid, and will go from the end of the array
         # which is undesireable in this case.
-        if @font.first_char && @font.first_char <= code_point
-          @font.widths.fetch(code_point - @font.first_char, @missing_width).to_f
+        first_char = @font.first_char
+        if first_char && first_char <= code_point
+          @font.widths.fetch(code_point - first_char, @missing_width).to_f
         else
           @missing_width.to_f
         end

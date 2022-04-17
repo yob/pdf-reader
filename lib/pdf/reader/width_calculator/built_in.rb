@@ -53,12 +53,13 @@ class PDF::Reader
       private
 
       def control_character?(code_point)
-        @font.encoding.int_to_name(code_point).first.to_s[/\Acontrol..\Z/]
+        match = @font.encoding.int_to_name(code_point).first.to_s[/\Acontrol..\Z/]
+        match ? true : false
       end
 
       def extract_basefont(font_name)
         if BUILTINS.include?(font_name)
-          font_name
+          font_name.to_s
         else
           "Times-Roman"
         end

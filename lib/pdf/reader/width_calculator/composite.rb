@@ -22,7 +22,11 @@ class PDF::Reader
 
         w = @widths[code_point]
         # 0 is a valid width
-        return w.to_f unless w.nil?
+        if w
+          w.to_f
+        else
+          0
+        end
       end
     end
   end
