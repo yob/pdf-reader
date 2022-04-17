@@ -13,13 +13,16 @@ class PDF::Reader
 
       def initialize(font)
         @font = font
-        @descendant_font = @font.descendantfonts.first
       end
 
       def glyph_width(code_point)
         return 0 if code_point.nil? || code_point < 0
 
-        @descendant_font.glyph_width(code_point).to_f
+        if descendant_font = @font.descendantfonts.first
+          descendant_font.glyph_width(code_point).to_f
+        else
+          0
+        end
       end
     end
   end
