@@ -145,16 +145,18 @@ module PDF
     end
 
     class CidWidths
-      sig { params(default: T.untyped, array: T.untyped).void }
-      def initialize(default, array); end
+      sig { params(default: Numeric, array: T::Array[Numeric]).void }
+      def initialize(default, array)
+        @widths = T.let(T.unsafe(nil), T::Hash[Numeric, Numeric])
+      end
 
-      sig { params(default: T.untyped, array: T.untyped).returns(T.untyped) }
+      sig { params(default: Numeric, array: T::Array[Numeric]).returns(T.untyped) }
       def parse_array(default, array); end
 
-      sig { params(first: T.untyped, widths: T.untyped).returns(T.untyped) }
+      sig { params(first: Integer, widths: T::Array[Numeric]).returns(T::Hash[Numeric, Numeric]) }
       def parse_first_form(first, widths); end
 
-      sig { params(first: T.untyped, final: T.untyped, width: T.untyped).returns(T.untyped) }
+      sig { params(first: Integer, final: Integer, width: Numeric).returns(T::Hash[Numeric, Numeric]) }
       def parse_second_form(first, final, width); end
     end
 
@@ -1949,6 +1951,7 @@ module PDF
         sig { params(font: PDF::Reader::Font).void }
         def initialize(font)
           @font = T.let(T.unsafe(nil), PDF::Reader::Font)
+          @widths = T.let(T.unsafe(nil), PDF::Reader::CidWidths)
         end
 
         sig { params(code_point: T.nilable(Integer)).returns(Numeric) }

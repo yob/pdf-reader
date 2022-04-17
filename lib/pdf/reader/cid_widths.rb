@@ -33,10 +33,10 @@ class PDF::Reader
         params << array.shift
 
         if params.size == 2 && params.last.is_a?(Array)
-          widths.merge! parse_first_form(params.first, params.last)
+          widths.merge! parse_first_form(params.first.to_i, Array(params.last))
           params = []
         elsif params.size == 3
-          widths.merge! parse_second_form(params[0], params[1], params[2])
+          widths.merge! parse_second_form(params[0].to_i, params[1].to_i, params[2].to_i)
           params = []
         end
       end
@@ -54,6 +54,8 @@ class PDF::Reader
 
     # this is the form 10 20 123 where all index between 10 and 20 have width 123
     def parse_second_form(first, final, width)
+      raise MalformedPDFError, "CidWidths: #{first} must be less than #{final}" unless first < final
+
       (first..final).inject({}) { |accum, index|
         accum[index] = width
         accum
