@@ -119,8 +119,15 @@ module PDF
         result
       end
 
-      def self.create_new_string(string_table,some_code, other_code)
-        string_table[some_code] + string_table[other_code][0].chr
+      def self.create_new_string(string_table, some_code, other_code)
+        item_one = string_table[some_code]
+        item_two = string_table[other_code]
+
+        if item_one && item_two
+          item_one + item_two[0].chr
+        else
+          raise MalformedPDFError, "invalid LZW data"
+        end
       end
       private_class_method :create_new_string
 

@@ -16,5 +16,13 @@ describe PDF::Reader::LZW do
 
       expect(PDF::Reader::LZW.decode(content)).to match(/\ABT/)
     end
+
+    it "raises PDF::Reader::MalformedPDFError when the stream isn't valid lzw" do
+      content = binread(File.dirname(__FILE__) + "/data/lzw_compressed_corrupt.dat")
+
+      expect {
+        PDF::Reader::LZW.decode(content)
+      }.to raise_error(PDF::Reader::MalformedPDFError)
+    end
   end
 end
