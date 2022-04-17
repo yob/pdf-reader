@@ -46,6 +46,16 @@ module PDF
           raise MalformedPDFError, "Unable to cast to symbol"
         end
       end
+
+      def self.cast_to_pdf_dict!(obj)
+        if obj.is_a?(Hash)
+          obj
+        elsif obj.respond_to?(:to_h)
+          obj.to_h
+        else
+          raise MalformedPDFError, "Unable to cast to hash"
+        end
+      end
     end
   end
 end

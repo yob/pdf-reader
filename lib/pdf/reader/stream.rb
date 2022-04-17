@@ -40,7 +40,7 @@ class PDF::Reader
     # Creates a new stream with the specified dictionary and data. The dictionary
     # should be a standard ruby hash, the data should be a standard ruby string.
     def initialize(hash, data)
-      @hash = hash
+      @hash = TypeCheck.cast_to_pdf_dict!(hash)
       @data = data
       @udata = nil
     end

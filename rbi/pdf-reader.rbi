@@ -1691,6 +1691,9 @@ module PDF
 
       sig { params(obj: T.untyped).returns(T.nilable(Symbol)) }
       def self.cast_to_symbol(obj); end
+
+      sig { params(obj: T.untyped).returns(T::Hash[Symbol, T.untyped]) }
+      def self.cast_to_pdf_dict!(obj); end
     end
 
     class ValidatingReceiver
