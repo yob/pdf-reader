@@ -690,10 +690,10 @@ module PDF
       sig { params(key: T.untyped).returns(T.untyped) }
       def deref!(key); end
 
-      sig { params(key: T.untyped).returns(T::Array[T.untyped]) }
+      sig { params(key: T.untyped).returns(T.nilable(T::Array[T.untyped])) }
       def deref_array!(key); end
 
-      sig { params(key: T.untyped).returns(T::Hash[Symbol, T.untyped]) }
+      sig { params(key: T.untyped).returns(T.nilable(T::Hash[Symbol, T.untyped])) }
       def deref_hash!(key); end
 
       sig { params(key: T.untyped, local_default: T.untyped).returns(T.untyped) }
