@@ -173,7 +173,7 @@ class PDF::Reader
 
       # CID Fonts are not required to have a W or DW entry, if they don't exist,
       # the default cid width = 1000, see Section 9.7.4.1 PDF 32000-1:2008 pp 269
-      @cid_widths         = @ohash.deref_array(obj[:W])  || []
+      @cid_widths         = @ohash.deref_array_of_numbers(obj[:W])  || []
       @cid_default_width  = @ohash.deref_number(obj[:DW]) || 1000
 
       if obj[:ToUnicode]
