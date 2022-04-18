@@ -209,6 +209,16 @@ describe PDF::Reader::PageState do
         expect(state.trm_transform(1,1)).to eq([17, 22])
       end
     end
+
+    context "without begin_text first (out of order)" do
+      let!(:state)  {PDF::Reader::PageState.new(page) }
+
+      it "doesn't raise an exception" do
+        expect {
+          state.move_text_position(5, 10)
+        }.to_not raise_error
+      end
+    end
   end
 
   describe "#move_text_position_and_set_leading" do
@@ -235,6 +245,15 @@ describe PDF::Reader::PageState do
         state.move_text_position_and_set_leading(5, 10)
 
         expect(state.clone_state[:text_leading]).to eq(-10)
+      end
+    end
+    context "without begin_text first (out of order)" do
+      let!(:state)  {PDF::Reader::PageState.new(page) }
+
+      it "doesn't raise an exception" do
+        expect {
+          state.move_text_position_and_set_leading(5, 10)
+        }.to_not raise_error
       end
     end
   end
@@ -278,6 +297,15 @@ describe PDF::Reader::PageState do
         expect(state.trm_transform(1,1)).to eq([12, -3])
       end
     end
+    context "without begin_text first (out of order)" do
+      let!(:state)  {PDF::Reader::PageState.new(page) }
+
+      it "doesn't raise an exception" do
+        expect {
+          state.move_to_start_of_next_line
+        }.to_not raise_error
+      end
+    end
   end
 
   describe "#move_to_next_line_and_show_text" do
@@ -297,6 +325,15 @@ describe PDF::Reader::PageState do
         expect(state.trm_transform(0,1)).to eq([0, -3])
         expect(state.trm_transform(1,0)).to eq([12, -15])
         expect(state.trm_transform(1,1)).to eq([12, -3])
+      end
+    end
+    context "without begin_text first (out of order)" do
+      let!(:state)  {PDF::Reader::PageState.new(page) }
+
+      it "doesn't raise an exception" do
+        expect {
+          state.move_to_next_line_and_show_text("Foo")
+        }.to_not raise_error
       end
     end
   end
@@ -352,6 +389,47 @@ describe PDF::Reader::PageState do
         expect(state.trm_transform(1,1)).to eq([12, 12])
       end
     end
+    context "without begin_text first (out of order)" do
+      let!(:state)  {PDF::Reader::PageState.new(page) }
+
+      it "doesn't raise an exception" do
+        expect {
+          state.set_spacing_next_line_show_text(10, 20, "test")
+        }.to_not raise_error
+      end
+    end
+  end
+
+  describe "#ctm_transform" do
+    # ctm_transform is mostly verified as correct via assertions in all the other specs of this
+    # class - it's one of the primary ways we can see the visible state. However we need to check
+    # some error conditions here
+
+    context "with an empty page" do
+      let!(:state)  {PDF::Reader::PageState.new(page) }
+
+      it "is a no-op" do
+        expect(state.trm_transform(0,0)).to eq([0, 0])
+      end
+    end
+
+  end
+
+  describe "#trm_transform" do
+    # trm_transform is mostly verified as correct via assertions in all the other specs of this
+    # class - it's one of the primary ways we can see the visible state. However we need to check
+    # some error conditions here
+
+    context "without begin_text first (out of order)" do
+      let!(:state)  {PDF::Reader::PageState.new(page) }
+
+      it "doesn't raise an exception" do
+        expect {
+          state.trm_transform(0,0)
+        }.to_not raise_error
+      end
+    end
+
   end
 
   describe "#process_glyph_displacement" do
