@@ -243,7 +243,7 @@ class PDF::Reader
 
       obj.tap { |obj|
         if !obj.is_a?(PDF::Reader::Stream)
-          raise MalformedPDFError, "expected object to be an Array or nil"
+          raise MalformedPDFError, "expected object to be a Stream or nil"
         end
       }
     end
@@ -496,7 +496,9 @@ class PDF::Reader
     def fetch_object_stream(key)
       if xref[key].is_a?(PDF::Reader::Reference)
         container_key = xref[key]
-        object_streams[container_key] ||= PDF::Reader::ObjectStream.new(object(container_key))
+        stream = deref_stream(container_key)
+        raise MalformedPDFError, "Object Stream cannot be nil" if stream.nil?
+        object_streams[container_key] ||= PDF::Reader::ObjectStream.new(stream)
         object_streams[container_key][key.id]
       end
     end
