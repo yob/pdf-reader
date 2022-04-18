@@ -125,7 +125,7 @@ class PDF::Reader
               row_data[index] = (byte + paeth) % 256
             end
           else
-            raise ArgumentError, "Invalid filter algorithm #{filter}"
+            raise MalformedPDFError, "Invalid filter algorithm #{filter}"
           end
 
           s = []
