@@ -1980,6 +1980,7 @@ module PDF
         sig { params(font: PDF::Reader::Font).void }
         def initialize(font)
           @font = T.let(T.unsafe(nil), PDF::Reader::Font)
+          @missing_width = T.let(T.unsafe(nil), Numeric)
         end
 
         sig { params(code_point: T.nilable(Integer)).returns(Numeric) }
@@ -1996,6 +1997,7 @@ module PDF
         sig { params(font: PDF::Reader::Font).void }
         def initialize(font)
           @font = T.let(T.unsafe(nil), PDF::Reader::Font)
+          @missing_width = T.let(T.unsafe(nil), Numeric)
         end
 
         sig { params(code_point: T.nilable(Integer)).returns(Numeric) }
