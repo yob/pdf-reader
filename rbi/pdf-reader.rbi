@@ -439,8 +439,6 @@ module PDF
     end
 
     class FormXObject
-      include ResourceMethods
-
       sig { returns(T.untyped) }
       attr_reader :xobject
 
@@ -828,8 +826,6 @@ module PDF
     end
 
     class Page
-      include ResourceMethods
-
       sig { returns(PDF::Reader::ObjectHash) }
       attr_reader :objects
 
@@ -1407,31 +1403,36 @@ module PDF
       def series(*methods); end
     end
 
-    module ResourceMethods
-      extend T::Helpers
+    class Resources
 
-      sig { returns(T.untyped) }
+      sig { params(objects: PDF::Reader::ObjectHash, resources: T::Hash[T.untyped, T.untyped]).void }
+      def initialize(objects, resources)
+        @objects = T.let(T.unsafe(nil), PDF::Reader::ObjectHash)
+        @resources = T.let(T.unsafe(nil), T::Hash[Symbol, T.untyped])
+      end
+
+      sig { returns(T::Hash[Symbol, T.untyped]) }
       def color_spaces; end
 
-      sig { returns(T::Hash[T.untyped, T.untyped]) }
+      sig { returns(T::Hash[Symbol, T.untyped]) }
       def fonts; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Hash[Symbol, T.untyped]) }
       def graphic_states; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Hash[Symbol, T.untyped]) }
       def patterns; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Array[Symbol]) }
       def procedure_sets; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Hash[Symbol, T.untyped]) }
       def properties; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Hash[Symbol, T.untyped]) }
       def shadings; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Hash[Symbol, PDF::Reader::Stream]) }
       def xobjects; end
     end
 
@@ -1707,8 +1708,14 @@ module PDF
       sig { params(obj: T.untyped).returns(T.nilable(Symbol)) }
       def self.cast_to_symbol(obj); end
 
+      sig { params(obj: T.untyped).returns(Symbol) }
+      def self.cast_to_symbol!(obj); end
+
       sig { params(obj: T.untyped).returns(T::Hash[Symbol, T.untyped]) }
       def self.cast_to_pdf_dict!(obj); end
+
+      sig { params(obj: T.untyped).returns(T::Hash[Symbol, PDF::Reader::Stream]) }
+      def self.cast_to_pdf_dict_with_stream_values!(obj); end
     end
 
     class ValidatingReceiver
