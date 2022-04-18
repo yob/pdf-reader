@@ -1,8 +1,6 @@
 # coding: utf-8
-# typed: true
+# typed: strict
 # frozen_string_literal: true
-
-#
 
 require 'forwardable'
 

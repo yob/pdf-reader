@@ -150,7 +150,7 @@ module PDF
         @widths = T.let(T.unsafe(nil), T::Hash[Numeric, Numeric])
       end
 
-      sig { params(default: Numeric, array: T::Array[Numeric]).returns(T.untyped) }
+      sig { params(default: Numeric, array: T::Array[Numeric]).returns(T::Hash[Numeric, Numeric]) }
       def parse_array(default, array); end
 
       sig { params(first: Integer, widths: T::Array[Numeric]).returns(T::Hash[Numeric, Numeric]) }
