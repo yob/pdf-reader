@@ -92,7 +92,8 @@ module PDF
       #       of calling it over and over.
       #
       def xobjects
-        @objects.deref_hash!(@resources[:XObject]) || {}
+        dict = @objects.deref_hash!(@resources[:XObject]) || {}
+        TypeCheck.cast_to_pdf_dict_with_stream_values!(dict)
       end
 
     end

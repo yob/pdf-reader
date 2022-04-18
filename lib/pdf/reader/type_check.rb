@@ -59,11 +59,35 @@ module PDF
         end
       end
 
+      def self.cast_to_symbol!(obj)
+        res = cast_to_symbol(obj)
+        if res
+          res
+        else
+          raise MalformedPDFError, "Unable to cast to symbol"
+        end
+      end
+
       def self.cast_to_pdf_dict!(obj)
         if obj.is_a?(Hash)
           obj
         elsif obj.respond_to?(:to_h)
           obj.to_h
+        else
+          raise MalformedPDFError, "Unable to cast to hash"
+        end
+      end
+
+      def self.cast_to_pdf_dict_with_stream_values!(obj)
+        if obj.is_a?(Hash)
+          result = Hash.new
+          obj.each do |k, v|
+            raise MalformedPDFError, "Expected a stream" unless v.is_a?(PDF::Reader::Stream)
+            result[cast_to_symbol!(k)] = v
+          end
+          result
+        elsif obj.respond_to?(:to_h)
+          cast_to_pdf_dict_with_stream_values!(obj.to_h)
         else
           raise MalformedPDFError, "Unable to cast to hash"
         end
