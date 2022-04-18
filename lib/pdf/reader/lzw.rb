@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 module PDF
@@ -41,7 +41,7 @@ module PDF
           chunk = -1
           while bits_left_in_chunk > 0 and @current_pos < @data.size
             chunk = 0 if chunk < 0
-            codepoint = @data[@current_pos, 1].unpack("C*")[0]
+            codepoint = @data[@current_pos, 1].to_s.unpack("C*")[0].to_i
             current_byte = codepoint & (2**@bits_left_in_byte - 1) #clear consumed bits
             dif = bits_left_in_chunk - @bits_left_in_byte
             if dif > 0 then  current_byte <<= dif
@@ -63,21 +63,25 @@ module PDF
       CODE_CLEAR_TABLE = 256 #clear table
 
       # stores de pairs code => string
-      class StringTable < Hash # :nodoc:
+      class StringTable
         attr_reader :string_table_pos
 
         def initialize
-          super
+          @data = Hash.new
           @string_table_pos = 258 #initial code
         end
 
         #if code less than 258 return fixed string
         def [](key)
-          if key > 257 then super else key.chr end
+          if key > 257
+            @data[key]
+          else
+            key.chr
+          end
         end
 
         def add(string)
-          store(@string_table_pos, string)
+          @data.store(@string_table_pos, string)
           @string_table_pos += 1
         end
       end
