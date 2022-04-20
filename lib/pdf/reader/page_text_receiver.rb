@@ -21,6 +21,16 @@ module PDF
       ########## BEGIN FORWARDERS ##########
       # Graphics State Operators
       def_delegators :@state, :save_graphics_state, :restore_graphics_state
+      def_delegators :@state, :set_color_rendering_intent
+      def_delegators :@state, :set_flatness_tolerance, :set_graphics_state_parameters
+      def_delegators :@state, :set_line_cap_style, :set_line_dash, :set_line_join_style
+      def_delegators :@state, :set_line_width, :set_miter_limit
+
+      # Graphics State Operators (colour)
+      def_delegators :@state, :set_cmyk_color_for_stroking, :set_cmyk_color_for_nonstroking
+      def_delegators :@state, :set_gray_color_for_stroking, :set_gray_color_for_nonstroking
+      def_delegators :@state, :set_rgb_color_for_stroking, :set_rgb_color_for_nonstroking
+      def_delegators :@state, :set_stroke_color_space, :set_nonstroke_color_space
 
       # Matrix Operators
       def_delegators :@state, :concatenate_matrix
@@ -139,7 +149,7 @@ module PDF
           th = 1
           scaled_glyph_width = glyph_width * @state.font_size * th
           unless utf8_chars == SPACE
-            @characters << TextRun.new(newx, newy, scaled_glyph_width, @state.font_size, utf8_chars)
+            @characters << TextRun.new(newx, newy, scaled_glyph_width, @state.font_size, utf8_chars, @state.clone_state)
           end
           @state.process_glyph_displacement(glyph_width, 0, utf8_chars == SPACE)
         end

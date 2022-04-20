@@ -10,7 +10,31 @@ class PDF::Reader
     # directly to PDF operators.
     class PageState
 
+      # TODO: items int tracked in the graphics state yet:
+      # clipping_path, black_generation, undercolor_removal, transfer, halftone
+      #
       DEFAULT_GRAPHICS_STATE = {
+        :colorspace_fill => :DeviceGray,
+        :colorspace_stroke => :DeviceGray,
+        :color_fill     => 1.0, # black
+        :color_stroke   => 1.0, # black
+        :line_width     => 1.0,
+        :line_join      => 0,
+        :line_cap       => 0,
+        :miter_limit    => 10.0,
+        :dash_pattern   => { :array => [], phase: 0 },
+        :rendering_intent => :RelativeColorimetric,
+        :stroke_adjustment => false,
+        :blend_mode     => :Normal,
+        :soft_mask      => :None,
+        :alpha_constant_fill => 1.0,
+        :alpha_constant_stroke => 1.0,
+        :alpha_source   => false,
+        :overprint_fill => false,
+        :overprint_stroke => false,
+        :overprint_mode => 0,
+        :flatness       => 1.0,
+        :smoothness     => 0, # appropriate default value?
         :char_spacing   => 0,
         :word_spacing   => 0,
         :h_scaling      => 1.0,
@@ -30,6 +54,7 @@ class PDF::Reader
         @font_stack    = [build_fonts(page.fonts)]
         @xobject_stack = [page.xobjects]
         @cs_stack      = [page.color_spaces]
+        @gs_stack      = [page.graphic_states]
         @stack         = [DEFAULT_GRAPHICS_STATE.dup]
         state[:ctm]  = identity_matrix
 
@@ -56,6 +81,108 @@ class PDF::Reader
       #
       def restore_graphics_state
         @stack.pop
+      end
+
+      def set_color_rendering_intent(value)
+        state[:rendering_intent] = value
+      end
+
+      def set_flatness_tolerance(value)
+        state[:flatness] = value
+      end
+
+      # TODO we're not handling the following keys in graphics state dictionaries:
+      # :BG, BG2, :UCR, :UCR2, :TR, :TR2, :HT, :SA, :BM, :SMask
+      #
+      def set_graphics_state_parameters(name)
+        gs = find_graphics_state(name)
+        return if gs.nil?
+        puts "set_graphics_state_parameters #{name} #{gs.inspect}"
+        set_line_width(gs[:LW]) if gs[:LW]
+        set_line_cap_style(gs[:LC]) if gs[:LC]
+        set_line_join_style(gs[:LJ]) if gs[:LJ]
+        set_miter_limit(gs[:ML]) if gs[:ML]
+        set_line_dash(gs[:D].first. gs[:D].last) if gs[:D]
+        set_color_rendering_intent(gs[:RI]) if gs[:RI]
+        if gs[:OP] && gs[:op]
+          set_overprint_stroke(gs[:OP])
+          set_overprint_fill(gs[:op])
+        elsif gs[:OP]
+          set_overprint_stroke(gs[:OP])
+          set_overprint_fill(gs[:OP])
+        elsif gs[:op]
+          set_overprint_fill(gs[:op])
+        end
+        set_overprint_mode(gs[:OPM]) if gs[:OPM]
+        set_text_font_and_size(gs[:Font].first, gs[:Font].last) if gs[:Font]
+        set_flatness_tolerance(gs[:FL]) if gs[:FL]
+        set_smoothness(gs[:SM]) if gs[:SM]
+        set_alpha_constant_stroke(gs[:CA]) if gs[:CA]
+        set_alpha_constant_fill(gs[:ca]) if gs[:ca]
+        set_alpha_source(gs[:AIS]) if gs[:AIS]
+        set_text_knockout(gs[:TK]) if gs[:TK]
+      end
+
+      def set_line_cap_style(value)
+        state[:line_cap] = value.to_i
+      end
+
+      def set_line_dash(array, phase)
+        state[:dash_pattern] = { :array => array, :phase => phase }
+      end
+
+      def set_line_join_style(value)
+        state[:line_join] = value.to_i
+      end
+
+      def set_line_width(value)
+        state[:line_width] = value
+      end
+
+      def set_miter_limit(value)
+        state[:miter_limit] = value
+      end
+
+      #####################################################
+      # Colour Operators
+      #####################################################
+
+      def set_cmyk_color_for_stroking(c, m, y, k)
+        set_stroke_color_space(:DeviceCMYK)
+        state[:color_stroke] = [c, m, y, k]
+      end
+
+      def set_cmyk_color_for_nonstroking(c, m, y, k)
+        set_nonstroke_color_space(:DeviceCMYK)
+        state[:color_fill] = [c, m, y, k]
+      end
+
+      def set_gray_for_stroking(value)
+        set_stroke_color_space(:DeviceGray)
+        state[:color_stroke] = [value]
+      end
+
+      def set_gray_for_nonstroking(value)
+        set_nonstroke_color_space(:DeviceGray)
+        state[:color_fill] = [value]
+      end
+
+      def set_rgb_color_for_stroking(r, g, b)
+        set_stroke_color_space(:DeviceRGB)
+        state[:color_stroke] = [r, g, b]
+      end
+
+      def set_rgb_color_for_nonstroking(r, g, b)
+        set_nonstroke_color_space(:DeviceRGB)
+        state[:color_fill] = [r, g, b]
+      end
+
+      def set_stroke_color_space(name)
+        state[:colorspace_stroke] = name
+      end
+
+      def set_nonstroke_color_space(name)
+        state[:colorspace_fill] = name
       end
 
       #####################################################
@@ -207,9 +334,12 @@ class PDF::Reader
           form = PDF::Reader::FormXObject.new(@page, xobject, :cache => @cache)
           @font_stack.unshift(form.font_objects)
           @xobject_stack.unshift(form.xobjects)
+          @cs_stack.unshift(form.color_spaces)
+          @gs_stack.unshift(form.graphic_states)
           yield form if block_given?
           @font_stack.shift
           @xobject_stack.shift
+          @gs_stack.shift
         else
           yield xobject if block_given?
         end
@@ -263,6 +393,13 @@ class PDF::Reader
       def find_color_space(label)
         dict = @cs_stack.detect { |colorspaces|
           colorspaces.has_key?(label)
+        }
+        dict ? dict[label] : nil
+      end
+
+      def find_graphics_state(label)
+        dict = @gs_stack.detect { |graphic_states|
+          graphic_states.has_key?(label)
         }
         dict ? dict[label] : nil
       end
@@ -411,6 +548,45 @@ class PDF::Reader
         TransformationMatrix.new(1, 0,
                                  0, 1,
                                  0, 0)
+      end
+
+      #####################################################
+      # Graphic state updates that don't have operators, so no need for public methods
+      #####################################################
+      def set_overprint_stroke(value)
+        state[:overprint_stroke] = value
+      end
+
+      def set_overprint_fill(value)
+        state[:overprint_fill] = value
+      end
+
+      def set_overprint_mode(value)
+        state[:overprint_mode] = value
+      end
+
+      def set_flatness_tolerance(value)
+        state[:flatness] = value
+      end
+
+      def set_smoothness(value)
+        state[:smoothness] = value
+      end
+
+      def set_alpha_constant_stroke(value)
+        state[:alpha_constant_stroke] = value
+      end
+
+      def set_alpha_constant_fill(value)
+        state[:alpha_constant_fill] = value
+      end
+
+      def set_alpha_source(value)
+        state[:alpha_source] = value
+      end
+
+      def set_text_knockout(value)
+        state[:text_knockout] = value
       end
 
     end
