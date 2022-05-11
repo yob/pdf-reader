@@ -1,16 +1,21 @@
 # typed: strong
 module PDF
   class Reader
-    sig { returns(T.untyped) }
+    sig { returns(PDF::Reader::ObjectHash) }
     attr_reader :objects
 
     sig { params(input: T.any(String, IO), opts: T::Hash[T.untyped, T.untyped]).void }
-    def initialize(input, opts = {}); end
+    def initialize(input, opts = {})
+      @cache = T.let(T.unsafe(nil), PDF::Reader::ObjectCache)
+      @objects = T.let(T.unsafe(nil), PDF::Reader::ObjectHash)
+      @page_count = T.let(T.unsafe(nil), T.nilable(Integer))
+      @root = T.let(T.unsafe(nil), T.nilable(T.nilable(T::Hash[Symbol, T.untyped])))
+    end
 
     sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     def info; end
 
-    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
+    sig { returns(T.nilable(String)) }
     def metadata; end
 
     sig { returns(Integer) }
