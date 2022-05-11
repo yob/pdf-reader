@@ -1,3 +1,7 @@
+v2.10.0 (12th May 2022)
+- Various bug fixes
+- Expanded sorbet type annotations
+
 v2.9.2 (20th February 2022)
 - Fix PDF::Reader::ObjectHash#page_references to return an Array of PDF::Reader::Reference (http://github.com/yob/pdf-reader/pull/444)
 
