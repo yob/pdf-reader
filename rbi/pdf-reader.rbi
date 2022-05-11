@@ -1971,6 +1971,7 @@ module PDF
         sig { params(font: PDF::Reader::Font).void }
         def initialize(font)
           @font = T.let(T.unsafe(nil), PDF::Reader::Font)
+          @metrics = T.let(T.unsafe(nil), AFM::Font)
         end
 
         sig { params(code_point: T.nilable(Integer)).returns(Numeric) }
