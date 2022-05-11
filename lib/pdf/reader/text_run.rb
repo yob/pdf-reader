@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class PDF::Reader
@@ -7,7 +7,10 @@ class PDF::Reader
   class TextRun
     include Comparable
 
-    attr_reader :origin, :width, :font_size, :text
+    attr_reader :origin
+    attr_reader :width
+    attr_reader :font_size
+    attr_reader :text
 
     alias :to_s :text
 

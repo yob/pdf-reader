@@ -1513,42 +1513,53 @@ module PDF
     class TextRun
       include Comparable
 
-      sig { returns(T.untyped) }
-      attr_reader :x
-
-      sig { returns(T.untyped) }
-      attr_reader :y
-
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       attr_reader :width
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       attr_reader :font_size
 
-      sig { returns(T.untyped) }
+      sig { returns(String) }
       attr_reader :text
+
+      sig { returns(PDF::Reader::Point) }
+      attr_reader :origin
 
       sig do
         params(
-          x: T.untyped,
-          y: T.untyped,
-          width: T.untyped,
-          font_size: T.untyped,
-          text: T.untyped
+          x: Numeric,
+          y: Numeric,
+          width: Numeric,
+          font_size: Numeric,
+          text: String
         ).void
       end
-      def initialize(x, y, width, font_size, text); end
+      def initialize(x, y, width, font_size, text)
+        @origin = T.let(T.unsafe(nil), PDF::Reader::Point)
+        @width = T.let(T.unsafe(nil), Numeric)
+        @font_size = T.let(T.unsafe(nil), Numeric)
+        @text = T.let(T.unsafe(nil), String)
+        @endx = T.let(T.unsafe(nil), T.nilable(Numeric))
+        @endy = T.let(T.unsafe(nil), T.nilable(Numeric))
+        @mergable_range = T.let(T.unsafe(nil), T.nilable(T::Range[Numeric]))
+      end
 
       sig { params(other: T.untyped).returns(T.untyped) }
       def <=>(other); end
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       def endx; end
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       def endy; end
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
+      def x; end
+
+      sig { returns(Numeric) }
+      def y; end
+
+      sig { returns(Numeric) }
       def mean_character_width; end
 
       sig { params(other: PDF::Reader::TextRun).returns(T::Boolean) }
@@ -1557,22 +1568,22 @@ module PDF
       sig { params(other: PDF::Reader::TextRun).returns(PDF::Reader::TextRun) }
       def +(other); end
 
-      sig { returns(T.untyped) }
+      sig { returns(String) }
       def inspect; end
 
-      sig { params(other_run: T.untyped).returns(T.untyped) }
+      sig { params(other_run: T.untyped).returns(T::Boolean) }
       def intersect?(other_run); end
 
-      sig { params(other_run: T.untyped).returns(T.untyped) }
+      sig { params(other_run: T.untyped).returns(Numeric) }
       def intersection_area_percent(other_run); end
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       def area; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Range[Numeric]) }
       def mergable_range; end
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       def character_count; end
     end
 
