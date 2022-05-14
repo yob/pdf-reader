@@ -162,17 +162,7 @@ module PDF
     end
 
     class CMap
-      CMAP_KEYWORDS = {
-      "begincodespacerange" => 1,
-      "endcodespacerange" => 1,
-      "beginbfchar" => 1,
-      "endbfchar" => 1,
-      "beginbfrange" => 1,
-      "endbfrange" => 1,
-      "begin" => 1,
-      "begincmap" => 1,
-      "def" => 1
-    }
+      CMAP_KEYWORDS = T.let(T.unsafe(nil), T::Hash[String, Symbol])
 
       sig { returns(T.untyped) }
       attr_reader :map
