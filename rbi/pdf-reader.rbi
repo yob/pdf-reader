@@ -1960,13 +1960,9 @@ module PDF
 
     module WidthCalculator
       class BuiltIn
-        BUILTINS = [
-        :Courier, :"Courier-Bold", :"Courier-BoldOblique", :"Courier-Oblique",
-        :Helvetica, :"Helvetica-Bold", :"Helvetica-BoldOblique", :"Helvetica-Oblique",
-        :Symbol,
-        :"Times-Roman", :"Times-Bold", :"Times-BoldItalic", :"Times-Italic",
-        :ZapfDingbats
-      ]
+        BUILTINS = T.let(T.unsafe(nil), T::Array[Symbol])
+
+        @@all_metrics = T.let(T.unsafe(nil), T.nilable(PDF::Reader::SynchronizedCache))
 
         sig { params(font: PDF::Reader::Font).void }
         def initialize(font)
