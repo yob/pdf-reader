@@ -201,20 +201,27 @@ module PDF
     end
 
     class Encoding
-      CONTROL_CHARS = [0,1,2,3,4,5,6,7,8,11,12,14,15,16,17,18,19,20,21,22,23,
-                     24,25,26,27,28,29,30,31]
-      UNKNOWN_CHAR = 0x25AF
+      CONTROL_CHARS = T.let(T.unsafe(nil), T::Array[Integer])
+      UNKNOWN_CHAR = T.let(T.unsafe(nil), Integer)
 
-      sig { returns(T.untyped) }
+      sig { returns(String) }
       attr_reader :unpack
 
       sig { params(enc: T.untyped).void }
-      def initialize(enc); end
+      def initialize(enc)
+        @mapping = T.let(T.unsafe(nil), T::Hash[Integer, Integer])
+        @unpack = T.let(T.unsafe(nil), String)
+        @enc_name = T.let(T.unsafe(nil), Symbol)
+        @string_cache = T.let(T.unsafe(nil), T::Hash[Integer, String])
+        @map_file = T.let(T.unsafe(nil), T.nilable(String))
+        @differences = T.let(T.unsafe(nil), T.nilable(T::Hash[Integer, Integer]))
+        @glyphlist = T.let(T.unsafe(nil), T.nilable(PDF::Reader::GlyphHash))
+      end
 
-      sig { params(diff: T.untyped).returns(T.untyped) }
+      sig { params(diff: T::Array[T.any(Integer, Symbol)]).returns(T::Hash[Integer, Integer]) }
       def differences=(diff); end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Hash[Integer, Integer]) }
       def differences; end
 
       sig { params(str: String).returns(String) }
@@ -226,31 +233,31 @@ module PDF
       sig { params(glyph_code: Integer).returns(T::Array[Symbol]) }
       def int_to_name(glyph_code); end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Hash[Integer, Integer]) }
       def default_mapping; end
 
-      sig { params(glyph_code: T.untyped).returns(T.untyped) }
+      sig { params(glyph_code: Integer).returns(String) }
       def internal_int_to_utf8_string(glyph_code); end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Boolean) }
       def utf8_conversion_impossible?; end
 
-      sig { params(times: T.untyped).returns(T.untyped) }
+      sig { params(times: Integer).returns(String) }
       def little_boxes(times); end
 
-      sig { params(str: T.untyped).returns(T.untyped) }
+      sig { params(str: String).returns(String) }
       def convert_to_utf8(str); end
 
-      sig { params(enc: T.untyped).returns(T.untyped) }
+      sig { params(enc: T.untyped).returns(String) }
       def get_unpack(enc); end
 
-      sig { params(enc: T.untyped).returns(T.untyped) }
+      sig { params(enc: T.untyped).returns(T.nilable(String)) }
       def get_mapping_file(enc); end
 
-      sig { returns(T.untyped) }
+      sig { returns(PDF::Reader::GlyphHash) }
       def glyphlist; end
 
-      sig { params(file: T.untyped).returns(T.untyped) }
+      sig { params(file: String).void }
       def load_mapping(file); end
     end
 
