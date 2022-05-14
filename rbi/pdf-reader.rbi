@@ -70,19 +70,20 @@ module PDF
     end
 
     class Buffer
-      TOKEN_WHITESPACE = [0x00, 0x09, 0x0A, 0x0C, 0x0D, 0x20]
-      TOKEN_DELIMITER = [0x25, 0x3C, 0x3E, 0x28, 0x5B, 0x7B, 0x29, 0x5D, 0x7D, 0x2F]
-      LEFT_PAREN = "("
-      LESS_THAN = "<"
-      STREAM = "stream"
-      ID = "ID"
-      FWD_SLASH = "/"
-      NULL_BYTE = "\x00"
-      CR = "\r"
-      LF = "\n"
-      CRLF = "\r\n"
-      WHITE_SPACE = [LF, CR, ' ']
-      TRAILING_BYTECOUNT = 5000
+      TOKEN_WHITESPACE = T.let(T.unsafe(nil), T::Array[Integer])
+      TOKEN_DELIMITER = T.let(T.unsafe(nil), T::Array[Integer])
+      LEFT_PAREN = T.let(T.unsafe(nil), String)
+      LESS_THAN = T.let(T.unsafe(nil), String)
+      STREAM = T.let(T.unsafe(nil), String)
+      ID = T.let(T.unsafe(nil), String)
+      FWD_SLASH = T.let(T.unsafe(nil), String)
+      NULL_BYTE = T.let(T.unsafe(nil), String)
+      CR = T.let(T.unsafe(nil), String)
+      LF = T.let(T.unsafe(nil), String)
+      CRLF = T.let(T.unsafe(nil), String)
+      WHITE_SPACE = T.let(T.unsafe(nil), T::Array[String])
+      TRAILING_BYTECOUNT = T.let(T.unsafe(nil), Integer)
+      DIGITS_ONLY = T.let(T.unsafe(nil), Regexp)
 
       sig { returns(Integer) }
       attr_reader :pos
