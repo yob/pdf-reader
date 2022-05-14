@@ -2,4 +2,6 @@
 #
 # Run the tests
 
-$(dirname $0)/with-ruby srb tc
+# The extra flags to sorbet are a workaround to allow be to declare type hints for constants in the RBI file
+
+$(dirname $0)/with-ruby srb tc --max-threads=1 --stress-incremental-resolver
