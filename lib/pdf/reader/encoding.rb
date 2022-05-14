@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 ################################################################################
@@ -167,7 +167,7 @@ class PDF::Reader
     end
 
     def convert_to_utf8(str)
-      ret = str.unpack(unpack).map! { |c| @mapping[c] || c }.pack("U*")
+      ret = str.unpack(unpack).map! { |c| @mapping[c.to_i] || c }.pack("U*")
       ret.force_encoding("UTF-8")
       ret
     end
