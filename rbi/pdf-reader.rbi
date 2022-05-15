@@ -1619,114 +1619,121 @@ module PDF
     end
 
     class TransformationMatrix
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       attr_reader :a
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       attr_reader :b
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       attr_reader :c
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       attr_reader :d
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       attr_reader :e
 
-      sig { returns(T.untyped) }
+      sig { returns(Numeric) }
       attr_reader :f
 
       sig do
         params(
-          a: T.untyped,
-          b: T.untyped,
-          c: T.untyped,
-          d: T.untyped,
-          e: T.untyped,
-          f: T.untyped
+          a: Numeric,
+          b: Numeric,
+          c: Numeric,
+          d: Numeric,
+          e: Numeric,
+          f: Numeric
         ).void
       end
-      def initialize(a, b, c, d, e, f); end
+      def initialize(a, b, c, d, e, f)
+        @a = T.let(T.unsafe(nil), Numeric)
+        @b = T.let(T.unsafe(nil), Numeric)
+        @c = T.let(T.unsafe(nil), Numeric)
+        @d = T.let(T.unsafe(nil), Numeric)
+        @e = T.let(T.unsafe(nil), Numeric)
+        @f = T.let(T.unsafe(nil), Numeric)
+      end
 
-      sig { returns(T.untyped) }
+      sig { returns(String) }
       def inspect; end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Array[Numeric]) }
       def to_a; end
 
       sig do
         params(
-          a: T.untyped,
-          b: T.untyped,
-          c: T.untyped,
-          d: T.untyped,
-          e: T.untyped,
-          f: T.untyped
-        ).returns(T.untyped)
+          a: Numeric,
+          b: Numeric,
+          c: Numeric,
+          d: Numeric,
+          e: Numeric,
+          f: Numeric
+        ).returns(PDF::Reader::TransformationMatrix)
       end
-      def multiply!(a, b = nil, c = nil, d = nil, e = nil, f = nil); end
+      def multiply!(a, b, c, d, e, f); end
 
-      sig { params(e2: T.untyped).returns(T.untyped) }
+      sig { params(e2: Numeric).void }
       def horizontal_displacement_multiply!(e2); end
 
       sig do
         params(
-          a2: T.untyped,
-          b2: T.untyped,
-          c2: T.untyped,
-          d2: T.untyped,
-          e2: T.untyped,
-          f2: T.untyped
-        ).returns(T.untyped)
+          a2: Numeric,
+          b2: Numeric,
+          c2: Numeric,
+          d2: Numeric,
+          e2: Numeric,
+          f2: Numeric
+        ).void
       end
       def horizontal_displacement_multiply_reversed!(a2, b2, c2, d2, e2, f2); end
 
       sig do
         params(
-          a2: T.untyped,
-          b2: T.untyped,
-          c2: T.untyped,
-          d2: T.untyped,
-          e2: T.untyped,
-          f2: T.untyped
-        ).returns(T.untyped)
+          a2: Numeric,
+          b2: Numeric,
+          c2: Numeric,
+          d2: Numeric,
+          e2: Numeric,
+          f2: Numeric
+        ).void
       end
       def xy_scaling_multiply!(a2, b2, c2, d2, e2, f2); end
 
       sig do
         params(
-          a2: T.untyped,
-          b2: T.untyped,
-          c2: T.untyped,
-          d2: T.untyped,
-          e2: T.untyped,
-          f2: T.untyped
-        ).returns(T.untyped)
+          a2: Numeric,
+          b2: Numeric,
+          c2: Numeric,
+          d2: Numeric,
+          e2: Numeric,
+          f2: Numeric
+        ).void
       end
       def xy_scaling_multiply_reversed!(a2, b2, c2, d2, e2, f2); end
 
       sig do
         params(
-          a2: T.untyped,
-          b2: T.untyped,
-          c2: T.untyped,
-          d2: T.untyped,
-          e2: T.untyped,
-          f2: T.untyped
-        ).returns(T.untyped)
+          a2: Numeric,
+          b2: Numeric,
+          c2: Numeric,
+          d2: Numeric,
+          e2: Numeric,
+          f2: Numeric
+        ).void
       end
       def regular_multiply!(a2, b2, c2, d2, e2, f2); end
 
       sig do
         params(
-          a2: T.untyped,
-          b2: T.untyped,
-          c2: T.untyped,
-          d2: T.untyped,
-          e2: T.untyped,
-          f2: T.untyped
-        ).returns(T.untyped)
+          a2: Numeric,
+          b2: Numeric,
+          c2: Numeric,
+          d2: Numeric,
+          e2: Numeric,
+          f2: Numeric
+        ).void
       end
       def faster_multiply!(a2, b2, c2, d2, e2, f2); end
     end
