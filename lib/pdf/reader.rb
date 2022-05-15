@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 ################################################################################
@@ -128,7 +128,7 @@ module PDF
       doc_strings_to_utf8(dict)
     end
 
-    # Return a Hash with extra metadata provided by the author of the PDF file. Not
+    # Return a String with extra XML metadata provided by the author of the PDF file. Not
     # always present.
     #
     def metadata
@@ -272,13 +272,7 @@ module PDF
     end
 
     def root
-      @root ||= begin
-        obj = @objects.deref_hash(@objects.trailer[:Root]) || {}
-        unless obj.kind_of?(::Hash)
-          raise MalformedPDFError, "PDF malformed, trailer Root should be a dictionary"
-        end
-        obj
-      end
+      @root ||= @objects.deref_hash(@objects.trailer[:Root]) || {}
     end
 
   end
