@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class PDF::Reader
@@ -51,7 +51,7 @@ class PDF::Reader
     #       displacement to speed up processing documents that use vertical
     #       writing systems
     #
-    def multiply!(a,b=nil,c=nil, d=nil,e=nil,f=nil)
+    def multiply!(a,b,c, d,e,f)
       if a == 1 && b == 0 && c == 0 && d == 1 && e == 0 && f == 0
         # the identity matrix, no effect
         self
@@ -164,12 +164,12 @@ class PDF::Reader
     #   [ e f 1 ]   [ e f 1 ]
     #
     def regular_multiply!(a2,b2,c2,d2,e2,f2)
-      newa = (@a * a2) + (@b * c2) + (0 * e2)
-      newb = (@a * b2) + (@b * d2) + (0 * f2)
-      newc = (@c * a2) + (@d * c2) + (0 * e2)
-      newd = (@c * b2) + (@d * d2) + (0 * f2)
-      newe = (@e * a2) + (@f * c2) + (1 * e2)
-      newf = (@e * b2) + (@f * d2) + (1 * f2)
+      newa = (@a * a2) + (@b * c2) + (e2 * 0)
+      newb = (@a * b2) + (@b * d2) + (f2 * 0)
+      newc = (@c * a2) + (@d * c2) + (e2 * 0)
+      newd = (@c * b2) + (@d * d2) + (f2 * 0)
+      newe = (@e * a2) + (@f * c2) + (e2 * 1)
+      newf = (@e * b2) + (@f * d2) + (f2 * 1)
       @a, @b, @c, @d, @e, @f = newa, newb, newc, newd, newe, newf
     end
 
