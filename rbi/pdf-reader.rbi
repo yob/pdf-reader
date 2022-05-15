@@ -800,7 +800,7 @@ module PDF
     end
 
     class OverlappingRunsFilter
-      OVERLAPPING_THRESHOLD = 0.5
+      OVERLAPPING_THRESHOLD = T.let(T.unsafe(nil), Float)
 
       sig { params(runs: T::Array[PDF::Reader::TextRun]).returns(T::Array[PDF::Reader::TextRun]) }
       def self.exclude_redundant_runs(runs); end
@@ -817,7 +817,10 @@ module PDF
       attr_reader :run
 
       sig { params(x: Numeric, run: PDF::Reader::TextRun).void }
-      def initialize(x, run); end
+      def initialize(x, run)
+        @x = T.let(T.unsafe(nil), Numeric)
+        @run = T.let(T.unsafe(nil), PDF::Reader::TextRun)
+      end
 
       sig { returns(T::Boolean) }
       def start?; end
