@@ -909,10 +909,21 @@ module PDF
     end
 
     class PageLayout
-      DEFAULT_FONT_SIZE = 12
+      DEFAULT_FONT_SIZE = T.let(T.unsafe(nil), Numeric)
 
       sig { params(runs: T::Array[PDF::Reader::TextRun], mediabox: T.any(T::Array[Numeric], PDF::Reader::Rectangle)).void }
-      def initialize(runs, mediabox); end
+      def initialize(runs, mediabox)
+        @mediabox = T.let(T.unsafe(nil), PDF::Reader::Rectangle)
+        @runs = T.let(T.unsafe(nil), T::Array[PDF::Reader::TextRun])
+        @mean_font_size = T.let(T.unsafe(nil), Numeric)
+        @median_glyph_width = T.let(T.unsafe(nil), Numeric)
+        @x_offset = T.let(T.unsafe(nil), Numeric)
+        @y_offset = T.let(T.unsafe(nil), Numeric)
+        @row_count = T.let(T.unsafe(nil), T.nilable(Integer))
+        @col_count = T.let(T.unsafe(nil), T.nilable(Integer))
+        @row_multiplier = T.let(T.unsafe(nil), T.nilable(Numeric))
+        @col_multiplier = T.let(T.unsafe(nil), T.nilable(Numeric))
+      end
 
       sig { returns(String) }
       def to_s; end
@@ -949,6 +960,12 @@ module PDF
 
       sig { params(mediabox: T.untyped).returns(T.untyped) }
       def process_mediabox(mediabox); end
+
+      sig { returns(Numeric) }
+      def page_width; end
+
+      sig { returns(Numeric) }
+      def page_height; end
     end
 
     class PageState
