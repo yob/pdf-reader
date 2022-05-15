@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 ################################################################################
@@ -31,7 +31,8 @@ class PDF::Reader
   ################################################################################
   # An internal PDF::Reader class that represents an indirect reference to a PDF Object
   class Reference
-    attr_reader :id, :gen
+    attr_reader :id
+    attr_reader :gen
     ################################################################################
     # Create a new Reference to an object with the specified id and revision number
     def initialize(id, gen)

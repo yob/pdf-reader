@@ -1340,25 +1340,28 @@ module PDF
     end
 
     class Reference
-      sig { returns(T.untyped) }
+      sig { returns(Integer) }
       attr_reader :id
 
-      sig { returns(T.untyped) }
+      sig { returns(Integer) }
       attr_reader :gen
 
-      sig { params(id: T.untyped, gen: T.untyped).void }
-      def initialize(id, gen); end
+      sig { params(id: Integer, gen: Integer).void }
+      def initialize(id, gen)
+        @id = T.let(T.unsafe(nil), Integer)
+        @gen = T.let(T.unsafe(nil), Integer)
+      end
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Array[PDF::Reader::Reference]) }
       def to_a; end
 
-      sig { returns(T.untyped) }
+      sig { returns(Integer) }
       def to_i; end
 
-      sig { params(obj: T.untyped).returns(T.untyped) }
+      sig { params(obj: Object).returns(T::Boolean) }
       def ==(obj); end
 
-      sig { returns(T.untyped) }
+      sig { returns(Integer) }
       def hash; end
     end
 
