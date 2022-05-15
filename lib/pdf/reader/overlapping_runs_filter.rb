@@ -1,6 +1,6 @@
-# typed: true
 # coding: utf-8
 # frozen_string_literal: true
+# typed: strict
 
 class PDF::Reader
   # remove duplicates from a collection of TextRun objects. This can be helpful when a PDF
