@@ -73,7 +73,7 @@ class PDF::Reader
     #
     # ref - a PDF::Reader::Reference object containing an object ID and revision number
     def [](ref)
-      @xref[ref.id][ref.gen]
+      @xref.fetch(ref.id, {}).fetch(ref.gen)
     rescue
       raise InvalidObjectError, "Object #{ref.id}, Generation #{ref.gen} is invalid"
     end
@@ -82,8 +82,8 @@ class PDF::Reader
     def each(&block)
       ids = @xref.keys.sort
       ids.each do |id|
-        gen = @xref[id].keys.sort[-1]
-        yield PDF::Reader::Reference.new(id, gen)
+        gen = @xref.fetch(id, {}).keys.sort[-1]
+        yield PDF::Reader::Reference.new(id, gen.to_i)
       end
     end
     ################################################################################

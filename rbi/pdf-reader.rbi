@@ -93,11 +93,11 @@ module PDF
       sig { returns(Integer) }
       attr_reader :pos
 
-      sig { params(io: T.any(StringIO, File), opts: T::Hash[Symbol, T.untyped]).void }
+      sig { params(io: T.any(StringIO, IO), opts: T::Hash[Symbol, T.untyped]).void }
       def initialize(io, opts = {})
         @pos = T.let(T.unsafe(nil), Integer)
         @tokens = T.let(T.unsafe(nil), T::Array[T.any(String, PDF::Reader::Reference)])
-        @io = T.let(T.unsafe(nil), T.any(StringIO, File))
+        @io = T.let(T.unsafe(nil), T.any(StringIO, IO))
         @in_content_stream = T.let(T.unsafe(nil), T::Boolean)
       end
 
@@ -780,10 +780,10 @@ module PDF
       sig { returns(Float) }
       def read_version; end
 
-      sig { params(input: T.untyped).returns(IO) }
+      sig { params(input: T.any(IO, StringIO, String)).returns(T.any(IO, StringIO)) }
       def extract_io_from(input); end
 
-      sig { params(input: T.untyped).returns(T.untyped) }
+      sig { params(input: String).returns(String) }
       def read_as_binary(input); end
     end
 
@@ -1812,12 +1812,18 @@ module PDF
 
     class XRef
       include Enumerable
+      extend T::Generic # Provides `type_member` helper
 
       sig { returns(T.untyped) }
       attr_reader :trailer
 
-      sig { params(io: T.untyped).void }
-      def initialize(io); end
+      sig { params(io: T.any(IO, StringIO)).void }
+      def initialize(io)
+        @io = T.let(T.unsafe(nil), T.any(IO, StringIO))
+        @junk_offset = T.let(T.unsafe(nil), Integer)
+        @xref = T.let(T.unsafe(nil), T::Hash[Integer, T::Hash[Integer, Integer]])
+        @trailer = T.let(T.unsafe(nil), T::Hash[Symbol, T.untyped])
+      end
 
       sig { returns(T.untyped) }
       def size; end
