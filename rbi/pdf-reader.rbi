@@ -786,9 +786,15 @@ module PDF
       def initialize(stream)
         @dict = T.let(T.unsafe(nil), T::Hash[Symbol, T.untyped])
         @data = T.let(T.unsafe(nil), String)
+        @offsets = T.let(T.unsafe(nil), T.nilable(T::Hash[Integer, Integer]))
+        @buffer = T.let(T.unsafe(nil), T.nilable(PDF::Reader::Buffer))
       end
 
-      sig { params(objid: T.untyped).returns(T.untyped) }
+      sig {
+        params(objid: Integer).returns(
+          T.any(PDF::Reader::Reference, PDF::Reader::Token, Numeric, String, Symbol, T::Array[T.untyped], T::Hash[T.untyped, T.untyped], NilClass)
+        )
+      }
       def [](objid); end
 
       sig { returns(Integer) }
