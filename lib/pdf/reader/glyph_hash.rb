@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 ################################################################################
@@ -33,10 +33,18 @@ class PDF::Reader
   #
   class GlyphHash # :nodoc:
     def initialize
+      @@by_codepoint_cache ||= nil
+      @@by_name_cache ||= nil
+
       # only parse the glyph list once, and cache the results (for performance)
-      adobe = @@cache ||= load_adobe_glyph_mapping
-      @by_name      = adobe.first
-      @by_codepoint = adobe.last
+      if @@by_codepoint_cache != nil && @@by_name_cache != nil
+        @by_name      = @@by_name_cache
+        @by_codepoint = @@by_codepoint_cache
+      else
+        by_name, by_codepoint = load_adobe_glyph_mapping
+        @by_name      = @@by_name_cache ||= by_name
+        @by_codepoint = @@by_codepoint_cache ||= by_codepoint
+      end
     end
 
     # attempt to convert a PDF Name to a unicode codepoint. Returns nil
@@ -127,7 +135,7 @@ class PDF::Reader
         end
       end
 
-      [keyed_by_name.freeze, keyed_by_codepoint.freeze]
+      return keyed_by_name.freeze, keyed_by_codepoint.freeze
     end
 
   end
