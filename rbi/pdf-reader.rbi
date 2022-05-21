@@ -477,16 +477,22 @@ module PDF
     end
 
     class GlyphHash
-      sig { void }
-      def initialize; end
+      @@by_name_cache = T.let(T.unsafe(nil), T.nilable(T::Hash[Symbol, Integer]))
+      @@by_codepoint_cache = T.let(T.unsafe(nil), T.nilable(T::Hash[Integer, T::Array[Symbol]]))
 
-      sig { params(name: T.untyped).returns(T.untyped) }
+      sig { void }
+      def initialize
+        @by_name = T.let(T.unsafe(nil), T::Hash[Symbol, Integer])
+        @by_codepoint = T.let(T.unsafe(nil), T::Hash[Integer, T::Array[Symbol]])
+      end
+
+      sig { params(name: T.nilable(Symbol)).returns(T.nilable(Integer)) }
       def name_to_unicode(name); end
 
-      sig { params(codepoint: T.untyped).returns(T.untyped) }
+      sig { params(codepoint: T.nilable(Integer)).returns(T::Array[Symbol]) }
       def unicode_to_name(codepoint); end
 
-      sig { returns(T.untyped) }
+      sig { returns([T::Hash[Symbol, Integer], T::Hash[Integer, T::Array[Symbol]]]) }
       def load_adobe_glyph_mapping; end
     end
 
