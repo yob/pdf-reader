@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 module PDF
@@ -43,10 +43,10 @@ module PDF
       #
       def initialize(objects, pagenum, options = {})
         @objects, @pagenum = objects, pagenum
-        @page_object = objects.deref_hash(objects.page_references[pagenum - 1])
+        @page_object = objects.deref_hash(objects.page_references[pagenum - 1]) || {}
         @cache       = options[:cache] || {}
 
-        unless @page_object.is_a?(::Hash)
+        if @page_object.empty?
           raise InvalidPageError, "Invalid page: #{pagenum}"
         end
       end
@@ -263,9 +263,26 @@ module PDF
 
       # calls the name callback method on each receiver object with params as the arguments
       #
+      # The silly style here is because sorbet won't let me use splat arguments
+      #
       def callback(receivers, name, params=[])
         receivers.each do |receiver|
-          receiver.send(name, *params) if receiver.respond_to?(name)
+          if receiver.respond_to?(name)
+            case params.size
+            when 0 then receiver.send(name)
+            when 1 then receiver.send(name, params[0])
+            when 2 then receiver.send(name, params[0], params[1])
+            when 3 then receiver.send(name, params[0], params[1], params[2])
+            when 4 then receiver.send(name, params[0], params[1], params[2], params[3])
+            when 5 then receiver.send(name, params[0], params[1], params[2], params[3], params[4])
+            when 6 then receiver.send(name, params[0], params[1], params[2], params[3], params[4], params[5])
+            when 7 then receiver.send(name, params[0], params[1], params[2], params[3], params[4], params[5], params[6])
+            when 8 then receiver.send(name, params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7])
+            when 9 then receiver.send(name, params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[8], params[8])
+            else
+              receiver.send(name, params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8], params[9])
+            end
+          end
         end
       end
 

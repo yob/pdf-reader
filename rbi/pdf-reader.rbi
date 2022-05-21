@@ -835,14 +835,22 @@ module PDF
       sig { returns(PDF::Reader::ObjectHash) }
       attr_reader :objects
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Hash[Symbol, T.untyped]) }
       attr_reader :page_object
 
-      sig { returns(T.untyped) }
+      sig { returns(T.any(PDF::Reader::ObjectCache, T::Hash[T.untyped, T.untyped])) }
       attr_reader :cache
 
       sig { params(objects: PDF::Reader::ObjectHash, pagenum: Integer, options: T::Hash[Symbol, T.untyped]).void }
-      def initialize(objects, pagenum, options = {}); end
+      def initialize(objects, pagenum, options = {})
+        @objects = T.let(T.unsafe(nil), PDF::Reader::ObjectHash)
+        @pagenum = T.let(T.unsafe(nil), Integer)
+        @page_object = T.let(T.unsafe(nil), T::Hash[Symbol, T.untyped])
+        @cache = T.let(T.unsafe(nil), T.any(PDF::Reader::ObjectCache, T::Hash[T.untyped, T.untyped]))
+        @attributes = T.let(T.unsafe(nil), T.nilable(T::Hash[Symbol, T.untyped]))
+        @root = T.let(T.unsafe(nil), T.nilable(T::Hash[Symbol, T.untyped]))
+        @resources = T.let(T.unsafe(nil), T.nilable(PDF::Reader::Resources))
+      end
 
       sig { returns(Integer) }
       def number; end
@@ -892,10 +900,10 @@ module PDF
       sig { returns(PDF::Reader::Resources) }
       def resources; end
 
-      sig { params(receivers: T.untyped, instructions: T.untyped).returns(T.untyped) }
+      sig { params(receivers: T::Array[T.untyped], instructions: String).void }
       def content_stream(receivers, instructions); end
 
-      sig { params(receivers: T.untyped, name: T.untyped, params: T.untyped).returns(T.untyped) }
+      sig { params(receivers: T::Array[Object], name: Symbol, params: T::Array[T.untyped]).void }
       def callback(receivers, name, params = []); end
 
       sig { returns(T.untyped) }
