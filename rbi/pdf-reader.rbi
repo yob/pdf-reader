@@ -1527,12 +1527,15 @@ module PDF
 
     class SynchronizedCache
       sig { void }
-      def initialize; end
+      def initialize
+        @cache = T.let(T.unsafe(nil), T::Hash[Object, T.untyped])
+        @mutex = T.let(T.unsafe(nil), Mutex)
+      end
 
-      sig { params(key: T.untyped).returns(T.untyped) }
+      sig { params(key: Object).returns(T.untyped) }
       def [](key); end
 
-      sig { params(key: T.untyped, value: T.untyped).returns(T.untyped) }
+      sig { params(key: Object, value: T.nilable(Object)).returns(T.untyped) }
       def []=(key, value); end
     end
 
