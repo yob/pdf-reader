@@ -1869,7 +1869,9 @@ module PDF
 
       class Depredict
         sig { params(options: T::Hash[T.untyped, T.untyped]).void }
-        def initialize(options = {}); end
+        def initialize(options = {})
+          @options = T.let(T.unsafe(nil), T::Hash[T.untyped, T.untyped])
+        end
 
         sig { params(data: String).returns(String) }
         def filter(data); end
