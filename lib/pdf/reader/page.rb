@@ -250,8 +250,8 @@ module PDF
         params       = []
 
         while (token = parser.parse_token(PagesStrategy::OPERATORS))
-          if token.kind_of?(Token) and PagesStrategy::OPERATORS.has_key?(token)
-            callback(receivers, PagesStrategy::OPERATORS[token], params)
+          if token.kind_of?(Token) && method_name = PagesStrategy::OPERATORS[token]
+            callback(receivers, method_name, params)
             params.clear
           else
             params << token
