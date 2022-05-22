@@ -642,25 +642,45 @@ module PDF
       sig { returns(T.untyped) }
       attr_accessor :default
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Hash[Symbol, T.untyped]) }
       attr_reader :trailer
 
-      sig { returns(T.untyped) }
+      sig { returns(Float) }
       attr_reader :pdf_version
 
-      sig { returns(T.untyped) }
+      sig { returns(
+        T.any(
+          PDF::Reader::NullSecurityHandler,
+          PDF::Reader::AesV2SecurityHandler,
+          PDF::Reader::AesV3SecurityHandler,
+          PDF::Reader::Rc4SecurityHandler,
+      )) }
       attr_reader :sec_handler
 
-      sig { params(input: T.untyped, opts: T.untyped).void }
-      def initialize(input, opts = {}); end
+      sig { params(input: T.any(IO, StringIO, String), opts: T::Hash[Symbol, T.untyped]).void }
+      def initialize(input, opts = {})
+        @io = T.let(T.unsafe(nil), T.any(IO, StringIO))
+        @xref = T.let(T.unsafe(nil), PDF::Reader::XRef)
+        @pdf_version = T.let(T.unsafe(nil), Float)
+        @trailer = T.let(T.unsafe(nil), T::Hash[Symbol, T.untyped])
+        @cache = T.let(T.unsafe(nil), PDF::Reader::ObjectCache)
+        @sec_handler = T.let(T.unsafe(nil), T.any(
+          PDF::Reader::NullSecurityHandler,
+          PDF::Reader::AesV2SecurityHandler,
+          PDF::Reader::AesV3SecurityHandler,
+          PDF::Reader::Rc4SecurityHandler,
+        ))
+        @page_references = T.let(T.unsafe(nil), T.nilable(T::Array[T.any(PDF::Reader::Reference, T::Hash[Symbol, T.untyped])]))
+        @object_streams = T.let(T.unsafe(nil), T.nilable(T::Hash[PDF::Reader::Reference, PDF::Reader::ObjectStream]))
+      end
 
-      sig { params(ref: T.untyped).returns(T.untyped) }
+      sig { params(ref: T.any(Integer, PDF::Reader::Reference)).returns(T.nilable(Symbol)) }
       def obj_type(ref); end
 
-      sig { params(ref: T.untyped).returns(T.untyped) }
+      sig { params(ref: T.any(Integer, PDF::Reader::Reference)).returns(T::Boolean) }
       def stream?(ref); end
 
-      sig { params(key: T.untyped).returns(T.untyped) }
+      sig { params(key: T.any(Integer, PDF::Reader::Reference)).returns(T.untyped) }
       def [](key); end
 
       sig { params(key: T.untyped).returns(T.untyped) }
@@ -744,7 +764,7 @@ module PDF
       sig { returns(T.untyped) }
       def to_a; end
 
-      sig { returns(T::Array[PDF::Reader::Reference]) }
+      sig { returns(T::Array[T.any(PDF::Reader::Reference, T::Hash[Symbol, T.untyped])]) }
       def page_references; end
 
       sig { returns(T::Boolean) }
@@ -774,7 +794,7 @@ module PDF
       sig { returns(T.untyped) }
       def object_streams; end
 
-      sig { params(obj: T::Hash[T.untyped, T.untyped]).returns(T::Array[T::Hash[T.untyped, T.untyped]]) }
+      sig { params(obj: T.any(PDF::Reader::Reference, T::Hash[Symbol, T.untyped])).returns(T::Array[T.any(PDF::Reader::Reference, T::Hash[Symbol, T.untyped])]) }
       def get_page_objects(obj); end
 
       sig { returns(Float) }
@@ -1814,7 +1834,7 @@ module PDF
       include Enumerable
       extend T::Generic # Provides `type_member` helper
 
-      sig { returns(T.untyped) }
+      sig { returns(T::Hash[Symbol, T.untyped]) }
       attr_reader :trailer
 
       sig { params(io: T.any(IO, StringIO)).void }
