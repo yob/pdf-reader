@@ -597,10 +597,10 @@ class PDF::Reader
     end
 
     def extract_io_from(input)
-      if input.respond_to?(:seek) && input.respond_to?(:read)
+      if input.is_a?(IO) || input.is_a?(StringIO)
         input
       elsif File.file?(input.to_s)
-        StringIO.new read_as_binary(input)
+        StringIO.new read_as_binary(input.to_s)
       else
         raise ArgumentError, "input must be an IO-like object or a filename"
       end
@@ -610,7 +610,7 @@ class PDF::Reader
       if File.respond_to?(:binread)
         File.binread(input.to_s)
       else
-        File.open(input.to_s,"rb") { |f| f.read }
+        File.open(input.to_s,"rb") { |f| f.read } || ""
       end
     end
 
