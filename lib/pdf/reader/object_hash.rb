@@ -566,7 +566,7 @@ class PDF::Reader
     end
 
     def object_streams
-      @object_stream ||= {}
+      @object_streams ||= {}
     end
 
     # returns an array of object references for all pages in this object store. The ordering of
@@ -591,7 +591,7 @@ class PDF::Reader
 
     def read_version
       @io.seek(0)
-      _m, version = *@io.read(10).match(/PDF-(\d.\d)/)
+      _m, version = *@io.read(10).to_s.match(/PDF-(\d.\d)/)
       @io.seek(0)
       version.to_f
     end
