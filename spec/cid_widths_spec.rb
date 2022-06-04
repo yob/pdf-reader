@@ -48,6 +48,14 @@ describe PDF::Reader::CidWidths, "#initilize" do
     it "returns correct width for index 4" do
       expect(subject[4]).to eq(500)
     end
+
+    context "and the range covers a single number" do
+      subject { PDF::Reader::CidWidths.new(500, [3, 3, 10])}
+
+      it "returns correct width for index 3" do
+        expect(subject[3]).to eq(10)
+      end
+    end
   end
 
   context "with an array mixing the first and second form" do
