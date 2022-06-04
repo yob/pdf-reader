@@ -52,7 +52,9 @@ class PDF::Reader
 
     # this is the form 10 20 123 where all index between 10 and 20 have width 123
     def parse_second_form(first, final, width)
-      raise MalformedPDFError, "CidWidths: #{first} must be less than #{final}" unless first < final
+      if first > final
+        raise MalformedPDFError, "CidWidths: #{first} must be less than #{final}"
+      end
 
       (first..final).inject({}) { |accum, index|
         accum[index] = width
