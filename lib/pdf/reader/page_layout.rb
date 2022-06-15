@@ -106,7 +106,7 @@ class PDF::Reader
     end
 
     def local_string_insert(haystack, needle, index)
-      haystack[Range.new(index, index + needle.length - 1)] = String.new(needle)
+      haystack[Range.new(index, index + needle.length - 1)] = String.new(needle) if needle.length > 0
     end
 
     def process_mediabox(mediabox)
