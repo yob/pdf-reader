@@ -182,7 +182,7 @@ module PDF
     #
     #   reader.pages.each do |page|
     #     puts page.fonts
-    #     puts page.images
+    #     puts page.rectangles
     #     puts page.text
     #   end
     #
