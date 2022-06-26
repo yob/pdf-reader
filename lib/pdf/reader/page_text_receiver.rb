@@ -62,6 +62,8 @@ module PDF
           runs = OverlappingRunsFilter.exclude_redundant_runs(runs)
         end
 
+        runs = NoTextFilter.exclude_empty_strings(runs)
+
         if opts.fetch(:merge, true)
           runs = merge_runs(runs)
         end
