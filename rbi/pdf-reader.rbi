@@ -4,7 +4,7 @@ module PDF
     sig { returns(PDF::Reader::ObjectHash) }
     attr_reader :objects
 
-    sig { params(input: T.any(String, IO), opts: T::Hash[T.untyped, T.untyped]).void }
+    sig { params(input: T.any(String, Tempfile, IO), opts: T::Hash[T.untyped, T.untyped]).void }
     def initialize(input, opts = {})
       @cache = T.let(T.unsafe(nil), PDF::Reader::ObjectCache)
       @objects = T.let(T.unsafe(nil), PDF::Reader::ObjectHash)
@@ -24,7 +24,7 @@ module PDF
     sig { returns(Float) }
     def pdf_version; end
 
-    sig { params(input: T.any(String, IO), opts: T::Hash[T.untyped, T.untyped], block: T.proc.params(arg0: PDF::Reader).void).returns(T.untyped) }
+    sig { params(input: T.any(String, Tempfile, IO), opts: T::Hash[T.untyped, T.untyped], block: T.proc.params(arg0: PDF::Reader).void).returns(T.untyped) }
     def self.open(input, opts = {}, &block); end
 
     sig { returns(T::Array[PDF::Reader::Page]) }
@@ -93,11 +93,11 @@ module PDF
       sig { returns(Integer) }
       attr_reader :pos
 
-      sig { params(io: T.any(StringIO, IO), opts: T::Hash[Symbol, T.untyped]).void }
+      sig { params(io: T.any(StringIO, Tempfile, IO), opts: T::Hash[Symbol, T.untyped]).void }
       def initialize(io, opts = {})
         @pos = T.let(T.unsafe(nil), Integer)
         @tokens = T.let(T.unsafe(nil), T::Array[T.any(String, PDF::Reader::Reference)])
-        @io = T.let(T.unsafe(nil), T.any(StringIO, IO))
+        @io = T.let(T.unsafe(nil), T.any(StringIO, Tempfile, IO))
         @in_content_stream = T.let(T.unsafe(nil), T::Boolean)
       end
 
@@ -657,9 +657,9 @@ module PDF
       )) }
       attr_reader :sec_handler
 
-      sig { params(input: T.any(IO, StringIO, String), opts: T::Hash[Symbol, T.untyped]).void }
+      sig { params(input: T.any(IO, Tempfile, StringIO, String), opts: T::Hash[Symbol, T.untyped]).void }
       def initialize(input, opts = {})
-        @io = T.let(T.unsafe(nil), T.any(IO, StringIO))
+        @io = T.let(T.unsafe(nil), T.any(IO, Tempfile, StringIO))
         @xref = T.let(T.unsafe(nil), PDF::Reader::XRef)
         @pdf_version = T.let(T.unsafe(nil), Float)
         @trailer = T.let(T.unsafe(nil), T::Hash[Symbol, T.untyped])
@@ -800,7 +800,7 @@ module PDF
       sig { returns(Float) }
       def read_version; end
 
-      sig { params(input: T.any(IO, StringIO, String)).returns(T.any(IO, StringIO)) }
+      sig { params(input: T.any(IO, Tempfile, StringIO, String)).returns(T.any(IO, Tempfile, StringIO)) }
       def extract_io_from(input); end
 
       sig { params(input: String).returns(String) }
@@ -1842,9 +1842,9 @@ module PDF
       sig { returns(T::Hash[Symbol, T.untyped]) }
       attr_reader :trailer
 
-      sig { params(io: T.any(IO, StringIO)).void }
+      sig { params(io: T.any(IO, Tempfile, StringIO)).void }
       def initialize(io)
-        @io = T.let(T.unsafe(nil), T.any(IO, StringIO))
+        @io = T.let(T.unsafe(nil), T.any(IO, Tempfile, StringIO))
         @junk_offset = T.let(T.unsafe(nil), Integer)
         @xref = T.let(T.unsafe(nil), T::Hash[Integer, T::Hash[Integer, Integer]])
         @trailer = T.let(T.unsafe(nil), T::Hash[Symbol, T.untyped])

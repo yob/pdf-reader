@@ -2,6 +2,8 @@
 # typed: true
 # frozen_string_literal: true
 
+require 'tempfile'
+
 class PDF::Reader
   # Provides low level access to the objects in a PDF file via a hash-like
   # object.
@@ -597,12 +599,12 @@ class PDF::Reader
     end
 
     def extract_io_from(input)
-      if input.is_a?(IO) || input.is_a?(StringIO)
+      if input.is_a?(IO) || input.is_a?(StringIO) || input.is_a?(Tempfile)
         input
       elsif File.file?(input.to_s)
         StringIO.new read_as_binary(input.to_s)
       else
-        raise ArgumentError, "input must be an IO-like object or a filename"
+        raise ArgumentError, "input must be an IO-like object or a filename (#{input.class})"
       end
     end
 

@@ -20,8 +20,27 @@ describe PDF::Reader::ObjectHash do
       expect(h.map { |ref, obj| obj.class }.size).to eql(57)
     end
 
+    it "correctly loads a PDF from a string containing a file path" do
+      filename = pdf_spec_file("cairo-unicode")
+      h = PDF::Reader::ObjectHash.new(filename)
+
+      expect(h.map { |ref, obj| obj.class }.size).to eql(57)
+    end
+
+    # This means PDF::Reader.open(URI.open("https://example.com/foo.pdf")) will work
+    it "correctly loads a PDF via a Tempfile object" do
+      filename = pdf_spec_file("cairo-unicode")
+
+      Tempfile.open('foo.pdf') do |tempfile|
+        tempfile.write binread(filename)
+        tempfile.rewind
+        h = PDF::Reader::ObjectHash.new(tempfile)
+
+        expect(h.map { |ref, obj| obj.class }.size).to eql(57)
+      end
+    end
+
     it "raises an ArgumentError if passed a non filename and non IO" do
-      pdf_spec_file("cairo-unicode")
       expect {PDF::Reader::ObjectHash.new(10)}.to raise_error(ArgumentError)
     end
   end
