@@ -846,6 +846,11 @@ module PDF
       def self.detect_intersection(sweep_line_status, event_point); end
     end
 
+    class NoTextFilter
+      sig { params(runs: T::Array[PDF::Reader::TextRun]).returns(T::Array[PDF::Reader::TextRun]) }
+      def self.exclude_empty_strings(runs); end
+    end
+
     class EventPoint
       sig { returns(Numeric) }
       attr_reader :x
