@@ -38,11 +38,17 @@ class PDF::Reader
   # the raw tokens into objects we can work with (strings, ints, arrays, etc)
   #
   class Buffer
+
+    # @return [Array<Integer>]
     TOKEN_WHITESPACE=[0x00, 0x09, 0x0A, 0x0C, 0x0D, 0x20]
+
+    # @return (Array<Integer>)
     TOKEN_DELIMITER=[0x25, 0x3C, 0x3E, 0x28, 0x5B, 0x7B, 0x29, 0x5D, 0x7D, 0x2F]
 
     # some strings for comparissons. Declaring them here avoids creating new
     # strings that need GC over and over
+    
+    # @return [String]
     LEFT_PAREN = "("
     LESS_THAN = "<"
     STREAM = "stream"
@@ -87,6 +93,7 @@ class PDF::Reader
 
     # return true if there are no more tokens left
     #
+    # @return (true, false)
     def empty?
       prepare_tokens if @tokens.size < 3
 
@@ -130,6 +137,8 @@ class PDF::Reader
     # return the next token from the source. Returns a string if a token
     # is found, nil if there are no tokens left.
     #
+    # @return (NilClass, String, PDF::Reader::Reference)
+    #
     def token
       reset_pos
       prepare_tokens if @tokens.size < 3
@@ -164,6 +173,7 @@ class PDF::Reader
 
     private
 
+    # @return (void)
     def check_size_is_non_zero
       @io.seek(-1, IO::SEEK_END)
       @io.seek(0)
@@ -173,12 +183,14 @@ class PDF::Reader
 
     # Returns true if this buffer is parsing a content stream
     #
+    # @return (true, false)
     def in_content_stream?
       @in_content_stream ? true : false
     end
 
     # Some bastard moved our IO stream cursor. Restore it.
     #
+    # @return (void)
     def reset_pos
       @io.seek(@pos) if @io.pos != @pos
     end
@@ -186,6 +198,7 @@ class PDF::Reader
     # save the current position of the source IO stream. If someone else (like another buffer)
     # moves the cursor, we can then restore it.
     #
+    # @return (void)
     def save_pos
       @pos = @io.pos
     end

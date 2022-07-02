@@ -59,7 +59,10 @@ module PDF
         end
       end
 
-      CODE_EOD = 257 #end of data
+      # End of Data
+      # @return (Integer)
+      CODE_EOD = 257
+
       CODE_CLEAR_TABLE = 256 #clear table
 
       # stores de pairs code => string

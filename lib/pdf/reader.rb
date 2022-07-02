@@ -95,6 +95,8 @@ module PDF
   class Reader
 
     # lowlevel hash-like access to all objects in the underlying PDF
+    #
+    # @return [PDF::Reader::ObjectHash]
     attr_reader :objects
 
     # creates a new document reader for the provided PDF.
