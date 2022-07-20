@@ -278,7 +278,7 @@ module PDF
             when 6 then receiver.send(name, params[0], params[1], params[2], params[3], params[4], params[5])
             when 7 then receiver.send(name, params[0], params[1], params[2], params[3], params[4], params[5], params[6])
             when 8 then receiver.send(name, params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7])
-            when 9 then receiver.send(name, params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[8], params[8])
+            when 9 then receiver.send(name, params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8])
             else
               receiver.send(name, params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8], params[9])
             end
