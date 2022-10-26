@@ -1,3 +1,7 @@
+v2.11.0 (26th October 2022)
+- Various bug fixes
+- Expanded sorbet type annotations
+
 v2.10.0 (12th May 2022)
 - Various bug fixes
 - Expanded sorbet type annotations
