@@ -82,8 +82,8 @@ class PDF::Reader
       glyph_width_in_glyph_space = glyph_width(code_point)
 
       if @subtype == :Type3
-        x1, y1 = font_matrix_transform(0,0)
-        x2, y2 = font_matrix_transform(glyph_width_in_glyph_space, 0)
+        x1, _y1 = font_matrix_transform(0,0)
+        x2, _y2 = font_matrix_transform(glyph_width_in_glyph_space, 0)
         (x2 - x1).abs.round(2)
       else
         glyph_width_in_glyph_space / 1000.0
