@@ -842,7 +842,7 @@ module PDF
       sig { params(runs: T::Array[PDF::Reader::TextRun]).returns(T::Array[PDF::Reader::TextRun]) }
       def self.exclude_redundant_runs(runs); end
 
-      sig { params(sweep_line_status: T::Array[PDF::Reader::TextRun], event_point: EventPoint).returns(T::Boolean) }
+      sig { params(sweep_line_status: T::Array[PDF::Reader::TextRun], event_point: PDF::Reader::EventPoint).returns(T::Boolean) }
       def self.detect_intersection(sweep_line_status, event_point); end
     end
 
