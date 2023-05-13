@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: strict
+# typed: true
 # frozen_string_literal: true
 
 ################################################################################
@@ -119,7 +119,7 @@ class PDF::Reader
     #     => [:A]
     #
     def int_to_name(glyph_code)
-      if @enc_name == "Identity-H" || @enc_name == "Identity-V"
+      if @enc_name == :"Identity-H" || @enc_name == :"Identity-V"
         []
       elsif differences[glyph_code]
         [differences[glyph_code]]
@@ -143,7 +143,6 @@ class PDF::Reader
         CONTROL_CHARS.include?(i) ? [i, UNKNOWN_CHAR] : [i,i]
       }
       mapping = Hash[tuples]
-      mapping[nil] = UNKNOWN_CHAR
       mapping
     end
 

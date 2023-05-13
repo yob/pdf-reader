@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: strict
+# typed: true
 # frozen_string_literal: true
 
 require 'afm'
