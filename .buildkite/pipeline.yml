@@ -113,3 +113,9 @@ steps:
       DOCKER_IMAGE: "jruby"
       RUBY_VERSION: "9.3"
       BUNDLE_GEMFILE: "/work/Gemfile-legacy"
+
+  - command: "auto/run-specs"
+    label: "rspec (jruby-9.4)"
+    env:
+      DOCKER_IMAGE: "jruby"
+      RUBY_VERSION: "9.4"
