@@ -1,5 +1,5 @@
 # coding: ASCII-8BIT
-# typed: strict
+# typed: true
 # frozen_string_literal: true
 
 ################################################################################
@@ -300,13 +300,12 @@ class PDF::Reader
     # we find a closing >
     #
     def prepare_hex_token
-      finished = :false
       str = "".dup
 
-      until finished == :true
+      loop do
         byte = @io.getbyte
         if byte.nil?
-          finished = :true # unbalanced params
+          break
         elsif (48..57).include?(byte) || (65..90).include?(byte) || (97..122).include?(byte)
           str << byte
         elsif byte <= 32
@@ -315,7 +314,7 @@ class PDF::Reader
           @tokens << str if str.size > 0
           @tokens << ">" if byte != 0x3E # '>'
           @tokens << byte.chr
-          finished = :true
+          break
         end
       end
     end

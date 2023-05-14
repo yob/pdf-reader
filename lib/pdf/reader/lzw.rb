@@ -42,7 +42,7 @@ module PDF
           while bits_left_in_chunk > 0 and @current_pos < @data.size
             chunk = 0 if chunk < 0
             codepoint = @data[@current_pos, 1].to_s.unpack("C*")[0].to_i
-            current_byte = codepoint & (2**@bits_left_in_byte - 1) #clear consumed bits
+            current_byte = codepoint & (2**@bits_left_in_byte - 1).to_i #clear consumed bits
             dif = bits_left_in_chunk - @bits_left_in_byte
             if dif > 0 then  current_byte <<= dif
             elsif dif < 0 then  current_byte >>= dif.abs
