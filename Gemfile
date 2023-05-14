@@ -8,8 +8,5 @@ gem "sorbet", "0.5.10821"
 gem "tapioca", "0.11.6", require: false
 gem 'parlour'
 
-# This is an optional dependency at runtime, but load it in development so tapioca generates rbi files
-gem "ascii85_native"
-
 # Required by yard. Part of stdlib in older rubies, but on modern rubies it's a gem
 gem "webrick"
