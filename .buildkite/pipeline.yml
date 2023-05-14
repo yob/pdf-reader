@@ -3,19 +3,19 @@ steps:
     label: ":sorbet:"
     env:
       DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "2.7"
+      RUBY_VERSION: "3.1"
 
   - command: "auto/run-require-strict-typing"
     label: "typed: strict"
     env:
       DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "2.7"
+      RUBY_VERSION: "3.1"
 
   - command: "auto/run-quality"
     label: "quality"
     env:
       DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "2.7"
+      RUBY_VERSION: "3.1"
 
   - wait
 
