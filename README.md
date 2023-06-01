@@ -1,5 +1,6 @@
 # pdf-reader
 
+
 The PDF::Reader library implements a PDF parser conforming as much as possible
 to the PDF specification from Adobe.
 
