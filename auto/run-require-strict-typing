@@ -2,4 +2,6 @@
 #
 # Confirm recent ruby files use strict typing
 
+mkdir -p tmp
+buildkite-agent artifact download Gemfile tmp/
 $(dirname $0)/with-ruby ./scripts/require-strict-typing 
