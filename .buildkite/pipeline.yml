@@ -20,102 +20,46 @@ steps:
   - wait
 
   - command: "auto/run-specs"
-    label: "rspec (2.0)"
+    label: "rspec ({{matrix}})"
     env:
       DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "2.0"
+      RUBY_VERSION: "{{matrix}}"
       BUNDLE_GEMFILE: "/work/Gemfile-legacy"
+    matrix:
+      - "2.0"
+      - "2.1"
+      - "2.2"
+      - "2.3"
+      - "2.4"
+      - "2.5"
+      - "2.6"
+      - "2.7"
 
   - command: "auto/run-specs"
-    label: "rspec (2.1)"
+    label: "rspec ({{matrix}})"
     env:
       DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "2.1"
-      BUNDLE_GEMFILE: "/work/Gemfile-legacy"
+      RUBY_VERSION: "{{matrix}}"
+    matrix:
+      - "3.0"
+      - "3.1"
+      - "3.2"
 
   - command: "auto/run-specs"
-    label: "rspec (2.2)"
-    env:
-      DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "2.2"
-      BUNDLE_GEMFILE: "/work/Gemfile-legacy"
-
-  - command: "auto/run-specs"
-    label: "rspec (2.3)"
-    env:
-      DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "2.3"
-      BUNDLE_GEMFILE: "/work/Gemfile-legacy"
-
-  - command: "auto/run-specs"
-    label: "rspec (2.4)"
-    env:
-      DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "2.4"
-      BUNDLE_GEMFILE: "/work/Gemfile-legacy"
-
-  - command: "auto/run-specs"
-    label: "rspec (2.5)"
-    env:
-      DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "2.5"
-      BUNDLE_GEMFILE: "/work/Gemfile-legacy"
-
-  - command: "auto/run-specs"
-    label: "rspec (2.6)"
-    env:
-      DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "2.6"
-      BUNDLE_GEMFILE: "/work/Gemfile-legacy"
-
-  - command: "auto/run-specs"
-    label: "rspec (2.7)"
-    env:
-      DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "2.7"
-      BUNDLE_GEMFILE: "/work/Gemfile-legacy"
-
-  - command: "auto/run-specs"
-    label: "rspec (3.0)"
-    env:
-      DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "3.0"
-
-  - command: "auto/run-specs"
-    label: "rspec (3.1)"
-    env:
-      DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "3.1"
-
-  - command: "auto/run-specs"
-    label: "rspec (3.2)"
-    env:
-      DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "3.2"
-
-  - command: "auto/run-specs"
-    label: "rspec (jruby-9.1)"
+    label: "rspec (jruby-{{matrix}})"
     env:
       DOCKER_IMAGE: "jruby"
-      RUBY_VERSION: "9.1"
+      RUBY_VERSION: "{{matrix}}"
       BUNDLE_GEMFILE: "/work/Gemfile-legacy"
+    matrix:
+      - "9.1"
+      - "9.2"
+      - "9.3"
 
   - command: "auto/run-specs"
-    label: "rspec (jruby-9.2)"
+    label: "rspec (jruby-{{matrix}})"
     env:
       DOCKER_IMAGE: "jruby"
-      RUBY_VERSION: "9.2"
-      BUNDLE_GEMFILE: "/work/Gemfile-legacy"
-
-  - command: "auto/run-specs"
-    label: "rspec (jruby-9.3)"
-    env:
-      DOCKER_IMAGE: "jruby"
-      RUBY_VERSION: "9.3"
-      BUNDLE_GEMFILE: "/work/Gemfile-legacy"
-
-  - command: "auto/run-specs"
-    label: "rspec (jruby-9.4)"
-    env:
-      DOCKER_IMAGE: "jruby"
-      RUBY_VERSION: "9.4"
+      RUBY_VERSION: "{{matrix}}"
+    matrix:
+      - "9.4"
