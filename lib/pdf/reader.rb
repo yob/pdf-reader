@@ -281,6 +281,7 @@ end
 
 require 'pdf/reader/resources'
 require 'pdf/reader/buffer'
+require 'pdf/reader/buffer_new'
 require 'pdf/reader/bounding_rectangle_runs_filter'
 require 'pdf/reader/cid_widths'
 require 'pdf/reader/cmap'
