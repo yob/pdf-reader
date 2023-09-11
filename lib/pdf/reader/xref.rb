@@ -240,7 +240,7 @@ class PDF::Reader
     # at the same time without worrying about clearing the buffers contents.
     #
     def new_buffer(offset = 0)
-      PDF::Reader::Buffer.new(@io, :seek => offset)
+      PDF::Reader::BufferNew.new(@io, :seek => offset)
     end
     ################################################################################
     # Stores an offset value for a particular PDF object ID and revision number
