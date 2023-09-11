@@ -92,7 +92,7 @@ module PDF
 
       def tokens
         @cache[cached_tokens_key] ||= begin
-                      buffer = Buffer.new(StringIO.new(raw_content), :content_stream => true)
+                      buffer = BufferNew.new(StringIO.new(raw_content), :content_stream => true)
                       parser = Parser.new(buffer, @objects)
                       result = []
                       while (token = parser.parse_token(PagesStrategy::OPERATORS))

@@ -97,7 +97,7 @@ class PDF::Reader
 
 
     def build_parser(instructions)
-      buffer = Buffer.new(StringIO.new(instructions))
+      buffer = BufferNew.new(StringIO.new(instructions))
       Parser.new(buffer)
     end
 

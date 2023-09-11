@@ -245,7 +245,7 @@ module PDF
       end
 
       def content_stream(receivers, instructions)
-        buffer       = Buffer.new(StringIO.new(instructions), :content_stream => true)
+        buffer       = BufferNew.new(StringIO.new(instructions), :content_stream => true)
         parser       = Parser.new(buffer, @objects)
         params       = []
 

@@ -560,7 +560,7 @@ class PDF::Reader
     end
 
     def new_buffer(offset = 0)
-      PDF::Reader::Buffer.new(@io, :seek => offset)
+      PDF::Reader::BufferNew.new(@io, :seek => offset)
     end
 
     def xref

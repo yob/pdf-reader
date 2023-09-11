@@ -17,7 +17,7 @@ class PDF::Reader
       if offsets[objid].nil?
         nil
       else
-        buf = PDF::Reader::Buffer.new(StringIO.new(@data), :seek => offsets[objid])
+        buf = PDF::Reader::BufferNew.new(StringIO.new(@data), :seek => offsets[objid])
         parser = PDF::Reader::Parser.new(buf)
         parser.parse_token
       end
@@ -44,7 +44,7 @@ class PDF::Reader
     end
 
     def buffer
-      @buffer ||= PDF::Reader::Buffer.new(StringIO.new(@data))
+      @buffer ||= PDF::Reader::BufferNew.new(StringIO.new(@data))
     end
 
   end

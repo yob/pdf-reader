@@ -38,8 +38,14 @@ describe PDF::Reader::BufferNew, "token method" do
   it "tokenises correctly" do
     compare_buffers("aaa")
   end
+  it "tokenises correctly" do
+    compare_buffers("1.2")
+  end
   it "tokenise correctly" do
     compare_buffers("aaa")
+  end
+  it "tokenise correctly" do
+    compare_buffers("[aaa]")
   end
   it "tokenise correctly" do
     compare_buffers("(aaa)")
@@ -55,6 +61,9 @@ describe PDF::Reader::BufferNew, "token method" do
   end
   it "tokenise correctly" do
     compare_buffers("/Type/Pages")
+  end
+  it "tokenise correctly" do
+    compare_buffers("/Chunky/Bacon-Hyphened")
   end
   #it "tokenise correctly" do
   #  compare_buffers("/ /")
