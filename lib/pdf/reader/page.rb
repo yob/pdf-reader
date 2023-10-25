@@ -236,7 +236,7 @@ module PDF
       def paragraphs(opts = {})
         minimum_horizontal_overlap_percentage = opts.fetch(:minimum_horizontal_overlap_percentage, 0.80)
         maximum_multiplied_leading            = opts.fetch(:maximum_multiplied_leading, 1.40)
-        # maximum_allowed_font_difference       = opts.fetch(:maximum_allowed_font_difference, 1.00)
+        maximum_allowed_font_difference       = opts.fetch(:maximum_allowed_font_difference, 1.00)
 
         disjoint_set = PDF::Reader::DisjointSet.new
         runs(opts).each { |run| disjoint_set.add(run) }
@@ -253,6 +253,7 @@ module PDF
 
             next unless overlap_percentage >= minimum_horizontal_overlap_percentage
             next unless leading <= maximum_multiplied_leading
+            next if (l0.font_size - l1.font_size).abs > maximum_allowed_font_difference
 
             disjoint_set.union(l0, l1)
           end
