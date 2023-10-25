@@ -238,13 +238,11 @@ module PDF
         maximum_multiplied_leading            = opts.fetch(:maximum_multiplied_leading, 1.40)
         # maximum_allowed_font_difference       = opts.fetch(:maximum_allowed_font_difference, 1.00)
 
-        receiver = PageTextReceiver.new
-        walk(receiver)
-        runs = receiver.runs(opts)
-
         disjoint_set = PDF::Reader::DisjointSet.new
-        runs.each { |run| disjoint_set.add(run) }
+        runs(opts).each { |run| disjoint_set.add(run) }
 
+        # Build disjoint set in order to find all text runs that "overlap" by a
+        # certain percentage, so we can combine the right runs together.
         disjoint_set.each do |l0|
           disjoint_set.each do |l1|
             next if l0 == l1
@@ -253,9 +251,10 @@ module PDF
             overlap_percentage = l0.horizontal_overlap(l1)
             leading = (l0.y - l1.y).abs / [l0.font_size, l1.font_size].min
 
-            if overlap_percentage >= minimum_horizontal_overlap_percentage && leading <= maximum_multiplied_leading
-              disjoint_set.union(l0, l1) && next
-            end
+            next unless overlap_percentage >= minimum_horizontal_overlap_percentage
+            next unless leading <= maximum_multiplied_leading
+
+            disjoint_set.union(l0, l1)
           end
         end
 
