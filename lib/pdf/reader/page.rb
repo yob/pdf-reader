@@ -231,6 +231,45 @@ module PDF
         }
       end
 
+      # returns all text on the page as an array of Paragraphs.
+      def paragraphs(opts = {})
+        minimum_horizontal_overlap_percentage = opts.fetch(:minimum_horizontal_overlap_percentage, 0.80)
+        maximum_multiplied_leading            = opts.fetch(:maximum_multiplied_leading, 1.40)
+        # maximum_allowed_font_difference       = opts.fetch(:maximum_allowed_font_difference, 1.00)
+
+        receiver = PageTextReceiver.new
+        walk(receiver)
+        runs = receiver.runs(opts)
+
+        disjoint_set = DisjointSet.new
+        runs.each { |run| disjoint_set.add(run) }
+
+        disjoint_set.each do |l0|
+          disjoint_set.each do |l1|
+            next if l0 == l1
+            next if disjoint_set.find(l0) == disjoint_set.find(l1)
+
+            overlap_percentage = l0.horizontal_overlap(l1)
+            leading = (l0.y - l1.y).abs / [l0.font_size, l1.font_size].min
+
+            if overlap_percentage >= minimum_horizontal_overlap_percentage && leading <= maximum_multiplied_leading
+              disjoint_set.union(l0, l1) && next
+            end
+          end
+        end
+
+        paragraphs = disjoint_set.sets.map do |set|
+          # remember, pdf page origin is bottom left corner
+          leftmost_x = set.map(&:x).min
+          topmost_y = set.map(&:y).max
+          text = set.map(&:text).join(' ')
+
+          Paragraph.new(text, PDF::Reader::Point.new(leftmost_x, topmost_y))
+        end
+
+        paragraphs.map(&:text)
+      end
+
       private
 
       def root
@@ -312,5 +351,78 @@ module PDF
       end
 
     end
+  end
+end
+
+Paragraph = Struct.new('Paragraph', :text, :origin)
+
+# In computer science, a disjoint-set data structure, also called a union–find data structure or merge–find set,
+# is a data structure that stores a collection of disjoint (non-overlapping) sets.
+class DisjointSet
+  include Enumerable
+
+  def initialize
+    @parents = {}
+    @ranks = {}
+  end
+
+  def contains(item)
+    @parents.key?(item)
+  end
+
+  def each(&block)
+    if block_given?
+      @parents.each_key(&block)
+    else
+      to_enum(:each)
+    end
+  end
+
+  def length
+    @parents.length
+  end
+
+  def add(x)
+    @parents[x] = x
+    @ranks[x] = 0
+    self
+  end
+
+  def find(x)
+    return x if @parents[x] == x
+
+    find(@parents[x])
+  end
+
+  def pop(x)
+    raise NotImplementedError, "Remove operation not supported"
+  end
+
+  def sets
+    cluster_parents = {}
+    @parents.each_key do |x|
+      p = find(x)
+      cluster_parents[p] = [] unless cluster_parents.key?(p)
+      cluster_parents[p].push(x)
+    end
+    cluster_parents.values
+  end
+
+  def union(x, y)
+    x_parent = find(x)
+    y_parent = find(y)
+
+    return self if x_parent == y_parent
+
+    if @ranks[x_parent] > @ranks[y_parent]
+      @parents[y_parent] = x_parent
+    elsif @ranks[y_parent] > @ranks[x_parent]
+      @parents[x_parent] = y_parent
+    else
+      @parents[y_parent] = x_parent
+      @ranks[x_parent] += 1
+    end
+
+    self
   end
 end
