@@ -41,7 +41,7 @@ class PDF::Reader
   class BufferNew
     #TOKEN_WHITESPACE=[0x00, 0x09, 0x0A, 0x0C, 0x0D, 0x20]
     #TOKEN_DELIMITER=[0x25, 0x3C, 0x3E, 0x28, 0x5B, 0x7B, 0x29, 0x5D, 0x7D, 0x2F]
-    TOKEN_ALPHA = /[a-zA-Z0-9\-\.]+/
+    TOKEN_ALPHA = /[a-zA-Z0-9\-\.,\*\+_:'\\;]+/
     TOKEN_DELIMITER = /[\u{5b}\u{5d}]/ # [ ]
     TOKEN_NUM = /\d+(\.\d+)?/
     TOKEN_WHITESPACE = /\s+/

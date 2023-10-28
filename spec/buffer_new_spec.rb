@@ -65,6 +65,30 @@ describe PDF::Reader::BufferNew, "token method" do
   it "tokenise correctly" do
     compare_buffers("/Chunky/Bacon-Hyphened")
   end
+  it "tokenise correctly" do
+    compare_buffers("/Chunky/Bacon,Comma")
+  end
+  it "tokenise correctly" do
+    compare_buffers("/Chunky/Bacon+Plus")
+  end
+  it "tokenise correctly" do
+    compare_buffers("/Chunky/Bacon*Star")
+  end
+  it "tokenise correctly" do
+    compare_buffers("/Chunky/Bacon_Underscore")
+  end
+  it "tokenise correctly" do
+    compare_buffers("/Chunky/Bacon:Colon")
+  end
+  it "tokenise correctly" do
+    compare_buffers("/Chunky/Bacon;SemiColon")
+  end
+  it "tokenise correctly" do
+    compare_buffers("/Chunky/Bacon'Apos")
+  end
+  it "tokenise correctly" do
+    compare_buffers("/Chunky/Bacon\\\\escaped-slash")
+  end
   #it "tokenise correctly" do
   #  compare_buffers("/ /")
   #end
