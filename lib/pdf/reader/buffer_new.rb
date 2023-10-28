@@ -203,6 +203,9 @@ class PDF::Reader
         when s = @scan.scan(TOKEN_INDIRECT_OBJECT)  then
           _, id, gen = *s.match(/(\d+)\s(\d+)\sR/)
           @tokens << PDF::Reader::Reference.new(id.to_i, gen.to_i)
+        when s = @scan.scan("stream")  then
+          @mode = :stream
+          @tokens << s
         when s = @scan.scan(TOKEN_ALPHA) then
           @tokens << s
         when s = @scan.scan(TOKEN_NUM)  then
@@ -231,8 +234,24 @@ class PDF::Reader
           # nothing
         else
           puts @scan.inspect
-          raise "oh no"
+          raise MalformedPDFError.new("oh no")
         end
+      when :stream then
+        s = @scan.scan(/.+?(endstream)/m)
+        stream_content = s.slice(0, s.bytesize - 9)
+
+        if stream_content.start_with?("\r\n")
+          stream_content = stream_content.slice(2, stream_content.bytesize)
+        elsif stream_content.start_with?("\n")
+          stream_content = stream_content.slice(1, stream_content.bytesize)
+        end
+        #if stream_content.end_with?("\n")
+        #  stream_content = stream_content.slice(0, stream_content.bytesize-1)
+        #end
+        # freeze the token so it's parsed as-is
+        @tokens << stream_content.freeze
+        @tokens << "endstream"
+        @mode = :regular
       when :literal_string then
         s = @scan.scan(TOKEN_INSIDE_LITSTRING)
         if s

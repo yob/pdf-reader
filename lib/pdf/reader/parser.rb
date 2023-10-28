@@ -110,7 +110,14 @@ class PDF::Reader
       post_obj = parse_token
 
       if obj.is_a?(Hash) && post_obj == "stream"
-        stream(obj)
+        data = parse_token
+        Error.str_assert(parse_token, "endstream")
+
+        # We used to assert that the stream had the correct closing token, but it doesn't *really*
+        # matter if it's missing, and other readers seems to handle its absence just fine
+        # Error.str_assert(parse_token, "endobj")
+
+        PDF::Reader::Stream.new(obj, data)
       else
         obj
       end
@@ -208,31 +215,6 @@ class PDF::Reader
       "\\\r\n" => "",
     }
 
-    ################################################################################
-    # Decodes the contents of a PDF Stream and returns it as a Ruby String.
-    def stream(dict)
-      raise MalformedPDFError, "PDF malformed, missing stream length" unless dict.has_key?(:Length)
-      if @objects
-        length = @objects.deref_integer(dict[:Length])
-        if dict[:Filter]
-          dict[:Filter] = @objects.deref_name_or_array(dict[:Filter])
-        end
-      else
-        length = dict[:Length] || 0
-      end
-
-      PDF::Reader::Error.validate_type_as_malformed(length, "length", Numeric)
-
-      data = @buffer.read(length, :skip_eol => true)
-
-      Error.str_assert(parse_token, "endstream")
-
-      # We used to assert that the stream had the correct closing token, but it doesn't *really*
-      # matter if it's missing, and other readers seems to handle its absence just fine
-      # Error.str_assert(parse_token, "endobj")
-
-      PDF::Reader::Stream.new(dict, data)
-    end
     ################################################################################
   end
   ################################################################################

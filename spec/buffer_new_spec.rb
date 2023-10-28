@@ -159,4 +159,18 @@ describe PDF::Reader::BufferNew, "token method" do
     compare_buffers("<< /X 10 0 R /Y 11 0 R /Z 12 0 R >>")
   end
 
+  it "tokenise correctly" do
+    stream = <<~EOS
+2 0 obj
+<< /Length 4
+   /Type /Test
+>>
+stream
+1234 Tj
+endstream
+enobj
+EOS
+    compare_buffers(stream)
+  end
+
 end
