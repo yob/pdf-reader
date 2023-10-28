@@ -55,7 +55,6 @@ class PDF::Reader
     TOKEN_COMMENT = /\u{25}.*$/ # % to end of line
     TOKEN_INDIRECT_OBJECT = /\d+\s\d+\sR/
 
-    TOKEN_INSIDE_LITSTRING = /[^\)]+/m
     TOKEN_INSIDE_HEXSTRING = /[^\>]+/m
 
     CR = "\r"
@@ -253,10 +252,29 @@ class PDF::Reader
         @tokens << "endstream"
         @mode = :regular
       when :literal_string then
-        s = @scan.scan(TOKEN_INSIDE_LITSTRING)
-        if s
-          @tokens << s
+        # TODO Can this be done using regexp?
+        str = "".dup
+        count = 1
+
+        while count > 0
+          byte = @scan.scan(/./)
+          if byte.nil?
+            count = 0 # unbalanced params
+          elsif byte == "\x5C"
+            str << byte << @scan.scan(/./)
+          elsif byte == "\x28" # "("
+            str << "("
+            count += 1
+          elsif byte == "\x29" # ")"
+            count -= 1
+            str << ")" unless count == 0
+          else
+            str << byte unless count == 0
+          end
         end
+
+        @tokens << str if str.size > 0
+        @tokens << ")"
         @mode = :regular
       when :hex_string then
         s = @scan.scan(TOKEN_INSIDE_HEXSTRING)

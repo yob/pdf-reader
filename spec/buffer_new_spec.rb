@@ -140,11 +140,27 @@ describe PDF::Reader::BufferNew, "token method" do
   it "tokenise correctly" do
     compare_buffers("(aaa bbb)")
   end
-  #it "tokenise correctly" do
-  #  compare_buffers("(aaa (bbb))")
-  #end
+  it "tokenise correctly" do
+    compare_buffers("(aaa (bbb))")
+  end
+  it "tokenise correctly" do
+    input = "(aaa (bbb))"
+    bufnew = parse_string2(input)
+
+    expect(bufnew.token).to eq("(")
+    expect(bufnew.token).to eq("aaa (bbb)")
+    expect(bufnew.token).to eq(")")
+  end
   it "tokenise correctly" do
     compare_buffers("(aaa\x5C\x5C)")
+  end
+  it "tokenise correctly" do
+    input = "(aaa\x5C\x5C)"
+    bufnew = parse_string2(input)
+
+    expect(bufnew.token).to eq("(")
+    expect(bufnew.token).to eq("aaa\x5C\x5C")
+    expect(bufnew.token).to eq(")")
   end
   it "tokenise correctly" do
     compare_buffers("<< /X <48656C6C6F> >>")
