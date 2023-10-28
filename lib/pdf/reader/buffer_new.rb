@@ -124,8 +124,6 @@ class PDF::Reader
 
       if opts[:skip_eol]
         str = @scan.peek(2)
-        require 'pry'
-        binding.pry
         if str.nil?
           return nil
         elsif str == CRLF # This MUST be done before checking for CR alone
