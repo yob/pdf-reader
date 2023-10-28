@@ -261,7 +261,9 @@ class PDF::Reader
           if byte.nil?
             count = 0 # unbalanced params
           elsif byte == "\x5C"
-            str << byte << @scan.scan(/./)
+            str << byte
+            escaped_char = @scan.scan(/./m)
+            str << escaped_char if escaped_char
           elsif byte == "\x28" # "("
             str << "("
             count += 1
