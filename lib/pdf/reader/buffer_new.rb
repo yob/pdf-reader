@@ -242,9 +242,11 @@ class PDF::Reader
         elsif stream_content.start_with?("\n")
           stream_content = stream_content.slice(1, stream_content.bytesize)
         end
-        #if stream_content.end_with?("\n")
-        #  stream_content = stream_content.slice(0, stream_content.bytesize-1)
-        #end
+        if stream_content.end_with?("\r\n")
+          stream_content = stream_content.slice(0, stream_content.bytesize-2)
+        elsif stream_content.end_with?("\n")
+          stream_content = stream_content.slice(0, stream_content.bytesize-1)
+        end
         # freeze the token so it's parsed as-is
         @tokens << stream_content.freeze
         @tokens << "endstream"
