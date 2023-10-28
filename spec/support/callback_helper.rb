@@ -9,12 +9,16 @@ class CallbackHelper
     if @registers.empty?
       good_files.map { |filename|
         receiver = PDF::Reader::RegisterReceiver.new
-        PDF::Reader.open(filename) do |reader|
-          reader.pages.each do |page|
-            page.walk(receiver)
+        begin
+          PDF::Reader.open(filename) do |reader|
+            reader.pages.each do |page|
+              page.walk(receiver)
+            end
           end
+          @registers[filename] = receiver
+        rescue StandardError => e
+          $stderr.puts "skipping #{filename} #{e}"
         end
-        @registers[filename] = receiver
       }
     end
     @registers
