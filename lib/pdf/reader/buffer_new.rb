@@ -107,42 +107,6 @@ class PDF::Reader
       @tokens.empty?
     end
 
-    # return raw bytes from the underlying IO stream.
-    #
-    #   bytes - the number of bytes to read
-    #
-    # options:
-    #
-    #   :skip_eol - if true, the IO stream is advanced past a CRLF, CR or LF
-    #               that is sitting under the io cursor.
-    #   Note:
-    #   Skipping a bare CR is not spec-compliant.
-    #   This is because the data may start with LF.
-    #   However we check for CRLF first, so the ambiguity is avoided.
-    def read(bytes, opts = {})
-      #reset_pos
-
-      if opts[:skip_eol]
-        str = @scan.peek(2)
-        if str.nil?
-          return nil
-        elsif str == CRLF # This MUST be done before checking for CR alone
-          # do nothing
-        elsif str[0, 1] == LF || str[0, 1] == CR # LF or CR alone
-          @scan.pos = @scan.pos + 1
-        else
-          # do nothing
-          #@io.seek(-2, IO::SEEK_CUR)
-          #@scan.pos = @scan.pos - 1
-        end
-      end
-      @io.seek(@scan.pos)
-
-      bytes = @io.read(bytes)
-      @scan.pos = @io.pos
-      bytes
-    end
-
     def token
       prepare_three_tokens if @tokens.size < 3 && @tokens.last != "stream"
 
