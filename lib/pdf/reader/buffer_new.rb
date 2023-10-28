@@ -81,7 +81,14 @@ class PDF::Reader
     #
     def initialize(io, opts = {})
       @io = io
-      @scan = StringScanner.new(@io.string)
+      if @io.is_a?(StringIO)
+        @scan = StringScanner.new(@io.string)
+      else
+        @io.autoclose = false
+        @io.rewind
+        @io.binmode
+        @scan = StringScanner.new(@io.read)
+      end
       if opts[:seek]
         @scan.pos = opts[:seek]
       end
