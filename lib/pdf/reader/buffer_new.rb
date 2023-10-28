@@ -56,6 +56,8 @@ class PDF::Reader
     TOKEN_INDIRECT_OBJECT = /\d+\s\d+\sR/
 
     TOKEN_INSIDE_HEXSTRING = /[^\>]+/m
+    TOKEN_STREAM_START = "stream"
+    TOKEN_STREAM_END = /.+?(endstream)/m
 
     CR = "\r"
     LF = "\n"
@@ -164,7 +166,7 @@ class PDF::Reader
         when s = @scan.scan(TOKEN_INDIRECT_OBJECT)  then
           _, id, gen = *s.match(/(\d+)\s(\d+)\sR/)
           @tokens << PDF::Reader::Reference.new(id.to_i, gen.to_i)
-        when s = @scan.scan("stream")  then
+        when s = @scan.scan(TOKEN_STREAM_START)  then
           @mode = :stream
           @tokens << s
         when s = @scan.scan(TOKEN_ALPHA) then
@@ -175,30 +177,30 @@ class PDF::Reader
           @tokens << s
         when s = @scan.scan(TOKEN_COMMENT)  then
           # nothing
-        when s = @scan.scan(TOKEN_OPEN_HASH)  then
-          @tokens << s
-        when s = @scan.scan(TOKEN_CLOSE_HASH)  then
-          @tokens << s
-        when s = @scan.scan(TOKEN_OPEN_HEXSTRING)  then
+        when @scan.skip(TOKEN_OPEN_HASH)  then
+          @tokens << "<<"
+        when @scan.skip(TOKEN_CLOSE_HASH)  then
+          @tokens << ">>"
+        when @scan.skip(TOKEN_OPEN_HEXSTRING)  then
           @mode = :hex_string
-          @tokens << s
-        when s = @scan.scan(TOKEN_CLOSE_HEXSTRING)  then
-          @tokens << s
-        when s = @scan.scan(TOKEN_OPEN_LITSTRING)  then
+          @tokens << "<"
+        when @scan.skip(TOKEN_CLOSE_HEXSTRING)  then
+          @tokens << ">"
+        when @scan.skip(TOKEN_OPEN_LITSTRING)  then
           @mode = :literal_string
-          @tokens << s
-        when s = @scan.scan(TOKEN_CLOSE_LITSTRING) then
-          @tokens << s
-        when s = @scan.scan(TOKEN_OPEN_NAME)  then
-          @tokens << s
-        when s = @scan.scan(TOKEN_WHITESPACE)  then
+          @tokens << "("
+        when @scan.skip(TOKEN_CLOSE_LITSTRING) then
+          @tokens << ")"
+        when @scan.skip(TOKEN_OPEN_NAME)  then
+          @tokens << "/"
+        when @scan.skip(TOKEN_WHITESPACE)  then
           # nothing
         else
           puts @scan.inspect
           raise MalformedPDFError.new("oh no")
         end
       when :stream then
-        s = @scan.scan(/.+?(endstream)/m)
+        s = @scan.scan(TOKEN_STREAM_END)
         stream_content = s.slice(0, s.bytesize - 9)
 
         if stream_content.start_with?("\r\n")
