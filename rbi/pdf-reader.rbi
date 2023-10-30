@@ -212,11 +212,14 @@ module PDF
         @ranks = T.let({}, T::Hash[T.untyped, T.untyped])
       end
 
-      sig { params(x: T.untyped).returns(T::Boolean) }
+      sig { params(item: T.untyped).returns(T::Boolean) }
       def contains(item); end
 
       sig { override.params(block: T.proc.params(arg0: Elem).returns(BasicObject)).returns(T.untyped) }
       def each(&block); end
+
+      sig { returns(Integer) }
+      def length; end
 
       sig { params(x: T.untyped).returns(PDF::Reader::DisjointSet) }
       def add(x); end
@@ -956,6 +959,9 @@ module PDF
 
       sig { returns(T::Hash[Symbol, PDF::Reader::Rectangle]) }
       def rectangles; end
+
+      sig { params(opts: T::Hash[Symbol, T.untyped]).returns(T::Array[String]) }
+      def paragraphs(opts = {}); end
 
       sig { returns(T::Hash[Symbol, T.untyped]) }
       def root; end
