@@ -232,7 +232,6 @@ module PDF
       end
 
       # returns all text on the page as an array of Paragraphs.
-      Paragraph = Struct.new('Paragraph', :text, :origin)
       def paragraphs(opts = {})
         minimum_horizontal_overlap_percentage = opts.fetch(:minimum_horizontal_overlap_percentage, 0.80)
         maximum_multiplied_leading            = opts.fetch(:maximum_multiplied_leading, 1.40)

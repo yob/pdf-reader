@@ -1224,6 +1224,14 @@ module PDF
       OPERATORS = T.let(T.unsafe(nil), T::Hash[String, Symbol])
     end
 
+    class Paragraph
+      sig { params(text: String, origin: PDF::Reader::Point).void }
+      def initialize(text, origin)
+        @text = T.let(T.unsafe(nil), String)
+        @origin = T.let(T.unsafe(nil), PDF::Reader::Point)
+      end
+    end
+
     class Parser
       sig { params(buffer: PDF::Reader::Buffer, objects: T.nilable(PDF::Reader::ObjectHash)).void }
       def initialize(buffer, objects=nil); end
