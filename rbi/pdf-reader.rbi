@@ -208,14 +208,14 @@ module PDF
     class DisjointSet
       sig { void }
       def initialize
-        @parents = T.let({}, T::Hash[T.untyped, T.untyped])
-        @ranks = T.let({}, T::Hash[T.untyped, T.untyped])
+        @parents = T.let({}, T::Hash[T.anything, T.untyped])
+        @ranks = T.let({}, T::Hash[T.anything, T.untyped])
       end
 
-      sig { params(item: T.untyped).returns(T::Boolean) }
+      sig { params(item: T.anything).returns(T::Boolean) }
       def contains(item); end
 
-      sig { override.params(block: T.proc.params(arg0: Elem).returns(BasicObject)).returns(T.untyped) }
+      sig { override.params(block: T.nilable(T.proc.params(arg0: Enumerable::Elem).returns(BasicObject))).returns(T.any(T::Hash[T.untyped, T.untyped], T::Enumerator[T.untyped])) }
       def each(&block); end
 
       sig { returns(Integer) }
@@ -224,7 +224,7 @@ module PDF
       sig { params(x: T.untyped).returns(PDF::Reader::DisjointSet) }
       def add(x); end
 
-      sig { params(x: T.proc.returns(T.type_parameter(:U))).returns(T.any(Elem, T.type_parameter(:U))) }
+      sig { type_parameters(:U).params(x: T.type_parameter(:U)).returns(T.type_parameter(:U)) }
       def find(x); end
 
       sig { returns(T::Array[T.untyped]) }
@@ -1231,11 +1231,14 @@ module PDF
     end
 
     class Paragraph
+      sig { returns(String) }
+      attr_reader :text
+
+      sig { returns(PDF::Reader::Point) }
+      attr_reader :origin
+
       sig { params(text: String, origin: PDF::Reader::Point).void }
-      def initialize(text, origin)
-        @text = T.let(T.unsafe(nil), String)
-        @origin = T.let(T.unsafe(nil), PDF::Reader::Point)
-      end
+      def initialize(text, origin); end
     end
 
     class Parser
