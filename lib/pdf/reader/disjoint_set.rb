@@ -43,10 +43,6 @@ module PDF
         find(@parents[x])
       end
 
-      def pop(x)
-        raise NotImplementedError, "Remove operation not supported"
-      end
-
       def sets
         cluster_parents = {}
         @parents.each_key do |x|
