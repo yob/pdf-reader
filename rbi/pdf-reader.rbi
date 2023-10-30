@@ -1620,6 +1620,9 @@ module PDF
       sig { params(other_run: T.untyped).returns(Numeric) }
       def intersection_area_percent(other_run); end
 
+      sig { params(other_run: T.untyped).returns(Numeric) }
+      def horizontal_overlap(other_run); end
+
       sig { returns(Numeric) }
       def area; end
 
