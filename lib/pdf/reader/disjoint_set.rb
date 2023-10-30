@@ -20,11 +20,9 @@ module PDF
       end
 
       def each(&block)
-        if block_given?
-          @parents.each_key(&block)
-        else
-          to_enum(:each)
-        end
+        return enum_for(:each) unless block_given?
+
+        @parents.each_key(&block)
       end
 
       def length
