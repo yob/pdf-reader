@@ -205,6 +205,32 @@ module PDF
       def bfrange_type_two(start_code, end_code, dst); end
     end
 
+    class DisjointSet
+      sig { void }
+      def initialize
+        @parents = T.let({}, T::Hash[T.untyped, T.untyped])
+        @ranks = T.let({}, T::Hash[T.untyped, T.untyped])
+      end
+
+      sig { params(x: T.untyped).returns(T::Boolean) }
+      def contains(item); end
+
+      sig { override.params(block: T.proc.params(arg0: Elem).returns(BasicObject)).returns(T.untyped) }
+      def each(&block); end
+
+      sig { params(x: T.untyped).returns(PDF::Reader::DisjointSet) }
+      def add(x); end
+
+      sig { params(x: T.proc.returns(T.type_parameter(:U))).returns(T.any(Elem, T.type_parameter(:U))) }
+      def find(x); end
+
+      sig { returns(T::Array[T.untyped]) }
+      def sets; end
+
+      sig { params(x: T.untyped, y: T.untyped).returns(PDF::Reader::DisjointSet) }
+      def union(x, y); end
+    end
+
     class Encoding
       CONTROL_CHARS = T.let(T.unsafe(nil), T::Array[Integer])
       UNKNOWN_CHAR = T.let(T.unsafe(nil), Integer)
