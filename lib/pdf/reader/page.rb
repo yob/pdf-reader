@@ -264,7 +264,7 @@ module PDF
           topmost_y = set.map(&:y).max
           text = set.map { |run| run.text.strip }.join(' ')
 
-          Paragraph.new(text, PDF::Reader::Point.new(leftmost_x, topmost_y))
+          PDF::Reader::Paragraph.new(text, PDF::Reader::Point.new(leftmost_x, topmost_y))
         end
 
         paragraphs.map(&:text)

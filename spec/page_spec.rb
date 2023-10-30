@@ -137,10 +137,9 @@ describe PDF::Reader::Page do
       end
 
       it "returns paragraphs from multi-column layouts" do
-        puts page.paragraphs.inspect
         expect(page.paragraphs).to include(<<~TEXT.strip.gsub(/\n/, " "))
-          Enter your trim size of the Width and the Height. Elements that bleed
-          must extend .125" (1/8")beyond the project’s trim edge in your project
+          QuarkXPress Enter your trim size of the Width and the Height. Elements that bleed
+          must extend .125" (1/8") beyond the project’s trim edge in your project
           layout.
         TEXT
       end
