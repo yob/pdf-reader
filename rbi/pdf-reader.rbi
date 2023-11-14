@@ -207,6 +207,7 @@ module PDF
 
     class DisjointSet
       include Enumerable
+      Elem = type_member { {fixed: T.untyped} }
 
       sig { void }
       def initialize
