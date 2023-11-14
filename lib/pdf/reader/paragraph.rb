@@ -4,6 +4,8 @@
 
 module PDF
   class Reader
+
+    # A simple class used by PDF::Reader::Page.paragraphs to represent a paragraph of text and its origin.
     class Paragraph
       attr_reader :text, :origin
 
