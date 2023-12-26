@@ -116,5 +116,18 @@ describe PDF::Reader::CMap do
         expect(map.decode(0x00C1)).to eql([0x00C1])
       end
     end
+
+    context "cmap with bfchar and surrogate pairs, where the surrogate pair starts with D800" do
+      it "correctly loads character mapping" do
+        filename = File.dirname(__FILE__) + "/data/cmap_with_surrogate_pairs_on_boundary.txt"
+        map = PDF::Reader::CMap.new(binread(filename))
+        expect(map.map).to be_a_kind_of(Hash)
+        expect(map.size).to        eq(27)
+        expect(map.map[0x0]).to    eq([0x10102])
+        expect(map.map[0xB]).to    eq([0x28])
+        expect(map.map[0x1E]).to   eq([0x3B])
+        expect(map.map[0x0194]).to eq([0x25CF])
+      end
+    end
   end
 end
