@@ -1,3 +1,8 @@
+v2.12.0 (26th December 2023)
+- Fix a sorbet method signature (http://github.com/yob/pdf-reader/pull/512)
+- Reduce allocations when parsing PDFs with hex strings (http://github.com/yob/pdf-reader/pull/528)
+- Fix text extraction of some rare unicode codepoints (http://github.com/yob/pdf-reader/pull/529)
+
 v2.11.0 (26th October 2022)
 - Various bug fixes
 - Expanded sorbet type annotations
