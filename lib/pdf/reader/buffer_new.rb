@@ -39,8 +39,8 @@ class PDF::Reader
   # the raw tokens into objects we can work with (strings, ints, arrays, etc)
   #
   class BufferNew
-    #TOKEN_WHITESPACE=[0x00, 0x09, 0x0A, 0x0C, 0x0D, 0x20]
-    #TOKEN_DELIMITER=[0x25, 0x3C, 0x3E, 0x28, 0x5B, 0x7B, 0x29, 0x5D, 0x7D, 0x2F]
+    #TOKEN_WHITESPACE = /[\u{00}\u{09}\u{0A}\u{0C}\u{0D}\u{20}\s]+/
+    TOKEN_DELIMITER_LEGAGY=/[\u{25}\u{3C}\u{3E}\u{28}\u{5B}\u{7B}\u{29}\u{5D}\u{7D}\u{2F}]/
     TOKEN_ALPHA = /[a-zA-Z0-9\-\.,\*\+_:'\\;]+/
     TOKEN_DELIMITER = /[\u{5b}\u{5d}]/ # [ ]
     TOKEN_NUM = /\d+(\.\d+)?/
@@ -193,6 +193,11 @@ class PDF::Reader
           @tokens << ")"
         when @scan.skip(TOKEN_OPEN_NAME)  then
           @tokens << "/"
+          peek_byte = @scan.peek(1)
+          # PDF Names can be empty, so a "/" parses as a name equal to ""
+          if ["", "\x20", "\x0A"].include?(peek_byte) || TOKEN_DELIMITER_LEGAGY.match(peek_byte)
+            @tokens << ""
+          end
         when @scan.skip(TOKEN_WHITESPACE)  then
           # nothing
         else

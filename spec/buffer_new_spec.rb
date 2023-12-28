@@ -89,12 +89,12 @@ describe PDF::Reader::BufferNew, "token method" do
   it "tokenise correctly" do
     compare_buffers("/Chunky/Bacon\\\\escaped-slash")
   end
-  #it "tokenise correctly" do
-  #  compare_buffers("/ /")
-  #end
-  #it "tokenise correctly" do
-  #  compare_buffers("<</V/>>")
-  #end
+  it "tokenise correctly" do
+    compare_buffers("/ /")
+  end
+  it "tokenise correctly" do
+    compare_buffers("<</V/>>")
+  end
   it "tokenise correctly" do
     compare_buffers("/Type/Pages")
   end
