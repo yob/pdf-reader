@@ -113,6 +113,12 @@ class PDF::Reader
         data = parse_token
         Error.str_assert(parse_token, "endstream")
 
+        # To correctly parsse the data we need to know the filters, and the
+        # filters object cant be an indirect object. Derefernce it if required
+        if @objects && obj[:Filter]
+          obj[:Filter] = @objects.deref_name_or_array(obj[:Filter])
+        end
+
         # We used to assert that the stream had the correct closing token, but it doesn't *really*
         # matter if it's missing, and other readers seems to handle its absence just fine
         # Error.str_assert(parse_token, "endobj")
