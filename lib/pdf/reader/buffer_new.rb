@@ -223,7 +223,7 @@ class PDF::Reader
         count = 1
 
         while count > 0
-          byte = @scan.scan(/./)
+          byte = @scan.scan(/./m)
           if byte.nil?
             count = 0 # unbalanced params
           elsif byte == "\x5C"

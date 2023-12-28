@@ -163,6 +163,9 @@ describe PDF::Reader::BufferNew, "token method" do
     compare_buffers("(aaa\x5C\x5C)")
   end
   it "tokenise correctly" do
+    compare_buffers("(aaa\x5C\x0D\x0Abbb)")
+  end
+  it "tokenise correctly" do
     input = "(aaa\x5C\x5C)"
     bufnew = parse_string2(input)
 
