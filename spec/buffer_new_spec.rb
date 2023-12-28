@@ -186,6 +186,8 @@ describe PDF::Reader::BufferNew, "token method" do
     compare_buffers("<< /X 10 0 R /Y 11 0 R /Z 12 0 R >>")
   end
 
+  # when the stream data length disagrees with the Length value of he dict, which should we use?
+  # The old buffer trusts the Length value, the new buffer currently lexes until it finds the end of the stream
   it "tokenise correctly" do
     stream = <<~EOS
 2 0 obj
