@@ -196,8 +196,10 @@ class PDF::Reader
         when @scan.skip(TOKEN_WHITESPACE)  then
           # nothing
         else
-          puts @scan.inspect
-          raise MalformedPDFError.new("oh no")
+          s = @scan.scan(/./m)
+          @tokens << s
+          #puts @scan.inspect
+          #raise MalformedPDFError.new("oh no")
         end
       when :stream then
         s = @scan.scan(TOKEN_STREAM_END)
