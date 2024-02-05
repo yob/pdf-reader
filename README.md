@@ -20,7 +20,7 @@ page.
 The recommended installation method is via Rubygems.
 
 ```ruby
-  gem install pdf-reader
+gem install pdf-reader
 ```
 
 # Usage
@@ -30,23 +30,23 @@ level information (metadata, page count, bookmarks, etc) is available via
 this object.
 
 ```ruby
-    reader = PDF::Reader.new("somefile.pdf")
+reader = PDF::Reader.new("somefile.pdf")
 
-    puts reader.pdf_version
-    puts reader.info
-    puts reader.metadata
-    puts reader.page_count
+puts reader.pdf_version
+puts reader.info
+puts reader.metadata
+puts reader.page_count
  ```
 
 PDF::Reader.new accepts an IO stream or a filename. Here's an example with
 an IO stream:
 
 ```ruby
-    require 'open-uri'
+require 'open-uri'
 
-    io     = open('http://example.com/somefile.pdf')
-    reader = PDF::Reader.new(io)
-    puts reader.info
+io     = open('http://example.com/somefile.pdf')
+reader = PDF::Reader.new(io)
+puts reader.info
  ```
 
 If you open a PDF with File#open or IO#open, I strongly recommend using "rb"
@@ -54,47 +54,47 @@ mode to ensure the file isn't mangled by ruby being 'helpful'. This is
 particularly important on windows and MRI >= 1.9.2.
 
 ```ruby
-    File.open("somefile.pdf", "rb") do |io|
-      reader = PDF::Reader.new(io)
-      puts reader.info
-    end
+File.open("somefile.pdf", "rb") do |io|
+  reader = PDF::Reader.new(io)
+  puts reader.info
+end
  ```
 
 PDF is a page based file format, so most visible information is available via
 page-based iteration
 
 ```ruby
-    reader = PDF::Reader.new("somefile.pdf")
+reader = PDF::Reader.new("somefile.pdf")
 
-    reader.pages.each do |page|
-      puts page.fonts
-      puts page.text
-      puts page.raw_content
-    end
+reader.pages.each do |page|
+  puts page.fonts
+  puts page.text
+  puts page.raw_content
+end
 ```
 
 If you need to access the full program for rendering a page, use the walk() method
 of PDF::Reader::Page.
 
 ```ruby
-    class RedGreenBlue
-      def set_rgb_color_for_nonstroking(r, g, b)
-        puts "R: #{r}, G: #{g}, B: #{b}"
-      end
-    end
+class RedGreenBlue
+  def set_rgb_color_for_nonstroking(r, g, b)
+    puts "R: #{r}, G: #{g}, B: #{b}"
+  end
+end
 
-    reader   = PDF::Reader.new("somefile.pdf")
-    page     = reader.page(1)
-    receiver = RedGreenBlue.new
-    page.walk(receiver)
+reader   = PDF::Reader.new("somefile.pdf")
+page     = reader.page(1)
+receiver = RedGreenBlue.new
+page.walk(receiver)
 ```
 
 For low level access to the objects in a PDF file, use the ObjectHash class like
 so:
 
 ```ruby
-    reader  = PDF::Reader.new("somefile.pdf")
-    puts reader.objects.inspect
+reader  = PDF::Reader.new("somefile.pdf")
+puts reader.objects.inspect
 ```
 
 # Text Encoding
@@ -141,7 +141,7 @@ the spec folder when you checkout a branch from Git.
 To remove any invalid CRLF characters added while checking out a branch from Git, run:
 
 ```ruby
-    rake fix_integrity
+rake fix_integrity
 ```
 
 # Maintainers
