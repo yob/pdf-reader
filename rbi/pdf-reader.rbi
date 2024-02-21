@@ -4,7 +4,7 @@ module PDF
     sig { returns(PDF::Reader::ObjectHash) }
     attr_reader :objects
 
-    sig { params(input: T.any(String, Tempfile, IO), opts: T::Hash[T.untyped, T.untyped]).void }
+    sig { params(input: T.any(String, Tempfile, IO, StringIO), opts: T::Hash[T.untyped, T.untyped]).void }
     def initialize(input, opts = {})
       @cache = T.let(T.unsafe(nil), PDF::Reader::ObjectCache)
       @objects = T.let(T.unsafe(nil), PDF::Reader::ObjectHash)
