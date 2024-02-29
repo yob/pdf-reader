@@ -231,6 +231,45 @@ module PDF
         }
       end
 
+      # returns all text on the page as an array of Paragraphs.
+      def paragraphs(opts = {})
+        minimum_horizontal_overlap_percentage = opts.fetch(:minimum_horizontal_overlap_percentage, 0.80)
+        maximum_multiplied_leading            = opts.fetch(:maximum_multiplied_leading, 1.40)
+        maximum_allowed_font_difference       = opts.fetch(:maximum_allowed_font_difference, 1.00)
+
+        disjoint_set = PDF::Reader::DisjointSet.new
+        runs(opts).each { |run| disjoint_set.add(run) }
+
+        # Build disjoint set in order to find all text runs that "overlap" by a
+        # certain percentage, so we can combine the right runs together.
+        disjoint_set.each do |l0|
+          disjoint_set.each do |l1|
+            next if l0 == l1
+            next if disjoint_set.find(l0) == disjoint_set.find(l1)
+
+            overlap_percentage = l0.horizontal_overlap(l1)
+            leading = (l0.y - l1.y).abs / [l0.font_size, l1.font_size].min
+
+            next unless overlap_percentage >= minimum_horizontal_overlap_percentage
+            next unless leading <= maximum_multiplied_leading
+            next if (l0.font_size - l1.font_size).abs > maximum_allowed_font_difference
+
+            disjoint_set.union(l0, l1)
+          end
+        end
+
+        paragraphs = disjoint_set.sets.map do |set|
+          # remember, pdf page origin is bottom left corner
+          leftmost_x = set.map(&:x).min
+          topmost_y = set.map(&:y).max
+          text = set.map { |run| run.text.strip }.join(' ')
+
+          PDF::Reader::Paragraph.new(text, PDF::Reader::Point.new(leftmost_x, topmost_y))
+        end
+
+        paragraphs.map(&:text)
+      end
+
       private
 
       def root
