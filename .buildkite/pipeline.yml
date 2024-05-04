@@ -1,3 +1,6 @@
+agents:
+  queue: hosted
+
 steps:
   - command: "auto/run-sorbet"
     label: ":sorbet:"
