@@ -8,3 +8,4 @@ gemspec
 gem "parallel", "1.13.0"
 gem "ttfunk", "1.4.0"
 gem "rdoc", "< 6.0.0"
+gem "Ascii85", "< 2.0"
