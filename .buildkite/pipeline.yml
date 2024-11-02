@@ -50,6 +50,15 @@ steps:
       - "3.3"
 
   - command: "auto/run-specs"
+    label: "rspec ({{matrix}})"
+    env:
+      DOCKER_IMAGE: "ruby"
+      RUBY_VERSION: "{{matrix}}"
+    soft_fail: true
+    matrix:
+      - "3.4.0-preview2"
+
+  - command: "auto/run-specs"
     label: "rspec (jruby-{{matrix}})"
     env:
       DOCKER_IMAGE: "jruby"
