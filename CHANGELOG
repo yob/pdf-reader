@@ -1,3 +1,7 @@
+v2.13.0 (2nd November 2024)
+- Permit Ascii86 v1.0 and v2.0 (https://github.com/yob/pdf-reader/pull/539)
+- Allow StringIO type for PDF::Reader input (https://github.com/yob/pdf-reader/pull/535)
+
 v2.12.0 (26th December 2023)
 - Fix a sorbet method signature (http://github.com/yob/pdf-reader/pull/512)
 - Reduce allocations when parsing PDFs with hex strings (http://github.com/yob/pdf-reader/pull/528)
