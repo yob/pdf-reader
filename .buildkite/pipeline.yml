@@ -2,6 +2,18 @@ agents:
   queue: hosted
 
 steps:
+  - command: |
+      REGISTRY="$(nsc workspace describe -o json -k registry_url)"
+      echo "REGISTRY"
+      echo $$REGISTRY
+      echo
+      echo "FULL"
+      nsc workspace describe -o json | jq
+    label: ":debug:"
+    env:
+      DOCKER_IMAGE: "ruby"
+      RUBY_VERSION: "3.1"
+
   - command: "auto/run-sorbet"
     label: ":sorbet:"
     env:
