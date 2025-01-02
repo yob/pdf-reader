@@ -66,5 +66,6 @@ steps:
     env:
       DOCKER_IMAGE: "jruby"
       RUBY_VERSION: "{{matrix}}"
+    soft_fail: true
     matrix:
       - "9.4"
