@@ -29,7 +29,6 @@ steps:
       RUBY_VERSION: "{{matrix}}"
       BUNDLE_GEMFILE: "/work/Gemfile-legacy"
     matrix:
-      - "2.0"
       - "2.1"
       - "2.2"
       - "2.3"
