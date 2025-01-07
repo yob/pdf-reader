@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -euo pipefail
+
+#if [ "${BUILDKITE_BRANCH}" != "main" ]; then
+#  echo "Non main branch, skipping release"
+#  exit
+#fi
+
+GEMSPEC_PATH="$(dirname $0)/../pdf-reader.gemspec"
+
+RELEASE_VERSION=$(grep "spec.version =" $GEMSPEC_PATH | sed -r 's/.*spec.version = "([^"]+)".*/\1/')
+
+echo "version: ${RELEASE_VERSION}"
+
+if [ $(curl -s -o /dev/null -w "%{http_code}" https://rubygems.org/api/v2/rubygems/pdf-reader/versions/${RELEASE_VERSION}.json) == "200" ]; then
+  echo "Gem version ${RELEASE_VERSION} already found on rubygems, skipping release"
+  exit
+fi
+
+export RELEASE_VERSION
+
+cat $(dirname $0)/../.buildkite/pipeline.release.yml | sed -r 's/__TEMPLATE__/${RELEASE_VERSION}/' | buildkite-agent pipeline upload
