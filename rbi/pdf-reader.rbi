@@ -851,6 +851,52 @@ module PDF
       def self.exclude_empty_strings(runs); end
     end
 
+    class AdvancedTextRunFilter
+      VALID_OPERATORS = T.let(T::Array[Symbol])
+
+      sig { params(text_runs: T::Array[TextRun], filter_hash: T::Hash[Symbol, T.untyped]).returns(T::Array[TextRun]) }
+      def self.only(text_runs, filter_hash); end
+
+      sig { params(text_runs: T::Array[TextRun], filter_hash: T::Hash[Symbol, T.untyped]).returns(T::Array[TextRun]) }
+      def self.exclude(text_runs, filter_hash); end
+
+      sig { returns(T::Array[TextRun]) }
+      attr_reader :text_runs
+
+      sig { returns(T::Hash[Symbol, T.untyped]) }
+      attr_reader :filter_hash
+
+      sig { params(text_runs: T::Array[TextRun], filter_hash: T::Hash[Symbol, T.untyped]).void }
+      def initialize(text_runs, filter_hash)
+        @text_runs = T.let(T.unsafe(nil), T::Array[TextRun])
+        @filter_hash = T.let(T.unsafe(nil), T::Hash[Symbol, T.untyped])
+      end
+
+      sig { returns(T::Array[TextRun]) }
+      def only; end
+
+      sig { returns(T::Array[TextRun]) }
+      def exclude; end
+
+      sig { params(text_run: TextRun).returns(T::Boolean) }
+      def evaluate_filter(text_run); end
+
+      sig { params(text_run: TextRun, conditions: T::Array[T::Hash[Symbol, T.untyped]]).returns(T::Boolean) }
+      def evaluate_or_filters(text_run, conditions); end
+
+      sig { params(text_run: TextRun, conditions: T::Array[T::Hash[Symbol, T.untyped]]).returns(T::Boolean) }
+      def evaluate_and_filters(text_run, conditions); end
+
+      sig { params(text_run: TextRun, filter_hash: T::Hash[Symbol, T.untyped]).returns(T::Boolean) }
+      def evaluate_filters(text_run, filter_hash); end
+
+      sig { params(text_run: TextRun, attribute: Symbol, conditions: T::Hash[Symbol, T.untyped]).returns(T::Boolean) }
+      def evaluate_attribute_conditions(text_run, attribute, conditions); end
+
+      sig { params(attribute_value: T.untyped, operator: Symbol, filter_value: T.untyped).returns(T::Boolean) }
+      def apply_operator(attribute_value, operator, filter_value); end
+    end
+
     class EventPoint
       sig { returns(Numeric) }
       attr_reader :x

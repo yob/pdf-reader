@@ -68,6 +68,14 @@ module PDF
           runs = merge_runs(runs)
         end
 
+        if (only_filter = opts.fetch(:only, nil))
+          runs = AdvancedTextRunFilter.only(runs, only_filter)
+        end
+
+        if (exclude_filter = opts.fetch(:exclude, nil))
+          runs = AdvancedTextRunFilter.exclude(runs, exclude_filter)
+        end
+
         runs
       end
 
