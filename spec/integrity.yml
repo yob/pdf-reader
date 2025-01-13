@@ -35,33 +35,6 @@ data/clearscan-with-image-removed.pdf:
 data/clearscan.pdf:
   :bytes: 13956
   :md5: d7b929232c52193d02dcc5e7a4bee015
-data/cmap_with_bfchar.txt:
-  :bytes: 485
-  :md5: a8a6c777ef29e7e9011edea8ff1f44f0
-data/cmap_with_bfrange.txt:
-  :bytes: 3098
-  :md5: 3546b23adc960d913b60386ed86d2f00
-data/cmap_with_bfrange_four.txt:
-  :bytes: 338
-  :md5: 2b722bf40b4e3606a09fd0ada4c50430
-data/cmap_with_bfrange_three.txt:
-  :bytes: 1890
-  :md5: 1d1ec5fc186ae22063c5fa756cb67b9a
-data/cmap_with_bfrange_two.txt:
-  :bytes: 6570
-  :md5: 7434fe5e0d1c80fcda1cbd87d523d99a
-data/cmap_with_large_bfrange.txt:
-  :bytes: 364
-  :md5: b9247f9e5b76fb174d11acf4000db656
-data/cmap_with_ligatures.txt:
-  :bytes: 1480
-  :md5: 4c37d2d0d10ec44e688f4161b2794a1b
-data/cmap_with_multiple_surrogate_pairs.txt:
-  :bytes: 1043
-  :md5: 90ade19ffdb30e65f1571b00ad1c1655
-data/cmap_with_surrogate_pairs.txt:
-  :bytes: 1340
-  :md5: c0963a9329c749f28f070b71b21b656b
 data/column_integration.pdf:
   :bytes: 57433
   :md5: c0b40f59ad663b80c5a234174639f680
@@ -89,12 +62,6 @@ data/content_stream_with_length_as_ref_and_windows_breaks.pdf:
 data/cross_ref_stream.pdf:
   :bytes: 1218187
   :md5: d7a93c4f9b70145db05c0bbacbed7f44
-data/deflated_with_predictors.dat:
-  :bytes: 662
-  :md5: b347e3e2b091f3a4531e35cc65e52fa3
-data/deflated_with_predictors_result.dat:
-  :bytes: 1720
-  :md5: 808cebf05ab245e7248b8a5a7b7b3383
 data/difference_table.pdf:
   :bytes: 1093
   :md5: e4786a50e8840b513a1907f7b176d9f4
@@ -170,15 +137,6 @@ data/form_xobject_recursive.pdf:
 data/hard_lock_under_osx.pdf:
   :bytes: 4545
   :md5: 365e2076036b5e2445d1dcde13d6dbb6
-data/hello-world.deflate:
-  :bytes: 44
-  :md5: 81bf56d574794df545f2403cfedfa4cc
-data/hello-world.gz:
-  :bytes: 55
-  :md5: 8af940b62b3afe47c87547e26396b5ed
-data/hello-world.z:
-  :bytes: 50
-  :md5: 25f1f816ea6e6f42414cf23551acc2c2
 data/indirect_kids_array.pdf:
   :bytes: 951
   :md5: 7cb585bfe3f5266ed50bd205422953fd
@@ -215,9 +173,6 @@ data/invalid/content_stream_refers_to_invalid_font.pdf:
 data/invalid/content_stream_wrong_args.pdf:
   :bytes: 378345
   :md5: 8da6f39e6f1c557c8514f1e124ea137d
-data/invalid/data.csv:
-  :bytes: 26
-  :md5: 7168179491824d651a304cbb83c16964
 data/invalid/gh-217.pdf:
   :bytes: 108807
   :md5: 3739eb2731370bd7923c3f418c0bd73e
@@ -335,18 +290,6 @@ data/large_single_line_content_stream.pdf:
 data/ligature_integration_sample.pdf:
   :bytes: 53472
   :md5: 11c29d91e2b6a2ff00b75eb7417ca164
-data/lzw_compressed.dat:
-  :bytes: 238
-  :md5: 7c36794572f259c5201e4bd049c3742e
-data/lzw_compressed2.dat:
-  :bytes: 7279
-  :md5: 77d850609610846d06dac6b80b10c25a
-data/lzw_compressed_corrupt.dat:
-  :bytes: 238
-  :md5: 254d00a22e904863dee946a4da7eda68
-data/lzw_decompressed.dat:
-  :bytes: 347
-  :md5: 4abd51aa78c14ed837d834e181216787
 data/lzw_stream.pdf:
   :bytes: 2351
   :md5: f728d3746de95834d300480e17083b65
@@ -458,9 +401,6 @@ data/standard_font_with_a_difference.pdf:
 data/standard_font_with_no_difference.pdf:
   :bytes: 856
   :md5: 1d59995aefe22d8a8859c1c217dddcc9
-data/stream-with-extra-byte.z:
-  :bytes: 516
-  :md5: cb7b8af4921811eb51d1d22a4194a6fe
 data/stream-with-indirect-filters.pdf:
   :bytes: 1089
   :md5: 1c3a3b5454d39a5ee6886ef3e81cc266
