@@ -1,5 +1,5 @@
 # coding: ASCII-8BIT
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 ################################################################################
@@ -52,7 +52,7 @@ class PDF::Reader
     CR = "\r"
     LF = "\n"
     CRLF = "\r\n"
-    WHITE_SPACE = [LF, CR, ' ']
+    WHITE_SPACE = ["\n", "\r", ' ']
 
     # Quite a few PDFs have trailing junk.
     # This can be several k of nuls in some cases
