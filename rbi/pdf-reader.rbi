@@ -75,20 +75,20 @@ module PDF
     end
 
     class Buffer
-      TOKEN_WHITESPACE = T.let(T.unsafe(nil), T::Array[Integer])
-      TOKEN_DELIMITER = T.let(T.unsafe(nil), T::Array[Integer])
-      LEFT_PAREN = T.let(T.unsafe(nil), String)
-      LESS_THAN = T.let(T.unsafe(nil), String)
-      STREAM = T.let(T.unsafe(nil), String)
-      ID = T.let(T.unsafe(nil), String)
-      FWD_SLASH = T.let(T.unsafe(nil), String)
-      NULL_BYTE = T.let(T.unsafe(nil), String)
-      CR = T.let(T.unsafe(nil), String)
-      LF = T.let(T.unsafe(nil), String)
-      CRLF = T.let(T.unsafe(nil), String)
-      WHITE_SPACE = T.let(T.unsafe(nil), T::Array[String])
-      TRAILING_BYTECOUNT = T.let(T.unsafe(nil), Integer)
-      DIGITS_ONLY = T.let(T.unsafe(nil), Regexp)
+      TOKEN_WHITESPACE = T.let(T::Array[String])
+      TOKEN_DELIMITER = T.let(T::Array[Integer])
+      LEFT_PAREN = T.let(String)
+      LESS_THAN = T.let(String)
+      STREAM = T.let(String)
+      ID = T.let(String)
+      FWD_SLASH = T.let(String)
+      NULL_BYTE = T.let(String)
+      CR = T.let(String)
+      LF = T.let(String)
+      CRLF = T.let(String)
+      WHITE_SPACE = T.let(T::Array[String])
+      TRAILING_BYTECOUNT = T.let(Integer)
+      DIGITS_ONLY = T.let(Regexp)
 
       sig { returns(Integer) }
       attr_reader :pos
