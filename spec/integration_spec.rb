@@ -1781,4 +1781,37 @@ describe PDF::Reader, "integration specs" do
       end
     end
   end
+
+  context "PDF with different font sizes" do
+    let(:filename) { pdf_spec_file("font_sizes") }
+
+    it "extracts font sizes correctly" do
+      PDF::Reader.open(filename) do |reader|
+        text_runs = reader.page(1).runs
+        expect(text_runs.size).to eql(4)
+        expect(text_runs.map(&:font_size)).to eql([90.0, 90.0, 12.0, 12.0])
+      end
+    end
+
+    it "excludes text by font size" do
+      PDF::Reader.open(filename) do |reader|
+        filter = {font_size: {greater_than: 20}}
+        expect(reader.page(1).text(exclude: filter)).to eql("small1\nsmall2")
+      end
+    end
+
+    it "includes only text by font size" do
+      PDF::Reader.open(filename) do |reader|
+        filter = {font_size: {greater_than: 20}}
+        expect(reader.page(1).text(only: filter)).to eql("BIG1\nBIG2")
+      end
+    end
+
+    it "excludes text when including text" do
+      PDF::Reader.open(filename) do |reader|
+        filter = {text: {include: "1"}}
+        expect(reader.page(1).text(exclude: filter)).to eql("BIG2\nsmall2")
+      end
+    end
+  end
 end

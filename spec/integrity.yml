@@ -155,6 +155,9 @@ data/encrypted_version5_revision6_256bit_aes_user_pass_apples_unenc_metadata.pdf
 data/extended_eof.pdf:
   :bytes: 61721
   :md5: 02bd4cfbc79b4a295754fda2705b6181
+data/font_sizes.pdf:
+  :bytes: 1062
+  :md5: c8d4bd87fa2d9b16c9c41501f37905c3
 data/form_xobject.pdf:
   :bytes: 1294
   :md5: db778dde9c16993194dc50f1222b52ab

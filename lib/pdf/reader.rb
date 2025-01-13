@@ -280,6 +280,7 @@ end
 ################################################################################
 
 require 'pdf/reader/resources'
+require 'pdf/reader/advanced_text_run_filter'
 require 'pdf/reader/buffer'
 require 'pdf/reader/bounding_rectangle_runs_filter'
 require 'pdf/reader/cid_widths'
