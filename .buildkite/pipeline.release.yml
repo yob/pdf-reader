@@ -9,7 +9,7 @@ steps:
       RELEASE_VERSION: "__TEMPLATE__"
     branches: main
     plugins:
-      - rubygems-oidc#bashify:
+      - rubygems-oidc#v0.1.0:
           role: "rg_oidc_akr_xoy8sqmj25t8ok4rn5sq"
       - docker#v5.12.0:
           image: "ruby:3.4-slim"
