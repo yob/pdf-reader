@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -euo pipefail
+
+if [ -z "${GEM_HOST_API_KEY}" ]; then
+  echo "GEM_HOST_API_KEY environment variable not found"
+  exit
+fi
+
+echo "--- Build and publish gem"
+
+cd $(dirname $0)/..
+
+gem build pdf-reader.gemspec
+gem push "pdf-reader-${RELEASE_VERSION}.gem"

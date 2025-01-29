@@ -4,26 +4,32 @@ agents:
 steps:
   - command: "auto/run-sorbet"
     label: ":sorbet:"
+    key: sorbet
     env:
       DOCKER_IMAGE: "ruby"
       RUBY_VERSION: "3.1"
 
   - command: "auto/run-require-strict-typing"
     label: "typed: strict"
+    key: strict-typing
     env:
       DOCKER_IMAGE: "ruby"
       RUBY_VERSION: "3.1"
 
   - command: "auto/run-quality"
     label: "quality"
+    key: quality
     env:
       DOCKER_IMAGE: "ruby"
       RUBY_VERSION: "3.1"
 
-  - wait
-
   - command: "auto/run-specs"
     label: "rspec ({{matrix}})"
+    key: specs-legacy
+    depends_on:
+      - quality
+      - sorbet
+      - strict-typing
     env:
       DOCKER_IMAGE: "ruby"
       RUBY_VERSION: "{{matrix}}"
@@ -39,6 +45,11 @@ steps:
 
   - command: "auto/run-specs"
     label: "rspec ({{matrix}})"
+    key: specs
+    depends_on:
+      - quality
+      - sorbet
+      - strict-typing
     env:
       DOCKER_IMAGE: "ruby"
       RUBY_VERSION: "{{matrix}}"
@@ -51,6 +62,11 @@ steps:
 
   - command: "auto/run-specs"
     label: "rspec (jruby-{{matrix}})"
+    key: specs-jruby
+    depends_on:
+      - quality
+      - sorbet
+      - strict-typing
     env:
       DOCKER_IMAGE: "jruby"
       RUBY_VERSION: "{{matrix}}"
@@ -62,9 +78,24 @@ steps:
 
   - command: "auto/run-specs"
     label: "rspec (jruby-{{matrix}})"
+    key: specs-jruby-soft
+    depends_on:
+      - quality
+      - sorbet
+      - strict-typing
     env:
       DOCKER_IMAGE: "jruby"
       RUBY_VERSION: "{{matrix}}"
     soft_fail: true
     matrix:
       - "9.4"
+
+  - command: "auto/upload-release-steps"
+    label: "release?"
+    key: upload-release
+    depends_on:
+      - specs
+      - specs-legacy
+      - specs-jruby
+      - specs-jruby-soft
+    branches: main
