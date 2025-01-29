@@ -1,3 +1,7 @@
+v2.14.0 (29th January 2025)
+- Raise minimum supported ruby to 2.1 (https://github.com/yob/pdf-reader/pull/543)
+- Add support for filtering to Page#text (https://github.com/yob/pdf-reader/pull/545)
+
 v2.13.0 (2nd November 2024)
 - Permit Ascii86 v1.0 and v2.0 (https://github.com/yob/pdf-reader/pull/539)
 - Allow StringIO type for PDF::Reader input (https://github.com/yob/pdf-reader/pull/535)
