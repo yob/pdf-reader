@@ -75,19 +75,6 @@ steps:
       - "9.1"
       - "9.2"
       - "9.3"
-
-  - command: "auto/run-specs"
-    label: "rspec (jruby-{{matrix}})"
-    key: specs-jruby-soft
-    depends_on:
-      - quality
-      - sorbet
-      - strict-typing
-    env:
-      DOCKER_IMAGE: "jruby"
-      RUBY_VERSION: "{{matrix}}"
-    soft_fail: true
-    matrix:
       - "9.4"
 
   - command: "auto/upload-release-steps"
@@ -97,5 +84,4 @@ steps:
       - specs
       - specs-legacy
       - specs-jruby
-      - specs-jruby-soft
     branches: main
