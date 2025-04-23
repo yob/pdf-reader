@@ -63,7 +63,7 @@ class PDF::Reader
     def pad_pass(p="")
       return PassPadBytes.pack('C*') if p.nil? || p.empty?
 
-      pad = PassPadBytes[0, 32 - p.length] || []
+      pad = PassPadBytes[0, 32 - p[0..31].length]
       p[0, 32] + pad.pack('C*')
     end
 
