@@ -343,6 +343,19 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF has password mutiple of 32" do
+    let(:filename) { pdf_spec_file("encrypted_pdf_with_64_chars_string") }
+    let(:pass) { "8c24e855ef6f2eeabe9beb87478cef5ba14aa6e627364f3c7e2b1101bb791729" }
+
+    context "with the user pass" do
+      it "correctly extracts text" do
+        PDF::Reader.open(filename, :password => pass) do |reader|
+          expect(reader.page(1).text).to include("Dummy PDF file")
+        end
+      end
+    end
+  end
+
   context "encrypted_version1_revision2_40bit_rc4_user_pass_apples" do
     let(:filename) { pdf_spec_file("encrypted_version1_revision2_40bit_rc4_user_pass_apples") }
 
