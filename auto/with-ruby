@@ -9,12 +9,6 @@ ruby_version="${RUBY_VERSION:-3.1}"
 docker_volume_name="pdf-reader-gem-cache-${docker_image}${ruby_version}"
 gemfile="${BUNDLE_GEMFILE:=/work/Gemfile}"
 
-if [ $docker_image = "jruby" ]; then
-  if [ $ruby_version = "10" ]; then
-    docker build -f Dockerfile.jruby -t jruby:10 --load .
-  fi
-fi
-
 docker volume create ${docker_volume_name} > /dev/null
 
 docker run \

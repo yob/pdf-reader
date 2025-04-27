@@ -76,19 +76,7 @@ steps:
       - "9.2"
       - "9.3"
       - "9.4"
-
-  - command: "auto/run-specs"
-    label: "rspec (jruby 10)"
-    key: specs-jruby10
-    depends_on:
-      - quality
-      - sorbet
-      - strict-typing
-    soft_fail: true
-    env:
-      DOCKER_IMAGE: "jruby"
-      RUBY_VERSION: "10"
-      BUNDLE_GEMFILE: "/work/Gemfile-legacy"
+      - "10.0"
 
   - command: "auto/upload-release-steps"
     label: "release?"
