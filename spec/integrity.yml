@@ -455,3 +455,6 @@ data/zeroed_xref_entry.pdf:
 data/zlib_stream_issue.pdf:
   :bytes: 68247
   :md5: 744d2db962d2aeec04e00891b71b3d5c
+data/encrypted_pdf_with_64_chars_string.pdf:
+  :bytes: 13438
+  :md5: 7715b51a0dc346c226a65836b74bc9ab

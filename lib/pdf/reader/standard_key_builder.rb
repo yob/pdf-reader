@@ -61,11 +61,10 @@ class PDF::Reader
     # Pads supplied password to 32bytes using PassPadBytes as specified on
     # pp61 of spec
     def pad_pass(p="")
-      if p.nil? || p.empty?
-        PassPadBytes.pack('C*')
-      else
-        p[0, 32] + PassPadBytes[0, 32-p.length].pack('C*')
-      end
+      return PassPadBytes.pack('C*') if p.nil? || p.empty?
+
+      pad = PassPadBytes[0, 32 - p[0..31].length]
+      p[0, 32] + pad.pack('C*')
     end
 
     def xor_each_byte(buf, int)
