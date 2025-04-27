@@ -118,7 +118,7 @@ class PDF::Reader
         @font_size ||= begin
                          _, zero = trm_transform(0,0)
                          _, one  = trm_transform(1,1)
-                         (zero - one).abs
+                         (zero - one).abs.round(10)
                        end
       end
 
