@@ -110,6 +110,42 @@ describe PDF::Reader::Page do
     end
   end
 
+  describe "#paragraphs page 1" do
+    let!(:page)    { browser.page(1) }
+
+    context "of cairo-basic.pdf" do
+      let!(:browser) { PDF::Reader.new(pdf_spec_file("cairo-basic")) }
+
+      it "returns the text content" do
+        expect(page.paragraphs).to eql(["Hello James"])
+      end
+    end
+
+    context "of all_page_boxes_exist.pdf" do
+      let!(:browser) { PDF::Reader.new(pdf_spec_file("all_page_boxes_exist")) }
+
+      it "returns headlines as their own paragraph" do
+        expect(page.paragraphs).to include("PDF Automation")
+      end
+
+      it "returns actual paragraphs" do
+        expect(page.paragraphs).to include(<<~TEXT.strip.gsub(/\n/, " "))
+          PDF page boxes include Media Box, Trim Box and Bleed Box. Imposition
+          in the Sheridan work flow requires a Trim Box and a Bleed Box where
+          bleeds are present with a consistent Media Box.
+        TEXT
+      end
+
+      it "returns paragraphs from multi-column layouts" do
+        expect(page.paragraphs).to include(<<~TEXT.strip.gsub(/\n/, " "))
+          QuarkXPress Enter your trim size of the Width and the Height. Elements that bleed
+          must extend .125" (1/8") beyond the project’s trim edge in your project
+          layout.
+        TEXT
+      end
+    end
+  end
+
   describe "#walk" do
 
     context "with page 1 of cairo-basic.pdf" do
