@@ -72,7 +72,7 @@ describe PDF::Reader::Encoding do
       it "returns utf-8 squares" do
         e = PDF::Reader::Encoding.new("Identity-H")
         [
-          {:expert => "\x22",             :utf8 => ""},
+          {:expert => "\x22",             :utf8 => "".dup},
           {:expert => "\x22\xF7",         :utf8 => [0x25AF].pack("U*")},
           {:expert => "\x22\xF7\x22\xF7", :utf8 => [0x25AF,0x25AF].pack("U*")}
         ].each do |vals|
@@ -89,7 +89,7 @@ describe PDF::Reader::Encoding do
       it "returns utf-8 squares if to_utf8 is called without a cmap" do
         e = PDF::Reader::Encoding.new("Identity-V")
         [
-          {:expert => "\x22",             :utf8 => ""},
+          {:expert => "\x22",             :utf8 => "".dup},
           {:expert => "\x22\xF7",         :utf8 => [0x25AF].pack("U*")},
           {:expert => "\x22\xF7\x22\xF7", :utf8 => [0x25AF,0x25AF].pack("U*")}
         ].each do |vals|
@@ -219,9 +219,9 @@ describe PDF::Reader::Encoding do
       it "correctly converts various standard strings to utf-8" do
         e = PDF::Reader::Encoding.new(:StandardEncoding)
         [
-          {:standard => "abc",  :utf8 => "abc"},
-          {:standard => "ABC",  :utf8 => "ABC"},
-          {:standard => "123",  :utf8 => "123"},
+          {:standard => "abc",  :utf8 => "abc".dup},
+          {:standard => "ABC",  :utf8 => "ABC".dup},
+          {:standard => "123",  :utf8 => "123".dup},
           {:standard => "\x60", :utf8 => [0x2018].pack("U*")}, # "
           {:standard => "\xA4", :utf8 => [0x2044].pack("U*")}, # fraction sign
           {:standard => "\xBD", :utf8 => [0x2030].pack("U*")}, # per mile sign
@@ -262,7 +262,7 @@ describe PDF::Reader::Encoding do
           {:symbol => "\x41", :utf8 => [0x0391].pack("U*")}, # alpha
           {:symbol => "\x42", :utf8 => [0x0392].pack("U*")}, # beta
           {:symbol => "\x47", :utf8 => [0x0393].pack("U*")}, # gamma
-          {:symbol => "123",  :utf8 => "123"},
+          {:symbol => "123",  :utf8 => "123".dup},
           {:symbol => "\xA0", :utf8 => [0x20AC].pack("U*")}, # € sign
         ].each do |vals|
           result = e.to_utf8(vals[:symbol])
