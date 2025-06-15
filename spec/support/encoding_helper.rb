@@ -3,8 +3,7 @@
 
 module EncodingHelper
   def binary_string(str)
-    str = str.force_encoding("binary")
-    str
+    str.dup.force_encoding("binary")
   end
 
   # On M17N aware VMs, recursively checks strings and containers with strings
