@@ -31,7 +31,10 @@ class PDF::Reader
       cipher.decrypt
       cipher.key = @encrypt_key.dup
       cipher.iv = buf[0..15]
-      cipher.update(buf[16..-1]) + cipher.final
+      encrypted = buf[16..-1]
+      return '' if encrypted.empty?
+
+      cipher.update(encrypted) + cipher.final
     end
 
   end

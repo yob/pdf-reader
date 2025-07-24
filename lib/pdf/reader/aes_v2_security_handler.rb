@@ -34,7 +34,10 @@ class PDF::Reader
       cipher.decrypt
       cipher.key = Digest::MD5.digest(objKey)[0,length]
       cipher.iv = buf[0..15]
-      cipher.update(buf[16..-1]) + cipher.final
+      encrypted = buf[16..-1]
+      return '' if encrypted.empty?
+
+      cipher.update(encrypted) + cipher.final
     end
 
   end
