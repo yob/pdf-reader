@@ -21,20 +21,30 @@ class PDF::Reader
     #
     # version == 4 and CFM == AESV2
     #
+    # used to decrypt PDF streams (buf). Input data should be in bytesizes of
+    # a multiple of 16, anything else is an error. The first 16 bytes are the initialization
+    # vector, so any input of exactly 16 bytes decrypts to an empty string
+    #
     # buf - a string to decrypt
     # ref - a PDF::Reader::Reference for the object to decrypt
     #
     def decrypt( buf, ref )
-      objKey = @encrypt_key.dup
-      (0..2).each { |e| objKey << (ref.id >> e*8 & 0xFF ) }
-      (0..1).each { |e| objKey << (ref.gen >> e*8 & 0xFF ) }
-      objKey << 'sAlT'  # Algorithm 1, b)
-      length = objKey.length < 16 ? objKey.length : 16
-      cipher = OpenSSL::Cipher.new("AES-#{length << 3}-CBC")
-      cipher.decrypt
-      cipher.key = Digest::MD5.digest(objKey)[0,length]
-      cipher.iv = buf[0..15]
-      cipher.update(buf[16..-1]) + cipher.final
+      if buf.bytesize % 16 > 0
+        raise PDF::Reader::MalformedPDFError.new("Ciphertext not a multiple of 16")
+      elsif buf.bytesize == 16
+        return ""
+      else
+        objKey = @encrypt_key.dup
+        (0..2).each { |e| objKey << (ref.id >> e*8 & 0xFF ) }
+        (0..1).each { |e| objKey << (ref.gen >> e*8 & 0xFF ) }
+        objKey << 'sAlT'  # Algorithm 1, b)
+        length = objKey.length < 16 ? objKey.length : 16
+        cipher = OpenSSL::Cipher.new("AES-#{length << 3}-CBC")
+        cipher.decrypt
+        cipher.key = Digest::MD5.digest(objKey)[0,length]
+        cipher.iv = buf[0..15]
+        cipher.update(buf[16..-1]) + cipher.final
+      end
     end
 
   end

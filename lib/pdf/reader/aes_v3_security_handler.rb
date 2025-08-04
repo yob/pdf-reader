@@ -21,17 +21,25 @@ class PDF::Reader
     #
     # Algorithm 1: Encryption of data using the RC4 or AES algorithms
     #
-    # used to decrypt RC4/AES encrypted PDF streams (buf)
+    # used to decrypt RC4/AES encrypted PDF streams (buf). Input data should be in bytesizes of
+    # a multiple of 16, anything else is an error. The first 16 bytes are the initialization
+    # vector, so any input of exactly 16 bytes decrypts to an empty string
     #
     # buf - a string to decrypt
     # ref - a PDF::Reader::Reference for the object to decrypt
     #
     def decrypt( buf, ref )
-      cipher = OpenSSL::Cipher.new(@cipher)
-      cipher.decrypt
-      cipher.key = @encrypt_key.dup
-      cipher.iv = buf[0..15]
-      cipher.update(buf[16..-1]) + cipher.final
+      if buf.bytesize % 16 > 0
+        raise PDF::Reader::MalformedPDFError.new("Ciphertext not a multiple of 16")
+      elsif buf.bytesize == 16
+        return ""
+      else
+        cipher = OpenSSL::Cipher.new(@cipher)
+        cipher.decrypt
+        cipher.key = @encrypt_key.dup
+        cipher.iv = buf[0..15]
+        cipher.update(buf[16..-1]) + cipher.final
+      end
     end
 
   end
