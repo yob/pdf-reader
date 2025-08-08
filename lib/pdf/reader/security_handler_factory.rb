@@ -55,6 +55,7 @@ class PDF::Reader
     end
 
     # This handler supports all encryption that follows upto PDF 1.5 spec (revision 4)
+    #: (untyped) -> untyped
     def self.standard?(encrypt)
       return false if encrypt.nil?
 
@@ -68,6 +69,7 @@ class PDF::Reader
     # This handler supports both
     # - AES-256 encryption defined in PDF 1.7 Extension Level 3 ('revision 5')
     # - AES-256 encryption defined in PDF 2.0 ('revision 6')
+    #: (untyped) -> untyped
     def self.standard_v5?(encrypt)
       return false if encrypt.nil?
 

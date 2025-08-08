@@ -19,7 +19,7 @@ class PDF::Reader
 
     #: untyped
     attr_reader :hits
-    
+
     #: untyped
     attr_reader :misses
 

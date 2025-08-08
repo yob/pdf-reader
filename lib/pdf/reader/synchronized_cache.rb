@@ -22,14 +22,14 @@ class PDF::Reader
   class SynchronizedCache
     #: () -> void
     def initialize
-      @cache = {}
-      @mutex = Mutex.new
+      @cache = {} #: Hash[Object, untyped]
+      @mutex = Mutex.new #: Mutex
     end
-    #: (untyped) -> untyped
+    #: (Object) -> untyped
     def [](key)
       @mutex.synchronize { @cache[key] }
     end
-    #: (untyped, untyped) -> untyped
+    #: (Object, (Object | nil)) -> untyped
     def []=(key,value)
       @mutex.synchronize { @cache[key] = value }
     end

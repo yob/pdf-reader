@@ -80,11 +80,11 @@ class PDF::Reader
     #: ((StringIO | Tempfile | IO), ?Hash[Symbol, untyped]) -> void
     def initialize(io, opts = {})
       @io = io
-      @tokens = []
-      @in_content_stream = opts[:content_stream]
+      @tokens = [] #: Array[String | PDF::Reader::Reference]
+      @in_content_stream = opts[:content_stream] #: bool
 
       @io.seek(opts[:seek]) if opts[:seek]
-      @pos = @io.pos
+      @pos = @io.pos #: Integer
     end
 
     # return true if there are no more tokens left
@@ -202,6 +202,7 @@ class PDF::Reader
 
     # attempt to prime the buffer with the next few tokens.
     #
+    #: () -> void
     def prepare_tokens
       10.times do
         case state
@@ -218,6 +219,7 @@ class PDF::Reader
     # tokenising behaves slightly differently based on the current context.
     # Determine the current context/state by examining the last token we found
     #
+    #: () -> Symbol
     def state
       case @tokens.last
       when LEFT_PAREN then :literal_string
@@ -246,6 +248,7 @@ class PDF::Reader
     # indirect reference, so test for that case first and avoid the relatively
     # expensive regexp checks if possible.
     #
+    #: () -> void
     def merge_indirect_reference
       return if @tokens.size < 3
       return if @tokens[2] != "R"
@@ -263,6 +266,7 @@ class PDF::Reader
     # If the EI follows white-space the space is dropped from the data
     # The EI must followed by white-space or end of buffer
     # This is to reduce the chance of accidentally matching an embedded EI
+    #: () -> void
     def prepare_inline_token
       idstart = @io.pos
       prevchr = ''
@@ -309,6 +313,7 @@ class PDF::Reader
     # if we're currently inside a hex string, read hex nibbles until
     # we find a closing >
     #
+    #: () -> void
     def prepare_hex_token
       str = "".dup
 
@@ -338,6 +343,7 @@ class PDF::Reader
     # processing to fix things like escaped new lines, but that's someone else's
     # problem.
     #
+    #: () -> void
     def prepare_literal_token
       str = "".dup
       count = 1
@@ -368,6 +374,7 @@ class PDF::Reader
     # What each byte means is complex, check out section "3.1.1 Character Set" of the 1.7 spec
     # to read up on it.
     #
+    #: () -> void
     def prepare_regular_token
       tok = "".dup
 
@@ -445,6 +452,7 @@ class PDF::Reader
     # peek at the next character in the io stream, leaving the stream position
     # untouched
     #
+    #: () -> (Integer | nil)
     def peek_byte
       byte = @io.getbyte
       @io.seek(-1, IO::SEEK_CUR) if byte

@@ -15,7 +15,7 @@ class PDF::Reader
     #: (String) -> void
     def initialize(key)
       @encrypt_key = key
-      @cipher = "AES-256-CBC"
+      @cipher = "AES-256-CBC" #: String
     end
 
     ##7.6.2 General Encryption Algorithm

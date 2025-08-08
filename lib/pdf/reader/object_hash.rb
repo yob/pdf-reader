@@ -34,14 +34,19 @@ class PDF::Reader
 
     #: untyped
     attr_accessor :default
-    
+
     #: Hash[Symbol, untyped]
     attr_reader :trailer
-    
+
     #: Float
     attr_reader :pdf_version
-    
-    #: (PDF::Reader::NullSecurityHandler | PDF::Reader::AesV2SecurityHandler | PDF::Reader::AesV3SecurityHandler | PDF::Reader::Rc4SecurityHandler)
+
+    #: (
+    #|   PDF::Reader::NullSecurityHandler |
+    #|   PDF::Reader::AesV2SecurityHandler |
+    #|   PDF::Reader::AesV3SecurityHandler |
+    #|   PDF::Reader::Rc4SecurityHandler
+    #| )
     attr_reader :sec_handler
 
     # Creates a new ObjectHash object. Input can be a string with a valid filename
@@ -385,7 +390,8 @@ class PDF::Reader
 
     # iterate over each key, value. Just like a ruby hash.
     #
-    #: { (PDF::Reader::Reference, untyped) -> untyped } -> untyped
+    # @override(allow_incompatible: true)
+    #: () { (PDF::Reader::Reference, untyped) -> untyped } -> untyped
     def each(&block)
       @xref.each do |ref|
         yield ref, self[ref]

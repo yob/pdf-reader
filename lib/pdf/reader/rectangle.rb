@@ -22,18 +22,22 @@ module PDF
 
       #: PDF::Reader::Point
       attr_reader :bottom_left
-      
+
       #: PDF::Reader::Point
       attr_reader :bottom_right
-      
+
       #: PDF::Reader::Point
       attr_reader :top_left
-      
+
       #: PDF::Reader::Point
       attr_reader :top_right
 
       #: (Numeric, Numeric, Numeric, Numeric) -> void
       def initialize(x1, y1, x2, y2)
+        @bottom_left = Point.new(0,0) #: PDF::Reader::Point
+        @bottom_right = Point.new(0,0) #: PDF::Reader::Point
+        @top_left = Point.new(0,0) #: PDF::Reader::Point
+        @top_right = Point.new(0,0) #: PDF::Reader::Point
         set_corners(x1, y1, x2, y2)
       end
 
@@ -51,6 +55,7 @@ module PDF
         )
       end
 
+      #: (PDF::Reader::Rectangle) -> bool
       def ==(other)
         to_a == other.to_a
       end
@@ -60,16 +65,19 @@ module PDF
         top_right.y - bottom_right.y
       end
 
+      #: () -> Numeric
       def width
         bottom_right.x - bottom_left.x
       end
 
+      #: (PDF::Reader::Point) -> bool
       def contains?(point)
         point.x >= bottom_left.x && point.x <= top_right.x &&
           point.y >= bottom_left.y && point.y <= top_right.y
       end
 
       # A pdf-style 4-number array
+      #: () -> Array[Numeric]
       def to_a
         [
           bottom_left.x,
@@ -79,6 +87,7 @@ module PDF
         ]
       end
 
+      #: (Integer) -> void
       def apply_rotation(degrees)
         return if degrees != 90 && degrees != 180 && degrees != 270
 
@@ -103,6 +112,7 @@ module PDF
 
       private
 
+      #: (Numeric, Numeric, Numeric, Numeric) -> void
       def set_corners(x1, y1, x2, y2)
         @bottom_left = PDF::Reader::Point.new(
           [x1, x2].min,

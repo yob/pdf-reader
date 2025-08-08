@@ -40,19 +40,23 @@ class PDF::Reader
 
     #: (untyped) -> void
     def initialize(enc)
-      @mapping  = default_mapping # maps from character codes to Unicode codepoints
-      @string_cache  = {} # maps from character codes to UTF-8 strings.
+      # maps from character codes to Unicode codepoints
+      @mapping  = default_mapping #: Hash[Integer, Integer]
 
-      @enc_name = if enc.kind_of?(Hash)
-        enc[:Encoding] || enc[:BaseEncoding]
+      # maps from character codes to UTF-8 strings.
+      @string_cache  = {} #: Hash[Integer, String]
+
+      @enc_name = :StandardEncoding #: Symbol
+      if enc.kind_of?(Hash)
+        @enc_name = enc[:Encoding] || enc[:BaseEncoding]
       elsif enc && enc.respond_to?(:to_sym)
-        enc.to_sym
-      else
-        :StandardEncoding
+        @enc_name = enc.to_sym
       end
 
-      @unpack   = get_unpack(@enc_name)
-      @map_file = get_mapping_file(@enc_name)
+      @unpack   = get_unpack(@enc_name) #: String
+      @map_file = get_mapping_file(@enc_name) #: String | nil
+      @differences = nil #: Hash[Integer, Integer] | nil
+      @glyphlist = nil #: PDF::Reader::GlyphHash | nil
 
       load_mapping(@map_file) if @map_file
 
@@ -131,7 +135,12 @@ class PDF::Reader
       elsif differences[glyph_code]
         [differences[glyph_code]]
       elsif @mapping[glyph_code]
-        glyphlist.unicode_to_name(@mapping[glyph_code])
+        val = @mapping[glyph_code]
+        if val
+          glyphlist.unicode_to_name(val)
+        else
+          []
+        end
       else
         []
       end

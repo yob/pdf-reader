@@ -12,7 +12,7 @@ class PDF::Reader
         @font = font
 
         if fd = @font.font_descriptor
-          @missing_width = fd.missing_width
+          @missing_width = fd.missing_width #: Numeric
         else
           @missing_width = 0
         end

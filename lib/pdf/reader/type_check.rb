@@ -9,6 +9,7 @@ module PDF
     #
     class TypeCheck
 
+      #: (untyped) -> Integer
       def self.cast_to_int!(obj)
         if obj.is_a?(Integer)
           obj
@@ -21,6 +22,7 @@ module PDF
         end
       end
 
+      #: (untyped) -> Numeric
       def self.cast_to_numeric!(obj)
         if obj.is_a?(Numeric)
           obj
@@ -35,6 +37,7 @@ module PDF
         end
       end
 
+      #: (untyped) -> String
       def self.cast_to_string!(string)
         if string.is_a?(String)
           string
@@ -47,6 +50,7 @@ module PDF
         end
       end
 
+      #: (untyped) -> Symbol | nil
       def self.cast_to_symbol(obj)
         if obj.is_a?(Symbol)
           obj
@@ -59,15 +63,17 @@ module PDF
         end
       end
 
+      #: (untyped) -> Symbol
       def self.cast_to_symbol!(obj)
         res = cast_to_symbol(obj)
-        if res
-          res
-        else
+        if res.nil?
           raise MalformedPDFError, "Unable to cast to symbol"
+        else
+          res
         end
       end
 
+      #: (untyped) -> Hash[Symbol, untyped]
       def self.cast_to_pdf_dict!(obj)
         if obj.is_a?(Hash)
           obj
@@ -78,6 +84,7 @@ module PDF
         end
       end
 
+      #: (untyped) -> Hash[Symbol, PDF::Reader::Stream]
       def self.cast_to_pdf_dict_with_stream_values!(obj)
         if obj.is_a?(Hash)
           result = Hash.new

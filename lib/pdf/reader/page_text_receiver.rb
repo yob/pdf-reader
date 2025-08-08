@@ -18,7 +18,7 @@ module PDF
 
       #: untyped
       attr_reader :state
-      
+
       #: untyped
       attr_reader :options
 

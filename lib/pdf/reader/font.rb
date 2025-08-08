@@ -36,34 +36,34 @@ class PDF::Reader
   class Font
     #: Symbol?
     attr_accessor :subtype
-    
+
     #: PDF::Reader::Encoding
     attr_accessor :encoding
-    
+
     #: Array[PDF::Reader::Font]
     attr_accessor :descendantfonts
-    
+
     #: PDF::Reader::CMap
     attr_accessor :tounicode
 
     #: Array[Integer]
     attr_reader :widths
-    
+
     #: Integer?
     attr_reader :first_char
-    
+
     #: Integer?
     attr_reader :last_char
-    
+
     #: Symbol?
     attr_reader :basefont
-    
+
     #: PDF::Reader::FontDescriptor?
     attr_reader :font_descriptor
-    
+
     #: Array[Numeric]
     attr_reader :cid_widths
-    
+
     #: Numeric
     attr_reader :cid_default_width
 
@@ -228,7 +228,7 @@ class PDF::Reader
       if obj[:FontDescriptor]
         # create a font descriptor object if we can, in other words, unless this is
         # a CID Font
-        fd = @ohash.deref_hash(obj[:FontDescriptor])
+        fd = @ohash.deref_hash(obj[:FontDescriptor]) || {}
         @font_descriptor = PDF::Reader::FontDescriptor.new(@ohash, fd)
       else
         @font_descriptor = nil
@@ -240,9 +240,9 @@ class PDF::Reader
       # A one-element array specifying the CIDFont dictionary that is the
       # descendant of this Type 0 font.
       if obj[:DescendantFonts]
-        descendants = @ohash.deref_array(obj[:DescendantFonts])
+        descendants = @ohash.deref_array(obj[:DescendantFonts]) || []
         @descendantfonts = descendants.map { |desc|
-          PDF::Reader::Font.new(@ohash, @ohash.deref_hash(desc))
+          PDF::Reader::Font.new(@ohash, @ohash.deref_hash(desc) || {})
         }
       else
         @descendantfonts = []

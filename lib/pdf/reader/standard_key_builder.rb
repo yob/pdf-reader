@@ -1,4 +1,5 @@
 # coding: utf-8
+# typed: true
 
 require 'digest/md5'
 require 'rc4'
@@ -48,9 +49,8 @@ class PDF::Reader
     # decrypting the file will be returned. If the password doesn't match the file,
     # and exception will be raised.
     #
-    #: (String) -> String
-    def key(pass)
-      pass ||= ""
+    #: (?String) -> String
+    def key(pass = "")
       encrypt_key   = auth_owner_pass(pass)
       encrypt_key ||= auth_user_pass(pass)
 
@@ -65,7 +65,7 @@ class PDF::Reader
     def pad_pass(p="")
       return PassPadBytes.pack('C*') if p.nil? || p.empty?
 
-      pad = PassPadBytes[0, 32 - p[0..31].length]
+      pad = PassPadBytes[0, 32 - p[0..31].length] || []
       p[0, 32] + pad.pack('C*')
     end
 

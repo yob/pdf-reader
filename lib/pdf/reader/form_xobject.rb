@@ -17,7 +17,7 @@ module PDF
     class FormXObject
       extend Forwardable
 
-      #: () -> untyped
+      #: untyped
       attr_reader :xobject
 
       def_delegators :resources, :color_spaces
@@ -29,7 +29,7 @@ module PDF
       def_delegators :resources, :shadings
       def_delegators :resources, :xobjects
 
-      #: (untyped, untyped, Hash[untyped, untyped]) -> void
+      #: (untyped, untyped, ?Hash[untyped, untyped]) -> void
       def initialize(page, xobject, options = {})
         @page    = page
         @objects = page.objects
@@ -82,7 +82,7 @@ module PDF
         @resources ||= Resources.new(@objects, @objects.deref_hash(@xobject.hash[:Resources]) || {})
       end
 
-      #: (untyped, untyped, Array[untyped]) -> untyped
+      #: (untyped, untyped, ?Array[untyped]) -> untyped
       def callback(receivers, name, params=[])
         receivers.each do |receiver|
           receiver.send(name, *params) if receiver.respond_to?(name)

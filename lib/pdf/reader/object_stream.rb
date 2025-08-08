@@ -10,11 +10,22 @@ class PDF::Reader
   class ObjectStream # :nodoc:
     #: (PDF::Reader::Stream) -> void
     def initialize(stream)
-      @dict = stream.hash
-      @data = stream.unfiltered_data
+      @dict = stream.hash #: Hash[Symbol, untyped]
+      @data = stream.unfiltered_data #: String
+      @offsets = nil #: Hash[Integer, Integer] | nil
+      @buffer = nil #: PDF::Reader::Buffer | nil
     end
 
-    #: (Integer) -> (PDF::Reader::Reference | PDF::Reader::Token | Numeric | String | Symbol | Array[untyped] | Hash[untyped, untyped] | nil)
+    #: (Integer) -> (
+    #|   PDF::Reader::Reference |
+    #|   PDF::Reader::Token |
+    #|   Numeric |
+    #|   String |
+    #|   Symbol |
+    #|   Array[untyped] |
+    #|   Hash[untyped, untyped] |
+    #|   nil
+    #| )
     def [](objid)
       if offsets[objid].nil?
         nil

@@ -31,30 +31,36 @@ class PDF::Reader
   # are valid
   class Error # :nodoc:
     ################################################################################
+    #: (untyped, untyped, ?untyped) -> untyped
     def self.str_assert(lvalue, rvalue, chars=nil)
       raise MalformedPDFError, "PDF malformed, expected string but found #{lvalue.class} instead" if chars and !lvalue.kind_of?(String)
       lvalue = lvalue[0,chars] if chars
       raise MalformedPDFError, "PDF malformed, expected '#{rvalue}' but found '#{lvalue}' instead"  if lvalue != rvalue
     end
     ################################################################################
+    #: (untyped, untyped, ?untyped) -> untyped
     def self.str_assert_not(lvalue, rvalue, chars=nil)
       raise MalformedPDFError, "PDF malformed, expected string but found #{lvalue.class} instead" if chars and !lvalue.kind_of?(String)
       lvalue = lvalue[0,chars] if chars
       raise MalformedPDFError, "PDF malformed, expected '#{rvalue}' but found '#{lvalue}' instead"  if lvalue == rvalue
     end
     ################################################################################
+    #: (untyped, untyped) -> untyped
     def self.assert_equal(lvalue, rvalue)
       raise MalformedPDFError, "PDF malformed, expected '#{rvalue}' but found '#{lvalue}' instead" if lvalue != rvalue
     end
     ################################################################################
+    #: (Object, String, Module) -> void
     def self.validate_type(object, name, klass)
       raise ArgumentError, "#{name} (#{object}) must be a #{klass}" unless object.is_a?(klass)
     end
     ################################################################################
+    #: (Object, String, Module) -> void
     def self.validate_type_as_malformed(object, name, klass)
       raise MalformedPDFError, "#{name} (#{object}) must be a #{klass}" unless object.is_a?(klass)
     end
     ################################################################################
+    #: (Object, String) -> void
     def self.validate_not_nil(object, name)
       raise ArgumentError, "#{object} must not be nil" if object.nil?
     end

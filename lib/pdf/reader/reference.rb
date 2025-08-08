@@ -33,14 +33,15 @@ class PDF::Reader
   class Reference
     #: Integer
     attr_reader :id
-    
+
     #: Integer
     attr_reader :gen
     ################################################################################
     # Create a new Reference to an object with the specified id and revision number
     #: (Integer, Integer) -> void
     def initialize(id, gen)
-      @id, @gen = id, gen
+      @id = id
+      @gen = gen
     end
     ################################################################################
     # returns the current Reference object in an array with a single element

@@ -18,12 +18,14 @@ class PDF::Reader
     # Graphics State Operators
     def_delegators :@widths, :[], :fetch
 
+    #: (Numeric, Array[Numeric]) -> void
     def initialize(default, array)
-      @widths = parse_array(default, array.dup)
+      @widths = parse_array(default, array.dup) #: Hash[Numeric, Numeric]
     end
 
     private
 
+    #: (Numeric, Array[Numeric]) -> Hash[Numeric, Numeric]
     def parse_array(default, array)
       widths  = Hash.new(default)
       params = []
@@ -43,6 +45,8 @@ class PDF::Reader
 
     # this is the form 10 [234 63 234 346 47 234] where width of index 10 is
     # 234, index 11 is 63, etc
+    #
+    #: (Integer, Array[Numeric]) -> Hash[Numeric, Numeric]
     def parse_first_form(first, widths)
       widths.inject({}) { |accum, glyph_width|
         accum[first + accum.size] = glyph_width
@@ -51,6 +55,8 @@ class PDF::Reader
     end
 
     # this is the form 10 20 123 where all index between 10 and 20 have width 123
+    #
+    #: (Integer, Integer, Numeric) -> Hash[Numeric, Numeric]
     def parse_second_form(first, final, width)
       if first > final
         raise MalformedPDFError, "CidWidths: #{first} must be less than #{final}"

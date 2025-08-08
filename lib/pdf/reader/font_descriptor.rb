@@ -11,49 +11,49 @@ class PDF::Reader
 
     #: String
     attr_reader :font_name
-    
+
     #: String?
     attr_reader :font_family
-    
+
     #: Symbol
     attr_reader :font_stretch
-    
+
     #: Numeric
     attr_reader :font_weight
-    
+
     #: Array[Numeric]
     attr_reader :font_bounding_box
-    
+
     #: Numeric
     attr_reader :cap_height
-    
+
     #: Numeric
     attr_reader :ascent
-    
+
     #: Numeric
     attr_reader :descent
-    
+
     #: Numeric
     attr_reader :leading
-    
+
     #: Numeric
     attr_reader :avg_width
-    
+
     #: Numeric
     attr_reader :max_width
-    
+
     #: Numeric
     attr_reader :missing_width
-    
+
     #: Numeric?
     attr_reader :italic_angle
-    
+
     #: Numeric?
     attr_reader :stem_v
-    
+
     #: Numeric?
     attr_reader :x_height
-    
+
     #: Integer
     attr_reader :font_flags
 
