@@ -8,6 +8,7 @@ class PDF::Reader
   # MediaBox or CropBox, but could be a user specified rectangle too
   class BoundingRectangleRunsFilter
 
+    #: (Array[PDF::Reader::TextRun], PDF::Reader::Rectangle) -> Array[PDF::Reader::TextRun]
     def self.runs_within_rect(runs, rect)
       runs.select { |run| rect.contains?(run.origin) }
     end

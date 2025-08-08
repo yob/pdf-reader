@@ -15,10 +15,15 @@ class PDF::Reader
     # These object types use little memory and are accessed a heap of times as
     # part of random page access, so we'll cache the unmarshalled objects and
     # avoid lots of repetitive (and expensive) tokenising
-    CACHEABLE_TYPES = [:Catalog, :Page, :Pages]
+    CACHEABLE_TYPES = [:Catalog, :Page, :Pages] #: Array[Symbol]
 
-    attr_reader :hits, :misses
+    #: untyped
+    attr_reader :hits
+    
+    #: untyped
+    attr_reader :misses
 
+    #: (?untyped) -> void
     def initialize(lru_size = 1000)
       @objects = {}
       @lru_cache = Hashery::LRUHash.new(lru_size.to_i)

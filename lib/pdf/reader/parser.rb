@@ -33,9 +33,9 @@ class PDF::Reader
   # them into useable ruby objects (hash's, arrays, true, false, etc)
   class Parser
 
-    TOKEN_STRATEGY = proc { |parser, token| Token.new(token) }
+    TOKEN_STRATEGY = proc { |parser, token| Token.new(token) } #: Proc
 
-    STRATEGIES = {
+    STRATEGIES = { 
       "/"  => proc { |parser, token| parser.send(:pdf_name) },
       "<<" => proc { |parser, token| parser.send(:dictionary) },
       "["  => proc { |parser, token| parser.send(:array) },
@@ -55,13 +55,14 @@ class PDF::Reader
       "]"         => TOKEN_STRATEGY,
       ">"         => TOKEN_STRATEGY,
       ")"         => TOKEN_STRATEGY
-    }
+    } #: Hash[String?, Proc]
 
     ################################################################################
     # Create a new parser around a PDF::Reader::Buffer object
     #
     # buffer - a PDF::Reader::Buffer object that contains PDF data
     # objects  - a PDF::Reader::ObjectHash object that can return objects from the PDF file
+    #: (PDF::Reader::Buffer, ?PDF::Reader::ObjectHash?) -> void
     def initialize(buffer, objects=nil)
       @buffer = buffer
       @objects  = objects
@@ -71,6 +72,7 @@ class PDF::Reader
     # object
     #
     # operators - a hash of supported operators to read from the underlying buffer.
+    #: (?Hash[String | PDF::Reader::Token, Symbol]) -> (PDF::Reader::Reference | PDF::Reader::Token | Numeric | String | Symbol | Array[untyped] | Hash[untyped, untyped] | nil)
     def parse_token(operators={})
       token = @buffer.token
 
@@ -95,6 +97,7 @@ class PDF::Reader
     #
     # id  - the object ID to return
     # gen - the object revision number to return
+    #: (Integer, Integer) -> (PDF::Reader::Reference | PDF::Reader::Token | PDF::Reader::Stream | Numeric | String | Symbol | Array[untyped] | Hash[untyped, untyped] | nil)
     def object(id, gen)
       idCheck = parse_token
 
@@ -120,6 +123,7 @@ class PDF::Reader
 
     ################################################################################
     # reads a PDF dict from the buffer and converts it to a Ruby Hash.
+    #: () -> Hash[Symbol, untyped]
     def dictionary
       dict = {}
 
@@ -138,6 +142,7 @@ class PDF::Reader
     end
     ################################################################################
     # reads a PDF name from the buffer and converts it to a Ruby Symbol
+    #: () -> Symbol
     def pdf_name
       tok = @buffer.token
       tok = tok.dup.gsub(/#([A-Fa-f0-9]{2})/) do |match|
@@ -147,6 +152,7 @@ class PDF::Reader
     end
     ################################################################################
     # reads a PDF array from the buffer and converts it to a Ruby Array.
+    #: () -> Array[untyped]
     def array
       a = []
 
@@ -161,6 +167,7 @@ class PDF::Reader
     end
     ################################################################################
     # Reads a PDF hex string from the buffer and converts it to a Ruby String
+    #: () -> String
     def hex_string
       str = "".dup
 
@@ -177,6 +184,7 @@ class PDF::Reader
     end
     ################################################################################
     # Reads a PDF String from the buffer and converts it to a Ruby String
+    #: () -> String
     def string
       str = @buffer.token
       return "".dup.force_encoding("binary") if str == ")"
@@ -189,7 +197,7 @@ class PDF::Reader
           ($2.oct & 0xff).chr # ignore high level overflow
         end
       end
-      str.force_encoding("binary")
+      str && str.force_encoding("binary")
     end
 
     MAPPING = {
@@ -206,10 +214,11 @@ class PDF::Reader
       "\\\n" => "",
       "\\\r" => "",
       "\\\r\n" => "",
-    }
+    } #: Hash[String, String]
 
     ################################################################################
     # Decodes the contents of a PDF Stream and returns it as a Ruby String.
+    #: (Hash[Symbol, untyped]) -> PDF::Reader::Stream
     def stream(dict)
       raise MalformedPDFError, "PDF malformed, missing stream length" unless dict.has_key?(:Length)
       if @objects
@@ -231,7 +240,7 @@ class PDF::Reader
       # matter if it's missing, and other readers seems to handle its absence just fine
       # Error.str_assert(parse_token, "endobj")
 
-      PDF::Reader::Stream.new(dict, data)
+      PDF::Reader::Stream.new(dict, data || "")
     end
     ################################################################################
   end

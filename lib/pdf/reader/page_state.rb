@@ -20,9 +20,10 @@ class PDF::Reader
         :text_mode      => 0,
         :text_rise      => 0,
         :text_knockout  => 0
-      }
+      } #: Hash[Symbol, Numeric | nil]
 
       # starting a new page
+      #: (untyped) -> void
       def initialize(page)
         @page          = page
         @cache         = page.cache
@@ -48,12 +49,14 @@ class PDF::Reader
       # Any changes that are subsequently made to the state can then by reversed
       # by calling restore_graphics_state.
       #
+      #: () -> untyped
       def save_graphics_state
         @stack.push clone_state
       end
 
       # Restore the state to the previous value on the stack.
       #
+      #: () -> untyped
       def restore_graphics_state
         @stack.pop
       end

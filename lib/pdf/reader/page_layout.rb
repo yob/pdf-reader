@@ -14,8 +14,9 @@ class PDF::Reader
   # page to be rendered as described by the page's MediaBox attribute
   class PageLayout
 
-    DEFAULT_FONT_SIZE = 12
+    DEFAULT_FONT_SIZE = 12 #: Numeric
 
+    #: (Array[PDF::Reader::TextRun], Array[Numeric] | PDF::Reader::Rectangle) -> void
     def initialize(runs, mediabox)
       # mediabox is a 4-element array for now, but it'd be nice to switch to a
       # PDF::Reader::Rectangle at some point
@@ -31,6 +32,7 @@ class PDF::Reader
       @y_offset = lowest_y > 0 ? 0 : lowest_y
     end
 
+    #: () -> String
     def to_s
       return "" if @runs.empty?
       return "" if row_count == 0

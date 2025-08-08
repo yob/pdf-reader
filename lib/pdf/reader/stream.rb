@@ -34,11 +34,16 @@ class PDF::Reader
   # compression, etc) and a stream of bytes.
   #
   class Stream
-    attr_accessor :hash, :data
+    #: Hash[Symbol, untyped]
+    attr_accessor :hash
+    
+    #: String
+    attr_accessor :data
 
     ################################################################################
     # Creates a new stream with the specified dictionary and data. The dictionary
     # should be a standard ruby hash, the data should be a standard ruby string.
+    #: (Hash[Symbol, untyped], String) -> void
     def initialize(hash, data)
       @hash = TypeCheck.cast_to_pdf_dict!(hash)
       @data = data
@@ -46,6 +51,7 @@ class PDF::Reader
     end
     ################################################################################
     # apply this streams filters to its data and return the result.
+    #: () -> String
     def unfiltered_data
       return @udata if @udata
       @udata = data.dup

@@ -17,14 +17,17 @@ module PDF
       extend Forwardable
 
       # lowlevel hash-like access to all objects in the underlying PDF
+      #: PDF::Reader::ObjectHash
       attr_reader :objects
 
       # the raw PDF object that defines this page
+      #: Hash[Symbol, untyped]
       attr_reader :page_object
 
       # a Hash-like object for storing cached data. Generally this is scoped to
       # the current document and is used to avoid repeating expensive
       # operations
+      #: PDF::Reader::ObjectCache | Hash[untyped, untyped]
       attr_reader :cache
 
       def_delegators :resources, :color_spaces
@@ -41,6 +44,7 @@ module PDF
       # * objects - an ObjectHash instance that wraps a PDF file
       # * pagenum - an int specifying the page number to expose. 1 indexed.
       #
+      #: (PDF::Reader::ObjectHash, Integer, ?Hash[Symbol, untyped]) -> void
       def initialize(objects, pagenum, options = {})
         @objects, @pagenum = objects, pagenum
         @page_object = objects.deref_hash(objects.page_references[pagenum - 1]) || {}
@@ -53,12 +57,14 @@ module PDF
 
       # return the number of this page within the full document
       #
+      #: () -> Integer
       def number
         @pagenum
       end
 
       # return a friendly string representation of this page
       #
+      #: () -> String
       def inspect
         "<PDF::Reader::Page page: #{@pagenum}>"
       end
@@ -66,6 +72,7 @@ module PDF
       # Returns the attributes that accompany this page, including
       # attributes inherited from parents.
       #
+      #: () -> Hash[Symbol, untyped]
       def attributes
         @attributes ||= {}.tap { |hash|
           page_with_ancestors.reverse.each do |obj|
@@ -78,18 +85,21 @@ module PDF
         @attributes
       end
 
+      #: () -> Numeric
       def height
         rect = Rectangle.new(*attributes[:MediaBox])
         rect.apply_rotation(rotate) if rotate > 0
         rect.height
       end
 
+      #: () -> Numeric
       def width
         rect = Rectangle.new(*attributes[:MediaBox])
         rect.apply_rotation(rotate) if rotate > 0
         rect.width
       end
 
+      #: () -> Array[Numeric]
       def origin
         rect = Rectangle.new(*attributes[:MediaBox])
         rect.apply_rotation(rotate) if rotate > 0
@@ -99,6 +109,7 @@ module PDF
 
       # Convenience method to identify the page's orientation.
       #
+      #: () -> String
       def orientation
         if height > width
           "portrait"

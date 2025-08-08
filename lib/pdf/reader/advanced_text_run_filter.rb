@@ -46,18 +46,25 @@ class PDF::Reader
       less_than_or_equal
       include
       exclude
-    ]
+    ] #: Array[Symbol]
 
+    #: (Array[PDF::Reader::TextRun], Hash[Symbol, untyped]) -> Array[PDF::Reader::TextRun]
     def self.only(text_runs, filter_hash)
       new(text_runs, filter_hash).only
     end
 
+    #: (Array[PDF::Reader::TextRun], Hash[Symbol, untyped]) -> Array[PDF::Reader::TextRun]
     def self.exclude(text_runs, filter_hash)
       new(text_runs, filter_hash).exclude
     end
 
-    attr_reader :text_runs, :filter_hash
+    #: Array[PDF::Reader::TextRun]
+    attr_reader :text_runs
+    
+    #: Hash[Symbol, untyped]
+    attr_reader :filter_hash
 
+    #: (Array[PDF::Reader::TextRun], Hash[Symbol, untyped]) -> void
     def initialize(text_runs, filter_hash)
       @text_runs = text_runs
       @filter_hash = filter_hash

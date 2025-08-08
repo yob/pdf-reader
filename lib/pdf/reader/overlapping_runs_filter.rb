@@ -9,8 +9,9 @@ class PDF::Reader
 
     # This should be between 0 and 1. If TextRun B obscures this much of TextRun A (and they
     # have identical characters) then one will be discarded
-    OVERLAPPING_THRESHOLD = 0.5
+    OVERLAPPING_THRESHOLD = 0.5 #: Float
 
+    #: (Array[PDF::Reader::TextRun]) -> Array[PDF::Reader::TextRun]
     def self.exclude_redundant_runs(runs)
       sweep_line_status = Array.new
       event_point_schedule = Array.new
@@ -38,6 +39,7 @@ class PDF::Reader
       runs - to_exclude
     end
 
+    #: (Array[PDF::Reader::TextRun], PDF::Reader::EventPoint) -> bool
     def self.detect_intersection(sweep_line_status, event_point)
       sweep_line_status.each do |open_text_run|
         if open_text_run.text == event_point.run.text &&
@@ -55,15 +57,19 @@ class PDF::Reader
   # looking for duplicates
   class EventPoint
 
+    #: () -> Numeric
     attr_reader :x
 
+    #: () -> PDF::Reader::TextRun
     attr_reader :run
 
+    #: (Numeric, PDF::Reader::TextRun) -> void
     def initialize(x, run)
       @x = x
       @run = run
     end
 
+    #: () -> bool
     def start?
       @x == @run.x
     end

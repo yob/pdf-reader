@@ -19,8 +19,9 @@ class PDF::Reader
         :Symbol,
         :"Times-Roman", :"Times-Bold", :"Times-BoldItalic", :"Times-Italic",
         :ZapfDingbats
-      ]
+      ] #: Array[Symbol]
 
+      #: (PDF::Reader::Font) -> void
       def initialize(font)
         @font = font
         @@all_metrics ||= PDF::Reader::SynchronizedCache.new
@@ -35,6 +36,7 @@ class PDF::Reader
         end
       end
 
+      #: (Integer?) -> Numeric
       def glyph_width(code_point)
         return 0 if code_point.nil? || code_point < 0
 
@@ -52,11 +54,13 @@ class PDF::Reader
 
       private
 
+      #: (Integer) -> bool
       def control_character?(code_point)
         match = @font.encoding.int_to_name(code_point).first.to_s[/\Acontrol..\Z/]
         match ? true : false
       end
 
+      #: (Symbol?) -> String
       def extract_basefont(font_name)
         if BUILTINS.include?(font_name)
           font_name.to_s

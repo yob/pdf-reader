@@ -7,13 +7,21 @@ class PDF::Reader
   class TextRun
     include Comparable
 
+    #: PDF::Reader::Point
     attr_reader :origin
+    
+    #: Numeric
     attr_reader :width
+    
+    #: Numeric
     attr_reader :font_size
+    
+    #: String
     attr_reader :text
 
     alias :to_s :text
 
+    #: (Numeric, Numeric, Numeric, Numeric, String) -> void
     def initialize(x, y, width, font_size, text)
       @origin = PDF::Reader::Point.new(x, y)
       @width = width
@@ -37,14 +45,17 @@ class PDF::Reader
       end
     end
 
+    #: () -> Numeric
     def x
       @origin.x
     end
 
+    #: () -> Numeric
     def y
       @origin.y
     end
 
+    #: () -> Numeric
     def endx
       @endx ||= @origin.x + width
     end

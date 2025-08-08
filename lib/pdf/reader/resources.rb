@@ -9,6 +9,7 @@ module PDF
     #
     class Resources
 
+      #: (PDF::Reader::ObjectHash, Hash[untyped, untyped]) -> void
       def initialize(objects, resources)
         @objects = objects
         @resources = resources
@@ -20,6 +21,7 @@ module PDF
       #       with no caching. You will want to cache the results instead
       #       of calling it over and over.
       #
+      #: () -> Hash[Symbol, untyped]
       def color_spaces
         @objects.deref_hash!(@resources[:ColorSpace]) || {}
       end
@@ -30,6 +32,7 @@ module PDF
       #       with no caching. You will want to cache the results instead
       #       of calling it over and over.
       #
+      #: () -> Hash[Symbol, untyped]
       def fonts
         @objects.deref_hash!(@resources[:Font]) || {}
       end
@@ -41,6 +44,7 @@ module PDF
       #       with no caching. You will want to cache the results instead
       #       of calling it over and over.
       #
+      #: () -> Hash[Symbol, untyped]
       def graphic_states
         @objects.deref_hash!(@resources[:ExtGState]) || {}
       end

@@ -14,8 +14,25 @@ class PDF::Reader
   # only 6 numbers. This is important to save CPU time, memory and GC pressure
   # caused by allocating too many unnecessary objects.
   class TransformationMatrix
-    attr_reader :a, :b, :c, :d, :e, :f
+    #: Numeric
+    attr_reader :a
+    
+    #: Numeric
+    attr_reader :b
+    
+    #: Numeric
+    attr_reader :c
+    
+    #: Numeric
+    attr_reader :d
+    
+    #: Numeric
+    attr_reader :e
+    
+    #: Numeric
+    attr_reader :f
 
+    #: (Numeric, Numeric, Numeric, Numeric, Numeric, Numeric) -> void
     def initialize(a, b, c, d, e, f)
       @a, @b, @c, @d, @e, @f = a, b, c, d, e, f
     end
