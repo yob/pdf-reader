@@ -91,6 +91,17 @@ class PDF::Reader
       intersection_area.to_f / area
     end
 
+    # return what percentage of this text run is overlapped by another run horizontally
+    def horizontal_overlap(other_run)
+      # rectangles do not overlap (we are on the left side)
+      return 0 if [x, endx].max < [other_run.x, other_run.endx].min
+      # rectangles do not overlap (other_run is on the left side)
+      return 0 if [other_run.x, other_run.endx].max < [x, endx].min
+      a = [ [x, endx].min, [other_run.x, other_run.endx].min ].max
+      b = [ [x, endx].max, [other_run.x, other_run.endx].max ].min
+      return (a - b).abs
+    end
+
     private
 
     def area

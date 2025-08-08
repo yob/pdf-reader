@@ -205,6 +205,38 @@ module PDF
       def bfrange_type_two(start_code, end_code, dst); end
     end
 
+    class DisjointSet
+      include Enumerable
+      Elem = type_member { {fixed: T.untyped} }
+
+      sig { void }
+      def initialize
+        @parents = T.let({}, T::Hash[T.anything, T.untyped])
+        @ranks = T.let({}, T::Hash[T.anything, T.untyped])
+      end
+
+      sig { params(item: T.anything).returns(T::Boolean) }
+      def contains(item); end
+
+      sig { override.params(block: T.nilable).returns(T.any(T::Hash[T.untyped, T.untyped], T::Enumerator[T.untyped])) }
+      def each(&block); end
+
+      sig { returns(Integer) }
+      def length; end
+
+      sig { params(x: T.untyped).returns(PDF::Reader::DisjointSet) }
+      def add(x); end
+
+      sig { type_parameters(:U).params(x: T.type_parameter(:U)).returns(T.type_parameter(:U)) }
+      def find(x); end
+
+      sig { returns(T::Array[T.untyped]) }
+      def sets; end
+
+      sig { params(x: T.untyped, y: T.untyped).returns(PDF::Reader::DisjointSet) }
+      def union(x, y); end
+    end
+
     class Encoding
       CONTROL_CHARS = T.let(T.unsafe(nil), T::Array[Integer])
       UNKNOWN_CHAR = T.let(T.unsafe(nil), Integer)
@@ -977,6 +1009,9 @@ module PDF
       sig { returns(T::Hash[Symbol, PDF::Reader::Rectangle]) }
       def rectangles; end
 
+      sig { params(opts: T::Hash[Symbol, T.untyped]).returns(T::Array[String]) }
+      def paragraphs(opts = {}); end
+
       sig { returns(T::Hash[Symbol, T.untyped]) }
       def root; end
 
@@ -1242,6 +1277,17 @@ module PDF
 
     class PagesStrategy
       OPERATORS = T.let(T.unsafe(nil), T::Hash[String, Symbol])
+    end
+
+    class Paragraph
+      sig { returns(String) }
+      attr_reader :text
+
+      sig { returns(PDF::Reader::Point) }
+      attr_reader :origin
+
+      sig { params(text: String, origin: PDF::Reader::Point).void }
+      def initialize(text, origin); end
     end
 
     class Parser
@@ -1622,6 +1668,9 @@ module PDF
 
       sig { params(other_run: T.untyped).returns(Numeric) }
       def intersection_area_percent(other_run); end
+
+      sig { params(other_run: T.untyped).returns(Numeric) }
+      def horizontal_overlap(other_run); end
 
       sig { returns(Numeric) }
       def area; end
