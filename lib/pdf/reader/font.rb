@@ -34,10 +34,40 @@ class PDF::Reader
   # for extracting info. Mainly used for converting text to UTF-8.
   #
   class Font
-    attr_accessor :subtype, :encoding, :descendantfonts, :tounicode
-    attr_reader :widths, :first_char, :last_char, :basefont, :font_descriptor,
-                :cid_widths, :cid_default_width
+    #: Symbol?
+    attr_accessor :subtype
+    
+    #: PDF::Reader::Encoding
+    attr_accessor :encoding
+    
+    #: Array[PDF::Reader::Font]
+    attr_accessor :descendantfonts
+    
+    #: PDF::Reader::CMap
+    attr_accessor :tounicode
 
+    #: Array[Integer]
+    attr_reader :widths
+    
+    #: Integer?
+    attr_reader :first_char
+    
+    #: Integer?
+    attr_reader :last_char
+    
+    #: Symbol?
+    attr_reader :basefont
+    
+    #: PDF::Reader::FontDescriptor?
+    attr_reader :font_descriptor
+    
+    #: Array[Numeric]
+    attr_reader :cid_widths
+    
+    #: Numeric
+    attr_reader :cid_default_width
+
+    #: (PDF::Reader::ObjectHash, Hash[Symbol, untyped]) -> void
     def initialize(ohash, obj)
       @ohash = ohash
       @tounicode = nil
@@ -51,6 +81,7 @@ class PDF::Reader
       @encoding ||= PDF::Reader::Encoding.new(:StandardEncoding)
     end
 
+    #: (untyped) -> String
     def to_utf8(params)
       if @tounicode
         to_utf8_via_cmap(params)

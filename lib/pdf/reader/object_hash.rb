@@ -32,8 +32,16 @@ class PDF::Reader
   class ObjectHash
     include Enumerable
 
+    #: untyped
     attr_accessor :default
-    attr_reader :trailer, :pdf_version
+    
+    #: Hash[Symbol, untyped]
+    attr_reader :trailer
+    
+    #: Float
+    attr_reader :pdf_version
+    
+    #: (PDF::Reader::NullSecurityHandler | PDF::Reader::AesV2SecurityHandler | PDF::Reader::AesV3SecurityHandler | PDF::Reader::Rc4SecurityHandler)
     attr_reader :sec_handler
 
     # Creates a new ObjectHash object. Input can be a string with a valid filename
@@ -43,6 +51,7 @@ class PDF::Reader
     #
     #   :password - the user password to decrypt the source PDF
     #
+    #: ((IO | Tempfile | StringIO | String), ?Hash[Symbol, untyped]) -> void
     def initialize(input, opts = {})
       @io          = extract_io_from(input)
       @xref        = PDF::Reader::XRef.new(@io)
@@ -58,6 +67,7 @@ class PDF::Reader
     end
 
     # returns the type of object a ref points to
+    #: ((Integer | PDF::Reader::Reference)) -> Symbol?
     def obj_type(ref)
       self[ref].class.to_s.to_sym
     rescue
@@ -65,6 +75,7 @@ class PDF::Reader
     end
 
     # returns true if the supplied references points to an object with a stream
+    #: ((Integer | PDF::Reader::Reference)) -> bool
     def stream?(ref)
       self.has_key?(ref) && self[ref].is_a?(PDF::Reader::Stream)
     end
@@ -78,6 +89,7 @@ class PDF::Reader
     # If a PDF::Reader::Reference object is used the exact ID and generation number
     # can be specified.
     #
+    #: ((Integer | PDF::Reader::Reference)) -> untyped
     def [](key)
       return default if key.to_i <= 0
 
@@ -93,6 +105,7 @@ class PDF::Reader
     # If key is a PDF::Reader::Reference object, lookup the corresponding
     # object in the PDF and return it. Otherwise return key untouched.
     #
+    #: (untyped) -> untyped
     def object(key)
       key.is_a?(PDF::Reader::Reference) ? self[key] : key
     end
@@ -104,6 +117,7 @@ class PDF::Reader
     # Guaranteed to only return an Array or nil. If the dereference results in
     # any other type then a MalformedPDFError exception will raise. Useful when
     # expecting an Array and no other type will do.
+    #: (untyped) -> Array[untyped]?
     def deref_array(key)
       obj = deref(key)
 
@@ -122,6 +136,7 @@ class PDF::Reader
     # expecting an Array and no other type will do.
     #
     # Some effort to cast array elements to a number is made for any non-numeric elements.
+    #: (untyped) -> Array[Numeric]?
     def deref_array_of_numbers(key)
       arr = deref(key)
 
@@ -148,6 +163,7 @@ class PDF::Reader
     # Guaranteed to only return a Hash or nil. If the dereference results in
     # any other type then a MalformedPDFError exception will raise. Useful when
     # expecting an Array and no other type will do.
+    #: (untyped) -> Hash[Symbol, untyped]?
     def deref_hash(key)
       obj = deref(key)
 
@@ -166,6 +182,7 @@ class PDF::Reader
     # expecting an Array and no other type will do.
     #
     # Some effort to cast to a symbol is made when the reference points to a non-symbol.
+    #: (untyped) -> Symbol?
     def deref_name(key)
       obj = deref(key)
 
@@ -190,6 +207,7 @@ class PDF::Reader
     # expecting an Array and no other type will do.
     #
     # Some effort to cast to an int is made when the reference points to a non-integer.
+    #: (untyped) -> Integer?
     def deref_integer(key)
       obj = deref(key)
 
@@ -214,6 +232,7 @@ class PDF::Reader
     # expecting an Array and no other type will do.
     #
     # Some effort to cast to a number is made when the reference points to a non-number.
+    #: (untyped) -> Numeric?
     def deref_number(key)
       obj = deref(key)
 
@@ -238,6 +257,7 @@ class PDF::Reader
     # Guaranteed to only return a PDF::Reader::Stream or nil. If the dereference results in
     # any other type then a MalformedPDFError exception will raise. Useful when
     # expecting a stream and no other type will do.
+    #: (untyped) -> PDF::Reader::Stream?
     def deref_stream(key)
       obj = deref(key)
 
@@ -258,6 +278,7 @@ class PDF::Reader
     # expecting a string and no other type will do.
     #
     # Some effort to cast to a string is made when the reference points to a non-string.
+    #: (untyped) -> String?
     def deref_string(key)
       obj = deref(key)
 
@@ -280,6 +301,7 @@ class PDF::Reader
     # Guaranteed to only return a PDF Name (symbol), Array or nil. If the dereference results in
     # any other type then a MalformedPDFError exception will raise. Useful when
     # expecting a Name or Array and no other type will do.
+    #: (untyped) -> (Symbol | Array[untyped] | nil)
     def deref_name_or_array(key)
       obj = deref(key)
 
@@ -298,6 +320,7 @@ class PDF::Reader
     # Guaranteed to only return a PDF::Reader::Stream, Array or nil. If the dereference results in
     # any other type then a MalformedPDFError exception will raise. Useful when
     # expecting a stream or Array and no other type will do.
+    #: (untyped) -> (PDF::Reader::Stream | Array[untyped] | nil)
     def deref_stream_or_array(key)
       obj = deref(key)
 
@@ -313,10 +336,12 @@ class PDF::Reader
     # Recursively dereferences the object refered to be +key+. If +key+ is not
     # a PDF::Reader::Reference, the key is returned unchanged.
     #
+    #: (untyped) -> untyped
     def deref!(key)
       deref_internal!(key, {})
     end
 
+    #: (untyped) -> Array[untyped]?
     def deref_array!(key)
       deref!(key).tap { |obj|
         if !obj.nil? && !obj.is_a?(Array)
@@ -325,6 +350,7 @@ class PDF::Reader
       }
     end
 
+    #: (untyped) -> Hash[Symbol, untyped]?
     def deref_hash!(key)
       deref!(key).tap { |obj|
         if !obj.nil? && !obj.is_a?(Hash)
@@ -345,6 +371,7 @@ class PDF::Reader
     # local_default is the object that will be returned if the requested key doesn't
     # exist.
     #
+    #: (untyped, ?untyped) -> untyped
     def fetch(key, local_default = nil)
       obj = self[key]
       if obj
@@ -358,6 +385,7 @@ class PDF::Reader
 
     # iterate over each key, value. Just like a ruby hash.
     #
+    #: { (PDF::Reader::Reference, untyped) -> untyped } -> untyped
     def each(&block)
       @xref.each do |ref|
         yield ref, self[ref]
@@ -367,6 +395,7 @@ class PDF::Reader
 
     # iterate over each key. Just like a ruby hash.
     #
+    #: { (PDF::Reader::Reference) -> untyped } -> untyped
     def each_key(&block)
       each do |id, obj|
         yield id
@@ -375,6 +404,7 @@ class PDF::Reader
 
     # iterate over each value. Just like a ruby hash.
     #
+    #: { (untyped) -> untyped } -> untyped
     def each_value(&block)
       each do |id, obj|
         yield obj
@@ -383,6 +413,7 @@ class PDF::Reader
 
     # return the number of objects in the file. An object with multiple generations
     # is counted once.
+    #: () -> Integer
     def size
       xref.size
     end
@@ -390,6 +421,7 @@ class PDF::Reader
 
     # return true if there are no objects in this file
     #
+    #: () -> bool
     def empty?
       size == 0 ? true : false
     end
@@ -397,6 +429,7 @@ class PDF::Reader
     # return true if the specified key exists in the file. key
     # can be an int or a PDF::Reader::Reference
     #
+    #: (untyped) -> bool
     def has_key?(check_key)
       # TODO update from O(n) to O(1)
       each_key do |key|
@@ -414,6 +447,7 @@ class PDF::Reader
 
     # return true if the specifiedvalue exists in the file
     #
+    #: (untyped) -> bool
     def has_value?(value)
       # TODO update from O(n) to O(1)
       each_value do |obj|
@@ -423,12 +457,14 @@ class PDF::Reader
     end
     alias :value? :has_key?
 
+    #: () -> String
     def to_s
       "<PDF::Reader::ObjectHash size: #{self.size}>"
     end
 
     # return an array of all keys in the file
     #
+    #: () -> Array[PDF::Reader::Reference]
     def keys
       ret = []
       each_key { |k| ret << k }
@@ -437,6 +473,7 @@ class PDF::Reader
 
     # return an array of all values in the file
     #
+    #: () -> untyped
     def values
       ret = []
       each_value { |v| ret << v }
@@ -445,12 +482,14 @@ class PDF::Reader
 
     # return an array of all values from the specified keys
     #
+    #: (*untyped) -> untyped
     def values_at(*ids)
       ids.map { |id| self[id] }
     end
 
     # return an array of arrays. Each sub array contains a key/value pair.
     #
+    #: () -> untyped
     def to_a
       ret = []
       each do |id, obj|

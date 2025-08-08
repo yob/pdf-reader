@@ -10,12 +10,18 @@ module PDF
     #
     class Point
 
-      attr_reader :x, :y
+      #: Numeric
+      attr_reader :x
+      
+      #: Numeric
+      attr_reader :y
 
+      #: (Numeric, Numeric) -> void
       def initialize(x, y)
         @x, @y = x, y
       end
 
+      #: (PDF::Reader::Point) -> bool
       def ==(other)
         other.respond_to?(:x) && other.respond_to?(:y) && x == other.x && y == other.y
       end

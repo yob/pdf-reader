@@ -32,11 +32,13 @@ class PDF::Reader
   # convert strings of various PDF-dialect encodings into UTF-8.
   class Encoding # :nodoc:
     CONTROL_CHARS = [0,1,2,3,4,5,6,7,8,11,12,14,15,16,17,18,19,20,21,22,23,
-                     24,25,26,27,28,29,30,31]
-    UNKNOWN_CHAR = 0x25AF # ▯
+                     24,25,26,27,28,29,30,31] #: Array[Integer]
+    UNKNOWN_CHAR = 0x25AF #: Integer # ▯
 
+    #: String
     attr_reader :unpack
 
+    #: (untyped) -> void
     def initialize(enc)
       @mapping  = default_mapping # maps from character codes to Unicode codepoints
       @string_cache  = {} # maps from character codes to UTF-8 strings.
@@ -68,6 +70,7 @@ class PDF::Reader
     # To save space the following array is also valid and equivalent to the previous one
     #
     #   [25, :A, :B]
+    #: (Array[Integer | Symbol]) -> Hash[Integer, Integer]
     def differences=(diff)
       PDF::Reader::Error.validate_type(diff, "diff", Array)
 
@@ -85,6 +88,7 @@ class PDF::Reader
       @differences
     end
 
+    #: () -> Hash[Integer, Integer]
     def differences
       # this method is only used by the spec tests
       @differences ||= {}
@@ -101,6 +105,7 @@ class PDF::Reader
     # * pack the final array of Unicode codepoints into a utf-8 string
     # * mark the string as utf-8 if we're running on a M17N aware VM
     #
+    #: (String) -> String
     def to_utf8(str)
       if utf8_conversion_impossible?
         little_boxes(str.unpack(unpack).size)
@@ -109,6 +114,7 @@ class PDF::Reader
       end
     end
 
+    #: (Integer) -> String
     def int_to_utf8_string(glyph_code)
       @string_cache[glyph_code] ||= internal_int_to_utf8_string(glyph_code)
     end
@@ -118,6 +124,7 @@ class PDF::Reader
     #     int_to_name(65)
     #     => [:A]
     #
+    #: (Integer) -> Array[Symbol]
     def int_to_name(glyph_code)
       if @enc_name == :"Identity-H" || @enc_name == :"Identity-V"
         []
@@ -137,6 +144,7 @@ class PDF::Reader
     # - leaves all other bytes <= 255 unchaged
     #
     # Each specific encoding will change this default as required for their glyphs
+    #: () -> Hash[Integer, Integer]
     def default_mapping
       all_bytes = (0..255).to_a
       tuples = all_bytes.map {|i|
@@ -146,6 +154,7 @@ class PDF::Reader
       mapping
     end
 
+    #: (Integer) -> String
     def internal_int_to_utf8_string(glyph_code)
       ret = [
         @mapping[glyph_code.to_i] || glyph_code.to_i
@@ -154,10 +163,12 @@ class PDF::Reader
       ret
     end
 
+    #: () -> bool
     def utf8_conversion_impossible?
       @enc_name == :"Identity-H" || @enc_name == :"Identity-V"
     end
 
+    #: (Integer) -> String
     def little_boxes(times)
       codepoints = [ PDF::Reader::Encoding::UNKNOWN_CHAR ] * times
       ret = codepoints.pack("U*")
@@ -165,12 +176,14 @@ class PDF::Reader
       ret
     end
 
+    #: (String) -> String
     def convert_to_utf8(str)
       ret = str.unpack(unpack).map! { |c| @mapping[c.to_i] || c }.pack("U*")
       ret.force_encoding("UTF-8")
       ret
     end
 
+    #: (untyped) -> String
     def get_unpack(enc)
       case enc
       when :"Identity-H", :"Identity-V", :UTF16Encoding
@@ -180,6 +193,7 @@ class PDF::Reader
       end
     end
 
+    #: (untyped) -> String?
     def get_mapping_file(enc)
       case enc
       when :"Identity-H", :"Identity-V", :UTF16Encoding then
@@ -201,10 +215,12 @@ class PDF::Reader
       end
     end
 
+    #: () -> PDF::Reader::GlyphHash
     def glyphlist
       @glyphlist ||= PDF::Reader::GlyphHash.new
     end
 
+    #: (String) -> void
     def load_mapping(file)
       File.open(file, "r:BINARY") do |f|
         f.each do |l|

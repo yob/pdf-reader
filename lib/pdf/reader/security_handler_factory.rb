@@ -7,6 +7,7 @@ class PDF::Reader
   # able to decrypt the file.
   class SecurityHandlerFactory
 
+    #: (untyped, untyped, untyped) -> untyped
     def self.build(encrypt, doc_id, password)
       doc_id   ||= []
       password ||= ""
@@ -22,6 +23,7 @@ class PDF::Reader
       end
     end
 
+    #: (untyped, untyped, untyped) -> untyped
     def self.build_standard_handler(encrypt, doc_id, password)
       encmeta = !encrypt.has_key?(:EncryptMetadata) || encrypt[:EncryptMetadata].to_s == "true"
       key_builder = StandardKeyBuilder.new(
@@ -41,6 +43,7 @@ class PDF::Reader
       end
     end
 
+    #: (untyped, untyped, untyped) -> untyped
     def self.build_v5_handler(encrypt, doc_id, password)
       key_builder = KeyBuilderV5.new(
         owner_key: encrypt[:O],

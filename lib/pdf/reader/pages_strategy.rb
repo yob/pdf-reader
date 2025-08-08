@@ -180,7 +180,7 @@ class PDF::Reader
       'y'   => :append_curved_segment_final_point_replicated,
       '\''  => :move_to_next_line_and_show_text,
       '"'   => :set_spacing_next_line_show_text,
-    }
+    } #: Hash[String, Symbol]
   end
   ################################################################################
 end

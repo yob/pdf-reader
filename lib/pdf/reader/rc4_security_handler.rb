@@ -12,6 +12,7 @@ class PDF::Reader
   #
   class Rc4SecurityHandler
 
+    #: (String) -> void
     def initialize(key)
       @encrypt_key = key
     end
@@ -25,6 +26,7 @@ class PDF::Reader
     # buf - a string to decrypt
     # ref - a PDF::Reader::Reference for the object to decrypt
     #
+    #: (untyped, untyped) -> untyped
     def decrypt( buf, ref )
       objKey = @encrypt_key.dup
       (0..2).each { |e| objKey << (ref.id >> e*8 & 0xFF ) }

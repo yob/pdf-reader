@@ -11,10 +11,12 @@ class PDF::Reader
     # the descendant font
     class TypeZero
 
+      #: (PDF::Reader::Font) -> void
       def initialize(font)
         @font = font
       end
 
+      #: (Integer?) -> Numeric
       def glyph_width(code_point)
         return 0 if code_point.nil? || code_point < 0
 

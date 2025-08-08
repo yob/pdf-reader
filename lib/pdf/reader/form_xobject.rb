@@ -17,6 +17,7 @@ module PDF
     class FormXObject
       extend Forwardable
 
+      #: () -> untyped
       attr_reader :xobject
 
       def_delegators :resources, :color_spaces
@@ -28,6 +29,7 @@ module PDF
       def_delegators :resources, :shadings
       def_delegators :resources, :xobjects
 
+      #: (untyped, untyped, Hash[untyped, untyped]) -> void
       def initialize(page, xobject, options = {})
         @page    = page
         @objects = page.objects
@@ -42,6 +44,7 @@ module PDF
       # The values are a PDF::Reader::Font instances that provide access
       # to most available metrics for each font.
       #
+      #: () -> untyped
       def font_objects
         raw_fonts = @objects.deref_hash(fonts)
         ::Hash[raw_fonts.map { |label, font|
@@ -54,6 +57,7 @@ module PDF
       #
       # See the comments on PDF::Reader::Page#walk for more detail.
       #
+      #: (*untyped) -> untyped
       def walk(*receivers)
         receivers = receivers.map { |receiver|
           ValidatingReceiver.new(receiver)
@@ -64,6 +68,7 @@ module PDF
       # returns the raw content stream for this page. This is plumbing, nothing to
       # see here unless you're a PDF nerd like me.
       #
+      #: () -> untyped
       def raw_content
         @xobject.unfiltered_data
       end
@@ -72,24 +77,29 @@ module PDF
 
       # Returns the resources that accompany this form.
       #
+      #: () -> untyped
       def resources
         @resources ||= Resources.new(@objects, @objects.deref_hash(@xobject.hash[:Resources]) || {})
       end
 
+      #: (untyped, untyped, Array[untyped]) -> untyped
       def callback(receivers, name, params=[])
         receivers.each do |receiver|
           receiver.send(name, *params) if receiver.respond_to?(name)
         end
       end
 
+      #: () -> untyped
       def content_stream_md5
         @content_stream_md5 ||= Digest::MD5.hexdigest(raw_content)
       end
 
+      #: () -> untyped
       def cached_tokens_key
         @cached_tokens_key ||= "tokens-#{content_stream_md5}"
       end
 
+      #: () -> untyped
       def tokens
         @cache[cached_tokens_key] ||= begin
                       buffer = Buffer.new(StringIO.new(raw_content), :content_stream => true)
@@ -102,6 +112,7 @@ module PDF
                     end
       end
 
+      #: (untyped, untyped) -> untyped
       def content_stream(receivers, instructions)
         params       = []
 

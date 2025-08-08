@@ -41,6 +41,7 @@ class PDF::Reader
     # Filters that are only used to encode image data are accepted, but the data is
     # returned untouched. At this stage PDF::Reader has no need to decode images.
     #
+    #: (Symbol, ?Hash[untyped, untyped]) -> untyped
     def self.with(name, options = {})
       case name
       when :ASCII85Decode, :A85   then PDF::Reader::Filter::Ascii85.new(options)

@@ -20,12 +20,24 @@ module PDF
     #
     class Rectangle
 
-      attr_reader :bottom_left, :bottom_right, :top_left, :top_right
+      #: PDF::Reader::Point
+      attr_reader :bottom_left
+      
+      #: PDF::Reader::Point
+      attr_reader :bottom_right
+      
+      #: PDF::Reader::Point
+      attr_reader :top_left
+      
+      #: PDF::Reader::Point
+      attr_reader :top_right
 
+      #: (Numeric, Numeric, Numeric, Numeric) -> void
       def initialize(x1, y1, x2, y2)
         set_corners(x1, y1, x2, y2)
       end
 
+      #: (Array[Numeric]) -> PDF::Reader::Rectangle
       def self.from_array(arr)
         if arr.size != 4
           raise ArgumentError, "Only 4-element Arrays can be converted to a Rectangle"
@@ -43,6 +55,7 @@ module PDF
         to_a == other.to_a
       end
 
+      #: () -> Numeric
       def height
         top_right.y - bottom_right.y
       end

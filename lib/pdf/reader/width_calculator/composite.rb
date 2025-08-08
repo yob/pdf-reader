@@ -12,11 +12,13 @@ class PDF::Reader
     # see Section 9.7.4.1, PDF 32000-1:2008, pp 269-270
     class Composite
 
+      #: (PDF::Reader::Font) -> void
       def initialize(font)
         @font = font
         @widths = PDF::Reader::CidWidths.new(@font.cid_default_width, @font.cid_widths)
       end
 
+      #: (Integer?) -> Numeric
       def glyph_width(code_point)
         return 0 if code_point.nil? || code_point < 0
 

@@ -20,13 +20,16 @@ class PDF::Reader
   # same time, we don't want to throw away thread safety We have two
   # interchangeable thread-safe cache implementations:
   class SynchronizedCache
+    #: () -> void
     def initialize
       @cache = {}
       @mutex = Mutex.new
     end
+    #: (untyped) -> untyped
     def [](key)
       @mutex.synchronize { @cache[key] }
     end
+    #: (untyped, untyped) -> untyped
     def []=(key,value)
       @mutex.synchronize { @cache[key] = value }
     end

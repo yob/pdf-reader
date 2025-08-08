@@ -10,15 +10,17 @@ class PDF::Reader
     # implementation of the Flate (zlib) stream filter
     class Flate
 
-      ZLIB_AUTO_DETECT_ZLIB_OR_GZIP = 47  # Zlib::MAX_WBITS + 32
-      ZLIB_RAW_DEFLATE              = -15 # Zlib::MAX_WBITS * -1
+      ZLIB_AUTO_DETECT_ZLIB_OR_GZIP = 47 #: Integer  # Zlib::MAX_WBITS + 32
+      ZLIB_RAW_DEFLATE              = -15 #: Integer # Zlib::MAX_WBITS * -1
 
+      #: (?Hash[untyped, untyped]) -> void
       def initialize(options = {})
         @options = options
       end
 
       ################################################################################
       # Decode the specified data with the Zlib compression algorithm
+      #: (String) -> String
       def filter(data)
         deflated = zlib_inflate(data) || zlib_inflate(data[0, data.bytesize-1])
 
@@ -31,6 +33,7 @@ class PDF::Reader
 
       private
 
+      #: (untyped) -> untyped
       def zlib_inflate(data)
         begin
           return Zlib::Inflate.new(ZLIB_AUTO_DETECT_ZLIB_OR_GZIP).inflate(data)
