@@ -32,18 +32,37 @@ class PDF::Reader
   # The mapping is read from a data file on disk the first time it's needed.
   #
   class GlyphHash # :nodoc:
+    @@by_codepoint_cache = nil #: Hash[Integer, Array[Symbol]] | nil
+    @@by_name_cache = nil #: Hash[Symbol, Integer] | nil
+
+    # An internal class for returning multiple pieces of data and keep sorbet happy
+    class ReturnData
+      #: Hash[Symbol, Integer]
+      attr_reader :by_name
+
+      #: Hash[Integer, Array[Symbol]]
+      attr_reader :by_codepoint
+
+      #:(Hash[Symbol, Integer], Hash[Integer, Array[Symbol]]) -> void
+      def initialize(by_name, by_codepoint)
+        @by_name = by_name
+        @by_codepoint = by_codepoint
+      end
+    end
+
+    #: () -> void
     def initialize
       @@by_codepoint_cache ||= nil
       @@by_name_cache ||= nil
 
       # only parse the glyph list once, and cache the results (for performance)
       if @@by_codepoint_cache != nil && @@by_name_cache != nil
-        @by_name      = @@by_name_cache
-        @by_codepoint = @@by_codepoint_cache
+        @by_name      = @@by_name_cache #: Hash[Symbol, Integer]
+        @by_codepoint = @@by_codepoint_cache #: Hash[Integer, Array[Symbol]]
       else
-        by_name, by_codepoint = load_adobe_glyph_mapping
-        @by_name      = @@by_name_cache ||= by_name
-        @by_codepoint = @@by_codepoint_cache ||= by_codepoint
+        res = load_adobe_glyph_mapping
+        @by_name      = @@by_name_cache ||= res.by_name
+        @by_codepoint = @@by_codepoint_cache ||= res.by_codepoint
       end
     end
 
@@ -67,6 +86,7 @@ class PDF::Reader
     #   h.name_to_unicode(:34)
     #   => 34
     #
+    #: (Symbol | nil) -> (Integer | nil)
     def name_to_unicode(name)
       return nil unless name.is_a?(Symbol)
 
@@ -104,6 +124,7 @@ class PDF::Reader
     #   h.unicode_to_name(34)
     #   => [:34]
     #
+    #: (Integer) -> Array[Symbol]
     def unicode_to_name(codepoint)
       @by_codepoint[codepoint.to_i] || []
     end
@@ -113,9 +134,10 @@ class PDF::Reader
     # returns a hash that maps glyph names to unicode codepoints. The mapping is based on
     # a text file supplied by Adobe at:
     # https://github.com/adobe-type-tools/agl-aglfn
+    #: () -> ReturnData
     def load_adobe_glyph_mapping
-      keyed_by_name      = {}
-      keyed_by_codepoint = {}
+      keyed_by_name      = {} #: Hash[Symbol, Integer]
+      keyed_by_codepoint = {} #: Hash[Integer, Array[Symbol]]
 
       paths = [
         File.dirname(__FILE__) + "/glyphlist.txt",
@@ -129,13 +151,16 @@ class PDF::Reader
               cp = "0x#{code}".hex
               keyed_by_name[name.to_sym]   = cp
               keyed_by_codepoint[cp]     ||= []
-              keyed_by_codepoint[cp]     << name.to_sym
+              arr = keyed_by_codepoint[cp]
+              if arr
+                arr.push(name.to_sym)
+              end
             end
           end
         end
       end
 
-      return keyed_by_name.freeze, keyed_by_codepoint.freeze
+      ReturnData.new(keyed_by_name.freeze, keyed_by_codepoint.freeze)
     end
 
   end

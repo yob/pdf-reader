@@ -26,9 +26,10 @@ module PDF
         def initialize(data, bits_in_chunk)
           @data = data
           @data.force_encoding("BINARY")
+          @current_pos = 0 #: Integer
+          @bits_left_in_byte = 8 #: Integer
+          @bits_in_chunk = 0 #: Integer
           set_bits_in_chunk(bits_in_chunk)
-          @current_pos = 0
-          @bits_left_in_byte = 8
         end
 
         #: (Integer) -> void
@@ -67,13 +68,14 @@ module PDF
 
       # stores de pairs code => string
       class StringTable
-        #: () -> Integer
+        #: Integer
         attr_reader :string_table_pos
 
         #: () -> void
         def initialize
-          @data = Hash.new
-          @string_table_pos = 258 #initial code
+          @data = Hash.new #: Hash[Integer, String]
+          # The initial code
+          @string_table_pos = 258 #: Integer
         end
 
         #if code less than 258 return fixed string

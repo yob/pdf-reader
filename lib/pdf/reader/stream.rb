@@ -36,7 +36,7 @@ class PDF::Reader
   class Stream
     #: Hash[Symbol, untyped]
     attr_accessor :hash
-    
+
     #: String
     attr_accessor :data
 
@@ -45,9 +45,9 @@ class PDF::Reader
     # should be a standard ruby hash, the data should be a standard ruby string.
     #: (Hash[Symbol, untyped], String) -> void
     def initialize(hash, data)
-      @hash = TypeCheck.cast_to_pdf_dict!(hash)
+      @hash = TypeCheck.cast_to_pdf_dict!(hash) #: Hash[Symbol, untyped]
       @data = data
-      @udata = nil
+      @udata = nil #: String | nil
     end
     ################################################################################
     # apply this streams filters to its data and return the result.

@@ -57,10 +57,10 @@ class PDF::Reader
   # looking for duplicates
   class EventPoint
 
-    #: () -> Numeric
+    #: Numeric
     attr_reader :x
 
-    #: () -> PDF::Reader::TextRun
+    #: PDF::Reader::TextRun
     attr_reader :run
 
     #: (Numeric, PDF::Reader::TextRun) -> void

@@ -35,7 +35,7 @@ class PDF::Reader
 
     TOKEN_STRATEGY = proc { |parser, token| Token.new(token) } #: Proc
 
-    STRATEGIES = { 
+    STRATEGIES = {
       "/"  => proc { |parser, token| parser.send(:pdf_name) },
       "<<" => proc { |parser, token| parser.send(:dictionary) },
       "["  => proc { |parser, token| parser.send(:array) },
@@ -72,12 +72,24 @@ class PDF::Reader
     # object
     #
     # operators - a hash of supported operators to read from the underlying buffer.
-    #: (?Hash[String | PDF::Reader::Token, Symbol]) -> (PDF::Reader::Reference | PDF::Reader::Token | Numeric | String | Symbol | Array[untyped] | Hash[untyped, untyped] | nil)
+    #: (?Hash[String | PDF::Reader::Token, Symbol]) -> (
+    #|   PDF::Reader::Reference |
+    #|   PDF::Reader::Token |
+    #|   Numeric |
+    #|   String |
+    #|   Symbol |
+    #|   Array[untyped] |
+    #|   Hash[untyped, untyped] |
+    #|   nil
+    #| )
     def parse_token(operators={})
       token = @buffer.token
 
-      if STRATEGIES.has_key? token
-        STRATEGIES[token].call(self, token)
+      if token.nil?
+        nil
+      elsif token.is_a?(String) && STRATEGIES.has_key?(token)
+        proc = STRATEGIES[token]
+        proc.call(self, token) if proc
       elsif token.is_a? PDF::Reader::Reference
         token
       elsif operators.has_key? token
@@ -97,7 +109,17 @@ class PDF::Reader
     #
     # id  - the object ID to return
     # gen - the object revision number to return
-    #: (Integer, Integer) -> (PDF::Reader::Reference | PDF::Reader::Token | PDF::Reader::Stream | Numeric | String | Symbol | Array[untyped] | Hash[untyped, untyped] | nil)
+    #: (Integer, Integer) -> (
+    #|   PDF::Reader::Reference |
+    #|   PDF::Reader::Token |
+    #|   PDF::Reader::Stream |
+    #|   Numeric |
+    #|   String |
+    #|   Symbol |
+    #|   Array[untyped] |
+    #|   Hash[untyped, untyped] |
+    #|   nil
+    #| )
     def object(id, gen)
       idCheck = parse_token
 
@@ -145,10 +167,18 @@ class PDF::Reader
     #: () -> Symbol
     def pdf_name
       tok = @buffer.token
-      tok = tok.dup.gsub(/#([A-Fa-f0-9]{2})/) do |match|
-        match[1, 2].hex.chr
+
+      if tok.is_a?(String)
+        tok = tok.dup.gsub(/#([A-Fa-f0-9]{2})/) do |match|
+          res = match[1, 2]
+          res ? res.hex.chr : ""
+        end
+        tok.to_sym
+      elsif tok.is_a?(PDF::Reader::Reference)
+        raise MalformedPDFError, "unexpected reference"
+      else
+        raise MalformedPDFError, "unexpected nil PDF Name"
       end
-      tok.to_sym
     end
     ################################################################################
     # reads a PDF array from the buffer and converts it to a Ruby Array.
@@ -187,6 +217,8 @@ class PDF::Reader
     #: () -> String
     def string
       str = @buffer.token
+      raise MalformedPDFError, "unexpected reference" if str.is_a?(PDF::Reader::Reference)
+      raise MalformedPDFError, "unexpected nil PDF String" if str.nil?
       return "".dup.force_encoding("binary") if str == ")"
       Error.assert_equal(parse_token, ")")
 
@@ -197,7 +229,7 @@ class PDF::Reader
           ($2.oct & 0xff).chr # ignore high level overflow
         end
       end
-      str && str.force_encoding("binary")
+      str.force_encoding("binary")
     end
 
     MAPPING = {

@@ -15,7 +15,9 @@ class PDF::Reader
       #: (PDF::Reader::Font) -> void
       def initialize(font)
         @font = font
-        @widths = PDF::Reader::CidWidths.new(@font.cid_default_width, @font.cid_widths)
+        @widths = PDF::Reader::CidWidths.new(
+          @font.cid_default_width, @font.cid_widths
+        ) #: PDF::Reader::CidWidths
       end
 
       #: (Integer?) -> Numeric

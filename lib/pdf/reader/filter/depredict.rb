@@ -36,6 +36,7 @@ class PDF::Reader
       private
 
       ################################################################################
+      #: (untyped) -> String
       def tiff_depredict(data)
         data        = data.unpack("C*")
         unfiltered  = ''
@@ -62,6 +63,7 @@ class PDF::Reader
         unfiltered
       end
       ################################################################################
+      #: (untyped) -> String
       def png_depredict(data)
         return data if @options[:Predictor].to_i < 10
 

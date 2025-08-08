@@ -22,14 +22,18 @@ class PDF::Reader
       # PDF::Reader::Rectangle at some point
       PDF::Reader::Error.validate_not_nil(mediabox, "mediabox")
 
-      @mediabox = process_mediabox(mediabox)
-      @runs = runs
-      @mean_font_size   = mean(@runs.map(&:font_size)) || DEFAULT_FONT_SIZE
+      @mediabox = process_mediabox(mediabox) #: PDF::Reader::Rectangle
+      @runs = runs #: Array[PDF::Reader::TextRun]
+      @mean_font_size   = mean(@runs.map(&:font_size)) || DEFAULT_FONT_SIZE #: Numeric
       @mean_font_size = DEFAULT_FONT_SIZE if @mean_font_size == 0
-      @median_glyph_width = median(@runs.map(&:mean_character_width)) || 0
-      @x_offset = @runs.map(&:x).sort.first || 0
-      lowest_y = @runs.map(&:y).sort.first || 0
-      @y_offset = lowest_y > 0 ? 0 : lowest_y
+      @median_glyph_width = median(@runs.map(&:mean_character_width)) || 0 #: Numeric
+      @x_offset = @runs.map(&:x).sort.first || 0 #: Numeric
+      lowest_y = @runs.map(&:y).sort.first || 0 #: Numeric
+      @y_offset = lowest_y > 0 ? 0 : lowest_y #: Numeric
+      @row_count = nil #: Numeric | nil
+      @col_count = nil #: Numeric | nil
+      @row_multiplier = nil #: Numeric | nil
+      @col_multiplier = nil #: Numeric | nil
     end
 
     #: () -> String
@@ -50,10 +54,12 @@ class PDF::Reader
 
     private
 
+    #: () -> Numeric
     def page_width
       @mediabox.width
     end
 
+    #: () -> Numeric
     def page_height
       @mediabox.height
     end
@@ -64,6 +70,7 @@ class PDF::Reader
     #   interesting_rows([ "", "one", "two", "" ])
     #   => [ "one", "two" ]
     #
+    #: (untyped) -> untyped
     def interesting_rows(rows)
       line_lengths = rows.map { |l| l.strip.length }
 
@@ -75,22 +82,27 @@ class PDF::Reader
       rows[first_line_with_text, interesting_line_count].map
     end
 
+    #: () -> untyped
     def row_count
       @row_count ||= (page_height / @mean_font_size).floor
     end
 
+    #: () -> untyped
     def col_count
       @col_count ||= ((page_width  / @median_glyph_width) * 1.05).floor
     end
 
+    #: () -> untyped
     def row_multiplier
       @row_multiplier ||= page_height.to_f / row_count.to_f
     end
 
+    #: () -> untyped
     def col_multiplier
       @col_multiplier ||= page_width.to_f / col_count.to_f
     end
 
+    #: (untyped) -> untyped
     def mean(collection)
       if collection.size == 0
         0
@@ -99,6 +111,7 @@ class PDF::Reader
       end
     end
 
+    #: (untyped) -> untyped
     def median(collection)
       if collection.size == 0
         0
@@ -107,10 +120,12 @@ class PDF::Reader
       end
     end
 
+    #: (untyped, untyped, untyped) -> untyped
     def local_string_insert(haystack, needle, index)
       haystack[Range.new(index, index + needle.length - 1)] = String.new(needle)
     end
 
+    #: (untyped) -> untyped
     def process_mediabox(mediabox)
       if mediabox.is_a?(Array)
         msg = "Passing the mediabox to PageLayout as an Array is deprecated," +

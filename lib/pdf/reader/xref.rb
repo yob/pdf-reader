@@ -48,7 +48,7 @@ class PDF::Reader
   #
   class XRef
     include Enumerable
-    
+
     #: Hash[Symbol, untyped]
     attr_reader :trailer
 
@@ -68,6 +68,7 @@ class PDF::Reader
     ################################################################################
     # return the number of objects in this file. Objects with multiple generations are
     # only counter once.
+    #
     #: () -> untyped
     def size
       @xref.size
@@ -84,7 +85,9 @@ class PDF::Reader
     end
     ################################################################################
     # iterate over each object in the xref table
-    #: () { (untyped) -> untyped } -> untyped
+    #
+    # @override(allow_incompatible: true)
+    #: () { (PDF::Reader::Reference) -> untyped } -> void
     def each(&block)
       ids = @xref.keys.sort
       ids.each do |id|

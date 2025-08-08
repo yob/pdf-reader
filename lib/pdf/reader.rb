@@ -118,9 +118,11 @@ module PDF
     #
     #: (String | Tempfile | IO | StringIO, ?Hash[untyped, untyped]) -> void
     def initialize(input, opts = {})
-      @cache   = PDF::Reader::ObjectCache.new
+      @cache   = PDF::Reader::ObjectCache.new #: PDF::Reader::ObjectCache
       opts.merge!(:cache => @cache)
-      @objects = PDF::Reader::ObjectHash.new(input, opts)
+      @objects = PDF::Reader::ObjectHash.new(input, opts) #: PDF::Reader::ObjectHash
+      @page_count = nil #: Integer | nil
+      @root = nil #: Hash[Symbol, untyped] | nil
     end
 
     # Return a Hash with some basic information about the PDF file

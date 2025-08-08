@@ -46,7 +46,7 @@ class PDF::Reader
       "def" => :noop
     } #: Hash[String, Symbol]
 
-    #: () -> Hash[Integer, Array[Integer]]
+    #: Hash[Integer, Array[Integer]]
     attr_reader :map
 
     #: (String) -> void
@@ -71,7 +71,7 @@ class PDF::Reader
 
     private
 
-    #: (String, Symbol) -> void
+    #: (String, ?Symbol) -> void
     def process_data(data, initial_mode = :none)
       parser = build_parser(data)
       mode = initial_mode

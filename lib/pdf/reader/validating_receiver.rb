@@ -16,10 +16,12 @@ module PDF
     # Not all operators have type safety implemented yet, but we can expand the number over time.
     class ValidatingReceiver
 
+      #: (untyped) -> void
       def initialize(wrapped)
         @wrapped = wrapped
       end
 
+      #: (PDF::Reader::Page) -> void
       def page=(page)
         call_wrapped(:page=, page)
       end
@@ -27,10 +29,12 @@ module PDF
       #####################################################
       # Graphics State Operators
       #####################################################
+      #: (*untyped) -> void
       def save_graphics_state(*args)
         call_wrapped(:save_graphics_state)
       end
 
+      #: (*untyped) -> void
       def restore_graphics_state(*args)
         call_wrapped(:restore_graphics_state)
       end
@@ -39,6 +43,7 @@ module PDF
       # Matrix Operators
       #####################################################
 
+      #: (*untyped) -> void
       def concatenate_matrix(*args)
         a, b, c, d, e, f = *args
         call_wrapped(
@@ -56,10 +61,12 @@ module PDF
       # Text Object Operators
       #####################################################
 
+      #: (*untyped) -> void
       def begin_text_object(*args)
         call_wrapped(:begin_text_object)
       end
 
+      #: (*untyped) -> void
       def end_text_object(*args)
         call_wrapped(:end_text_object)
       end
@@ -67,6 +74,7 @@ module PDF
       #####################################################
       # Text State Operators
       #####################################################
+      #: (*untyped) -> void
       def set_character_spacing(*args)
         char_spacing, _ = *args
         call_wrapped(
@@ -75,6 +83,7 @@ module PDF
         )
       end
 
+      #: (*untyped) -> void
       def set_horizontal_text_scaling(*args)
         h_scaling, _ = *args
         call_wrapped(
@@ -83,6 +92,7 @@ module PDF
         )
       end
 
+      #: (*untyped) -> void
       def set_text_font_and_size(*args)
         label, size, _ = *args
         call_wrapped(
@@ -92,6 +102,7 @@ module PDF
         )
       end
 
+      #: (*untyped) -> void
       def set_text_leading(*args)
         leading, _ = *args
         call_wrapped(
@@ -100,6 +111,7 @@ module PDF
         )
       end
 
+      #: (*untyped) -> void
       def set_text_rendering_mode(*args)
         mode, _ = *args
         call_wrapped(
@@ -108,6 +120,7 @@ module PDF
         )
       end
 
+      #: (*untyped) -> void
       def set_text_rise(*args)
         rise, _ = *args
         call_wrapped(
@@ -116,6 +129,7 @@ module PDF
         )
       end
 
+      #: (*untyped) -> void
       def set_word_spacing(*args)
         word_spacing, _ = *args
         call_wrapped(
@@ -128,6 +142,7 @@ module PDF
       # Text Positioning Operators
       #####################################################
 
+      #: (*untyped) -> void
       def move_text_position(*args) # Td
         x, y, _ = *args
         call_wrapped(
@@ -137,6 +152,7 @@ module PDF
         )
       end
 
+      #: (*untyped) -> void
       def move_text_position_and_set_leading(*args) # TD
         x, y, _ = *args
         call_wrapped(
@@ -146,6 +162,7 @@ module PDF
         )
       end
 
+      #: (*untyped) -> void
       def set_text_matrix_and_text_line_matrix(*args) # Tm
         a, b, c, d, e, f = *args
         call_wrapped(
@@ -159,6 +176,7 @@ module PDF
         )
       end
 
+      #: (*untyped) -> void
       def move_to_start_of_next_line(*args) # T*
         call_wrapped(:move_to_start_of_next_line)
       end
@@ -166,6 +184,7 @@ module PDF
       #####################################################
       # Text Showing Operators
       #####################################################
+      #: (*untyped) -> void
       def show_text(*args) # Tj (AWAY)
         string, _ = *args
         call_wrapped(
@@ -174,6 +193,7 @@ module PDF
         )
       end
 
+      #: (*untyped) -> void
       def show_text_with_positioning(*args) # TJ [(A) 120 (WA) 20 (Y)]
         params, _ = *args
         unless params.is_a?(Array)
@@ -186,6 +206,7 @@ module PDF
         )
       end
 
+      #: (*untyped) -> void
       def move_to_next_line_and_show_text(*args) # '
         string, _ = *args
         call_wrapped(
@@ -194,6 +215,7 @@ module PDF
         )
       end
 
+      #: (*untyped) -> void
       def set_spacing_next_line_show_text(*args) # "
         aw, ac, string = *args
         call_wrapped(
@@ -208,6 +230,7 @@ module PDF
       # Form XObject Operators
       #####################################################
 
+      #: (*untyped) -> void
       def invoke_xobject(*args)
         label, _ = *args
 
@@ -221,16 +244,19 @@ module PDF
       # Inline Image Operators
       #####################################################
 
+      #: (*untyped) -> void
       def begin_inline_image(*args)
         call_wrapped(:begin_inline_image)
       end
 
+      #: (*untyped) -> void
       def begin_inline_image_data(*args)
         # We can't use call_wrapped() here because sorbet won't allow splat args with a dynamic
         # number of elements
         @wrapped.begin_inline_image_data(*args) if @wrapped.respond_to?(:begin_inline_image_data)
       end
 
+      #: (*untyped) -> void
       def end_inline_image(*args)
         data, _ = *args
 
@@ -244,16 +270,19 @@ module PDF
       # Final safety net for any operators that don't have type checking enabled yet
       #####################################################
 
+      #: (untyped) -> bool
       def respond_to?(meth)
         @wrapped.respond_to?(meth)
       end
 
+      #: (Symbol, *untyped) -> void
       def method_missing(methodname, *args)
         @wrapped.send(methodname, *args)
       end
 
       private
 
+      #: (untyped, *untyped) -> void
       def call_wrapped(methodname, *args)
         @wrapped.send(methodname, *args) if @wrapped.respond_to?(methodname)
       end

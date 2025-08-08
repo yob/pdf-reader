@@ -22,13 +22,12 @@ class PDF::Reader
   #
   class RegisterReceiver
 
-    #: () -> Array[Hash[Symbol, untyped]]
-    #: (Array[Hash[Symbol, untyped]]) -> void
+    #: Array[Hash[Symbol, untyped]]
     attr_accessor :callbacks
 
     #: () -> void
     def initialize
-      @callbacks = []
+      @callbacks = [] #: Array[Hash[Symbol, untyped]]
     end
 
     #: (untyped) -> bool
@@ -81,7 +80,10 @@ class PDF::Reader
       indexes.each do |idx|
         count = methods.size
         method_indexes.each do |midx|
-          count -= 1 if callbacks[idx+midx] && callbacks[idx+midx][:name] == methods[midx]
+          res = callbacks[idx+midx]
+          if res && res[:name] == methods[midx]
+            count -= 1
+          end
         end
         if count == 0
           return callbacks[idx, methods.size]
