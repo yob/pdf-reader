@@ -31,26 +31,34 @@ class PDF::Reader
   ################################################################################
   # An internal PDF::Reader class that represents an indirect reference to a PDF Object
   class Reference
+    #: Integer
     attr_reader :id
+
+    #: Integer
     attr_reader :gen
     ################################################################################
     # Create a new Reference to an object with the specified id and revision number
+    #: (Integer, Integer) -> void
     def initialize(id, gen)
-      @id, @gen = id, gen
+      @id = id
+      @gen = gen
     end
     ################################################################################
     # returns the current Reference object in an array with a single element
+    #: () -> Array[PDF::Reader::Reference]
     def to_a
       [self]
     end
     ################################################################################
     # returns the ID of this reference. Use with caution, ignores the generation id
+    #: () -> Integer
     def to_i
       self.id
     end
     ################################################################################
     # returns true if the provided object points to the same PDF Object as the
     # current object
+    #: (Object) -> bool
     def ==(obj)
       return false unless obj.kind_of?(PDF::Reader::Reference)
 
@@ -61,6 +69,7 @@ class PDF::Reader
     # returns a hash based on the PDF::Reference this object points to. Two
     # different Reference objects that point to the same PDF Object will
     # return an identical hash
+    #: () -> Integer
     def hash
       "#{self.id}:#{self.gen}".hash
     end

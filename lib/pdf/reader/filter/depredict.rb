@@ -8,6 +8,7 @@ class PDF::Reader
     # improve compression
     class Depredict
 
+      #: (?Hash[untyped, untyped]) -> void
       def initialize(options = {})
         @options = options
       end
@@ -16,6 +17,7 @@ class PDF::Reader
       # Streams can be preprocessed to improve compression. This reverses the
       # preprocessing
       #
+      #: (String) -> String
       def filter(data)
         predictor = @options[:Predictor].to_i
 
@@ -34,6 +36,7 @@ class PDF::Reader
       private
 
       ################################################################################
+      #: (untyped) -> String
       def tiff_depredict(data)
         data        = data.unpack("C*")
         unfiltered  = ''
@@ -60,6 +63,7 @@ class PDF::Reader
         unfiltered
       end
       ################################################################################
+      #: (untyped) -> String
       def png_depredict(data)
         return data if @options[:Predictor].to_i < 10
 

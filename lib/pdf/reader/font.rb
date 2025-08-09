@@ -34,10 +34,40 @@ class PDF::Reader
   # for extracting info. Mainly used for converting text to UTF-8.
   #
   class Font
-    attr_accessor :subtype, :encoding, :descendantfonts, :tounicode
-    attr_reader :widths, :first_char, :last_char, :basefont, :font_descriptor,
-                :cid_widths, :cid_default_width
+    #: Symbol?
+    attr_accessor :subtype
 
+    #: PDF::Reader::Encoding
+    attr_accessor :encoding
+
+    #: Array[PDF::Reader::Font]
+    attr_accessor :descendantfonts
+
+    #: PDF::Reader::CMap
+    attr_accessor :tounicode
+
+    #: Array[Integer]
+    attr_reader :widths
+
+    #: Integer?
+    attr_reader :first_char
+
+    #: Integer?
+    attr_reader :last_char
+
+    #: Symbol?
+    attr_reader :basefont
+
+    #: PDF::Reader::FontDescriptor?
+    attr_reader :font_descriptor
+
+    #: Array[Numeric]
+    attr_reader :cid_widths
+
+    #: Numeric
+    attr_reader :cid_default_width
+
+    #: (PDF::Reader::ObjectHash, Hash[Symbol, untyped]) -> void
     def initialize(ohash, obj)
       @ohash = ohash
       @tounicode = nil
@@ -51,6 +81,7 @@ class PDF::Reader
       @encoding ||= PDF::Reader::Encoding.new(:StandardEncoding)
     end
 
+    #: (untyped) -> String
     def to_utf8(params)
       if @tounicode
         to_utf8_via_cmap(params)
@@ -197,7 +228,7 @@ class PDF::Reader
       if obj[:FontDescriptor]
         # create a font descriptor object if we can, in other words, unless this is
         # a CID Font
-        fd = @ohash.deref_hash(obj[:FontDescriptor])
+        fd = @ohash.deref_hash(obj[:FontDescriptor]) || {}
         @font_descriptor = PDF::Reader::FontDescriptor.new(@ohash, fd)
       else
         @font_descriptor = nil
@@ -209,9 +240,9 @@ class PDF::Reader
       # A one-element array specifying the CIDFont dictionary that is the
       # descendant of this Type 0 font.
       if obj[:DescendantFonts]
-        descendants = @ohash.deref_array(obj[:DescendantFonts])
+        descendants = @ohash.deref_array(obj[:DescendantFonts]) || []
         @descendantfonts = descendants.map { |desc|
-          PDF::Reader::Font.new(@ohash, @ohash.deref_hash(desc))
+          PDF::Reader::Font.new(@ohash, @ohash.deref_hash(desc) || {})
         }
       else
         @descendantfonts = []

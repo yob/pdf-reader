@@ -7,16 +7,18 @@ class PDF::Reader
     # Calculates the width of a glyph in a Type One or Type Three
     class TypeOneOrThree
 
+      #: (PDF::Reader::Font) -> void
       def initialize(font)
         @font = font
 
         if fd = @font.font_descriptor
-          @missing_width = fd.missing_width
+          @missing_width = fd.missing_width #: Numeric
         else
           @missing_width = 0
         end
       end
 
+      #: (Integer?) -> Numeric
       def glyph_width(code_point)
         return 0 if code_point.nil? || code_point < 0
         return 0 if @font.widths.nil? || @font.widths.count == 0

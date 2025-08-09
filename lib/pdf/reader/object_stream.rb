@@ -8,11 +8,24 @@ class PDF::Reader
   # This is done for added compression and is described as an "Object Stream" in the spec.
   #
   class ObjectStream # :nodoc:
+    #: (PDF::Reader::Stream) -> void
     def initialize(stream)
-      @dict = stream.hash
-      @data = stream.unfiltered_data
+      @dict = stream.hash #: Hash[Symbol, untyped]
+      @data = stream.unfiltered_data #: String
+      @offsets = nil #: Hash[Integer, Integer] | nil
+      @buffer = nil #: PDF::Reader::Buffer | nil
     end
 
+    #: (Integer) -> (
+    #|   PDF::Reader::Reference |
+    #|   PDF::Reader::Token |
+    #|   Numeric |
+    #|   String |
+    #|   Symbol |
+    #|   Array[untyped] |
+    #|   Hash[untyped, untyped] |
+    #|   nil
+    #| )
     def [](objid)
       if offsets[objid].nil?
         nil
@@ -23,12 +36,14 @@ class PDF::Reader
       end
     end
 
+    #: () -> Integer
     def size
       TypeCheck.cast_to_int!(@dict[:N])
     end
 
     private
 
+    #: () -> Hash[Integer, Integer]
     def offsets
       @offsets ||= {}
       return @offsets if @offsets.keys.size > 0
@@ -39,10 +54,12 @@ class PDF::Reader
       @offsets
     end
 
+    #: () -> Integer
     def first
       TypeCheck.cast_to_int!(@dict[:First])
     end
 
+    #: () -> PDF::Reader::Buffer
     def buffer
       @buffer ||= PDF::Reader::Buffer.new(StringIO.new(@data))
     end

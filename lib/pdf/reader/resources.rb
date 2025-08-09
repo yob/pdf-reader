@@ -9,6 +9,7 @@ module PDF
     #
     class Resources
 
+      #: (PDF::Reader::ObjectHash, Hash[untyped, untyped]) -> void
       def initialize(objects, resources)
         @objects = objects
         @resources = resources
@@ -20,6 +21,7 @@ module PDF
       #       with no caching. You will want to cache the results instead
       #       of calling it over and over.
       #
+      #: () -> Hash[Symbol, untyped]
       def color_spaces
         @objects.deref_hash!(@resources[:ColorSpace]) || {}
       end
@@ -30,6 +32,7 @@ module PDF
       #       with no caching. You will want to cache the results instead
       #       of calling it over and over.
       #
+      #: () -> Hash[Symbol, untyped]
       def fonts
         @objects.deref_hash!(@resources[:Font]) || {}
       end
@@ -41,6 +44,7 @@ module PDF
       #       with no caching. You will want to cache the results instead
       #       of calling it over and over.
       #
+      #: () -> Hash[Symbol, untyped]
       def graphic_states
         @objects.deref_hash!(@resources[:ExtGState]) || {}
       end
@@ -51,6 +55,7 @@ module PDF
       #       with no caching. You will want to cache the results instead
       #       of calling it over and over.
       #
+      #: () -> Hash[Symbol, untyped]
       def patterns
         @objects.deref_hash!(@resources[:Pattern]) || {}
       end
@@ -61,6 +66,7 @@ module PDF
       #       with no caching. You will want to cache the results instead
       #       of calling it over and over.
       #
+      #: () -> Array[Symbol]
       def procedure_sets
         @objects.deref_array!(@resources[:ProcSet]) || []
       end
@@ -71,6 +77,7 @@ module PDF
       #       with no caching. You will want to cache the results instead
       #       of calling it over and over.
       #
+      #: () -> Hash[Symbol, untyped]
       def properties
         @objects.deref_hash!(@resources[:Properties]) || {}
       end
@@ -81,6 +88,7 @@ module PDF
       #       with no caching. You will want to cache the results instead
       #       of calling it over and over.
       #
+      #: () -> Hash[Symbol, untyped]
       def shadings
         @objects.deref_hash!(@resources[:Shading]) || {}
       end
@@ -91,6 +99,7 @@ module PDF
       #       with no caching. You will want to cache the results instead
       #       of calling it over and over.
       #
+      #: () -> Hash[Symbol, PDF::Reader::Stream]
       def xobjects
         dict = @objects.deref_hash!(@resources[:XObject]) || {}
         TypeCheck.cast_to_pdf_dict_with_stream_values!(dict)

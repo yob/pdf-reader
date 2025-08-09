@@ -9,6 +9,7 @@ class PDF::Reader
     # implementation of the Ascii85 filter
     class Ascii85
 
+      #: (?Hash[untyped, untyped]) -> void
       def initialize(options = {})
         @options = options
       end
@@ -17,6 +18,7 @@ class PDF::Reader
       # Decode the specified data using the Ascii85 algorithm. Relies on the AScii85
       # rubygem.
       #
+      #: (String) -> String
       def filter(data)
         data = "<~#{data}" unless data.to_s[0,2] == "<~"
         if defined?(::Ascii85Native)

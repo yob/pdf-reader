@@ -14,9 +14,13 @@ module PDF
     class PageTextReceiver
       extend Forwardable
 
-      SPACE = " "
+      SPACE = " " #: String
 
-      attr_reader :state, :options
+      #: untyped
+      attr_reader :state
+
+      #: untyped
+      attr_reader :options
 
       ########## BEGIN FORWARDERS ##########
       # Graphics State Operators

@@ -11,6 +11,7 @@ class PDF::Reader
   #
   class AesV2SecurityHandler
 
+    #: (String) -> void
     def initialize(key)
       @encrypt_key = key
     end
@@ -28,6 +29,7 @@ class PDF::Reader
     # buf - a string to decrypt
     # ref - a PDF::Reader::Reference for the object to decrypt
     #
+    #: (String, PDF::Reader::Reference) -> String
     def decrypt( buf, ref )
       if buf.bytesize % 16 > 0
         raise PDF::Reader::MalformedPDFError.new("Ciphertext not a multiple of 16")

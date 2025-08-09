@@ -48,6 +48,8 @@ class PDF::Reader
   #
   class XRef
     include Enumerable
+
+    #: Hash[Symbol, untyped]
     attr_reader :trailer
 
     ################################################################################
@@ -55,6 +57,7 @@ class PDF::Reader
     #
     # io - must be an IO object, generally either a file or a StringIO
     #
+    #: (IO | Tempfile | StringIO) -> void
     def initialize(io)
       @io = io
       @junk_offset = calc_junk_offset(io) || 0
@@ -65,6 +68,8 @@ class PDF::Reader
     ################################################################################
     # return the number of objects in this file. Objects with multiple generations are
     # only counter once.
+    #
+    #: () -> untyped
     def size
       @xref.size
     end
@@ -72,6 +77,7 @@ class PDF::Reader
     # returns the byte offset for the specified PDF object.
     #
     # ref - a PDF::Reader::Reference object containing an object ID and revision number
+    #: (untyped) -> untyped
     def [](ref)
       @xref.fetch(ref.id, {}).fetch(ref.gen)
     rescue
@@ -79,6 +85,9 @@ class PDF::Reader
     end
     ################################################################################
     # iterate over each object in the xref table
+    #
+    # @override(allow_incompatible: true)
+    #: () { (PDF::Reader::Reference) -> untyped } -> void
     def each(&block)
       ids = @xref.keys.sort
       ids.each do |id|

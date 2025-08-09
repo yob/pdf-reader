@@ -95,6 +95,7 @@ module PDF
   class Reader
 
     # lowlevel hash-like access to all objects in the underlying PDF
+    #: PDF::Reader::ObjectHash
     attr_reader :objects
 
     # creates a new document reader for the provided PDF.
@@ -115,14 +116,18 @@ module PDF
     # Using this method directly is supported, but it's more common to use
     # `PDF::Reader.open`
     #
+    #: (String | Tempfile | IO | StringIO, ?Hash[untyped, untyped]) -> void
     def initialize(input, opts = {})
-      @cache   = PDF::Reader::ObjectCache.new
+      @cache   = PDF::Reader::ObjectCache.new #: PDF::Reader::ObjectCache
       opts.merge!(:cache => @cache)
-      @objects = PDF::Reader::ObjectHash.new(input, opts)
+      @objects = PDF::Reader::ObjectHash.new(input, opts) #: PDF::Reader::ObjectHash
+      @page_count = nil #: Integer | nil
+      @root = nil #: Hash[Symbol, untyped] | nil
     end
 
     # Return a Hash with some basic information about the PDF file
     #
+    #: () -> Hash[untyped, untyped]?
     def info
       dict = @objects.deref_hash(@objects.trailer[:Info]) || {}
       doc_strings_to_utf8(dict)
@@ -131,6 +136,7 @@ module PDF
     # Return a String with extra XML metadata provided by the author of the PDF file. Not
     # always present.
     #
+    #: () -> String?
     def metadata
       stream = @objects.deref_stream(root[:Metadata])
       if stream.nil?
@@ -144,6 +150,7 @@ module PDF
 
     # To number of pages in this PDF
     #
+    #: () -> Integer
     def page_count
       pages = @objects.deref_hash(root[:Pages])
       unless pages.kind_of?(::Hash)
@@ -154,6 +161,7 @@ module PDF
 
     # The PDF version this file uses
     #
+    #: () -> Float
     def pdf_version
       @objects.pdf_version
     end
@@ -171,6 +179,7 @@ module PDF
     #     puts reader.pdf_version
     #   end
     #
+    #: (String | Tempfile | IO, ?Hash[untyped, untyped]) { (PDF::Reader) -> void } -> untyped
     def self.open(input, opts = {}, &block)
       yield PDF::Reader.new(input, opts)
     end
@@ -189,6 +198,7 @@ module PDF
     # See the docs for PDF::Reader::Page to read more about the
     # methods available on each page
     #
+    #: () -> Array[PDF::Reader::Page]
     def pages
       return [] if page_count <= 0
 
@@ -213,6 +223,7 @@ module PDF
     # See the docs for PDF::Reader::Page to read more about the
     # methods available on each page
     #
+    #: (Integer) -> PDF::Reader::Page
     def page(num)
       num = num.to_i
       if num < 1 || num > self.page_count
@@ -225,6 +236,7 @@ module PDF
 
     # recursively convert strings from outside a content stream into UTF-8
     #
+    #: (untyped) -> untyped
     def doc_strings_to_utf8(obj)
       case obj
       when ::Hash then
@@ -246,6 +258,7 @@ module PDF
       end
     end
 
+    #: (String) -> bool
     def has_utf16_bom?(str)
       first_bytes = str[0,2]
 
@@ -256,6 +269,7 @@ module PDF
 
     # TODO find a PDF I can use to spec this behaviour
     #
+    #: (String) -> String
     def pdfdoc_to_utf8(obj)
       obj.force_encoding("utf-8")
       obj
@@ -264,6 +278,7 @@ module PDF
     # one day we'll all run on a 1.9 compatible VM and I can just do this with
     # String#encode
     #
+    #: (String) -> String
     def utf16_to_utf8(obj)
       str = obj[2, obj.size].to_s
       str = str.unpack("n*").pack("U*")
@@ -271,6 +286,7 @@ module PDF
       str
     end
 
+    #: () -> Hash[Symbol, untyped]
     def root
       @root ||= @objects.deref_hash(@objects.trailer[:Root]) || {}
     end

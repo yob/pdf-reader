@@ -38,30 +38,31 @@ class PDF::Reader
   # the raw tokens into objects we can work with (strings, ints, arrays, etc)
   #
   class Buffer
-    TOKEN_WHITESPACE=[0x00, 0x09, 0x0A, 0x0C, 0x0D, 0x20]
-    TOKEN_DELIMITER=[0x25, 0x3C, 0x3E, 0x28, 0x5B, 0x7B, 0x29, 0x5D, 0x7D, 0x2F]
+    TOKEN_WHITESPACE=[0x00, 0x09, 0x0A, 0x0C, 0x0D, 0x20] #: Array[Integer]
+    TOKEN_DELIMITER=[0x25, 0x3C, 0x3E, 0x28, 0x5B, 0x7B, 0x29, 0x5D, 0x7D, 0x2F] #: Array[Integer]
 
     # some strings for comparissons. Declaring them here avoids creating new
     # strings that need GC over and over
-    LEFT_PAREN = "("
-    LESS_THAN = "<"
-    STREAM = "stream"
-    ID = "ID"
-    FWD_SLASH = "/"
-    NULL_BYTE = "\x00"
-    CR = "\r"
-    LF = "\n"
-    CRLF = "\r\n"
-    WHITE_SPACE = ["\n", "\r", ' ']
+    LEFT_PAREN = "(" #: String
+    LESS_THAN = "<" #: String
+    STREAM = "stream" #: String
+    ID = "ID" #: String
+    FWD_SLASH = "/" #: String
+    NULL_BYTE = "\x00" #: String
+    CR = "\r" #: String
+    LF = "\n" #: String
+    CRLF = "\r\n" #: String
+    WHITE_SPACE = ["\n", "\r", ' '] #: Array[String]
 
     # Quite a few PDFs have trailing junk.
     # This can be several k of nuls in some cases
     # Allow for this here
-    TRAILING_BYTECOUNT = 5000
+    TRAILING_BYTECOUNT = 5000 #: Integer
 
     # must match whole tokens
-    DIGITS_ONLY = %r{\A\d+\z}
+    DIGITS_ONLY = %r{\A\d+\z} #: Regexp
 
+    #: Integer
     attr_reader :pos
 
     # Creates a new buffer.
@@ -76,17 +77,19 @@ class PDF::Reader
     #   :content_stream - set to true if buffer will be tokenising a
     #                     content stream. Defaults to false
     #
+    #: ((StringIO | Tempfile | IO), ?Hash[Symbol, untyped]) -> void
     def initialize(io, opts = {})
       @io = io
-      @tokens = []
-      @in_content_stream = opts[:content_stream]
+      @tokens = [] #: Array[String | PDF::Reader::Reference]
+      @in_content_stream = opts[:content_stream] #: bool
 
       @io.seek(opts[:seek]) if opts[:seek]
-      @pos = @io.pos
+      @pos = @io.pos #: Integer
     end
 
     # return true if there are no more tokens left
     #
+    #: () -> bool
     def empty?
       prepare_tokens if @tokens.size < 3
 
@@ -105,6 +108,7 @@ class PDF::Reader
     #   Skipping a bare CR is not spec-compliant.
     #   This is because the data may start with LF.
     #   However we check for CRLF first, so the ambiguity is avoided.
+    #: (Integer, ?Hash[Symbol, untyped]) -> String?
     def read(bytes, opts = {})
       reset_pos
 
@@ -130,6 +134,7 @@ class PDF::Reader
     # return the next token from the source. Returns a string if a token
     # is found, nil if there are no tokens left.
     #
+    #: () -> (nil | String | PDF::Reader::Reference)
     def token
       reset_pos
       prepare_tokens if @tokens.size < 3
@@ -141,6 +146,7 @@ class PDF::Reader
 
     # return the byte offset where the first XRef table in th source can be found.
     #
+    #: () -> Integer
     def find_first_xref_offset
       check_size_is_non_zero
       @io.seek(-TRAILING_BYTECOUNT, IO::SEEK_END) rescue @io.seek(0)
@@ -164,6 +170,7 @@ class PDF::Reader
 
     private
 
+    #: () -> void
     def check_size_is_non_zero
       @io.seek(-1, IO::SEEK_END)
       @io.seek(0)
@@ -173,12 +180,14 @@ class PDF::Reader
 
     # Returns true if this buffer is parsing a content stream
     #
+    #: () -> bool
     def in_content_stream?
       @in_content_stream ? true : false
     end
 
     # Some bastard moved our IO stream cursor. Restore it.
     #
+    #: () -> void
     def reset_pos
       @io.seek(@pos) if @io.pos != @pos
     end
@@ -186,12 +195,14 @@ class PDF::Reader
     # save the current position of the source IO stream. If someone else (like another buffer)
     # moves the cursor, we can then restore it.
     #
+    #: () -> void
     def save_pos
       @pos = @io.pos
     end
 
     # attempt to prime the buffer with the next few tokens.
     #
+    #: () -> void
     def prepare_tokens
       10.times do
         case state
@@ -208,6 +219,7 @@ class PDF::Reader
     # tokenising behaves slightly differently based on the current context.
     # Determine the current context/state by examining the last token we found
     #
+    #: () -> Symbol
     def state
       case @tokens.last
       when LEFT_PAREN then :literal_string
@@ -236,6 +248,7 @@ class PDF::Reader
     # indirect reference, so test for that case first and avoid the relatively
     # expensive regexp checks if possible.
     #
+    #: () -> void
     def merge_indirect_reference
       return if @tokens.size < 3
       return if @tokens[2] != "R"
@@ -253,6 +266,7 @@ class PDF::Reader
     # If the EI follows white-space the space is dropped from the data
     # The EI must followed by white-space or end of buffer
     # This is to reduce the chance of accidentally matching an embedded EI
+    #: () -> void
     def prepare_inline_token
       idstart = @io.pos
       prevchr = ''
@@ -299,6 +313,7 @@ class PDF::Reader
     # if we're currently inside a hex string, read hex nibbles until
     # we find a closing >
     #
+    #: () -> void
     def prepare_hex_token
       str = "".dup
 
@@ -328,6 +343,7 @@ class PDF::Reader
     # processing to fix things like escaped new lines, but that's someone else's
     # problem.
     #
+    #: () -> void
     def prepare_literal_token
       str = "".dup
       count = 1
@@ -358,6 +374,7 @@ class PDF::Reader
     # What each byte means is complex, check out section "3.1.1 Character Set" of the 1.7 spec
     # to read up on it.
     #
+    #: () -> void
     def prepare_regular_token
       tok = "".dup
 
@@ -435,6 +452,7 @@ class PDF::Reader
     # peek at the next character in the io stream, leaving the stream position
     # untouched
     #
+    #: () -> (Integer | nil)
     def peek_byte
       byte = @io.getbyte
       @io.seek(-1, IO::SEEK_CUR) if byte

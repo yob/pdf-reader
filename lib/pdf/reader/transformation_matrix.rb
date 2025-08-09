@@ -14,16 +14,40 @@ class PDF::Reader
   # only 6 numbers. This is important to save CPU time, memory and GC pressure
   # caused by allocating too many unnecessary objects.
   class TransformationMatrix
-    attr_reader :a, :b, :c, :d, :e, :f
+    #: Numeric
+    attr_reader :a
 
+    #: Numeric
+    attr_reader :b
+
+    #: Numeric
+    attr_reader :c
+
+    #: Numeric
+    attr_reader :d
+
+    #: Numeric
+    attr_reader :e
+
+    #: Numeric
+    attr_reader :f
+
+    #: (Numeric, Numeric, Numeric, Numeric, Numeric, Numeric) -> void
     def initialize(a, b, c, d, e, f)
-      @a, @b, @c, @d, @e, @f = a, b, c, d, e, f
+      @a = a
+      @b = b
+      @c = c
+      @d = d
+      @e = e
+      @f = f
     end
 
+    #: () -> String
     def inspect
       "#{a}, #{b}, 0,\n#{c}, #{d}, #{0},\n#{e}, #{f}, 1"
     end
 
+    #: () -> [Numeric]
     def to_a
       [@a,@b,0,
        @c,@d,0,
@@ -51,6 +75,7 @@ class PDF::Reader
     #       displacement to speed up processing documents that use vertical
     #       writing systems
     #
+    #: (Numeric, Numeric, Numeric, Numeric, Numeric, Numeric) -> PDF::Reader::TransformationMatrix
     def multiply!(a,b,c, d,e,f)
       if a == 1 && b == 0 && c == 0 && d == 1 && e == 0 && f == 0
         # the identity matrix, no effect
@@ -90,6 +115,7 @@ class PDF::Reader
     #   [ 3 4 0 ] x [ 0  1 0 ]
     #   [ 5 6 1 ]   [ e2 0 1 ]
     #
+    #: (Numeric) -> void
     def horizontal_displacement_multiply!(e2)
       @e = @e + e2
     end
@@ -105,6 +131,7 @@ class PDF::Reader
     #   [ 0 1 0 ] x [ 3 4 0 ]
     #   [ 5 0 1 ]   [ 5 6 1 ]
     #
+    #: (Numeric, Numeric, Numeric, Numeric, Numeric, Numeric) -> void
     def horizontal_displacement_multiply_reversed!(a2,b2,c2,d2,e2,f2)
       newa = a2
       newb = b2
@@ -124,6 +151,7 @@ class PDF::Reader
     #   [ 3 4 0 ] x [ 0 5 0 ]
     #   [ 5 6 1 ]   [ 0 0 1 ]
     #
+    #: (Numeric, Numeric, Numeric, Numeric, Numeric, Numeric) -> void
     def xy_scaling_multiply!(a2,b2,c2,d2,e2,f2)
       newa = @a * a2
       newb = @b * d2
@@ -143,6 +171,7 @@ class PDF::Reader
     #   [ 0 5 0 ] x [ 3 4 0 ]
     #   [ 0 0 1 ]   [ 5 6 1 ]
     #
+    #: (Numeric, Numeric, Numeric, Numeric, Numeric, Numeric) -> void
     def xy_scaling_multiply_reversed!(a2,b2,c2,d2,e2,f2)
       newa = @a * a2
       newb = @a * b2
@@ -163,6 +192,7 @@ class PDF::Reader
     #   [ c d 0 ] x [ c d 0 ]
     #   [ e f 1 ]   [ e f 1 ]
     #
+    #: (Numeric, Numeric, Numeric, Numeric, Numeric, Numeric) -> void
     def regular_multiply!(a2,b2,c2,d2,e2,f2)
       newa = (@a * a2) + (@b * c2) + (e2 * 0)
       newb = (@a * b2) + (@b * d2) + (f2 * 0)
@@ -183,6 +213,7 @@ class PDF::Reader
     #   [ c d 0 ] x [ c d 0 ]
     #   [ e f 1 ]   [ e f 1 ]
     #
+    #: (Numeric, Numeric, Numeric, Numeric, Numeric, Numeric) -> void
     def faster_multiply!(a2,b2,c2, d2,e2,f2)
       newa = (@a * a2) + (@b * c2)
       newb = (@a * b2) + (@b * d2)

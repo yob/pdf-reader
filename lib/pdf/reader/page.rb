@@ -17,14 +17,17 @@ module PDF
       extend Forwardable
 
       # lowlevel hash-like access to all objects in the underlying PDF
+      #: PDF::Reader::ObjectHash
       attr_reader :objects
 
       # the raw PDF object that defines this page
+      #: Hash[Symbol, untyped]
       attr_reader :page_object
 
       # a Hash-like object for storing cached data. Generally this is scoped to
       # the current document and is used to avoid repeating expensive
       # operations
+      #: PDF::Reader::ObjectCache | Hash[untyped, untyped]
       attr_reader :cache
 
       def_delegators :resources, :color_spaces
@@ -41,10 +44,17 @@ module PDF
       # * objects - an ObjectHash instance that wraps a PDF file
       # * pagenum - an int specifying the page number to expose. 1 indexed.
       #
+      #: (PDF::Reader::ObjectHash, Integer, ?Hash[Symbol, untyped]) -> void
       def initialize(objects, pagenum, options = {})
-        @objects, @pagenum = objects, pagenum
-        @page_object = objects.deref_hash(objects.page_references[pagenum - 1]) || {}
-        @cache       = options[:cache] || {}
+        @objects = objects
+        @pagenum = pagenum
+        @page_object = objects.deref_hash(
+          objects.page_references[pagenum - 1]
+        ) || {} #: Hash[Symbol, untyped]
+        @cache       = options[:cache] || {} #: PDF::Reader::ObjectCache | Hash[untyped, untyped]
+        @attributes = nil #: Hash[Symbol, untyped] | nil
+        @root = nil #: Hash[Symbol, untyped] | nil
+        @resources = nil #: PDF::Reader::Resources | nil
 
         if @page_object.empty?
           raise InvalidPageError, "Invalid page: #{pagenum}"
@@ -53,12 +63,14 @@ module PDF
 
       # return the number of this page within the full document
       #
+      #: () -> Integer
       def number
         @pagenum
       end
 
       # return a friendly string representation of this page
       #
+      #: () -> String
       def inspect
         "<PDF::Reader::Page page: #{@pagenum}>"
       end
@@ -66,6 +78,7 @@ module PDF
       # Returns the attributes that accompany this page, including
       # attributes inherited from parents.
       #
+      #: () -> Hash[Symbol, untyped]
       def attributes
         @attributes ||= {}.tap { |hash|
           page_with_ancestors.reverse.each do |obj|
@@ -78,18 +91,21 @@ module PDF
         @attributes
       end
 
+      #: () -> Numeric
       def height
         rect = Rectangle.new(*attributes[:MediaBox])
         rect.apply_rotation(rotate) if rotate > 0
         rect.height
       end
 
+      #: () -> Numeric
       def width
         rect = Rectangle.new(*attributes[:MediaBox])
         rect.apply_rotation(rotate) if rotate > 0
         rect.width
       end
 
+      #: () -> Array[Numeric]
       def origin
         rect = Rectangle.new(*attributes[:MediaBox])
         rect.apply_rotation(rotate) if rotate > 0
@@ -99,6 +115,7 @@ module PDF
 
       # Convenience method to identify the page's orientation.
       #
+      #: () -> String
       def orientation
         if height > width
           "portrait"
@@ -110,6 +127,7 @@ module PDF
       # returns the plain text content of this page encoded as UTF-8. Any
       # characters that can't be translated will be returned as a ▯
       #
+      #: (?Hash[Symbol, untyped]) -> String
       def text(opts = {})
         receiver = PageTextReceiver.new
         walk(receiver)
@@ -122,6 +140,7 @@ module PDF
       end
       alias :to_s :text
 
+      #: (?Hash[Symbol, untyped]) -> Array[PDF::Reader::TextRun]
       def runs(opts = {})
         receiver = PageTextReceiver.new
         walk(receiver)
@@ -151,6 +170,7 @@ module PDF
       # a set of instructions and associated resources. Calling walk() executes
       # the program in the correct order and calls out to your implementation.
       #
+      #: (*untyped) -> untyped
       def walk(*receivers)
         receivers = receivers.map { |receiver|
           ValidatingReceiver.new(receiver)
@@ -162,6 +182,7 @@ module PDF
       # returns the raw content stream for this page. This is plumbing, nothing to
       # see here unless you're a PDF nerd like me.
       #
+      #: () -> String
       def raw_content
         contents = objects.deref_stream_or_array(@page_object[:Contents])
         [contents].flatten.compact.map { |obj|
@@ -173,6 +194,7 @@ module PDF
 
       # returns the angle to rotate the page clockwise. Always 0, 90, 180 or 270
       #
+      #: () -> Integer
       def rotate
         value = attributes[:Rotate].to_i
         case value
@@ -188,6 +210,7 @@ module PDF
       #
       # DEPRECATED. Recommend using Page#rectangles instead
       #
+      #: () -> Hash[Symbol, Array[Numeric]]
       def boxes
         # In ruby 2.4+ we could use Hash#transform_values
         Hash[rectangles.map{ |k,rect| [k,rect.to_a] } ]
@@ -196,6 +219,7 @@ module PDF
       # returns the "boxes" that define the page object.
       # values are defaulted according to section 7.7.3.3 of the PDF Spec 1.7
       #
+      #: () -> Hash[Symbol, PDF::Reader::Rectangle]
       def rectangles
         # attributes[:MediaBox] can never be nil, but I have no easy way to tell sorbet that atm
         mediabox = objects.deref_array_of_numbers(attributes[:MediaBox]) || []
@@ -233,6 +257,7 @@ module PDF
 
       private
 
+      #: () -> Hash[Symbol, untyped]
       def root
         @root ||= objects.deref_hash(@objects.trailer[:Root]) || {}
       end
@@ -240,10 +265,12 @@ module PDF
       # Returns the resources that accompany this page. Includes
       # resources inherited from parents.
       #
+      #: () -> PDF::Reader::Resources
       def resources
         @resources ||= Resources.new(@objects, @objects.deref_hash(attributes[:Resources]) || {})
       end
 
+      #: (Array[untyped], String) -> void
       def content_stream(receivers, instructions)
         buffer       = Buffer.new(StringIO.new(instructions), :content_stream => true)
         parser       = Parser.new(buffer, @objects)
@@ -265,6 +292,7 @@ module PDF
       #
       # The silly style here is because sorbet won't let me use splat arguments
       #
+      #: (Array[Object], Symbol, ?Array[untyped]) -> void
       def callback(receivers, name, params=[])
         receivers.each do |receiver|
           if receiver.respond_to?(name)
@@ -286,10 +314,12 @@ module PDF
         end
       end
 
+      #: () -> untyped
       def page_with_ancestors
         [ @page_object ] + ancestors
       end
 
+      #: (?untyped) -> untyped
       def ancestors(origin = @page_object[:Parent])
         if origin.nil?
           []
@@ -305,6 +335,7 @@ module PDF
       # select the elements from a Pages dictionary that can be inherited by
       # child Page dictionaries.
       #
+      #: (Hash[Symbol, untyped]) -> Hash[Symbol, untyped]
       def select_inheritable(obj)
         ::Hash[obj.select { |key, value|
           [:Resources, :MediaBox, :CropBox, :Rotate, :Parent].include?(key)

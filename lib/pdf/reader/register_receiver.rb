@@ -22,45 +22,55 @@ class PDF::Reader
   #
   class RegisterReceiver
 
+    #: Array[Hash[Symbol, untyped]]
     attr_accessor :callbacks
 
+    #: () -> void
     def initialize
-      @callbacks = []
+      @callbacks = [] #: Array[Hash[Symbol, untyped]]
     end
 
+    #: (untyped) -> bool
     def respond_to?(meth)
       true
     end
 
+    #: (Symbol, *untyped) -> void
     def method_missing(methodname, *args)
       callbacks << {:name => methodname.to_sym, :args => args}
     end
 
     # count the number of times a callback fired
+    #: (Symbol) -> Integer
     def count(methodname)
       callbacks.count { |cb| cb[:name] == methodname}
     end
 
     # return the details for every time the specified callback was fired
+    #: (Symbol) -> Array[Hash[Symbol, untyped]]
     def all(methodname)
       callbacks.select { |cb| cb[:name] == methodname }
     end
 
+    #: (Symbol) -> Array[Array[untyped]]
     def all_args(methodname)
       all(methodname).map { |cb| cb[:args] }
     end
 
     # return the details for the first time the specified callback was fired
+    #: (Symbol) -> Hash[Symbol, untyped]?
     def first_occurance_of(methodname)
       callbacks.find { |cb| cb[:name] == methodname }
     end
 
     # return the details for the final time the specified callback was fired
+    #: (Symbol) -> Hash[Symbol, untyped]?
     def final_occurance_of(methodname)
       all(methodname).last
     end
 
     # return the first occurance of a particular series of callbacks
+    #: (*Symbol) -> Array[Hash[Symbol, untyped]]?
     def series(*methods)
       return nil if methods.empty?
 
@@ -70,7 +80,10 @@ class PDF::Reader
       indexes.each do |idx|
         count = methods.size
         method_indexes.each do |midx|
-          count -= 1 if callbacks[idx+midx] && callbacks[idx+midx][:name] == methods[midx]
+          res = callbacks[idx+midx]
+          if res && res[:name] == methods[midx]
+            count -= 1
+          end
         end
         if count == 0
           return callbacks[idx, methods.size]

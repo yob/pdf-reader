@@ -8,6 +8,7 @@ class PDF::Reader
     # implementation of the AsciiHex stream filter
     class AsciiHex
 
+      #: (?Hash[untyped, untyped]) -> void
       def initialize(options = {})
         @options = options
       end
@@ -15,6 +16,7 @@ class PDF::Reader
       ################################################################################
       # Decode the specified data using the AsciiHex algorithm.
       #
+      #: (String) -> String
       def filter(data)
         data.chop! if data[-1,1] == ">"
         data = data[1,data.size] if data[0,1] == "<"

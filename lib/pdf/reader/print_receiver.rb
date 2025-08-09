@@ -8,16 +8,12 @@ class PDF::Reader
   #
   class PrintReceiver
 
-    attr_accessor :callbacks
-
-    def initialize
-      @callbacks = []
-    end
-
+    #: (untyped) -> bool
     def respond_to?(meth)
       true
     end
 
+    #: (Symbol, *untyped) -> void
     def method_missing(methodname, *args)
       puts "#{methodname} => #{args.inspect}"
     end

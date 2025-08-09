@@ -7,6 +7,7 @@ class PDF::Reader
   # able to decrypt the file.
   class SecurityHandlerFactory
 
+    #: (untyped, untyped, untyped) -> untyped
     def self.build(encrypt, doc_id, password)
       doc_id   ||= []
       password ||= ""
@@ -22,6 +23,7 @@ class PDF::Reader
       end
     end
 
+    #: (untyped, untyped, untyped) -> untyped
     def self.build_standard_handler(encrypt, doc_id, password)
       encmeta = !encrypt.has_key?(:EncryptMetadata) || encrypt[:EncryptMetadata].to_s == "true"
       key_builder = StandardKeyBuilder.new(
@@ -41,6 +43,7 @@ class PDF::Reader
       end
     end
 
+    #: (untyped, untyped, untyped) -> untyped
     def self.build_v5_handler(encrypt, doc_id, password)
       key_builder = KeyBuilderV5.new(
         owner_key: encrypt[:O],
@@ -52,6 +55,7 @@ class PDF::Reader
     end
 
     # This handler supports all encryption that follows upto PDF 1.5 spec (revision 4)
+    #: (untyped) -> untyped
     def self.standard?(encrypt)
       return false if encrypt.nil?
 
@@ -65,6 +69,7 @@ class PDF::Reader
     # This handler supports both
     # - AES-256 encryption defined in PDF 1.7 Extension Level 3 ('revision 5')
     # - AES-256 encryption defined in PDF 2.0 ('revision 6')
+    #: (untyped) -> untyped
     def self.standard_v5?(encrypt)
       return false if encrypt.nil?
 

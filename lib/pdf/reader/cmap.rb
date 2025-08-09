@@ -44,15 +44,18 @@ class PDF::Reader
       "begin" => :noop,
       "begincmap" => :noop,
       "def" => :noop
-    }
+    } #: Hash[String, Symbol]
 
+    #: Hash[Integer, Array[Integer]]
     attr_reader :map
 
+    #: (String) -> void
     def initialize(data)
       @map = {}
       process_data(data)
     end
 
+    #: () -> Integer
     def size
       @map.size
     end
@@ -61,12 +64,14 @@ class PDF::Reader
     #
     # Returns an array of Integers.
     #
+    #: (Integer) -> Array[Integer]
     def decode(c)
       @map.fetch(c, [])
     end
 
     private
 
+    #: (String, ?Symbol) -> void
     def process_data(data, initial_mode = :none)
       parser = build_parser(data)
       mode = initial_mode
@@ -96,6 +101,7 @@ class PDF::Reader
     end
 
 
+    #: (String) -> PDF::Reader::Parser
     def build_parser(instructions)
       buffer = Buffer.new(StringIO.new(instructions))
       Parser.new(buffer)
@@ -109,6 +115,7 @@ class PDF::Reader
     # However, some cmaps contain broken surrogate pairs and the ruby encoding support raises an
     # exception when we try converting broken UTF-16 to UTF-8
     #
+    #: (String) -> Array[Integer]
     def str_to_int(str)
       unpacked_string = if str.bytesize == 1 # UTF-8
         str.unpack("C*")
@@ -133,6 +140,7 @@ class PDF::Reader
       result
     end
 
+    #: (Array[String]) -> void
     def process_bfchar_instructions(instructions)
       instructions.each_slice(2) do |one, two|
         find    = str_to_int(one.to_s)
@@ -143,6 +151,7 @@ class PDF::Reader
       end
     end
 
+    #: (Array[Array[String] | String]) -> void
     def process_bfrange_instructions(instructions)
       instructions.each_slice(3) do |start, finish, to|
         if start.kind_of?(String) && finish.kind_of?(String) && to.kind_of?(String)
@@ -155,6 +164,7 @@ class PDF::Reader
       end
     end
 
+    #: (String, String, String) -> void
     def bfrange_type_one(start_code, end_code, dst)
       start_code = str_to_int(start_code).first
       end_code   = str_to_int(end_code).first
@@ -168,6 +178,7 @@ class PDF::Reader
       end
     end
 
+    #: (String, String, Array[String]) -> void
     def bfrange_type_two(start_code, end_code, dst)
       start_code = str_to_int(start_code).first
       end_code   = str_to_int(end_code).first

@@ -35,6 +35,7 @@ class PDF::Reader
   class Token < String # :nodoc:
     ################################################################################
     # Creates a new token with the specified value
+    #: (untyped) -> void
     def initialize(val)
       super
     end

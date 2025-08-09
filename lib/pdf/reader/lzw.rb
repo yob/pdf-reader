@@ -22,20 +22,24 @@ module PDF
       # Wraps an LZW encoded string
       class BitStream # :nodoc:
 
+        #: (String, Integer) -> void
         def initialize(data, bits_in_chunk)
           @data = data
           @data.force_encoding("BINARY")
+          @current_pos = 0 #: Integer
+          @bits_left_in_byte = 8 #: Integer
+          @bits_in_chunk = 0 #: Integer
           set_bits_in_chunk(bits_in_chunk)
-          @current_pos = 0
-          @bits_left_in_byte = 8
         end
 
+        #: (Integer) -> void
         def set_bits_in_chunk(bits_in_chunk)
           raise MalformedPDFError, "invalid LZW bits" if bits_in_chunk < 9 || bits_in_chunk > 12
 
           @bits_in_chunk = bits_in_chunk
         end
 
+        #: () -> Integer
         def read
           bits_left_in_chunk = @bits_in_chunk
           chunk = -1
@@ -59,19 +63,23 @@ module PDF
         end
       end
 
-      CODE_EOD = 257 #end of data
-      CODE_CLEAR_TABLE = 256 #clear table
+      CODE_EOD = 257 #: Integer #end of data
+      CODE_CLEAR_TABLE = 256 #: Integer #clear table
 
       # stores de pairs code => string
       class StringTable
+        #: Integer
         attr_reader :string_table_pos
 
+        #: () -> void
         def initialize
-          @data = Hash.new
-          @string_table_pos = 258 #initial code
+          @data = Hash.new #: Hash[Integer, String]
+          # The initial code
+          @string_table_pos = 258 #: Integer
         end
 
         #if code less than 258 return fixed string
+        #: (Integer) -> String?
         def [](key)
           if key > 257
             @data[key]
@@ -80,6 +88,7 @@ module PDF
           end
         end
 
+        #: (String) -> void
         def add(string)
           @data.store(@string_table_pos, string)
           @string_table_pos += 1
@@ -88,6 +97,7 @@ module PDF
 
       # Decompresses a LZW compressed string.
       #
+      #: (String) -> String
       def self.decode(data)
         stream = BitStream.new(data.to_s, 9) # size of codes between 9 and 12 bits
         string_table = StringTable.new
@@ -125,6 +135,7 @@ module PDF
         result
       end
 
+      #: (PDF::Reader::LZW::StringTable, Integer?, Integer?) -> String
       def self.create_new_string(string_table, some_code, other_code)
         raise MalformedPDFError, "invalid LZW data" if some_code.nil? || other_code.nil?
 

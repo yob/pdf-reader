@@ -46,28 +46,37 @@ class PDF::Reader
       less_than_or_equal
       include
       exclude
-    ]
+    ] #: Array[Symbol]
 
+    #: (Array[PDF::Reader::TextRun], Hash[Symbol, untyped]) -> Array[PDF::Reader::TextRun]
     def self.only(text_runs, filter_hash)
       new(text_runs, filter_hash).only
     end
 
+    #: (Array[PDF::Reader::TextRun], Hash[Symbol, untyped]) -> Array[PDF::Reader::TextRun]
     def self.exclude(text_runs, filter_hash)
       new(text_runs, filter_hash).exclude
     end
 
-    attr_reader :text_runs, :filter_hash
+    #: Array[PDF::Reader::TextRun]
+    attr_reader :text_runs
 
+    #: Hash[Symbol, untyped]
+    attr_reader :filter_hash
+
+    #: (Array[PDF::Reader::TextRun], Hash[Symbol, untyped]) -> void
     def initialize(text_runs, filter_hash)
       @text_runs = text_runs
       @filter_hash = filter_hash
     end
 
+    #: () -> Array[PDF::Reader::TextRun]
     def only
       return text_runs if filter_hash.empty?
       text_runs.select { |text_run| evaluate_filter(text_run) }
     end
 
+    #: () -> Array[PDF::Reader::TextRun]
     def exclude
       return text_runs if filter_hash.empty?
       text_runs.reject { |text_run| evaluate_filter(text_run) }
@@ -75,6 +84,7 @@ class PDF::Reader
 
     private
 
+    #: (PDF::Reader::TextRun) -> bool
     def evaluate_filter(text_run)
       if filter_hash[:or]
         evaluate_or_filters(text_run, filter_hash[:or])
@@ -85,24 +95,28 @@ class PDF::Reader
       end
     end
 
+    #: (PDF::Reader::TextRun, Array[Hash[Symbol, untyped]]) -> bool
     def evaluate_or_filters(text_run, conditions)
       conditions.any? do |condition|
         evaluate_filters(text_run, condition)
       end
     end
 
+    #: (PDF::Reader::TextRun, Array[Hash[Symbol, untyped]]) -> bool
     def evaluate_and_filters(text_run, conditions)
       conditions.all? do |condition|
         evaluate_filters(text_run, condition)
       end
     end
 
+    #: (PDF::Reader::TextRun, Hash[Symbol, untyped]) -> bool
     def evaluate_filters(text_run, filter_hash)
       filter_hash.all? do |attribute, conditions|
         evaluate_attribute_conditions(text_run, attribute, conditions)
       end
     end
 
+    #: (PDF::Reader::TextRun, Symbol, Hash[Symbol, untyped]) -> bool
     def evaluate_attribute_conditions(text_run, attribute, conditions)
       conditions.all? do |operator, value|
         unless VALID_OPERATORS.include?(operator)
@@ -113,6 +127,7 @@ class PDF::Reader
       end
     end
 
+    #: (untyped, Symbol, untyped) -> bool
     def apply_operator(attribute_value, operator, filter_value)
       case operator
       when :equal

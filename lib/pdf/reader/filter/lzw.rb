@@ -8,12 +8,14 @@ class PDF::Reader
     # implementation of the LZW stream filter
     class Lzw
 
+      #: (?Hash[untyped, untyped]) -> void
       def initialize(options = {})
         @options = options
       end
 
       ################################################################################
       # Decode the specified data with the LZW compression algorithm
+      #: (String) -> String
       def filter(data)
         data = PDF::Reader::LZW.decode(data)
         Depredict.new(@options).filter(data)

@@ -8,12 +8,14 @@ class PDF::Reader # :nodoc:
     # implementation of the run length stream filter
     class RunLength
 
+      #: (?Hash[untyped, untyped]) -> void
       def initialize(options = {})
         @options = options
       end
 
       ################################################################################
       # Decode the specified data with the RunLengthDecode compression algorithm
+      #: (String) -> String
       def filter(data)
         pos = 0
         out = "".dup
