@@ -36,17 +36,35 @@ class PDF::Reader
       elsif buf.bytesize == 16
         return ""
       else
-        objKey = @encrypt_key.dup
-        (0..2).each { |e| objKey << (ref.id >> e*8 & 0xFF ) }
-        (0..1).each { |e| objKey << (ref.gen >> e*8 & 0xFF ) }
-        objKey << 'sAlT'  # Algorithm 1, b)
-        length = objKey.length < 16 ? objKey.length : 16
-        cipher = OpenSSL::Cipher.new("AES-#{length << 3}-CBC")
-        cipher.decrypt
-        cipher.key = Digest::MD5.digest(objKey)[0,length]
-        cipher.iv = buf[0..15]
-        cipher.update(buf[16..-1]) + cipher.final
+        begin
+          internal_decrypt(buf, ref)
+        rescue OpenSSL::Cipher::CipherError
+          # If we failed to decrypt it might be a padding error, so try again
+          # and assume no padding in the ciphertext. This will "suceed" but might
+          # return garbage if the key is incorrect but that's OK - well before this
+          # class is used we have confirmed the user provided key is correct so if
+          # this works without error we can be confident the returned plaintext is
+          #  correct
+          internal_decrypt(buf, ref, false)
+        end
       end
+    end
+
+    private
+
+    #: (String, PDF::Reader::Reference, ?bool) -> String
+    def internal_decrypt(buf, ref, padding = true)
+      objKey = @encrypt_key.dup
+      (0..2).each { |e| objKey << (ref.id >> e*8 & 0xFF ) }
+      (0..1).each { |e| objKey << (ref.gen >> e*8 & 0xFF ) }
+      objKey << 'sAlT'  # Algorithm 1, b)
+      length = objKey.length < 16 ? objKey.length : 16
+      cipher = OpenSSL::Cipher.new("AES-#{length << 3}-CBC")
+      cipher.decrypt
+      cipher.padding = 0 unless padding
+      cipher.key = Digest::MD5.digest(objKey)[0,length]
+      cipher.iv = buf[0..15]
+      cipher.update(buf[16..-1]) + cipher.final
     end
 
   end
