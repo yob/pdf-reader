@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.summary = "A library for accessing the content of PDF files"
   spec.description = "The PDF::Reader library implements a PDF parser conforming as much as possible to the PDF specification from Adobe"
   spec.license = "MIT"
-  spec.files =  Dir.glob("{examples,lib,rbi}/**/**/*") + ["Rakefile"]
+  spec.files =  Dir.glob("{examples,lib}/**/**/*") + ["Rakefile", "rbi/pdf-reader.rbi"]
   spec.executables << "pdf_object"
   spec.executables << "pdf_text"
   spec.executables << "pdf_callbacks"
