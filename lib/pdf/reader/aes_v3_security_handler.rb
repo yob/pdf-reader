@@ -14,6 +14,11 @@ class PDF::Reader
 
     #: (String) -> void
     def initialize(key)
+      if key.bytesize != 32
+        raise PDF::Reader::MalformedPDFError.new(
+          "AES-256 key must be exactly 32 bytes, got #{key.bytesize}"
+        )
+      end
       @encrypt_key = key
       @cipher = "AES-256-CBC" #: String
     end
