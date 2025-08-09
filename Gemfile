@@ -7,7 +7,6 @@ gemspec
 gem "sorbet", "0.5.12381"
 gem "tapioca", "0.17.7", require: false
 gem "spoom"
-gem 'parlour'
 
 # Required by yard. Part of stdlib in older rubies, but on modern rubies it's a gem
 gem "webrick"
