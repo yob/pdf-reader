@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 ################################################################################
@@ -51,7 +51,7 @@ class PDF::Reader
 
     #: (String) -> void
     def initialize(data)
-      @map = {}
+      @map = {} #: Hash[Integer, Array[Integer]]
       process_data(data)
     end
 

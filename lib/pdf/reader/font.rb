@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 ################################################################################
@@ -29,6 +29,14 @@
 
 require 'pdf/reader/width_calculator'
 
+#: type widthCalculator = (
+#|   PDF::Reader::WidthCalculator::TypeZero |
+#|   PDF::Reader::WidthCalculator::BuiltIn |
+#|   PDF::Reader::WidthCalculator::TypeOneOrThree |
+#|   PDF::Reader::WidthCalculator::TrueType |
+#|   PDF::Reader::WidthCalculator::Composite
+#| )
+
 class PDF::Reader
   # Represents a single font PDF object and provides some useful methods
   # for extracting info. Mainly used for converting text to UTF-8.
@@ -43,10 +51,10 @@ class PDF::Reader
     #: Array[PDF::Reader::Font]
     attr_accessor :descendantfonts
 
-    #: PDF::Reader::CMap
+    #: PDF::Reader::CMap | nil
     attr_accessor :tounicode
 
-    #: Array[Integer]
+    #: Array[Numeric]
     attr_reader :widths
 
     #: Integer?
@@ -70,21 +78,30 @@ class PDF::Reader
     #: (PDF::Reader::ObjectHash, Hash[Symbol, untyped]) -> void
     def initialize(ohash, obj)
       @ohash = ohash
-      @tounicode = nil
+      @tounicode = nil #: PDF::Reader::CMap | nil
+      @descendantfonts = [] #: Array[PDF::Reader::Font]
+      @widths = [] #: Array[Numeric]
+      @first_char = nil #: Integer?
+      @last_char = nil #: Integer?
+      @basefont = nil #: Symbol?
+      @font_descriptor = nil #: PDF::Reader::FontDescriptor?
+      @cid_widths = [] #: Array[Numeric]
+      @cid_default_width = 0 #: Numeric
+      @encoding = PDF::Reader::Encoding.new(:StandardEncoding) #: PDF::Reader::Encoding
+      @cached_widths = {} #: Hash[Integer, Numeric]
+      @font_matrix = nil #: Array[Numeric] | nil
 
       extract_base_info(obj)
       extract_type3_info(obj)
       extract_descriptor(obj)
       extract_descendants(obj)
-      @width_calc = build_width_calculator
-
-      @encoding ||= PDF::Reader::Encoding.new(:StandardEncoding)
+      @width_calc = build_width_calculator #: widthCalculator
     end
 
     #: (Integer | String | Array[Integer | String]) -> String
     def to_utf8(params)
       if @tounicode
-        to_utf8_via_cmap(params)
+        to_utf8_via_cmap(params, @tounicode)
       else
         to_utf8_via_encoding(params)
       end
@@ -100,10 +117,10 @@ class PDF::Reader
     #: (Integer | String) -> Numeric
     def glyph_width(code_point)
       if code_point.is_a?(String)
-        code_point = code_point.unpack(encoding.unpack).first
+        code_point = unpack_string_to_array_of_ints(code_point, encoding.unpack).first
+        raise MalformedPDFError, "code point missing" if code_point.nil?
       end
 
-      @cached_widths ||= {}
       @cached_widths[code_point] ||= @width_calc.glyph_width(code_point)
     end
 
@@ -132,9 +149,9 @@ class PDF::Reader
       return x, y if @font_matrix.nil?
 
       matrix = TransformationMatrix.new(
-        @font_matrix[0], @font_matrix[1],
-        @font_matrix[2], @font_matrix[3],
-        @font_matrix[4], @font_matrix[5],
+        @font_matrix[0] || 0, @font_matrix[1] || 0,
+        @font_matrix[2] || 0, @font_matrix[3] || 0,
+        @font_matrix[4] || 0, @font_matrix[5] || 0,
       )
 
       if x == 0 && y == 0
@@ -147,7 +164,7 @@ class PDF::Reader
       end
     end
 
-    #: (Symbol | String) -> PDF::Reader::Encoding
+    #: (Symbol | String | nil) -> PDF::Reader::Encoding
     def default_encoding(font_name)
       case font_name.to_s
       when "Symbol" then
@@ -159,13 +176,7 @@ class PDF::Reader
       end
     end
 
-    #: () -> (
-    #|   PDF::Reader::WidthCalculator::TypeZero |
-    #|   PDF::Reader::WidthCalculator::BuiltIn |
-    #|   PDF::Reader::WidthCalculator::TypeOneOrThree |
-    #|   PDF::Reader::WidthCalculator::TrueType |
-    #|   PDF::Reader::WidthCalculator::Composite
-    #| )
+    #: () -> widthCalculator
     def build_width_calculator
       if @subtype == :Type0
         PDF::Reader::WidthCalculator::TypeZero.new(self)
@@ -266,19 +277,19 @@ class PDF::Reader
       end
     end
 
-    #: (Integer | String | Array[Integer | String]) -> String
-    def to_utf8_via_cmap(params)
+    #: (Integer | String | Array[Integer | String], PDF::Reader::CMap) -> String
+    def to_utf8_via_cmap(params, cmap)
       case params
       when Integer
         [
-          @tounicode.decode(params) || PDF::Reader::Encoding::UNKNOWN_CHAR
+          cmap.decode(params)
         ].flatten.pack("U*")
       when String
-        params.unpack(encoding.unpack).map { |c|
-          @tounicode.decode(c) || PDF::Reader::Encoding::UNKNOWN_CHAR
+        unpack_string_to_array_of_ints(params, encoding.unpack).map { |code_point|
+          cmap.decode(code_point)
         }.flatten.pack("U*")
       when Array
-        params.collect { |param| to_utf8_via_cmap(param) }.join("")
+        params.collect { |param| to_utf8_via_cmap(param, cmap) }.join("")
       end
     end
 
@@ -298,5 +309,11 @@ class PDF::Reader
       end
     end
 
+    #: (String, String) -> Array[Integer]
+    def unpack_string_to_array_of_ints(unpack_me, unpack_arg)
+      unpack_me.unpack(unpack_arg).map { |code_point|
+        code_point = TypeCheck.cast_to_int!(code_point)
+      }
+    end
   end
 end
