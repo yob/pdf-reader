@@ -4,6 +4,14 @@
 
 require 'tempfile'
 
+#: type securityHandler = (
+#|   PDF::Reader::NullSecurityHandler |
+#|   PDF::Reader::AesV2SecurityHandler |
+#|   PDF::Reader::Rc4SecurityHandler |
+#|   PDF::Reader::AesV3SecurityHandler |
+#|   PDF::Reader::UnimplementedSecurityHandler
+#| )
+
 class PDF::Reader
   # Provides low level access to the objects in a PDF file via a hash-like
   # object.
@@ -41,12 +49,7 @@ class PDF::Reader
     #: Float
     attr_reader :pdf_version
 
-    #: (
-    #|   PDF::Reader::NullSecurityHandler |
-    #|   PDF::Reader::AesV2SecurityHandler |
-    #|   PDF::Reader::AesV3SecurityHandler |
-    #|   PDF::Reader::Rc4SecurityHandler
-    #| )
+    #: securityHandler
     attr_reader :sec_handler
 
     # Creates a new ObjectHash object. Input can be a string with a valid filename
@@ -58,17 +61,19 @@ class PDF::Reader
     #
     #: ((IO | Tempfile | StringIO | String), ?Hash[Symbol, untyped]) -> void
     def initialize(input, opts = {})
-      @io          = extract_io_from(input)
-      @xref        = PDF::Reader::XRef.new(@io)
-      @pdf_version = read_version
-      @trailer     = @xref.trailer
-      @cache       = opts[:cache] || PDF::Reader::ObjectCache.new
-      @sec_handler = NullSecurityHandler.new
+      @io          = extract_io_from(input) #: IO | Tempfile | StringIO
+      @xref        = PDF::Reader::XRef.new(@io) #: PDF::Reader::XRef[PDF::Reader::Reference]
+      @pdf_version = read_version #: Float
+      @trailer     = @xref.trailer #: Hash[Symbol, untyped]
+      @cache       = opts[:cache] || PDF::Reader::ObjectCache.new #: PDF::Reader::ObjectCache
+      @sec_handler = NullSecurityHandler.new #: securityHandler
       @sec_handler = SecurityHandlerFactory.build(
         deref(trailer[:Encrypt]),
         deref(trailer[:ID]),
         opts[:password]
       )
+      @page_references = nil #: Array[PDF::Reader::Reference | Hash[Symbol, untyped]]?
+      @object_streams = nil #: Hash[PDF::Reader::Reference, PDF::Reader::ObjectStream]?
     end
 
     # returns the type of object a ref points to
@@ -510,6 +515,7 @@ class PDF::Reader
     #
     # Useful for apps that want to extract data from specific pages.
     #
+    #: () -> Array[PDF::Reader::Reference | Hash[Symbol, untyped]]
     def page_references
       root  = fetch(trailer[:Root])
       @page_references ||= begin
@@ -518,10 +524,12 @@ class PDF::Reader
                            end
     end
 
+    #: () -> bool
     def encrypted?
       trailer.has_key?(:Encrypt)
     end
 
+    #: () -> bool
     def sec_handler?
       !!sec_handler
     end
@@ -531,6 +539,17 @@ class PDF::Reader
     # parse a traditional object from the PDF, starting from the byte offset indicated
     # in the xref table
     #
+    #: (PDF::Reader::Reference) -> (
+    #|   PDF::Reader::Reference |
+    #|   PDF::Reader::Token |
+    #|   PDF::Reader::Stream |
+    #|   Numeric |
+    #|   String |
+    #|   Symbol |
+    #|   Array[untyped] |
+    #|   Hash[untyped, untyped] |
+    #|   nil
+    #| )
     def fetch_object(key)
       if xref[key].is_a?(Integer)
         buf = new_buffer(xref[key])
@@ -540,13 +559,25 @@ class PDF::Reader
 
     # parse a object that's embedded in an object stream in the PDF
     #
+    #: (PDF::Reader::Reference) -> (
+    #|   PDF::Reader::Reference |
+    #|   PDF::Reader::Token |
+    #|   PDF::Reader::Stream |
+    #|   Numeric |
+    #|   String |
+    #|   Symbol |
+    #|   Array[untyped] |
+    #|   Hash[untyped, untyped] |
+    #|   nil
+    #| )
     def fetch_object_stream(key)
       if xref[key].is_a?(PDF::Reader::Reference)
         container_key = xref[key]
         stream = deref_stream(container_key)
         raise MalformedPDFError, "Object Stream cannot be nil" if stream.nil?
-        object_streams[container_key] ||= PDF::Reader::ObjectStream.new(stream)
-        object_streams[container_key][key.id]
+        if objstream = object_streams[container_key] ||= PDF::Reader::ObjectStream.new(stream)
+          objstream[key.id]
+        end
       end
     end
 
@@ -554,6 +585,17 @@ class PDF::Reader
     # isn't publicly available. It's used to avoid endless loops in the recursion, and
     # doesn't need to be part of the public API.
     #
+    #: (untyped, Hash[Integer, untyped]) -> (
+    #|   PDF::Reader::Reference |
+    #|   PDF::Reader::Token |
+    #|   PDF::Reader::Stream |
+    #|   Numeric |
+    #|   String |
+    #|   Symbol |
+    #|   Array[untyped] |
+    #|   Hash[untyped, untyped] |
+    #|   nil
+    #| )
     def deref_internal!(key, seen)
       seen_key = key.is_a?(PDF::Reader::Reference) ? key : key.object_id
 
@@ -583,6 +625,17 @@ class PDF::Reader
       end
     end
 
+    #: (PDF::Reader::Reference, untyped) -> (
+    #|   PDF::Reader::Reference |
+    #|   PDF::Reader::Token |
+    #|   PDF::Reader::Stream |
+    #|   Numeric |
+    #|   String |
+    #|   Symbol |
+    #|   Array[untyped] |
+    #|   Hash[untyped, untyped] |
+    #|   nil
+    #| )
     def decrypt(ref, obj)
       case obj
       when PDF::Reader::Stream then
@@ -604,14 +657,17 @@ class PDF::Reader
       end
     end
 
+    #: (?Integer) -> PDF::Reader::Buffer
     def new_buffer(offset = 0)
       PDF::Reader::Buffer.new(@io, :seek => offset)
     end
 
+    #: () -> PDF::Reader::XRef[PDF::Reader::Reference]
     def xref
       @xref
     end
 
+    #: () -> Hash[PDF::Reader::Reference, PDF::Reader::ObjectStream]
     def object_streams
       @object_streams ||= {}
     end
@@ -619,6 +675,9 @@ class PDF::Reader
     # returns an array of object references for all pages in this object store. The ordering of
     # the Array is significant and matches the page ordering of the document
     #
+    #: (PDF::Reader::Reference | Hash[Symbol, untyped]) -> (
+    #|   Array[PDF::Reader::Reference | Hash[Symbol, untyped] ]
+    #| )
     def get_page_objects(obj)
       derefed_obj = deref_hash(obj)
 
@@ -636,6 +695,7 @@ class PDF::Reader
       end
     end
 
+    #: () -> Float
     def read_version
       @io.seek(0)
       _m, version = *@io.read(10).to_s.match(/PDF-(\d.\d)/)
@@ -643,6 +703,7 @@ class PDF::Reader
       version.to_f
     end
 
+    #: (IO | Tempfile | StringIO | String) -> (IO | Tempfile | StringIO)
     def extract_io_from(input)
       if input.is_a?(IO) || input.is_a?(StringIO) || input.is_a?(Tempfile)
         input
@@ -653,6 +714,7 @@ class PDF::Reader
       end
     end
 
+    #: (String) -> (String)
     def read_as_binary(input)
       if File.respond_to?(:binread)
         File.binread(input.to_s)
