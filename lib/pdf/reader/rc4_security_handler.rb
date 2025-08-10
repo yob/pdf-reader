@@ -26,7 +26,7 @@ class PDF::Reader
     # buf - a string to decrypt
     # ref - a PDF::Reader::Reference for the object to decrypt
     #
-    #: (untyped, untyped) -> untyped
+    #: (String, PDF::Reader::Reference) -> String
     def decrypt( buf, ref )
       objKey = @encrypt_key.dup
       (0..2).each { |e| objKey << (ref.id >> e*8 & 0xFF ) }

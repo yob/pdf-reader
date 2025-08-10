@@ -81,7 +81,7 @@ class PDF::Reader
       @encoding ||= PDF::Reader::Encoding.new(:StandardEncoding)
     end
 
-    #: (untyped) -> String
+    #: (Integer | String | Array[Integer | String]) -> String
     def to_utf8(params)
       if @tounicode
         to_utf8_via_cmap(params)
@@ -90,12 +90,14 @@ class PDF::Reader
       end
     end
 
+    #: (String) -> (Array[Integer | Float | String | nil] | nil)
     def unpack(data)
       data.unpack(encoding.unpack)
     end
 
     # looks up the specified codepoint and returns a value that is in (pdf)
     # glyph space, which is 1000 glyph units = 1 text space unit
+    #: (Integer | String) -> Numeric
     def glyph_width(code_point)
       if code_point.is_a?(String)
         code_point = code_point.unpack(encoding.unpack).first
@@ -109,6 +111,7 @@ class PDF::Reader
     #
     # However, Type3 fonts provide their own FontMatrix that's used for the transformation.
     #
+    #: (Integer | String) -> Numeric
     def glyph_width_in_text_space(code_point)
       glyph_width_in_glyph_space = glyph_width(code_point)
 
@@ -124,6 +127,7 @@ class PDF::Reader
     private
 
     # Only valid for Type3 fonts
+    #: (Numeric, Numeric) -> [Numeric, Numeric]
     def font_matrix_transform(x, y)
       return x, y if @font_matrix.nil?
 
@@ -143,6 +147,7 @@ class PDF::Reader
       end
     end
 
+    #: (Symbol | String) -> PDF::Reader::Encoding
     def default_encoding(font_name)
       case font_name.to_s
       when "Symbol" then
@@ -154,6 +159,13 @@ class PDF::Reader
       end
     end
 
+    #: () -> (
+    #|   PDF::Reader::WidthCalculator::TypeZero |
+    #|   PDF::Reader::WidthCalculator::BuiltIn |
+    #|   PDF::Reader::WidthCalculator::TypeOneOrThree |
+    #|   PDF::Reader::WidthCalculator::TrueType |
+    #|   PDF::Reader::WidthCalculator::Composite
+    #| )
     def build_width_calculator
       if @subtype == :Type0
         PDF::Reader::WidthCalculator::TypeZero.new(self)
@@ -180,6 +192,7 @@ class PDF::Reader
       end
     end
 
+    #: (Hash[Symbol, untyped]) -> PDF::Reader::Encoding
     def build_encoding(obj)
       if obj[:Encoding].is_a?(Symbol)
         # one of the standard encodings, referenced by name
@@ -194,6 +207,7 @@ class PDF::Reader
       end
     end
 
+    #: (Hash[Symbol, untyped]) -> void
     def extract_base_info(obj)
       @subtype  = @ohash.deref_name(obj[:Subtype])
       @basefont = @ohash.deref_name(obj[:BaseFont])
@@ -216,6 +230,7 @@ class PDF::Reader
       end
     end
 
+    #: (Hash[Symbol, untyped]) -> void
     def extract_type3_info(obj)
       if @subtype == :Type3
         @font_matrix = @ohash.deref_array_of_numbers(obj[:FontMatrix]) || [
@@ -224,6 +239,7 @@ class PDF::Reader
       end
     end
 
+    #: (Hash[Symbol, untyped]) -> void
     def extract_descriptor(obj)
       if obj[:FontDescriptor]
         # create a font descriptor object if we can, in other words, unless this is
@@ -235,6 +251,7 @@ class PDF::Reader
       end
     end
 
+    #: (Hash[Symbol, untyped]) -> void
     def extract_descendants(obj)
       # per PDF 32000-1:2008 pp. 280 :DescendentFonts is:
       # A one-element array specifying the CIDFont dictionary that is the
@@ -249,6 +266,7 @@ class PDF::Reader
       end
     end
 
+    #: (Integer | String | Array[Integer | String]) -> String
     def to_utf8_via_cmap(params)
       case params
       when Integer
@@ -264,6 +282,7 @@ class PDF::Reader
       end
     end
 
+    #: (Integer | String | Array[Integer | String]) -> String
     def to_utf8_via_encoding(params)
       if encoding.kind_of?(String)
         raise UnsupportedFeatureError, "font encoding '#{encoding}' currently unsupported"

@@ -38,7 +38,7 @@ class PDF::Reader
     #: String
     attr_reader :unpack
 
-    #: (untyped) -> void
+    #: (Hash[Symbol, untyped] | Symbol | nil) -> void
     def initialize(enc)
       # maps from character codes to Unicode codepoints
       @mapping  = default_mapping #: Hash[Integer, Integer]
@@ -192,7 +192,7 @@ class PDF::Reader
       ret
     end
 
-    #: (untyped) -> String
+    #: (Symbol) -> String
     def get_unpack(enc)
       case enc
       when :"Identity-H", :"Identity-V", :UTF16Encoding
@@ -202,7 +202,7 @@ class PDF::Reader
       end
     end
 
-    #: (untyped) -> String?
+    #: (Symbol) -> String?
     def get_mapping_file(enc)
       case enc
       when :"Identity-H", :"Identity-V", :UTF16Encoding then
