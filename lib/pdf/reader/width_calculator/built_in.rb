@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 require 'afm'
@@ -12,6 +12,7 @@ class PDF::Reader
     # the reader is expected to have it's own copy of the font metrics.
     # see Section 9.6.2.2, PDF 32000-1:2008, pp 256
     class BuiltIn
+      @@all_metrics = nil #: PDF::Reader::SynchronizedCache | nil
 
       BUILTINS = [
         :Courier, :"Courier-Bold", :"Courier-BoldOblique", :"Courier-Oblique",
@@ -25,6 +26,7 @@ class PDF::Reader
       def initialize(font)
         @font = font
         @@all_metrics ||= PDF::Reader::SynchronizedCache.new
+        @metrics = nil #: AFM::Font?
 
         basefont = extract_basefont(font.basefont)
         metrics_path = File.join(File.dirname(__FILE__), "..","afm","#{basefont}.afm")
@@ -38,7 +40,8 @@ class PDF::Reader
 
       #: (Integer?) -> Numeric
       def glyph_width(code_point)
-        return 0 if code_point.nil? || code_point < 0
+        return 0 if code_point.nil? || code_point < 0 || @metrics.nil?
+
 
         names = @font.encoding.int_to_name(code_point)
         metrics = names.map { |name|
