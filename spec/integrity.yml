@@ -80,6 +80,9 @@ data/dutch.pdf:
 data/encrypted_and_xref_stream.pdf:
   :bytes: 1197
   :md5: 6bba66a160f820798385a3d1e8e156d2
+data/encrypted_pdf_with_64_chars_string.pdf:
+  :bytes: 13438
+  :md5: 7715b51a0dc346c226a65836b74bc9ab
 data/encrypted_version1_revision2_128bit_rc4_blank_user_password.pdf:
   :bytes: 15674
   :md5: 88a9b78341fa55879fa94930bd4d33af
@@ -245,6 +248,9 @@ data/invalid/invalid_pages.pdf:
 data/invalid/linearized_bad_xref_offset.pdf:
   :bytes: 1133257
   :md5: 245e575d617b8fe69be7e2be382a7730
+data/invalid/loop-in-page-ancestors.pdf:
+  :bytes: 678
+  :md5: 4b30098bc8f935dfbdd4170d40b033c0
 data/invalid/missing_pages_dict.pdf:
   :bytes: 280
   :md5: d2153a115692da4fd5937b1eec842379
@@ -455,6 +461,3 @@ data/zeroed_xref_entry.pdf:
 data/zlib_stream_issue.pdf:
   :bytes: 68247
   :md5: 744d2db962d2aeec04e00891b71b3d5c
-data/encrypted_pdf_with_64_chars_string.pdf:
-  :bytes: 13438
-  :md5: 7715b51a0dc346c226a65836b74bc9ab

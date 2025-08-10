@@ -2,6 +2,8 @@
 # typed: strict
 # frozen_string_literal: true
 
+require 'set'
+
 module PDF
   class Reader
 
@@ -48,9 +50,8 @@ module PDF
       def initialize(objects, pagenum, options = {})
         @objects = objects
         @pagenum = pagenum
-        @page_object = objects.deref_hash(
-          objects.page_references[pagenum - 1]
-        ) || {} #: Hash[Symbol, untyped]
+        @page_ref = objects.page_references[pagenum - 1] #: (Reference | Hash[Symbol, untyped])?
+        @page_object = objects.deref_hash(@page_ref) || {} #: Hash[Symbol, untyped]
         @cache       = options[:cache] || {} #: PDF::Reader::ObjectCache | Hash[untyped, untyped]
         @attributes = nil #: Hash[Symbol, untyped] | nil
         @root = nil #: Hash[Symbol, untyped] | nil
@@ -316,19 +317,21 @@ module PDF
 
       #: () -> untyped
       def page_with_ancestors
-        [ @page_object ] + ancestors
+        [ @page_object ] + ancestors(@page_object[:Parent], Set[@page_ref.hash])
       end
 
-      #: (?untyped) -> untyped
-      def ancestors(origin = @page_object[:Parent])
+      #: (?untyped, ?Set[Integer]) -> untyped
+      def ancestors(origin = @page_object[:Parent], seen = Set.new)
         if origin.nil?
           []
+        elsif seen.include?(origin.hash)
+          raise PDF::Reader::MalformedPDFError.new("loop found in ancestor path")
         else
           obj = objects.deref_hash(origin)
           if obj.nil?
-            raise MalformedPDFError, "parent mus not be nil"
+            raise MalformedPDFError, "parent must not be nil"
           end
-          [ select_inheritable(obj) ] + ancestors(obj[:Parent])
+          [ select_inheritable(obj) ] + ancestors(obj[:Parent], seen.add(origin.hash))
         end
       end
 
