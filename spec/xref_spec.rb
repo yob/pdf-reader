@@ -115,7 +115,7 @@ describe PDF::Reader::XRef do
 
       it "raises an error when attempting to load an invalid xref stream" do
         expect do
-          subject.send(:load_xref_stream, {:Subject=>"\xFE\xFF"})
+          subject.send(:load_xref_stream, PDF::Reader::Stream.new({:Subject=>"\xFE\xFF"}, ""))
         end.to raise_exception(PDF::Reader::MalformedPDFError)
       end
     end

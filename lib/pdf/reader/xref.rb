@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 ################################################################################
@@ -46,6 +46,7 @@ class PDF::Reader
   # the Enumerable mixin. The key difference is no []= method - the hash
   # is read only.
   #
+  #: [Elem]
   class XRef
     include Enumerable
 
@@ -60,9 +61,9 @@ class PDF::Reader
     #: (IO | Tempfile | StringIO) -> void
     def initialize(io)
       @io = io
-      @junk_offset = calc_junk_offset(io) || 0
-      @xref = {}
-      @trailer = load_offsets
+      @junk_offset = calc_junk_offset(io) || 0 #: Integer
+      @xref = {} #: Hash[Integer, Hash[Integer, Integer | PDF::Reader::Reference]]
+      @trailer = load_offsets #: Hash[Symbol, untyped]
     end
 
     ################################################################################
@@ -106,6 +107,7 @@ class PDF::Reader
     # After seeking to the offset, processing is handed of to either load_xref_table()
     # or load_xref_stream() based on what we find there.
     #
+    #: (?Integer?) -> Hash[Symbol, untyped]
     def load_offsets(offset = nil)
       offset ||= new_buffer.find_first_xref_offset
       offset += @junk_offset
@@ -126,7 +128,9 @@ class PDF::Reader
         # to handle the case where an XRef Stream has the Length specified via an
         # indirect object
         stream = PDF::Reader::Parser.new(buf).object(tok_one.to_i, tok_two.to_i)
-        return load_xref_stream(stream)
+        if stream.is_a?(PDF::Reader::Stream)
+          return load_xref_stream(stream)
+        end
       end
 
       raise PDF::Reader::MalformedPDFError,
@@ -135,6 +139,8 @@ class PDF::Reader
     ################################################################################
     # Assumes the underlying buffer is positioned at the start of a traditional
     # Xref table and processes it into memory.
+    #
+    #: (PDF::Reader::Buffer) -> Hash[Symbol, untyped]
     def load_xref_table(buf)
       params = []
 
@@ -178,8 +184,9 @@ class PDF::Reader
     ################################################################################
     # Read an XRef stream from the underlying buffer instead of a traditional xref table.
     #
+    #: (PDF::Reader::Stream) -> Hash[Symbol, untyped]
     def load_xref_stream(stream)
-      unless stream.is_a?(PDF::Reader::Stream) && stream.hash[:Type] == :XRef
+      unless stream.hash[:Type] == :XRef
         raise PDF::Reader::MalformedPDFError, "xref stream not found when expected"
       end
       trailer = Hash[stream.hash.select { |key, value|
@@ -225,8 +232,9 @@ class PDF::Reader
     # XRef streams pack info into integers 1-N bytes wide. Depending on the number of
     # bytes they need to be converted to an int in different ways.
     #
+    #: (String?) -> Integer
     def unpack_bytes(bytes)
-      if bytes.to_s.size == 0
+      res = if bytes.nil? || bytes == ""
         0
       elsif bytes.size == 1
         bytes.unpack("C")[0]
@@ -241,6 +249,7 @@ class PDF::Reader
       else
         raise UnsupportedFeatureError, "Unable to unpack xref stream entries of #{bytes.size} bytes"
       end
+      TypeCheck.cast_to_int!(res)
     end
     ################################################################################
     # Wrap the io stream we're working with in a buffer that can tokenise it for us.
@@ -248,12 +257,14 @@ class PDF::Reader
     # We create multiple buffers so we can be tokenising multiple sections of the file
     # at the same time without worrying about clearing the buffers contents.
     #
+    #: (?Integer) -> PDF::Reader::Buffer
     def new_buffer(offset = 0)
       PDF::Reader::Buffer.new(@io, :seek => offset)
     end
     ################################################################################
     # Stores an offset value for a particular PDF object ID and revision number
     #
+    #: (Integer, Integer, Integer | PDF::Reader::Reference) -> (Integer | PDF::Reader::Reference)
     def store(id, gen, offset)
       (@xref[id] ||= {})[gen] ||= offset
     end
@@ -267,6 +278,7 @@ class PDF::Reader
     # Adobe PDF 1.4 spec (3.4.1) 12. Acrobat viewers require only that the
     # header appear somewhere within the first 1024 bytes of the file
     #
+    #: (IO | Tempfile | StringIO) -> Integer?
     def calc_junk_offset(io)
       io.rewind
       offset = io.pos
