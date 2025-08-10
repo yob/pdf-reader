@@ -7,7 +7,7 @@ class PDF::Reader
   # A null object security handler. Used when a PDF is unencrypted.
   class NullSecurityHandler
 
-    #: (untyped, untyped) -> untyped
+    #: (String, PDF::Reader::Reference) -> String
     def decrypt(buf, _ref)
       buf
     end
