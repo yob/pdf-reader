@@ -1,5 +1,5 @@
 # coding: utf-8
-# typed: true
+# typed: strict
 
 require 'digest/md5'
 require 'rc4'
@@ -28,13 +28,13 @@ class PDF::Reader
 
     #: (?Hash[Symbol, untyped]) -> void
     def initialize(opts = {})
-      @key_length    = opts[:key_length].to_i/8
-      @revision      = opts[:revision].to_i
-      @owner_key     = opts[:owner_key]
-      @user_key      = opts[:user_key]
-      @permissions   = opts[:permissions].to_i
-      @encryptMeta   = opts.fetch(:encrypted_metadata, true)
-      @file_id       = opts[:file_id] || ""
+      @key_length    = opts[:key_length].to_i/8 #: Integer
+      @revision      = opts[:revision].to_i #: Integer
+      @owner_key     = opts[:owner_key] #: String?
+      @user_key      = opts[:user_key] #: String?
+      @permissions   = opts[:permissions].to_i #: Integer
+      @encryptMeta   = opts.fetch(:encrypted_metadata, true) #: bool
+      @file_id       = opts[:file_id] || "" #: String
 
       if @key_length != 5 && @key_length != 16
         msg = "StandardKeyBuilder only supports 40 and 128 bit\
@@ -62,13 +62,17 @@ class PDF::Reader
 
     # Pads supplied password to 32bytes using PassPadBytes as specified on
     # pp61 of spec
+    #
+    #: (?String?) -> String
     def pad_pass(p="")
       return PassPadBytes.pack('C*') if p.nil? || p.empty?
 
-      pad = PassPadBytes[0, 32 - p[0..31].length] || []
-      p[0, 32] + pad.pack('C*')
+      pTrimmedLength = [p.bytesize, 32].min
+      pad = PassPadBytes[0, 32 - pTrimmedLength] || []
+      p[0, 32].to_s + pad.pack('C*')
     end
 
+    #: (String, Integer) -> String
     def xor_each_byte(buf, int)
       buf.each_byte.map{ |b| b^int}.pack("C*")
     end
@@ -85,6 +89,7 @@ class PDF::Reader
     # if the supplied password is not a valid owner password for this document
     # then it returns nil
     #
+    #: (String) -> String?
     def auth_owner_pass(pass)
       md5 = Digest::MD5.digest(pad_pass(pass))
       if @revision > 2 then
@@ -93,7 +98,13 @@ class PDF::Reader
         #first iteration decrypt owner_key
         out = @owner_key
         #RC4 keyed with (keyBegins XOR with iteration #) to decrypt previous out
-        19.downto(0).each { |i| out=RC4.new(xor_each_byte(keyBegins,i)).decrypt(out) }
+        19.downto(0).each { |i|
+          # The RC4 gem doen't have type annotations, so the type checker doesn't
+          # know decrypt() returns a string
+          out = TypeCheck.cast_to_string!(
+            RC4.new(xor_each_byte(keyBegins,i)).decrypt(out)
+          )
+        }
       else
         out = RC4.new( md5[0, 5] ).decrypt( @owner_key )
       end
@@ -111,6 +122,7 @@ class PDF::Reader
     # if the supplied password is not a valid user password for this document
     # then it returns nil
     #
+    #: (String) -> String?
     def auth_user_pass(pass)
       keyBegins = make_file_key(pass)
       if @revision >= 3
@@ -118,28 +130,29 @@ class PDF::Reader
         out = Digest::MD5.digest(PassPadBytes.pack("C*") + @file_id)
         #zero doesn't matter -> so from 0-19
         20.times{ |i| out=RC4.new(xor_each_byte(keyBegins, i)).encrypt(out) }
-        pass = @user_key[0, 16] == out
+        pass = @user_key.to_s[0, 16] == out
       else
         pass = RC4.new(keyBegins).encrypt(PassPadBytes.pack("C*")) == @user_key
       end
       pass ? keyBegins : nil
     end
 
+    #: (String) -> String
     def make_file_key( user_pass )
       # a) if there's a password, pad it to 32 bytes, else, just use the padding.
-      @buf  = pad_pass(user_pass)
+      buf  = pad_pass(user_pass)
       # c) add owner key
-      @buf << @owner_key
+      buf << @owner_key
       # d) add permissions 1 byte at a time, in little-endian order
-      (0..24).step(8){|e| @buf << (@permissions >> e & 0xFF)}
+      (0..24).step(8){|e| buf << (@permissions >> e & 0xFF)}
       # e) add the file ID
-      @buf << @file_id
+      buf << @file_id
       # f) if revision >= 4 and metadata not encrypted then add 4 bytes of 0xFF
       if @revision >= 4 && !@encryptMeta
-        @buf << [0xFF,0xFF,0xFF,0xFF].pack('C*')
+        buf << [0xFF,0xFF,0xFF,0xFF].pack('C*')
       end
       # b) init MD5 digest + g) finish the hash
-      md5 = Digest::MD5.digest(@buf)
+      md5 = Digest::MD5.digest(buf)
       # h) spin hash 50 times
       if @revision >= 3
         50.times {
