@@ -41,13 +41,30 @@ class PDF::Reader
       elsif buf.bytesize == 16
         return ""
       else
-        cipher = OpenSSL::Cipher.new(@cipher)
-        cipher.decrypt
-        cipher.key = @encrypt_key.dup
-        cipher.iv = buf[0..15]
-        cipher.update(buf[16..-1]) + cipher.final
+        begin
+          internal_decrypt(buf, ref)
+        rescue OpenSSL::Cipher::CipherError
+          # If we failed to decrypt it might be a padding error, so try again
+          # and assume no padding in the ciphertext. This will "suceed" but might
+          # return garbage if the key is incorrect but that's OK - well before this
+          # class is used we have confirmed the user provided key is correct so if
+          # this works without error we can be confident the returned plaintext is
+          #  correct
+         internal_decrypt(buf, ref, false)
+        end
       end
     end
 
+    private
+
+    #: (String, PDF::Reader::Reference, ?bool) -> String
+    def internal_decrypt(buf, ref, padding = true)
+      cipher = OpenSSL::Cipher.new(@cipher)
+      cipher.decrypt
+      cipher.padding = 0 unless padding
+      cipher.key = @encrypt_key.dup
+      cipher.iv = buf[0..15]
+      cipher.update(buf[16..-1]) + cipher.final
+    end
   end
 end

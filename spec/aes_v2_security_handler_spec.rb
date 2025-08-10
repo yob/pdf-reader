@@ -37,43 +37,54 @@ describe PDF::Reader::AesV2SecurityHandler do
     end
 
     context "with ciphertext without padding and valid key" do
-      it "should work with no padding when manually encrypted" do
+      it "should decrypt successfully with no padding" do
         plaintext = "1234567890123456" # exactly 16 bytes
         buf = encrypt_test_data(plaintext, key, reference, padding: false)
 
-        # This will likely fail with current implementation since it expects padding
-        # but documents the behavior we want to support
-        expect {
-          handler.decrypt(buf, reference)
-        }.to raise_error(OpenSSL::Cipher::CipherError)
+        result = handler.decrypt(buf, reference)
+        expect(result).to eq(plaintext)
       end
     end
 
     context "with ciphertext without padding and invalid key" do
-      it "raises CipherError when key is wrong" do
+      it "returns incorrect data when key is wrong" do
         wrong_key = "wrong_key_here!"
         wrong_handler = PDF::Reader::AesV2SecurityHandler.new(wrong_key)
 
         plaintext = "1234567890123456"
         buf = encrypt_test_data(plaintext, key, reference, padding: false)
 
-        # Try to decrypt with wrong key - should fail
-        expect {
-          wrong_handler.decrypt(buf, reference)
-        }.to raise_error(OpenSSL::Cipher::CipherError)
+        # Try to decrypt with wrong key - should return garbage, not raise error
+        result = wrong_handler.decrypt(buf, reference)
+        expect(result).not_to eq(plaintext)
+        expect(result).to be_a(String)
+      end
+    end
+
+    context "with padded ciphertext and invalid key" do
+      it "returns incorrect data when key is wrong" do
+        wrong_key = "wrong_key_here!"
+        wrong_handler = PDF::Reader::AesV2SecurityHandler.new(wrong_key)
+
+        plaintext = "Hello, World!"
+        buf = encrypt_test_data(plaintext, key, reference, padding: true)
+
+        # Try to decrypt with wrong key - should return garbage, not raise error
+        result = wrong_handler.decrypt(buf, reference)
+        expect(result).not_to eq(plaintext)
+        expect(result).to be_a(String)
       end
     end
 
     context "with malformed ciphertext" do
-      it "raises CipherError for corrupted data" do
+      it "returns a string with garbage content" do
         # Create invalid ciphertext (random bytes, must be multiple of 16)
         iv = "0123456789abcdef"
         corrupted_data = "corrupted_data16" # exactly 16 bytes
         buf = iv + corrupted_data
 
-        expect {
-          handler.decrypt(buf, reference)
-        }.to raise_error(OpenSSL::Cipher::CipherError)
+        result = handler.decrypt(buf, reference)
+        expect(result).to be_a(String)
       end
     end
   end
