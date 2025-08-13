@@ -29,19 +29,20 @@
 
 require 'pdf/reader/width_calculator'
 
-#: type widthCalculator = (
-#|   PDF::Reader::WidthCalculator::TypeZero |
-#|   PDF::Reader::WidthCalculator::BuiltIn |
-#|   PDF::Reader::WidthCalculator::TypeOneOrThree |
-#|   PDF::Reader::WidthCalculator::TrueType |
-#|   PDF::Reader::WidthCalculator::Composite
-#| )
 
 class PDF::Reader
   # Represents a single font PDF object and provides some useful methods
   # for extracting info. Mainly used for converting text to UTF-8.
   #
   class Font
+    #: type widthCalculator = (
+    #|   PDF::Reader::WidthCalculator::TypeZero |
+    #|   PDF::Reader::WidthCalculator::BuiltIn |
+    #|   PDF::Reader::WidthCalculator::TypeOneOrThree |
+    #|   PDF::Reader::WidthCalculator::TrueType |
+    #|   PDF::Reader::WidthCalculator::Composite
+    #| )
+
     #: Symbol?
     attr_accessor :subtype
 

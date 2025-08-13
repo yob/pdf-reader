@@ -4,14 +4,6 @@
 
 require 'tempfile'
 
-#: type securityHandler = (
-#|   PDF::Reader::NullSecurityHandler |
-#|   PDF::Reader::AesV2SecurityHandler |
-#|   PDF::Reader::Rc4SecurityHandler |
-#|   PDF::Reader::AesV3SecurityHandler |
-#|   PDF::Reader::UnimplementedSecurityHandler
-#| )
-
 class PDF::Reader
   # Provides low level access to the objects in a PDF file via a hash-like
   # object.
@@ -39,6 +31,14 @@ class PDF::Reader
   #
   class ObjectHash
     include Enumerable
+
+    #: type securityHandler = (
+    #|   PDF::Reader::NullSecurityHandler |
+    #|   PDF::Reader::AesV2SecurityHandler |
+    #|   PDF::Reader::Rc4SecurityHandler |
+    #|   PDF::Reader::AesV3SecurityHandler |
+    #|   PDF::Reader::UnimplementedSecurityHandler
+    #| )
 
     #: untyped
     attr_accessor :default
