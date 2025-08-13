@@ -1,9 +1,0 @@
-output_file:
-  rbi: rbi/pdf-reader.rbi
-
-
-parser:
-  included_paths:
-    - lib
-  excluded_paths:
-    - lib/pdf/reader/parser.rb
