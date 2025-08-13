@@ -346,6 +346,16 @@ describe PDF::Reader, "integration specs with invalid PDF files" do
     end
   end
 
+  context "loop-in-page-ancestors.pdf" do
+    let(:filename) { pdf_spec_file("loop-in-page-ancestors") }
+
+    it "detects the loop and raises an exception" do
+      expect {
+        parse_pdf(filename)
+      }.to raise_error(PDF::Reader::MalformedPDFError, "loop found in ancestor path")
+    end
+  end
+
   # a very basic sanity check that we can open this file and extract interesting data
   def parse_pdf(filename)
     PDF::Reader.open(filename) do |reader|
