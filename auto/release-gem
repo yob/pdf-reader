@@ -8,7 +8,8 @@ if [ -z "${GEM_HOST_API_KEY}" ]; then
 fi
 
 echo "--- Generate an RBI file for inclusion in the gem"
-spoom srb sigs export
+bundle
+bundle exec spoom srb sigs export
 
 echo "--- Build and publish gem"
 
