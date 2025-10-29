@@ -213,6 +213,31 @@ describe PDF::Reader::PageLayout do
           expect(subject.to_s).to eq("Hello")
         end
       end
+
+      context "with one word that includes an invalid UTF-8 byte sequence" do
+        let!(:runs) do
+          [
+            PDF::Reader::TextRun.new(30, 700, 50, 12, "Hello\xF8\x88\x80\x80\x80")
+          ]
+        end
+        subject { PDF::Reader::PageLayout.new(runs, mediabox)}
+
+        it "returns a correct string with replacement character" do
+          expect(subject.to_s).to eq("Hello�����")
+        end
+      end
+      context "with one word that includes a valid UTF-8 byte sequence" do
+        let!(:runs) do
+          [
+            PDF::Reader::TextRun.new(30, 700, 50, 12, "Hello\xE2\x82\xAC")
+          ]
+        end
+        subject { PDF::Reader::PageLayout.new(runs, mediabox)}
+
+        it "returns a correct string with the valid UTF-8 byte sequence" do
+          expect(subject.to_s).to eq("Hello€")
+        end
+      end
     end
     context "with a page that's too small to fit any of the text" do
       let(:mediabox) { PDF::Reader::Rectangle.new(0, 0, 46.560, 32.640)}

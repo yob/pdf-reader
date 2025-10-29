@@ -49,7 +49,7 @@ class PDF::Reader
           local_string_insert(page[y_pos-1], run.text, x_pos)
         end
       end
-      interesting_rows(page).map(&:rstrip).join("\n")
+      interesting_rows(page).map(&:scrub).map(&:rstrip).join("\n")
     end
 
     private
@@ -72,7 +72,7 @@ class PDF::Reader
     #
     #: (untyped) -> untyped
     def interesting_rows(rows)
-      line_lengths = rows.map { |l| l.strip.length }
+      line_lengths = rows.map { |l| l.scrub.strip.length }
 
       return [] if line_lengths.all?(&:zero?)
 
