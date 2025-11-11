@@ -233,13 +233,18 @@ class PDF::Reader
       @cid_widths         = @ohash.deref_array(obj[:W])  || []
       @cid_default_width  = @ohash.deref_number(obj[:DW]) || 1000
 
-      if obj[:ToUnicode]
+      if stream_or_reference?(obj[:ToUnicode])
         # ToUnicode is optional for Type1 and Type3
         stream = @ohash.deref_stream(obj[:ToUnicode])
         if stream
           @tounicode = PDF::Reader::CMap.new(stream.unfiltered_data)
         end
       end
+    end
+
+    #: (untyped) -> bool
+    def stream_or_reference?(obj)
+      obj && (obj.is_a?(PDF::Reader::Stream) || obj.is_a?(PDF::Reader::Reference))
     end
 
     #: (Hash[Symbol, untyped]) -> void
