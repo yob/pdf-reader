@@ -1827,4 +1827,24 @@ describe PDF::Reader, "integration specs" do
       end
     end
   end
+
+  context "PDF with a ToUnicode of the wrong type" do
+    let(:filename) { pdf_spec_file("tounicode-wrong-type") }
+
+    it "succesfully extracts text" do
+      PDF::Reader.open(filename) do |reader|
+        expect(reader.page(1).text).to start_with("This file has an invalid ToUnicode entry.")
+      end
+    end
+  end
+
+  context "PDF with a ToUnicode of the wrong type and behind an indirect object" do
+    let(:filename) { pdf_spec_file("tounicode-wrong-type-indirect") }
+
+    it "succesfully extracts text" do
+      PDF::Reader.open(filename) do |reader|
+        expect(reader.page(1).text).to start_with("This file has an invalid ToUnicode entry.")
+      end
+    end
+  end
 end
