@@ -42,7 +42,7 @@ describe PDF::Reader::CMap do
         filename = File.dirname(__FILE__) + "/data/cmap_with_bfrange_two.txt"
         map = PDF::Reader::CMap.new(binread(filename))
         expect(map.decode(0x0100)).to eq([0x0100]) # mapped with the bfrange operator
-        expect(map.decode(0xD900)).to eq([0xD900]) # mapped with the bfrange operator
+        expect(map.decode(0xDE00)).to eq([0xDE00]) # mapped with the bfrange operator
       end
     end
 
@@ -127,6 +127,18 @@ describe PDF::Reader::CMap do
         expect(map.map[0xB]).to    eq([0x28])
         expect(map.map[0x1E]).to   eq([0x3B])
         expect(map.map[0x0194]).to eq([0x25CF])
+      end
+    end
+
+    context "cmap with bfchar and a surrogate codepoint that's missing its pair" do
+      it "correctly loads character mapping" do
+        filename = File.dirname(__FILE__) + "/data/cmap_with_invalid_surrogate_pair.txt"
+        map = PDF::Reader::CMap.new(binread(filename))
+        expect(map.map).to be_a_kind_of(Hash)
+        expect(map.size).to         eq(17)
+        expect(map.map[0x6]).to     eq([0x43])
+        expect(map.map[0x01E1]).to  eq([0x2C])
+        expect(map.map[0x0AC9]).to  be_nil
       end
     end
   end
