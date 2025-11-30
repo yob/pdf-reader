@@ -46,6 +46,10 @@ class PDF::Reader
       "def" => :noop
     } #: Hash[String, Symbol]
 
+    # Indicates the start of a UTF-16 surrogate pair, see
+    # https://en.wikipedia.org/wiki/Universal_Character_Set_characters
+    HIGH_SURROGATE_RANGE = (0xD800..0xDBFF) #: Range[Integer]
+
     #: Hash[Integer, Array[Integer]]
     attr_reader :map
 
@@ -124,15 +128,16 @@ class PDF::Reader
       end
       result = []
       while unpacked_string.any? do
-        if unpacked_string.size >= 2 &&
-            unpacked_string.first.to_i >= 0xD800 &&
-            unpacked_string.first.to_i <= 0xDBFF
+        if unpacked_string.size >= 2 && HIGH_SURROGATE_RANGE.include?(unpacked_string.first.to_i)
           # this is a Unicode UTF-16 "Surrogate Pair" see Unicode Spec. Chapter 3.7
           # lets convert to a UTF-32. (the high bit is between 0xD800-0xDBFF, the
           # low bit is between 0xDC00-0xDFFF) for example: U+1D44E (U+D835 U+DC4E)
           point_one = unpacked_string.shift.to_i
           point_two = unpacked_string.shift.to_i
           result << (point_one - 0xD800) * 0x400 + (point_two - 0xDC00) + 0x10000
+        elsif unpacked_string.size == 1 && HIGH_SURROGATE_RANGE.include?(unpacked_string.first.to_i)
+            # the start of a surrogate pair but the pair is missing. Skip it
+            unpacked_string.shift
         else
           result << unpacked_string.shift
         end
