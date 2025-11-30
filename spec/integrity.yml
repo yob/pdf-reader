@@ -434,6 +434,12 @@ data/textwraplfcr.pdf:
 data/times-with-control-character.pdf:
   :bytes: 904
   :md5: 4bd7309a3f190ede68a88bb2be8bf237
+data/tounicode-wrong-type-indirect.pdf:
+  :bytes: 12262
+  :md5: 51401028b4d53b297327197407d66f4c
+data/tounicode-wrong-type.pdf:
+  :bytes: 12219
+  :md5: 0be721e975bc8ec21eae829e0cddc1af
 data/truetype-arial.pdf:
   :bytes: 1387
   :md5: 2b3e4ff85b618d1f4c6b3b5df2631ab0
