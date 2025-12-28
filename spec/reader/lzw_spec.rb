@@ -12,13 +12,13 @@ describe PDF::Reader::LZW do
     end
 
     it "decodes another lzw compressed string" do
-      content = binread(File.dirname(__FILE__) + "/data/lzw_compressed2.dat")
+      content = binread(File.dirname(__FILE__) + "/../data/lzw_compressed2.dat")
 
       expect(PDF::Reader::LZW.decode(content)).to match(/\ABT/)
     end
 
     it "raises PDF::Reader::MalformedPDFError when the stream isn't valid lzw" do
-      content = binread(File.dirname(__FILE__) + "/data/lzw_compressed_corrupt.dat")
+      content = binread(File.dirname(__FILE__) + "/../data/lzw_compressed_corrupt.dat")
 
       expect {
         PDF::Reader::LZW.decode(content)
