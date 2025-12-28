@@ -1,5 +1,9 @@
-v2.15.0 (13th August 2025)
+v2.15.1 (28th December 2025)
+- Add ruby 4.0 to the CI matrix (https://github.com/yob/pdf-reader/pull/575)
+- Avoiding raising an error when ToUnicode poins to the wrong object type (https://github.com/yob/pdf-reader/pull/573)
+- Skip invalid UTF-16 surrogate pairs in CMaps (https://github.com/yob/pdf-reader/pull/574)
 
+v2.15.0 (13th August 2025)
 - Overhaul sorbet types, moving from an external RBI file to inline comments in RBS syntax
   - multiple PRs, but mainly https://github.com/yob/pdf-reader/pull/562
   - See https://railsatscale.com/2025-04-23-rbs-support-for-sorbet/
