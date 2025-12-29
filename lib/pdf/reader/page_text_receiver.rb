@@ -134,6 +134,7 @@ module PDF
 
       private
 
+      #: (String) -> void
       def internal_show_text(string)
         PDF::Reader::Error.validate_type_as_malformed(string, "string", String)
         if @state.current_font.nil?
@@ -142,8 +143,8 @@ module PDF
         glyphs = @state.current_font.unpack(string)
         glyphs.each_with_index do |glyph_code, index|
           # paint the current glyph
-          newx, newy = @state.trm_transform(0,0)
-          newx, newy = apply_rotation(newx, newy)
+          bl = @state.trm_transform_point(Point::ZERO_ZERO)
+          text_origin = apply_rotation(bl)
 
           utf8_chars = @state.current_font.to_utf8(glyph_code)
 
@@ -153,26 +154,23 @@ module PDF
           th = 1
           scaled_glyph_width = glyph_width * @state.font_size * th
           unless utf8_chars == SPACE
-            @characters << TextRun.new(newx, newy, scaled_glyph_width, @state.font_size, utf8_chars)
+            @characters << TextRun.new(text_origin.x, text_origin.y, scaled_glyph_width, @state.font_size, utf8_chars)
           end
           @state.process_glyph_displacement(glyph_width, 0, utf8_chars == SPACE)
         end
       end
 
-      def apply_rotation(x, y)
+      #: (Point) -> Point
+      def apply_rotation(pt)
         if @page.rotate == 90
-          tmp = x
-          x = y
-          y = tmp * -1
+          Point.new(pt.y, pt.x * -1)
         elsif @page.rotate == 180
-          y *= -1
-          x *= -1
+          Point.new(pt.x * -1, pt.y * -1)
         elsif @page.rotate == 270
-          tmp = y
-          y = x
-          x = tmp * -1
+          Point.new(pt.y * -1, pt.x)
+        else
+          pt
         end
-        return x, y
       end
 
       # take a collection of TextRun objects and merge any that are in close

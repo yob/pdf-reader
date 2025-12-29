@@ -27,6 +27,12 @@ module PDF
         other.respond_to?(:x) && other.respond_to?(:y) && x == other.x && y == other.y
       end
 
+      # These two points are super common, so make them available as constants to reduce
+      # object allocations. Points are immutable, so it's fine to have multiple code paths
+      # using the same object
+      ZERO_ZERO = self.new(0, 0) #: PDF::Reader::Point
+      ONE_ONE = self.new(1, 1) #: PDF::Reader::Point
+
     end
   end
 end
