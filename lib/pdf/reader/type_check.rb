@@ -50,7 +50,7 @@ module PDF
         end
       end
 
-      #: (untyped) -> Symbol | nil
+      #: (untyped) -> (Symbol | nil)
       def self.cast_to_symbol(obj)
         if obj.is_a?(Symbol)
           obj
