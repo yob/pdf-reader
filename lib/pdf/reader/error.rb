@@ -33,16 +33,26 @@ class PDF::Reader
     ################################################################################
     #: (untyped, untyped, ?untyped) -> untyped
     def self.str_assert(lvalue, rvalue, chars=nil)
-      raise MalformedPDFError, "PDF malformed, expected string but found #{lvalue.class} instead" if chars and !lvalue.kind_of?(String)
+      if chars and !lvalue.kind_of?(String)
+        raise MalformedPDFError, "PDF malformed, expected string but found #{lvalue.class} instead"
+      end
       lvalue = lvalue[0,chars] if chars
-      raise MalformedPDFError, "PDF malformed, expected '#{rvalue}' but found '#{lvalue}' instead"  if lvalue != rvalue
+
+      if lvalue != rvalue
+        raise MalformedPDFError, "PDF malformed, expected '#{rvalue}' but found '#{lvalue}' instead"
+      end
     end
     ################################################################################
     #: (untyped, untyped, ?untyped) -> untyped
     def self.str_assert_not(lvalue, rvalue, chars=nil)
-      raise MalformedPDFError, "PDF malformed, expected string but found #{lvalue.class} instead" if chars and !lvalue.kind_of?(String)
+      if chars and !lvalue.kind_of?(String)
+        raise MalformedPDFError, "PDF malformed, expected string but found #{lvalue.class} instead"
+      end
       lvalue = lvalue[0,chars] if chars
-      raise MalformedPDFError, "PDF malformed, expected '#{rvalue}' but found '#{lvalue}' instead"  if lvalue == rvalue
+
+      if lvalue == rvalue
+        raise MalformedPDFError, "PDF malformed, expected '#{rvalue}' but found '#{lvalue}' instead"
+      end
     end
     ################################################################################
     #: (untyped, untyped) -> untyped

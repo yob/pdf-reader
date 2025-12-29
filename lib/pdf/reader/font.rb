@@ -134,9 +134,9 @@ class PDF::Reader
       glyph_width_in_glyph_space = glyph_width(code_point)
 
       if @subtype == :Type3
-        x1, _y1 = font_matrix_transform(0,0)
-        x2, _y2 = font_matrix_transform(glyph_width_in_glyph_space, 0)
-        (x2 - x1).abs.round(2)
+        pt1 = font_matrix_transform(Point::ZERO_ZERO)
+        pt2 = font_matrix_transform(Point.new(glyph_width_in_glyph_space, 0))
+        (pt2.x - pt1.x).abs.round(2)
       else
         glyph_width_in_glyph_space / 1000.0
       end
@@ -145,9 +145,13 @@ class PDF::Reader
     private
 
     # Only valid for Type3 fonts
-    #: (Numeric, Numeric) -> [Numeric, Numeric]
-    def font_matrix_transform(x, y)
-      return x, y if @font_matrix.nil?
+    #
+    # transforming (0,0) is a really common case, so optimise for it to
+    # avoid unnecessary object allocations
+    #
+    #: (PDF::Reader::Point) -> PDF::Reader::Point
+    def font_matrix_transform(pt)
+      return pt if @font_matrix.nil?
 
       matrix = TransformationMatrix.new(
         @font_matrix[0] || 0, @font_matrix[1] || 0,
@@ -155,13 +159,13 @@ class PDF::Reader
         @font_matrix[4] || 0, @font_matrix[5] || 0,
       )
 
-      if x == 0 && y == 0
-        [matrix.e, matrix.f]
+      if pt.x == 0 && pt.y == 0
+        Point.new(matrix.e, matrix.f)
       else
-        [
-          (matrix.a * x) + (matrix.c * y) + (matrix.e),
-          (matrix.b * x) + (matrix.d * y) + (matrix.f)
-        ]
+        Point.new(
+          (matrix.a * pt.x) + (matrix.c * pt.y) + (matrix.e),
+          (matrix.b * pt.x) + (matrix.d * pt.y) + (matrix.f)
+        )
       end
     end
 

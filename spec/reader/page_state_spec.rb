@@ -67,10 +67,18 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        expect(state.ctm_transform(0,0)).to eq([0, 0])
-        expect(state.ctm_transform(0,1)).to eq([0, 1])
-        expect(state.ctm_transform(1,0)).to eq([2, 0])
-        expect(state.ctm_transform(1,1)).to eq([2, 1])
+        expect(state.ctm_transform_point(PDF::Reader::Point.new(0,0))).to eq(
+          PDF::Reader::Point.new(0, 0)
+        )
+        expect(state.ctm_transform_point(PDF::Reader::Point.new(0,1))).to eq(
+          PDF::Reader::Point.new(0, 1)
+        )
+        expect(state.ctm_transform_point(PDF::Reader::Point.new(1,0))).to eq(
+          PDF::Reader::Point.new(2, 0)
+        )
+        expect(state.ctm_transform_point(PDF::Reader::Point.new(1,1))).to eq(
+          PDF::Reader::Point.new(2, 1)
+        )
       end
     end
 
@@ -83,10 +91,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        expect(state.ctm_transform(0,0)).to eq([0, 0])
-        expect(state.ctm_transform(0,1)).to eq([0, 1])
-        expect(state.ctm_transform(1,0)).to eq([1, 2])
-        expect(state.ctm_transform(1,1)).to eq([1, 3])
+        expect(state.ctm_transform_point(0,0)).to eq(PDF::Reader::Point.new(0, 0))
+        expect(state.ctm_transform_point(0,1)).to eq(PDF::Reader::Point.new(0, 1))
+        expect(state.ctm_transform_point(1,0)).to eq(PDF::Reader::Point.new(1, 2))
+        expect(state.ctm_transform_point(1,1)).to eq(PDF::Reader::Point.new(1, 3))
       end
     end
 
@@ -99,10 +107,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        expect(state.ctm_transform(0,0)).to eq([0, 0])
-        expect(state.ctm_transform(0,1)).to eq([2, 1])
-        expect(state.ctm_transform(1,0)).to eq([1, 0])
-        expect(state.ctm_transform(1,1)).to eq([3, 1])
+        expect(state.ctm_transform_point(0,0)).to eq(PDF::Reader::Point.new(0, 0))
+        expect(state.ctm_transform_point(0,1)).to eq(PDF::Reader::Point.new(2, 1))
+        expect(state.ctm_transform_point(1,0)).to eq(PDF::Reader::Point.new(1, 0))
+        expect(state.ctm_transform_point(1,1)).to eq(PDF::Reader::Point.new(3, 1))
       end
     end
 
@@ -115,10 +123,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        expect(state.ctm_transform(0,0)).to eq([0, 0])
-        expect(state.ctm_transform(0,1)).to eq([0, 2])
-        expect(state.ctm_transform(1,0)).to eq([1, 0])
-        expect(state.ctm_transform(1,1)).to eq([1, 2])
+        expect(state.ctm_transform_point(0,0)).to eq(PDF::Reader::Point.new(0, 0))
+        expect(state.ctm_transform_point(0,1)).to eq(PDF::Reader::Point.new(0, 2))
+        expect(state.ctm_transform_point(1,0)).to eq(PDF::Reader::Point.new(1, 0))
+        expect(state.ctm_transform_point(1,1)).to eq(PDF::Reader::Point.new(1, 2))
       end
     end
 
@@ -131,10 +139,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        expect(state.ctm_transform(0,0)).to eq([2, 0])
-        expect(state.ctm_transform(0,1)).to eq([2, 1])
-        expect(state.ctm_transform(1,0)).to eq([3, 0])
-        expect(state.ctm_transform(1,1)).to eq([3, 1])
+        expect(state.ctm_transform_point(0,0)).to eq(PDF::Reader::Point.new(2, 0))
+        expect(state.ctm_transform_point(0,1)).to eq(PDF::Reader::Point.new(2, 1))
+        expect(state.ctm_transform_point(1,0)).to eq(PDF::Reader::Point.new(3, 0))
+        expect(state.ctm_transform_point(1,1)).to eq(PDF::Reader::Point.new(3, 1))
       end
     end
 
@@ -147,10 +155,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        expect(state.ctm_transform(0,0)).to eq([0, 2])
-        expect(state.ctm_transform(0,1)).to eq([0, 3])
-        expect(state.ctm_transform(1,0)).to eq([1, 2])
-        expect(state.ctm_transform(1,1)).to eq([1, 3])
+        expect(state.ctm_transform_point(0,0)).to eq(PDF::Reader::Point.new(0, 2))
+        expect(state.ctm_transform_point(0,1)).to eq(PDF::Reader::Point.new(0, 3))
+        expect(state.ctm_transform_point(1,0)).to eq(PDF::Reader::Point.new(1, 2))
+        expect(state.ctm_transform_point(1,1)).to eq(PDF::Reader::Point.new(1, 3))
       end
     end
 
@@ -167,10 +175,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        expect(state.ctm_transform(0,0)).to eq([-10,10])
-        expect(state.ctm_transform(0,1)).to eq([-11,10])
-        expect(state.ctm_transform(1,0)).to eq([-10,11])
-        expect(state.ctm_transform(1,1)).to eq([-11,11])
+        expect(state.ctm_transform_point(0,0)).to eq(PDF::Reader::Point.new(-10,10))
+        expect(state.ctm_transform_point(0,1)).to eq(PDF::Reader::Point.new(-11,10))
+        expect(state.ctm_transform_point(1,0)).to eq(PDF::Reader::Point.new(-10,11))
+        expect(state.ctm_transform_point(1,1)).to eq(PDF::Reader::Point.new(-11,11))
       end
     end
   end
@@ -183,10 +191,10 @@ describe PDF::Reader::PageState do
         state.begin_text_object
         state.set_text_font_and_size(:Test, 12)
 
-        expect(state.trm_transform(0,0)).to eq([0,0])
-        expect(state.trm_transform(0,1)).to eq([0, 12])
-        expect(state.trm_transform(1,0)).to eq([12, 0])
-        expect(state.trm_transform(1,1)).to eq([12, 12])
+        expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(0, 0))
+        expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(0, 12))
+        expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(12, 0))
+        expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(12, 12))
       end
     end
   end
@@ -203,10 +211,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        expect(state.trm_transform(0,0)).to eq([5,10])
-        expect(state.trm_transform(0,1)).to eq([5, 22])
-        expect(state.trm_transform(1,0)).to eq([17, 10])
-        expect(state.trm_transform(1,1)).to eq([17, 22])
+        expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(5, 10))
+        expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(5, 22))
+        expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(17, 10))
+        expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(17, 22))
       end
     end
 
@@ -233,10 +241,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        expect(state.trm_transform(0,0)).to eq([5, 10])
-        expect(state.trm_transform(0,1)).to eq([5, 22])
-        expect(state.trm_transform(1,0)).to eq([17, 10])
-        expect(state.trm_transform(1,1)).to eq([17, 22])
+        expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(5, 10))
+        expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(5, 22))
+        expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(17, 10))
+        expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(17, 22))
       end
 
       it "alters the text leading" do
@@ -270,10 +278,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        expect(state.trm_transform(0,0)).to eq([5, 6])
-        expect(state.trm_transform(0,1)).to eq([41, 54])
-        expect(state.trm_transform(1,0)).to eq([17, 30])
-        expect(state.trm_transform(1,1)).to eq([53.0, 78.0])
+        expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(5, 6))
+        expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(41, 54))
+        expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(17, 30))
+        expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(53.0, 78.0))
       end
     end
   end
@@ -291,10 +299,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        expect(state.trm_transform(0,0)).to eq([0, -15])
-        expect(state.trm_transform(0,1)).to eq([0, -3])
-        expect(state.trm_transform(1,0)).to eq([12, -15])
-        expect(state.trm_transform(1,1)).to eq([12, -3])
+        expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(0, -15))
+        expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(0, -3))
+        expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(12, -15))
+        expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(12, -3))
       end
     end
     context "without begin_text first (out of order)" do
@@ -321,10 +329,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        expect(state.trm_transform(0,0)).to eq([0, -15])
-        expect(state.trm_transform(0,1)).to eq([0, -3])
-        expect(state.trm_transform(1,0)).to eq([12, -15])
-        expect(state.trm_transform(1,1)).to eq([12, -3])
+        expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(0, -15))
+        expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(0, -3))
+        expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(12, -15))
+        expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(12, -3))
       end
     end
     context "without begin_text first (out of order)" do
@@ -351,10 +359,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        expect(state.trm_transform(0,0)).to eq([0, -15])
-        expect(state.trm_transform(0,1)).to eq([0, -3])
-        expect(state.trm_transform(1,0)).to eq([12, -15])
-        expect(state.trm_transform(1,1)).to eq([12, -3])
+        expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(0, -15))
+        expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(0, -3))
+        expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(12, -15))
+        expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(12, -3))
       end
     end
   end
@@ -383,10 +391,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        expect(state.trm_transform(0,0)).to eq([0, 0])
-        expect(state.trm_transform(0,1)).to eq([0, 12])
-        expect(state.trm_transform(1,0)).to eq([12, 0])
-        expect(state.trm_transform(1,1)).to eq([12, 12])
+        expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(0, 0))
+        expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(0, 12))
+        expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(12, 0))
+        expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(12, 12))
       end
     end
     context "without begin_text first (out of order)" do
@@ -409,7 +417,32 @@ describe PDF::Reader::PageState do
       let!(:state)  {PDF::Reader::PageState.new(page) }
 
       it "is a no-op" do
-        expect(state.trm_transform(0,0)).to eq([0, 0])
+        expect(state.ctm_transform(0,0)).to eq([0, 0])
+      end
+    end
+
+  end
+
+  describe "#ctm_transform_point" do
+    # ctm_transform_point is mostly verified as correct via assertions in all the other specs of
+    # this class - it's one of the primary ways we can see the visible state. However we need to
+    # check some error conditions here
+
+    context "with an empty page" do
+      let!(:state)  {PDF::Reader::PageState.new(page) }
+
+      context "when passed a point" do
+        it "is a no-op" do
+          expect(state.ctm_transform_point(PDF::Reader::Point.new(0,0))).to eq(
+            PDF::Reader::Point.new(0, 0)
+          )
+        end
+      end
+
+      context "when passed two numerics" do
+        it "is a no-op" do
+          expect(state.ctm_transform_point(0,0)).to eq(PDF::Reader::Point.new(0, 0))
+        end
       end
     end
 
@@ -432,6 +465,33 @@ describe PDF::Reader::PageState do
 
   end
 
+  describe "#trm_transform_point" do
+    # trm_transform_point is mostly verified as correct via assertions in all the other specs of
+    # this class - it's one of the primary ways we can see the visible state. However we need to
+    # check some error conditions here
+
+    context "without begin_text first (out of order)" do
+      let!(:state)  {PDF::Reader::PageState.new(page) }
+
+      context "when passed a point" do
+        it "doesn't raise an exception" do
+          expect {
+            state.trm_transform_point(PDF::Reader::Point.new(0,0))
+          }.to_not raise_error
+        end
+      end
+
+      context "when passed two numerics" do
+        it "doesn't raise an exception" do
+          expect {
+            state.trm_transform_point(0,0)
+          }.to_not raise_error
+        end
+      end
+    end
+
+  end
+
   describe "#process_glyph_displacement" do
     context "when the current state places 12pt text at (40, 700)" do
       let!(:state)  {PDF::Reader::PageState.new(page) }
@@ -444,10 +504,10 @@ describe PDF::Reader::PageState do
         # how the matrix is stored and multiplied is really an implementation
         # detail, so it's better to check the results indirectly via the API
         # external collaborators will use
-        expect(state.trm_transform(0,0)).to eq([40, 700])
-        expect(state.trm_transform(0,1)).to eq([40, 712])
-        expect(state.trm_transform(1,0)).to eq([52, 700])
-        expect(state.trm_transform(1,1)).to eq([52, 712])
+        expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(40, 700))
+        expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(40, 712))
+        expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(52, 700))
+        expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(52, 712))
       end
 
       context "2pt glyph width" do
@@ -459,10 +519,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 0, false)
 
-                  expect(state.trm_transform(0,0)).to eq([64, 700])
-                  expect(state.trm_transform(0,1)).to eq([64, 712])
-                  expect(state.trm_transform(1,0)).to eq([76, 700])
-                  expect(state.trm_transform(1,1)).to eq([76, 712])
+                  expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(64, 700))
+                  expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(64, 712))
+                  expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(76, 700))
+                  expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(76, 712))
                 end
               end
               context "a word boundary" do
@@ -470,10 +530,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 0, true)
 
-                  expect(state.trm_transform(0,0)).to eq([64, 700])
-                  expect(state.trm_transform(0,1)).to eq([64, 712])
-                  expect(state.trm_transform(1,0)).to eq([76, 700])
-                  expect(state.trm_transform(1,1)).to eq([76, 712])
+                  expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(64, 700))
+                  expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(64, 712))
+                  expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(76, 700))
+                  expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(76, 712))
                 end
               end
             end
@@ -483,10 +543,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, false)
 
-                  expect(state.trm_transform(0,0)).to eq([63.976, 700])
-                  expect(state.trm_transform(0,1)).to eq([63.976, 712])
-                  expect(state.trm_transform(1,0)).to eq([75.976, 700])
-                  expect(state.trm_transform(1,1)).to eq([75.976, 712])
+                  expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(63.976, 700))
+                  expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(63.976, 712))
+                  expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(75.976, 700))
+                  expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(75.976, 712))
                 end
               end
               context "a word boundary" do
@@ -494,10 +554,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
-                  expect(state.trm_transform(0,0)).to eq([63.976, 700])
-                  expect(state.trm_transform(0,1)).to eq([63.976, 712])
-                  expect(state.trm_transform(1,0)).to eq([75.976, 700])
-                  expect(state.trm_transform(1,1)).to eq([75.976, 712])
+                  expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(63.976, 700))
+                  expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(63.976, 712))
+                  expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(75.976, 700))
+                  expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(75.976, 712))
                 end
               end
             end
@@ -512,10 +572,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 0, false)
 
-                  expect(state.trm_transform(0,0)).to eq([64, 700])
-                  expect(state.trm_transform(0,1)).to eq([64, 712])
-                  expect(state.trm_transform(1,0)).to eq([76, 700])
-                  expect(state.trm_transform(1,1)).to eq([76, 712])
+                  expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(64, 700))
+                  expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(64, 712))
+                  expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(76, 700))
+                  expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(76, 712))
                 end
               end
               context "a word boundary" do
@@ -523,10 +583,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 0, true)
 
-                  expect(state.trm_transform(0,0)).to eq([65, 700])
-                  expect(state.trm_transform(0,1)).to eq([65, 712])
-                  expect(state.trm_transform(1,0)).to eq([77, 700])
-                  expect(state.trm_transform(1,1)).to eq([77, 712])
+                  expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(65, 700))
+                  expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(65, 712))
+                  expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(77, 700))
+                  expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(77, 712))
                 end
               end
             end
@@ -536,10 +596,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, false)
 
-                  expect(state.trm_transform(0,0)).to eq([63.976, 700])
-                  expect(state.trm_transform(0,1)).to eq([63.976, 712])
-                  expect(state.trm_transform(1,0)).to eq([75.976, 700])
-                  expect(state.trm_transform(1,1)).to eq([75.976, 712])
+                  expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(63.976, 700))
+                  expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(63.976, 712))
+                  expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(75.976, 700))
+                  expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(75.976, 712))
                 end
               end
               context "a word boundary" do
@@ -547,10 +607,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
-                  expect(state.trm_transform(0,0)).to eq([63.976, 700])
-                  expect(state.trm_transform(0,1)).to eq([63.976, 712])
-                  expect(state.trm_transform(1,0)).to eq([75.976, 700])
-                  expect(state.trm_transform(1,1)).to eq([75.976, 712])
+                  expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(63.976, 700))
+                  expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(63.976, 712))
+                  expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(75.976, 700))
+                  expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(75.976, 712))
                 end
               end
             end
@@ -567,10 +627,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 0, false)
 
-                  expect(state.trm_transform(0,0)).to eq([65, 700])
-                  expect(state.trm_transform(0,1)).to eq([65, 712])
-                  expect(state.trm_transform(1,0)).to eq([77, 700])
-                  expect(state.trm_transform(1,1)).to eq([77, 712])
+                  expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(65, 700))
+                  expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(65, 712))
+                  expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(77, 700))
+                  expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(77, 712))
                 end
               end
               context "a word boundary" do
@@ -578,10 +638,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 0, true)
 
-                  expect(state.trm_transform(0,0)).to eq([65, 700])
-                  expect(state.trm_transform(0,1)).to eq([65, 712])
-                  expect(state.trm_transform(1,0)).to eq([77, 700])
-                  expect(state.trm_transform(1,1)).to eq([77, 712])
+                  expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(65, 700))
+                  expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(65, 712))
+                  expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(77, 700))
+                  expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(77, 712))
                 end
               end
             end
@@ -591,10 +651,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, false)
 
-                  expect(state.trm_transform(0,0)).to eq([63.976, 700])
-                  expect(state.trm_transform(0,1)).to eq([63.976, 712])
-                  expect(state.trm_transform(1,0)).to eq([75.976, 700])
-                  expect(state.trm_transform(1,1)).to eq([75.976, 712])
+                  expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(63.976, 700))
+                  expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(63.976, 712))
+                  expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(75.976, 700))
+                  expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(75.976, 712))
                 end
               end
               context "a word boundary" do
@@ -602,10 +662,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
-                  expect(state.trm_transform(0,0)).to eq([63.976, 700])
-                  expect(state.trm_transform(0,1)).to eq([63.976, 712])
-                  expect(state.trm_transform(1,0)).to eq([75.976, 700])
-                  expect(state.trm_transform(1,1)).to eq([75.976, 712])
+                  expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(63.976, 700))
+                  expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(63.976, 712))
+                  expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(75.976, 700))
+                  expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(75.976, 712))
                 end
               end
             end
@@ -620,10 +680,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 0, false)
 
-                  expect(state.trm_transform(0,0)).to eq([65, 700])
-                  expect(state.trm_transform(0,1)).to eq([65, 712])
-                  expect(state.trm_transform(1,0)).to eq([77, 700])
-                  expect(state.trm_transform(1,1)).to eq([77, 712])
+                  expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(65, 700))
+                  expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(65, 712))
+                  expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(77, 700))
+                  expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(77, 712))
                 end
               end
               context "a word boundary" do
@@ -631,10 +691,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 0, true)
 
-                  expect(state.trm_transform(0,0)).to eq([66, 700])
-                  expect(state.trm_transform(0,1)).to eq([66, 712])
-                  expect(state.trm_transform(1,0)).to eq([78, 700])
-                  expect(state.trm_transform(1,1)).to eq([78, 712])
+                  expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(66, 700))
+                  expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(66, 712))
+                  expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(78, 700))
+                  expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(78, 712))
                 end
               end
             end
@@ -644,10 +704,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, false)
 
-                  expect(state.trm_transform(0,0)).to eq([63.976, 700])
-                  expect(state.trm_transform(0,1)).to eq([63.976, 712])
-                  expect(state.trm_transform(1,0)).to eq([75.976, 700])
-                  expect(state.trm_transform(1,1)).to eq([75.976, 712])
+                  expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(63.976, 700))
+                  expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(63.976, 712))
+                  expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(75.976, 700))
+                  expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(75.976, 712))
                 end
               end
               context "a word boundary" do
@@ -655,10 +715,10 @@ describe PDF::Reader::PageState do
                 it "alters the text matrix" do
                   state.process_glyph_displacement(2, 2, true)
 
-                  expect(state.trm_transform(0,0)).to eq([63.976, 700])
-                  expect(state.trm_transform(0,1)).to eq([63.976, 712])
-                  expect(state.trm_transform(1,0)).to eq([75.976, 700])
-                  expect(state.trm_transform(1,1)).to eq([75.976, 712])
+                  expect(state.trm_transform_point(0,0)).to eq(PDF::Reader::Point.new(63.976, 700))
+                  expect(state.trm_transform_point(0,1)).to eq(PDF::Reader::Point.new(63.976, 712))
+                  expect(state.trm_transform_point(1,0)).to eq(PDF::Reader::Point.new(75.976, 700))
+                  expect(state.trm_transform_point(1,1)).to eq(PDF::Reader::Point.new(75.976, 712))
                 end
               end
             end

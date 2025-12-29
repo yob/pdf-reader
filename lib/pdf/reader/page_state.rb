@@ -119,9 +119,9 @@ class PDF::Reader
 
       def font_size
         @font_size ||= begin
-                         _, zero = trm_transform(0,0)
-                         _, one  = trm_transform(1,1)
-                         (zero - one).abs.round(10)
+                         bl = trm_transform_point(Point::ZERO_ZERO)
+                         tr = trm_transform_point(Point::ONE_ONE)
+                         (bl.y - tr.y).abs.round(10)
                        end
       end
 
@@ -227,28 +227,83 @@ class PDF::Reader
       # transform x and y co-ordinates from the current user space to the
       # underlying device space.
       #
+      # Deprecated. Prefer ctm_transform_point()
+      #
+      #: (Numeric, Numeric) -> [Numeric]
       def ctm_transform(x, y)
+        # TODO print a deprecation warning
+        res = ctm_transform_point(x, y)
         [
-          (ctm.a * x) + (ctm.c * y) + (ctm.e),
-          (ctm.b * x) + (ctm.d * y) + (ctm.f)
+          res.x,
+          res.y
+        ]
+      end
+
+      # transform x and y co-ordinates from the current user space to the
+      # underlying device space.
+      #
+      # Recommended usage:
+      #
+      #     ctm_transform_point(Point.new(0,1))
+      #
+      # Also supported:
+      #
+      #     ctm_transform_point(0,1)
+      #
+      #: (PDF::Reader::Point | Numeric, ?Numeric) -> PDF::Reader::Point
+      def ctm_transform_point(pt, opt_y = -1)
+        unless pt.is_a?(Point)
+          pt = Point.new(pt.to_i, opt_y.to_i)
+        end
+        Point.new(
+          (ctm.a * pt.x) + (ctm.c * pt.y) + (ctm.e),
+          (ctm.b * pt.x) + (ctm.d * pt.y) + (ctm.f)
+        )
+      end
+
+      # transform x and y co-ordinates from the current text space to the
+      # underlying device space.
+      #
+      # Deprecated. Prefer trm_transform_point()
+      #
+      #: (Numeric, Numeric) -> Array[Numeric]
+      def trm_transform(x, y)
+        # TODO print a deprecation warning
+        res = trm_transform_point(x, y)
+        [
+          res.x,
+          res.y
         ]
       end
 
       # transform x and y co-ordinates from the current text space to the
       # underlying device space.
       #
+      # Recommended usage:
+      #
+      #     trm_transform_point(Point.new(0,1))
+      #
+      # Also supported:
+      #
+      #     trm_transform_point(0,1)
+      #
       # transforming (0,0) is a really common case, so optimise for it to
       # avoid unnecessary object allocations
       #
-      def trm_transform(x, y)
+      #: (PDF::Reader::Point | Numeric, ?Numeric) -> PDF::Reader::Point
+      def trm_transform_point(pt, opt_y = -1)
+        unless pt.is_a?(Point)
+          pt = Point.new(pt.to_i, opt_y.to_i)
+        end
+
         trm = text_rendering_matrix
-        if x == 0 && y == 0
-          [trm.e, trm.f]
+        if pt.x == 0 && pt.y == 0
+          Point.new(trm.e, trm.f)
         else
-          [
-            (trm.a * x) + (trm.c * y) + (trm.e),
-            (trm.b * x) + (trm.d * y) + (trm.f)
-          ]
+          Point.new(
+            (trm.a * pt.x) + (trm.c * pt.y) + (trm.e),
+            (trm.b * pt.x) + (trm.d * pt.y) + (trm.f)
+          )
         end
       end
 
