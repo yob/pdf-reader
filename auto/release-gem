@@ -11,6 +11,9 @@ echo "--- Generate an RBI file for inclusion in the gem"
 bundle
 bundle exec spoom srb sigs export
 
+echo "--- Generate external RBS files for inclusion in the gem"
+bundle exec rbs-inline --opt-out --output lib
+
 echo "--- Build and publish gem"
 
 cd $(dirname $0)/..
