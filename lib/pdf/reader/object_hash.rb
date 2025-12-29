@@ -127,6 +127,7 @@ class PDF::Reader
     # Guaranteed to only return an Array or nil. If the dereference results in
     # any other type then a MalformedPDFError exception will raise. Useful when
     # expecting an Array and no other type will do.
+    #
     #: (untyped) -> Array[untyped]?
     def deref_array(key)
       obj = deref(key)
@@ -146,6 +147,7 @@ class PDF::Reader
     # expecting an Array and no other type will do.
     #
     # Some effort to cast array elements to a number is made for any non-numeric elements.
+    #
     #: (untyped) -> Array[Numeric]?
     def deref_array_of_numbers(key)
       arr = deref(key)
@@ -172,7 +174,8 @@ class PDF::Reader
     #
     # Guaranteed to only return a Hash or nil. If the dereference results in
     # any other type then a MalformedPDFError exception will raise. Useful when
-    # expecting an Array and no other type will do.
+    # expecting a Hash and no other type will do.
+    #
     #: (untyped) -> Hash[Symbol, untyped]?
     def deref_hash(key)
       obj = deref(key)
@@ -189,9 +192,10 @@ class PDF::Reader
     #
     # Guaranteed to only return a PDF name (Symbol) or nil. If the dereference results in
     # any other type then a MalformedPDFError exception will raise. Useful when
-    # expecting an Array and no other type will do.
+    # expecting a PDF Name and no other type will do.
     #
     # Some effort to cast to a symbol is made when the reference points to a non-symbol.
+    #
     #: (untyped) -> Symbol?
     def deref_name(key)
       obj = deref(key)
@@ -214,7 +218,7 @@ class PDF::Reader
     #
     # Guaranteed to only return an Integer or nil. If the dereference results in
     # any other type then a MalformedPDFError exception will raise. Useful when
-    # expecting an Array and no other type will do.
+    # expecting an Integer and no other type will do.
     #
     # Some effort to cast to an int is made when the reference points to a non-integer.
     #: (untyped) -> Integer?
@@ -239,7 +243,7 @@ class PDF::Reader
     #
     # Guaranteed to only return a Numeric or nil. If the dereference results in
     # any other type then a MalformedPDFError exception will raise. Useful when
-    # expecting an Array and no other type will do.
+    # expecting a Number and no other type will do.
     #
     # Some effort to cast to a number is made when the reference points to a non-number.
     #: (untyped) -> Numeric?
@@ -267,6 +271,7 @@ class PDF::Reader
     # Guaranteed to only return a PDF::Reader::Stream or nil. If the dereference results in
     # any other type then a MalformedPDFError exception will raise. Useful when
     # expecting a stream and no other type will do.
+    #
     #: (untyped) -> PDF::Reader::Stream?
     def deref_stream(key)
       obj = deref(key)
