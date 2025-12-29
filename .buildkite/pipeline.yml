@@ -7,21 +7,21 @@ steps:
     key: sorbet
     env:
       DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "3.2"
+      RUBY_VERSION: "3.4"
 
   - command: "auto/run-require-strict-typing"
     label: "typed: strict"
     key: strict-typing
     env:
       DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "3.2"
+      RUBY_VERSION: "3.4"
 
   - command: "auto/run-quality"
     label: "quality"
     key: quality
     env:
       DOCKER_IMAGE: "ruby"
-      RUBY_VERSION: "3.2"
+      RUBY_VERSION: "3.4"
 
   - command: "auto/run-specs"
     label: "rspec ({{matrix}})"
