@@ -17,18 +17,18 @@ class PDF::Reader
     # avoid lots of repetitive (and expensive) tokenising
     CACHEABLE_TYPES = [:Catalog, :Page, :Pages] #: Array[Symbol]
 
-    #: untyped
+    #: Integer
     attr_reader :hits
 
-    #: untyped
+    #: Integer
     attr_reader :misses
 
     #: (?untyped) -> void
     def initialize(lru_size = 1000)
-      @objects = {}
-      @lru_cache = Hashery::LRUHash.new(lru_size.to_i)
-      @hits = 0
-      @misses = 0
+      @objects = {} #: Hash[untyped, untyped]
+      @lru_cache = Hashery::LRUHash.new(lru_size.to_i) #: Hashery::LRUHash
+      @hits = 0 #: Integer
+      @misses = 0 #: Integer
     end
 
     def [](key)
@@ -46,7 +46,7 @@ class PDF::Reader
 
     def fetch(key, local_default = nil)
       update_stats(key)
-      @objects[key] || @lru_cache.fetch(key, local_default)
+      @objects[key] || @lru_cache.fetch(key) { local_default }
     end
 
     def each(&block)
@@ -85,14 +85,17 @@ class PDF::Reader
       @objects.has_value?(value) || @lru_cache.has_value?(value)
     end
 
+    #: () -> String
     def to_s
       "<PDF::Reader::ObjectCache size: #{self.size}>"
     end
 
+    #: () -> Array[untyped]
     def keys
       @objects.keys + @lru_cache.keys
     end
 
+    #: () -> Array[untyped]
     def values
       @objects.values + @lru_cache.values
     end
@@ -107,6 +110,7 @@ class PDF::Reader
       end
     end
 
+    #: (untyped) -> bool?
     def cacheable?(obj)
       obj.is_a?(Hash) && CACHEABLE_TYPES.include?(obj[:Type])
     end

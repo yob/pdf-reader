@@ -84,6 +84,7 @@ module PDF
       end
 
       # deprecated
+      #: () -> String
       def content
         mediabox = @page.rectangles[:MediaBox]
         PageLayout.new(runs, mediabox).to_s
@@ -175,6 +176,8 @@ module PDF
 
       # take a collection of TextRun objects and merge any that are in close
       # proximity
+      #
+      #: (Array[PDF::Reader::TextRun]) -> Array[PDF::Reader::TextRun]
       def merge_runs(runs)
         runs.group_by { |char|
           char.y.to_i
