@@ -130,6 +130,28 @@ describe PDF::Reader::CMap do
       end
     end
 
+    context "cmap with bfrange and surrogate pairs, where the surrogate pair starts with D800" do
+      it "skips ranges that start with an incomplete surrogate pair" do
+        cmap_data = <<-CMAP
+          /CIDInit /ProcSet findresource begin
+          12 dict begin
+          begincmap
+          1 beginbfrange
+          <0001> <0002> <D800>
+          endbfrange
+          endcmap
+          CMapName currentdict /CMap defineresource pop
+          end
+          end
+        CMAP
+
+        map = PDF::Reader::CMap.new(cmap_data)
+        expect(map.size).to eq(0)
+        expect(map.decode(0x0001)).to eq([])
+        expect(map.decode(0x0002)).to eq([])
+      end
+    end
+
     context "cmap with bfchar and a surrogate codepoint that's missing its pair" do
       it "correctly loads character mapping" do
         filename = File.dirname(__FILE__) + "/../data/cmap_with_invalid_surrogate_pair.txt"
@@ -139,6 +161,105 @@ describe PDF::Reader::CMap do
         expect(map.map[0x6]).to     eq([0x43])
         expect(map.map[0x01E1]).to  eq([0x2C])
         expect(map.map[0x0AC9]).to  be_nil
+      end
+    end
+
+    describe "bfrange type one with a nil start code" do
+      it "skips the range" do
+        cmap_data = <<-CMAP
+          /CIDInit /ProcSet findresource begin
+          12 dict begin
+          begincmap
+          1 beginbfrange
+          <> <0003> <1234>
+          endbfrange
+          endcmap
+          CMapName currentdict /CMap defineresource pop
+          end
+          end
+        CMAP
+
+        map = PDF::Reader::CMap.new(cmap_data)
+        expect(map.size).to eq(0)
+      end
+    end
+
+    describe "bfrange type one with a nil end code" do
+      it "skips the range" do
+        cmap_data = <<-CMAP
+          /CIDInit /ProcSet findresource begin
+          12 dict begin
+          begincmap
+          1 beginbfrange
+          <0001> <> <1234>
+          endbfrange
+          endcmap
+          CMapName currentdict /CMap defineresource pop
+          end
+          end
+        CMAP
+
+        map = PDF::Reader::CMap.new(cmap_data)
+        expect(map.size).to eq(0)
+      end
+    end
+
+    describe "bfrange type two where the array is shorter than the range" do
+      it "maps the parts of the range that are fouind in the array, skips the rest" do
+        cmap_data = <<-CMAP
+          /CIDInit /ProcSet findresource begin
+          12 dict begin
+          begincmap
+          1 beginbfrange
+          <0001> <0005> [<0041> <0042>]
+          endbfrange
+          endcmap
+          CMapName currentdict /CMap defineresource pop
+          end
+          end
+        CMAP
+
+        map = PDF::Reader::CMap.new(cmap_data)
+        expect(map.decode(0x0001)).to eq([0x0041])
+        expect(map.decode(0x0002)).to eq([0x0042])
+        expect(map.decode(0x0003)).to eq([])
+        expect(map.decode(0x0004)).to eq([])
+        expect(map.decode(0x0005)).to eq([])
+      end
+    end
+
+    describe "initialized with an empty string" do
+      it "inits without error but has no mappings and decode returns empty arrays" do
+        map = PDF::Reader::CMap.new("")
+        expect(map.size).to eq(0)
+        expect(map.decode(1)).to eq([])
+      end
+
+      it "returns empty array for nil input" do
+        map = PDF::Reader::CMap.new("")
+        expect(map.decode(nil)).to eq([])
+      end
+    end
+
+    context "initialized with malformed cmap data" do
+      it "gracefully handles invalid data without crashing" do
+        invalid_cmap = <<-CMAP
+          /CIDInit /ProcSet findresource begin
+          12 dict begin
+          begincmap
+          1 beginbfrange
+          123 456 789
+          endbfrange
+          endcmap
+          CMapName currentdict /CMap defineresource pop
+          end
+          end
+        CMAP
+
+        # Should not crash, may silently ignore invalid data
+        expect {
+          PDF::Reader::CMap.new(invalid_cmap)
+        }.not_to raise_error
       end
     end
   end

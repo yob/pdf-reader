@@ -175,7 +175,7 @@ class PDF::Reader
       end_code   = str_to_int(end_code).first
       dst        = str_to_int(dst)
 
-      return if start_code.nil? || end_code.nil?
+      return if start_code.nil? || end_code.nil? || dst.empty?
 
       # add all values in the range to our mapping
       (start_code..end_code).each_with_index do |val, idx|
