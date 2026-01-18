@@ -85,16 +85,16 @@ describe PDF::Reader::TextRun do
       end
     end
     context "the font_sizes do not match" do
-      context "when the two runs are within 1x font_size of each other" do
+      context "when the two runs x positions is within 1x font_size of each other" do
         let(:one)   { PDF::Reader::TextRun.new(x,           y, width, font,   "A")}
         let(:two)   { PDF::Reader::TextRun.new(one.endx+12, y, width, font+1, "B")}
 
         it "returns true" do
-          expect(one.mergable?(two)).to be_falsey
+          expect(one.mergable?(two)).to be_truthy
         end
       end
 
-      context "when the two runs are over 1x font_size away from each other" do
+      context "when the two runs x positions are over 1x font_size away from each other" do
         let(:one)   { PDF::Reader::TextRun.new(x,           y, width, font,   "A")}
         let(:two)   { PDF::Reader::TextRun.new(one.endx+13, y, width, font+1, "B")}
 

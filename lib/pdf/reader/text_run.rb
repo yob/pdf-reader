@@ -21,6 +21,14 @@ class PDF::Reader
 
     alias :to_s :text
 
+    # If two characters are adjacent and their font size is within this tolerance range,
+    # we'll consider merging them
+    MERGABLE_FONT_SIZE_FACTOR = 0.3 #: Numeric
+
+    # If two characters are adjacent and have Y values within this many points of eachother,
+    # we'll consider merging them
+    MERGABLE_Y_RANGE = 2 #: Numeric
+
     #: (Numeric, Numeric, Numeric, Numeric, String) -> void
     def initialize(x, y, width, font_size, text)
       @origin = PDF::Reader::Point.new(x, y) #: PDF::Reader::Point
@@ -29,7 +37,9 @@ class PDF::Reader
       @text = text
       @endx = nil #: Numeric | nil
       @endy = nil #: Numeric | nil
-      @mergable_range = nil #: Range[Numeric] | nil
+      @mergable_xrange = nil #: Range[Numeric] | nil
+      @mergable_yrange = nil #: Range[Numeric] | nil
+      @mergable_fs_range = nil #: Range[Numeric] | nil
     end
 
     # Allows collections of TextRun objects to be sorted. They will be sorted
@@ -78,7 +88,7 @@ class PDF::Reader
 
     #: (PDF::Reader::TextRun) -> bool
     def mergable?(other)
-      y.to_i == other.y.to_i && font_size == other.font_size && mergable_range.include?(other.x)
+      mergable_yrange.include?(other.y) && mergable_xrange.include?(other.x) && mergable_fs_range.include?(other.font_size)
     end
 
     #: (PDF::Reader::TextRun) -> PDF::Reader::TextRun
@@ -123,8 +133,18 @@ class PDF::Reader
     end
 
     #: () -> Range[Numeric]
-    def mergable_range
-      @mergable_range ||= Range.new(endx - 3, endx + font_size)
+    def mergable_xrange
+      @mergable_xrange ||= Range.new(endx - 3, endx + font_size)
+    end
+
+    #: () -> Range[Numeric]
+    def mergable_yrange
+      @mergable_yrange ||= Range.new(y - MERGABLE_Y_RANGE, y + MERGABLE_Y_RANGE)
+    end
+
+    #: () -> Range[Numeric]
+    def mergable_fs_range
+      @mergable_fs_range ||= Range.new(font_size - (font_size * MERGABLE_FONT_SIZE_FACTOR), font_size + (font_size * MERGABLE_FONT_SIZE_FACTOR))
     end
 
     # Assume string encoding is marked correctly and we can trust String#size to return a
