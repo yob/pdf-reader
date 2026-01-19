@@ -79,6 +79,22 @@ steps:
       - "9.4"
       - "10.0"
 
+  - command: "auto/run-specs"
+    label: "rpsec (truffleruby-{{matrix}})"
+    key: specs-truffleruby
+    depends_on:
+      - quality
+      - sorbet
+      - strict-typing
+    soft_fail: true
+    matrix:
+      - "33.0.0"
+    env:
+      DOCKER_IMAGE: "truffleruby"
+      RUBY_VERSION: "{{matrix}}"
+      BUNDLE_GEMFILE: "/work/Gemfile-legacy"
+
+
   - command: "auto/upload-release-steps"
     label: "release?"
     key: upload-release
