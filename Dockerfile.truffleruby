@@ -1,0 +1,25 @@
+FROM debian:13-slim
+
+RUN apt-get update && apt-get install -y build-essential curl git ca-certificates --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
+# RUN curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash
+
+# RUN curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-doctor | bash
+
+RUN git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+RUN git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+
+ENV PATH="/root/.rbenv/bin:/root/.rbenv/shims:${PATH}"
+ENV LANG="en_US.UTF-8"
+
+RUN echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+
+RUN rbenv --version
+
+RUN rbenv install truffleruby-33.0.0
+
+RUN rbenv global truffleruby-33.0.0
+
+# RUN gem env
+
+CMD [ "irb" ]

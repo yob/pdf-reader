@@ -366,9 +366,9 @@ describe PDF::Reader, "integration specs with invalid PDF files" do
       reader.page_count
 
       reader.pages.each do |page|
-        page.fonts.to_s
         page.text.to_s
         page.raw_content.to_s
+        page.fonts.to_s
       end
     end
   end
