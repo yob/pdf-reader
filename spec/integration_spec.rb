@@ -1847,4 +1847,14 @@ describe PDF::Reader, "integration specs" do
       end
     end
   end
+
+  context "PDF with a single line of text that has varying font sizes" do
+    let(:filename) { pdf_spec_file("hello_world_caps") }
+
+    it "succesfully extracts text" do
+      PDF::Reader.open(filename) do |reader|
+        expect(reader.page(1).text).to start_with("HELLO WORLD")
+      end
+    end
+  end
 end
