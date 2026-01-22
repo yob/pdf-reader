@@ -88,7 +88,7 @@ steps:
       - strict-typing
     soft_fail: true
     matrix:
-      - "33.0.0"
+      - "33.0.1"
     env:
       DOCKER_IMAGE: "truffleruby"
       RUBY_VERSION: "{{matrix}}"
