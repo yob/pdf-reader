@@ -10,9 +10,7 @@ docker_volume_name="pdf-reader-gem-cache-${docker_image}${ruby_version}"
 gemfile="${BUNDLE_GEMFILE:=/work/Gemfile}"
 
 if [ $docker_image = "truffleruby" ]; then
-  if [ $ruby_version = "33.0.0" ]; then
-    docker build -f Dockerfile.truffleruby -t truffleruby:33.0.0 --load .
-  fi
+  docker build -f Dockerfile.truffleruby --build-arg RUBY_VERSION=${ruby_version} -t truffleruby:${ruby_version} --load .
 fi
 
 docker volume create ${docker_volume_name} > /dev/null
