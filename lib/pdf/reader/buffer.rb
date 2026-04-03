@@ -149,8 +149,22 @@ class PDF::Reader
     #: () -> Integer
     def find_first_xref_offset
       check_size_is_non_zero
-      @io.seek(-TRAILING_BYTECOUNT, IO::SEEK_END) rescue @io.seek(0)
-      data = @io.read(TRAILING_BYTECOUNT)
+
+      # Skip trailing null bytes to find the effective end of the PDF.
+      # Some generators (e.g. Atos/Fonet) append thousands of null bytes
+      # after %%EOF.
+      @io.seek(0, IO::SEEK_END)
+      end_pos = @io.pos
+
+      while end_pos > 0
+        @io.seek(end_pos - 1)
+        break if @io.read(1) != NULL_BYTE
+        end_pos -= 1
+      end
+
+      start_pos = [end_pos - TRAILING_BYTECOUNT, 0].max
+      @io.seek(start_pos)
+      data = @io.read(end_pos - start_pos)
 
       raise MalformedPDFError, "PDF does not contain EOF marker" if data.nil?
 

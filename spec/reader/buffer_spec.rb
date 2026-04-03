@@ -631,6 +631,15 @@ describe PDF::Reader::Buffer, "find_first_xref_offset method" do
       expect(buffer.find_first_xref_offset).to eql(145)
     end
   end
+
+  context "trailing_null_bytes.pdf (null bytes after the EOF marker)" do
+    it "finds the first xref offset" do
+      file   = File.new pdf_spec_file("trailing_null_bytes")
+      buffer = PDF::Reader::Buffer.new file
+
+      expect(buffer.find_first_xref_offset).to eql(145)
+    end
+  end
 end
 
 describe PDF::Reader::Buffer, "read method" do
