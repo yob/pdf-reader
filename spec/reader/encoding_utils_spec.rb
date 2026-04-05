@@ -71,6 +71,7 @@ describe PDF::Reader::EncodingUtils do
       it "returns the string encoded as UTF-8" do
         result = PDF::Reader::EncodingUtils.string_to_utf8("hello")
         expect(result).to eql("hello")
+        expect(result.valid_encoding?).to be true
         expect(result.encoding).to eql(Encoding::UTF_8)
       end
     end
@@ -80,6 +81,7 @@ describe PDF::Reader::EncodingUtils do
         utf16 = "\xFE\xFF\x00W\x00o\x00r\x00d"
         result = PDF::Reader::EncodingUtils.string_to_utf8(utf16)
         expect(result).to eql("Word")
+        expect(result.valid_encoding?).to be true
         expect(result.encoding).to eql(Encoding::UTF_8)
       end
 
@@ -87,6 +89,15 @@ describe PDF::Reader::EncodingUtils do
         utf16 = "\xFE\xFF\x00O\x00p\x00e\x00n\x00O\x00f\x00f\x00i\x00c\x00e"
         result = PDF::Reader::EncodingUtils.string_to_utf8(utf16)
         expect(result).to eql("OpenOffice")
+        expect(result.valid_encoding?).to be true
+        expect(result.encoding).to eql(Encoding::UTF_8)
+      end
+
+      it "replaces invalid bytes after the BOM with U+FFFD" do
+        invalid_utf16 = "\xFE\xFF\x00O\x00p\x00e\x00n\x00O\x00f\x00f\x00i\x00c\x00e\xFF"  # BOM + OpenOffice + single byte (UTF-16 requires byte pairs)
+        result = PDF::Reader::EncodingUtils.string_to_utf8(invalid_utf16)
+        expect(result).to eql("OpenOffice�")
+        expect(result.valid_encoding?).to be true
         expect(result.encoding).to eql(Encoding::UTF_8)
       end
     end
@@ -95,7 +106,43 @@ describe PDF::Reader::EncodingUtils do
       it "force-encodes the string as UTF-8" do
         result = PDF::Reader::EncodingUtils.string_to_utf8("D:20101113071546")
         expect(result).to eql("D:20101113071546")
+        expect(result.valid_encoding?).to be true
         expect(result.encoding).to eql(Encoding::UTF_8)
+      end
+
+      it "converts 0x18 to U+02D8 BREVE" do
+        result = PDF::Reader::EncodingUtils.string_to_utf8("\x18")
+        expect(result.encoding).to eql(Encoding::UTF_8)
+        expect(result.valid_encoding?).to be true
+        expect(result).to eql("˘")
+      end
+
+      it "converts 0x19 to U+02C7 CARON" do
+        result = PDF::Reader::EncodingUtils.string_to_utf8("\x19")
+        expect(result.encoding).to eql(Encoding::UTF_8)
+        expect(result.valid_encoding?).to be true
+        expect(result).to eql("ˇ")
+      end
+
+      it "converts 0x1A to U+02C6 MODIFIER LETTER CIRCUMFLEX ACCENT" do
+        result = PDF::Reader::EncodingUtils.string_to_utf8("\x1A")
+        expect(result.encoding).to eql(Encoding::UTF_8)
+        expect(result.valid_encoding?).to be true
+        expect(result).to eql("ˆ")
+      end
+
+      it "converts 0xA0 to U+20AC EURO SIGN" do
+        result = PDF::Reader::EncodingUtils.string_to_utf8("\xA0")
+        expect(result.encoding).to eql(Encoding::UTF_8)
+        expect(result.valid_encoding?).to be true
+        expect(result).to eql("€")
+      end
+
+      it "converts 0xF0 to U+00F0 LATIN SMALL LETTER ETH" do
+        result = PDF::Reader::EncodingUtils.string_to_utf8("\xF0")
+        expect(result.encoding).to eql(Encoding::UTF_8)
+        expect(result.valid_encoding?).to be true
+        expect(result).to eql("ð")
       end
     end
   end
