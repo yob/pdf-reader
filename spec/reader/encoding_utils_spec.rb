@@ -89,6 +89,13 @@ describe PDF::Reader::EncodingUtils do
         expect(result).to eql("OpenOffice")
         expect(result.encoding).to eql(Encoding::UTF_8)
       end
+
+      it "replaces invalid bytes after the BOM with U+FFFD" do
+        invalid_utf16 = "\xFE\xFF\x00O\x00p\x00e\x00n\x00O\x00f\x00f\x00i\x00c\x00e\xFF"  # BOM + OpenOffice + single byte (UTF-16 requires byte pairs)
+        result = PDF::Reader::EncodingUtils.string_to_utf8(invalid_utf16)
+        expect(result).to eql("OpenOffice�")
+        expect(result.encoding).to eql(Encoding::UTF_8)
+      end
     end
 
     context "with a string without a UTF-16 BOM" do

@@ -4,6 +4,9 @@
 
 module PDF
   class Reader
+    # Utiliy class for some conversions to utf8 (the standard output encoding for pdf-reader).
+    # This is not used for general purpose of encoding management while parsing PDFs, that lives
+    # in PDF::Reader::Encoding
     class EncodingUtils
 
       UTF16_BOM = [254, 255] #: Array[Integer]
@@ -70,7 +73,11 @@ module PDF
 
       #: (String) -> String
       def utf16_to_utf8(obj)
-        obj.dup.force_encoding(::Encoding::UTF_16).encode(::Encoding::UTF_8)
+        obj.dup.force_encoding(
+          ::Encoding::UTF_16
+        ).encode(
+          ::Encoding::UTF_8, invalid: :replace, replace: "\uFFFD"
+        )
       end
     end
   end
