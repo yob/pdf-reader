@@ -5,7 +5,10 @@
 module PDF
   class Reader
     class EncodingUtils
-      #: (untyped) -> untyped
+
+      UTF16_BOM = [254, 255] #: Array[Integer]
+
+     #: (untyped) -> untyped
       def self.obj_to_utf8(obj)
         new.obj_to_utf8(obj)
       end
@@ -54,23 +57,20 @@ module PDF
 
         return false if first_bytes.nil?
 
-        first_bytes.unpack("C*") == [254, 255]
+        first_bytes.unpack("C*") == UTF16_BOM
       end
 
       # TODO find a PDF I can use to spec this behaviour
       #
       #: (String) -> String
       def pdfdoc_to_utf8(obj)
-        obj.force_encoding("utf-8")
+        obj.force_encoding(::Encoding::UTF_8)
         obj
       end
 
       #: (String) -> String
       def utf16_to_utf8(obj)
-        str = obj[2, obj.size].to_s
-        str = str.unpack("n*").pack("U*")
-        str.force_encoding("utf-8")
-        str
+        obj.dup.force_encoding(::Encoding::UTF_16).encode(::Encoding::UTF_8)
       end
     end
   end
