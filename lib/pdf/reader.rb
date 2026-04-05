@@ -130,7 +130,7 @@ module PDF
     #: () -> Hash[untyped, untyped]?
     def info
       dict = @objects.deref_hash(@objects.trailer[:Info]) || {}
-      doc_strings_to_utf8(dict)
+      EncodingUtils.obj_to_utf8(dict)
     end
 
     # Return a String with extra XML metadata provided by the author of the PDF file. Not
@@ -234,58 +234,6 @@ module PDF
 
     private
 
-    # recursively convert strings from outside a content stream into UTF-8
-    #
-    #: (untyped) -> untyped
-    def doc_strings_to_utf8(obj)
-      case obj
-      when ::Hash then
-        {}.tap { |new_hash|
-          obj.each do |key, value|
-            new_hash[key] = doc_strings_to_utf8(value)
-          end
-        }
-      when Array then
-        obj.map { |item| doc_strings_to_utf8(item) }
-      when String then
-        if has_utf16_bom?(obj)
-          utf16_to_utf8(obj)
-        else
-          pdfdoc_to_utf8(obj)
-        end
-      else
-        obj
-      end
-    end
-
-    #: (String) -> bool
-    def has_utf16_bom?(str)
-      first_bytes = str[0,2]
-
-      return false if first_bytes.nil?
-
-      first_bytes.unpack("C*") == [254, 255]
-    end
-
-    # TODO find a PDF I can use to spec this behaviour
-    #
-    #: (String) -> String
-    def pdfdoc_to_utf8(obj)
-      obj.force_encoding("utf-8")
-      obj
-    end
-
-    # one day we'll all run on a 1.9 compatible VM and I can just do this with
-    # String#encode
-    #
-    #: (String) -> String
-    def utf16_to_utf8(obj)
-      str = obj[2, obj.size].to_s
-      str = str.unpack("n*").pack("U*")
-      str.force_encoding("utf-8")
-      str
-    end
-
     #: () -> Hash[Symbol, untyped]
     def root
       @root ||= @objects.deref_hash(@objects.trailer[:Root]) || {}
@@ -302,6 +250,7 @@ require 'pdf/reader/bounding_rectangle_runs_filter'
 require 'pdf/reader/cid_widths'
 require 'pdf/reader/cmap'
 require 'pdf/reader/encoding'
+require 'pdf/reader/encoding_utils'
 require 'pdf/reader/error'
 require 'pdf/reader/filter'
 require 'pdf/reader/filter/ascii85'
