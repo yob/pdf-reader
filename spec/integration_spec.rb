@@ -1024,6 +1024,17 @@ describe PDF::Reader, "integration specs" do
     end
   end
 
+  context "PDF with ActualText in marked content" do
+    let(:filename) { pdf_spec_file("actual_text_marked_content") }
+
+    it "extracts text correctly using ActualText" do
+      PDF::Reader.open(filename) do |reader|
+        page = reader.page(1)
+        expect(page.text).to include("21.09.2023")
+      end
+    end
+  end
+
   context "PDF that uses a standatd font and a ligature" do
     let(:filename) { pdf_spec_file("standard_font_with_a_difference") }
 

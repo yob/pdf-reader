@@ -49,6 +49,8 @@ module PDF
         @page = page
         @content = []
         @characters = []
+        @actual_text = nil
+        @actual_text_consumed = false
       end
 
       def runs(opts = {})
@@ -122,6 +124,21 @@ module PDF
       end
 
       #####################################################
+      # Marked Content
+      #####################################################
+      def begin_marked_content_with_pl(tag, properties)
+        if properties.is_a?(Hash) && properties[:ActualText]
+          @actual_text = properties[:ActualText]
+          @actual_text_consumed = false
+        end
+      end
+
+      def end_marked_content
+        @actual_text = nil
+        @actual_text_consumed = false
+      end
+
+      #####################################################
       # XObjects
       #####################################################
       def invoke_xobject(label)
@@ -148,6 +165,18 @@ module PDF
           text_origin = apply_rotation(bl)
 
           utf8_chars = @state.current_font.to_utf8(glyph_code)
+
+          # Use ActualText from marked content if available (PDF 32000-1 §14.9.4).
+          # ActualText replaces all text within a BDC/EMC span.
+          if @actual_text
+            if !@actual_text_consumed
+              text = @actual_text
+              utf8_chars = PDF::Reader::EncodingUtils.string_to_utf8(text)
+              @actual_text_consumed = true
+            else
+              utf8_chars = ""
+            end
+          end
 
           # apply to glyph displacment for the current glyph so the next
           # glyph will appear in the correct position
