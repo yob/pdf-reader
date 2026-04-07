@@ -151,14 +151,17 @@ class PDF::Reader
           end
 
           objid, count = params[0].to_i, params[1].to_i
-          count.times do
+          count.times do |entry_index|
             offset = buf.token.to_i
             generation = buf.token.to_i
             state = buf.token
 
             # Some PDF writers start numbering at 1 instead of 0. Fix up the number.
-            # TODO should this fix be logged?
-            objid = 0 if objid == 1 and offset == 0 and generation == 65535 and state == 'f'
+            # Only apply this on the first entry of the section - if entry_index > 0,
+            # objid has been incremented from 0 and object 1 is a legitimate free entry.
+            if entry_index == 0 and objid == 1 and offset == 0 and generation == 65535 and state == 'f'
+              objid = 0
+            end
             store(objid, generation, offset + @junk_offset) if state == "n" && offset > 0
             objid += 1
             params.clear

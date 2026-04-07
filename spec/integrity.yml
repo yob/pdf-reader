@@ -131,6 +131,9 @@ data/actual_text_marked_content.pdf:
 data/font_sizes.pdf:
   :bytes: 1062
   :md5: c8d4bd87fa2d9b16c9c41501f37905c3
+data/free_object_1_in_xref.pdf:
+  :bytes: 360
+  :md5: ff6b05be75527ec88cb2efeec79cf8cc
 data/form_xobject.pdf:
   :bytes: 1294
   :md5: db778dde9c16993194dc50f1222b52ab
