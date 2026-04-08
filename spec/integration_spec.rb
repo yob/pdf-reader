@@ -1858,4 +1858,14 @@ describe PDF::Reader, "integration specs" do
       end
     end
   end
+
+  context "PDF with object 1 as a free entry in the xref table" do
+    let(:filename) { pdf_spec_file("free_object_1_in_xref") }
+
+    it "correctly reads the page count" do
+      PDF::Reader.open(filename) do |reader|
+        expect(reader.page_count).to eql(1)
+      end
+    end
+  end
 end

@@ -130,6 +130,24 @@ describe PDF::Reader::XRef do
       end
     end
 
+    context "with free_object_1_in_xref.pdf" do
+      let!(:file) { File.new(pdf_spec_file("free_object_1_in_xref")) }
+      subject { PDF::Reader::XRef.new(file) }
+
+      it "loads all xrefs correctly when object 1 is a free entry" do
+        # 5 entries in the xref table, 2 are free (objects 0 and 1), 3 are in-use
+        expect(subject.xref.keys.size).to eql(3)
+      end
+
+      it "maps object IDs to the correct offsets" do
+        # Object 2 (Catalog) should NOT be mapped to object 1
+        expect(subject.xref).to have_key(2)
+        expect(subject.xref).to have_key(3)
+        expect(subject.xref).to have_key(4)
+        expect(subject.xref).not_to have_key(1)
+      end
+    end
+
     context "with junk_prefix.pdf" do
       it "loads all xrefs correctly from a File" do
         File.open(pdf_spec_file("junk_prefix")) do |file|
