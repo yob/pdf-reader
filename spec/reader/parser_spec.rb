@@ -223,6 +223,21 @@ describe PDF::Reader::Parser do
     end
   end
 
+  it "parses dictionary containing PostScript operators when operators are set" do
+    str = "<< /Registry (Adobe) def /Ordering (UCS) def /Supplement 0 def >>"
+    buf = PDF::Reader::Buffer.new(StringIO.new(str))
+    parser = PDF::Reader::Parser.new(buf)
+    dict = parser.parse_token({"def" => :noop})
+    expect(dict).to eq({Registry: "Adobe", Ordering: "UCS", Supplement: 0})
+  end
+
+  it "raises error for dictionary containing def when no operators are set" do
+    str = "<< /Registry (Adobe) def >>"
+    expect {
+      parse_string(str).parse_token
+    }.to raise_error(PDF::Reader::MalformedPDFError)
+  end
+
   it "parses numbers correctly" do
     parser = parse_string("1 2 -3 4.5 -5")
     expect(parser.parse_token).to eql( 1)

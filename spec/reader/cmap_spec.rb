@@ -228,6 +228,33 @@ describe PDF::Reader::CMap do
       end
     end
 
+    context "cmap with PostScript def keywords inside dictionary blocks" do
+      it "correctly loads character mapping" do
+        cmap_data = <<-CMAP
+          /CIDInit /ProcSet findresource begin
+          12 dict begin
+          begincmap
+          /CIDSystemInfo << /Registry (TestFont+0) def /Ordering (T1UV) def /Supplement 0 def >> def
+          /CMapName /TestFont+0 def
+          1 begincodespacerange
+          <00> <FF>
+          endcodespacerange
+          3 beginbfchar
+          <01> <0041>
+          <02> <0042>
+          <03> <0043>
+          endbfchar
+          endcmap
+        CMAP
+
+        map = PDF::Reader::CMap.new(cmap_data)
+        expect(map.size).to eq(3)
+        expect(map.decode(0x01)).to eq([0x0041])
+        expect(map.decode(0x02)).to eq([0x0042])
+        expect(map.decode(0x03)).to eq([0x0043])
+      end
+    end
+
     describe "initialized with an empty string" do
       it "inits without error but has no mappings and decode returns empty arrays" do
         map = PDF::Reader::CMap.new("")
