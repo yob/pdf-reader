@@ -128,6 +128,9 @@ data/extended_eof.pdf:
 data/actual_text_marked_content.pdf:
   :bytes: 6651
   :md5: 3fa1e5422adb93486eaad8a75bd3323c
+data/trailing_null_bytes.pdf:
+  :bytes: 67721
+  :md5: 6b9b6375ca194fdf8687a44130c54df2
 data/font_sizes.pdf:
   :bytes: 1062
   :md5: c8d4bd87fa2d9b16c9c41501f37905c3
