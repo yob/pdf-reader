@@ -4,6 +4,6 @@
 module ParserHelper
   def parse_string(r)
     buf = PDF::Reader::Buffer.new(StringIO.new(r))
-    PDF::Reader::Parser.new(buf, nil)
+    PDF::Reader::Parser.new(buf, operators: {})
   end
 end

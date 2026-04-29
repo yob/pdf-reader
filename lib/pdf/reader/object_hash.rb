@@ -558,7 +558,7 @@ class PDF::Reader
     def fetch_object(key)
       if xref[key].is_a?(Integer)
         buf = new_buffer(xref[key])
-        decrypt(key, Parser.new(buf, self).object(key.id, key.gen))
+        decrypt(key, Parser.new(buf, objects: self).object(key.id, key.gen))
       end
     end
 

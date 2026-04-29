@@ -62,18 +62,27 @@ class PDF::Reader
     #
     # buffer - a PDF::Reader::Buffer object that contains PDF data
     # objects  - a PDF::Reader::ObjectHash object that can return objects from the PDF file
-    #: (PDF::Reader::Buffer, ?PDF::Reader::ObjectHash?) -> void
-    def initialize(buffer, objects=nil)
+    # operators - a hash of supported operators to read from the underlying buffer.
+    # relaxed_dictionaries - quietly skip unexpected operator tokens inside a dictionary. Useful for
+    #                        handling Postscript dictionaries in CMaps
+    #
+    #: (
+    #|   PDF::Reader::Buffer,
+    #|   ?operators: Hash[String | PDF::Reader::Token, Symbol],
+    #|   ?objects: PDF::Reader::ObjectHash?,
+    #|   ?relaxed_dictionaries: T::Boolean
+    #| ) -> void
+    def initialize(buffer, operators: {}, objects: nil, relaxed_dictionaries: false)
       @buffer = buffer
+      @operators = operators
       @objects  = objects
-      @operators = {} #: Hash[String | PDF::Reader::Token, Symbol]
+      @relaxed_dictionaries = relaxed_dictionaries
     end
     ################################################################################
     # Reads the next token from the underlying buffer and convets it to an appropriate
     # object
     #
-    # operators - a hash of supported operators to read from the underlying buffer.
-    #: (?Hash[String | PDF::Reader::Token, Symbol]) -> (
+    #: () -> (
     #|   PDF::Reader::Reference |
     #|   PDF::Reader::Token |
     #|   Numeric |
@@ -83,10 +92,7 @@ class PDF::Reader
     #|   Hash[untyped, untyped] |
     #|   nil
     #| )
-    def parse_token(operators={})
-      # Persist operators so nested calls (dictionary, array) inherit them.
-      # Safe because Parser instances are not reused across parsing contexts.
-      @operators = operators unless operators.empty?
+    def parse_token
       token = @buffer.token
 
       if token.nil?
@@ -156,9 +162,11 @@ class PDF::Reader
       loop do
         key = parse_token
         break if key.kind_of?(Token) and key == ">>"
+
         # Skip operator tokens (e.g. PostScript "def") that appear inside
         # dictionary blocks in CMap streams parsed with operator keywords.
-        next if key.kind_of?(Token)
+        next if @relaxed_dictionaries && key.kind_of?(Token)
+
         raise MalformedPDFError, "unterminated dict" if @buffer.empty?
         PDF::Reader::Error.validate_type_as_malformed(key, "Dictionary key", Symbol)
 
@@ -196,9 +204,6 @@ class PDF::Reader
       loop do
         item = parse_token
         break if item.kind_of?(Token) and item == "]"
-        # Skip operator tokens (e.g. PostScript keywords) that appear inside
-        # array blocks when parsing CMap streams with operator keywords.
-        next if item.kind_of?(Token)
         raise MalformedPDFError, "unterminated array" if @buffer.empty?
         a << item
       end
