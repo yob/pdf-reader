@@ -81,7 +81,7 @@ class PDF::Reader
       mode = initial_mode
       instructions = []
 
-      while token = parser.parse_token(CMAP_KEYWORDS)
+      while token = parser.parse_token
         if token.is_a?(String) || token.is_a?(Array)
           if token == "beginbfchar"
             mode = :char
@@ -108,7 +108,7 @@ class PDF::Reader
     #: (String) -> PDF::Reader::Parser
     def build_parser(instructions)
       buffer = Buffer.new(StringIO.new(instructions))
-      Parser.new(buffer)
+      Parser.new(buffer, operators: CMAP_KEYWORDS, relaxed_dictionaries: true)
     end
 
     # The following includes some manual decoding of UTF-16BE strings into unicode codepoints. In

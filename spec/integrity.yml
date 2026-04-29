@@ -8,6 +8,9 @@ data/TJ_and_char_spacing.pdf:
 data/TJ_starts_with_a_number.pdf:
   :bytes: 13119
   :md5: 83501b5c507cdddbd9283ad2003c885b
+data/actual_text_marked_content.pdf:
+  :bytes: 6651
+  :md5: 3fa1e5422adb93486eaad8a75bd3323c
 data/adobe_sample.pdf:
   :bytes: 378345
   :md5: 07ab19345bfd5d22af6301a5751f94c2
@@ -125,15 +128,9 @@ data/encrypted_version5_revision6_256bit_aes_user_pass_apples_unenc_metadata.pdf
 data/extended_eof.pdf:
   :bytes: 61721
   :md5: 02bd4cfbc79b4a295754fda2705b6181
-data/actual_text_marked_content.pdf:
-  :bytes: 6651
-  :md5: 3fa1e5422adb93486eaad8a75bd3323c
 data/font_sizes.pdf:
   :bytes: 1062
   :md5: c8d4bd87fa2d9b16c9c41501f37905c3
-data/free_object_1_in_xref.pdf:
-  :bytes: 360
-  :md5: ff6b05be75527ec88cb2efeec79cf8cc
 data/form_xobject.pdf:
   :bytes: 1294
   :md5: db778dde9c16993194dc50f1222b52ab
@@ -143,6 +140,9 @@ data/form_xobject_more.pdf:
 data/form_xobject_recursive.pdf:
   :bytes: 1454
   :md5: 24cbbe4f91c23b37f9a1ddac81bd3a39
+data/free_object_1_in_xref.pdf:
+  :bytes: 360
+  :md5: ff6b05be75527ec88cb2efeec79cf8cc
 data/hard_lock_under_osx.pdf:
   :bytes: 4545
   :md5: 365e2076036b5e2445d1dcde13d6dbb6
@@ -371,6 +371,9 @@ data/pdfwriter-manual.pdf:
 data/portrait.pdf:
   :bytes: 288466
   :md5: dc2413fb949ee78fc1e2319ca4ffcd93
+data/postscript_cmap_test.pdf:
+  :bytes: 1139
+  :md5: 8d6a8a24d0ca2d7cef40c401ef0e33ed
 data/prev0.pdf:
   :bytes: 753
   :md5: 5c729e47a5bd097d312df70f913c6349

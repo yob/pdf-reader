@@ -7,7 +7,9 @@ describe PDF::Reader::Parser do
 
   it "parses a name correctly" do
     expect(parse_string("/James").parse_token).to eql(:James)
-    expect(parse_string("/A;Name_With-Various***Characters?").parse_token).to eql(:"A;Name_With-Various***Characters?")
+    expect(parse_string("/A;Name_With-Various***Characters?").parse_token).to eql(
+      :"A;Name_With-Various***Characters?"
+    )
     expect(parse_string("/1.2").parse_token).to eql(:"1.2")
     expect(parse_string("/$$").parse_token).to eql(:"$$")
     expect(parse_string("/@pattern").parse_token).to eql(:"@pattern")
@@ -119,7 +121,13 @@ describe PDF::Reader::Parser do
       expect(parse_string(src).parse_token).to eql(exp)
     end
 
-    mixed = [ seq[:straddle_seq_5c6e], seq[:char_5c08], seq[:char_5c0a], seq[:char_5c02], seq[:char_contain_0a] ]
+    mixed = [
+      seq[:straddle_seq_5c6e],
+      seq[:char_5c08],
+      seq[:char_5c0a],
+      seq[:char_5c02],
+      seq[:char_contain_0a]
+    ]
     mixed_src = binary_string("(" + bom + mixed.map {|x| x[0]}.join + ")")
     mixed_exp = binary_string(bom + mixed.map {|x| x[1]}.join)
     expect(parse_string(mixed_src).parse_token).to eql(mixed_exp)
@@ -221,6 +229,23 @@ describe PDF::Reader::Parser do
         parse_string("[ 1 2 3").parse_token
       }.to raise_error(PDF::Reader::MalformedPDFError, "unterminated array")
     end
+  end
+
+  context "operators are set and relaxed dictionaries is true" do
+    it "parses dictionary containing PostScript operators" do
+      str = "<< /Registry (Adobe) def /Ordering (UCS) def /Supplement 0 def >>"
+      buf = PDF::Reader::Buffer.new(StringIO.new(str))
+      parser = PDF::Reader::Parser.new(buf, operators: {"def" => :noop}, relaxed_dictionaries: true)
+      dict = parser.parse_token
+      expect(dict).to eq({Registry: "Adobe", Ordering: "UCS", Supplement: 0})
+    end
+  end
+
+  it "raises error for dictionary containing def when no operators are set" do
+    str = "<< /Registry (Adobe) def >>"
+    expect {
+      parse_string(str).parse_token
+    }.to raise_error(PDF::Reader::MalformedPDFError)
   end
 
   it "parses numbers correctly" do

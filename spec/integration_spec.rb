@@ -1868,4 +1868,15 @@ describe PDF::Reader, "integration specs" do
       end
     end
   end
+
+  context "PDF with PostScript-style CMap fonts containing def keywords in dictionaries" do
+    let(:filename) { pdf_spec_file("postscript_cmap_test") }
+
+    it "extracts text correctly" do
+      PDF::Reader.open(filename) do |reader|
+        text = reader.pages.first.text
+        expect(text).to include("ABC")
+      end
+    end
+  end
 end
