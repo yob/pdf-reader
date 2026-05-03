@@ -78,6 +78,7 @@ steps:
       - "9.3"
       - "9.4"
       - "10.0"
+      - "10.1"
 
   - command: "auto/run-specs"
     label: "rpsec (truffleruby-{{matrix}})"
@@ -89,6 +90,7 @@ steps:
     soft_fail: true
     matrix:
       - "33.0.1"
+      - "34.0.1"
     env:
       DOCKER_IMAGE: "truffleruby"
       RUBY_VERSION: "{{matrix}}"
