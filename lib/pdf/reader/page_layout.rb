@@ -122,7 +122,7 @@ class PDF::Reader
 
     #: (untyped, untyped, untyped) -> untyped
     def local_string_insert(haystack, needle, index)
-      haystack[Range.new(index, index + needle.length - 1)] = String.new(needle)
+      haystack[index, needle.length] = needle
     end
 
     #: (untyped) -> untyped

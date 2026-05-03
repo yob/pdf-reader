@@ -97,12 +97,21 @@ class PDF::Reader
       extract_descriptor(obj)
       extract_descendants(obj)
       @width_calc = build_width_calculator #: widthCalculator
+      @utf8_cache = {} #: Hash[Integer, String]
     end
 
     #: (Integer | String | Array[Integer | String]) -> String
     def to_utf8(params)
       if @tounicode
-        to_utf8_via_cmap(params, @tounicode)
+        if params.is_a?(Integer)
+          cached = @utf8_cache[params]
+          return cached unless cached.nil?
+          result = to_utf8_via_cmap(params, @tounicode)
+          @utf8_cache[params] = result
+          result
+        else
+          to_utf8_via_cmap(params, @tounicode)
+        end
       else
         to_utf8_via_encoding(params)
       end
@@ -294,13 +303,11 @@ class PDF::Reader
     def to_utf8_via_cmap(params, cmap)
       case params
       when Integer
-        [
-          cmap.decode(params)
-        ].flatten.pack("U*")
+        cmap.decode(params).pack("U*")
       when String
-        unpack_string_to_array_of_ints(params, encoding.unpack).map { |code_point|
+        unpack_string_to_array_of_ints(params, encoding.unpack).flat_map { |code_point|
           cmap.decode(code_point)
-        }.flatten.pack("U*")
+        }.pack("U*")
       when Array
         params.collect { |param| to_utf8_via_cmap(param, cmap) }.join("")
       end

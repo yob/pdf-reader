@@ -7,9 +7,6 @@ class PDF::Reader
   class TextRun
     include Comparable
 
-    #: PDF::Reader::Point
-    attr_reader :origin
-
     #: Numeric
     attr_reader :width
 
@@ -23,13 +20,21 @@ class PDF::Reader
 
     #: (Numeric, Numeric, Numeric, Numeric, String) -> void
     def initialize(x, y, width, font_size, text)
-      @origin = PDF::Reader::Point.new(x, y) #: PDF::Reader::Point
+      @x = x #: Numeric
+      @y = y #: Numeric
       @width = width
       @font_size = font_size
       @text = text
+      @origin = nil #: PDF::Reader::Point | nil
       @endx = nil #: Numeric | nil
       @endy = nil #: Numeric | nil
       @mergable_range = nil #: Range[Numeric] | nil
+    end
+
+    # Lazily constructed to avoid allocating a Point on every TextRun
+    #: () -> PDF::Reader::Point
+    def origin
+      @origin ||= PDF::Reader::Point.new(@x, @y)
     end
 
     # Allows collections of TextRun objects to be sorted. They will be sorted
@@ -53,22 +58,22 @@ class PDF::Reader
 
     #: () -> Numeric
     def x
-      @origin.x
+      @x
     end
 
     #: () -> Numeric
     def y
-      @origin.y
+      @y
     end
 
     #: () -> Numeric
     def endx
-      @endx ||= @origin.x + width
+      @endx ||= @x + width
     end
 
     #: () -> Numeric
     def endy
-      @endy ||= @origin.y + font_size
+      @endy ||= @y + font_size
     end
 
     #: () -> Numeric

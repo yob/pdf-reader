@@ -50,6 +50,8 @@ class PDF::Reader
     # https://en.wikipedia.org/wiki/Universal_Character_Set_characters
     HIGH_SURROGATE_RANGE = (0xD800..0xDBFF) #: Range[Integer]
 
+    EMPTY_CODEPOINTS = [].freeze #: Array[Integer]
+
     #: Hash[Integer, Array[Integer]]
     attr_reader :map
 
@@ -70,7 +72,7 @@ class PDF::Reader
     #
     #: (Integer) -> Array[Integer]
     def decode(c)
-      @map.fetch(c, [])
+      @map.fetch(c, EMPTY_CODEPOINTS)
     end
 
     private

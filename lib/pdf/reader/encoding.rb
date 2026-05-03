@@ -34,15 +34,19 @@ class PDF::Reader
     CONTROL_CHARS = [0,1,2,3,4,5,6,7,8,11,12,14,15,16,17,18,19,20,21,22,23,
                      24,25,26,27,28,29,30,31] #: Array[Integer]
     UNKNOWN_CHAR = 0x25AF #: Integer # ▯
+    DEFAULT_MAPPING = (0..255).each_with_object({}) { |i, h|
+      h[i] = CONTROL_CHARS.include?(i) ? UNKNOWN_CHAR : i
+    }.freeze #: Hash[Integer, Integer]
+
+    # Cache mapping files to avoid re-reading and re-parsing the same file for
+    # every Encoding that uses it (e.g. many fonts sharing StandardEncoding).
+    FILE_MAPPINGS = {} #: Hash[String, Hash[Integer, Integer]]
 
     #: String
     attr_reader :unpack
 
     #: (Hash[Symbol, untyped] | Symbol | nil) -> void
     def initialize(enc)
-      # maps from character codes to Unicode codepoints
-      @mapping  = default_mapping #: Hash[Integer, Integer]
-
       # maps from character codes to UTF-8 strings.
       @string_cache  = {} #: Hash[Integer, String]
 
@@ -58,7 +62,15 @@ class PDF::Reader
       @differences = nil #: Hash[Integer, Integer] | nil
       @glyphlist = nil #: PDF::Reader::GlyphHash | nil
 
-      load_mapping(@map_file) if @map_file
+      # maps from character codes to Unicode codepoints
+      # If we have a mapping file, use the cached parsed version (loaded once per file)
+      if @map_file
+        @mapping = (
+          FILE_MAPPINGS[@map_file] ||= build_file_mapping(@map_file)
+        ).dup #: Hash[Integer, Integer]
+      else
+        @mapping = DEFAULT_MAPPING.dup
+      end #: Hash[Integer, Integer]
 
       if enc.is_a?(Hash) && enc[:Differences]
         self.differences = enc[:Differences]
@@ -149,20 +161,6 @@ class PDF::Reader
     private
 
     # returns a hash that:
-    # - maps control chars and nil to the unicode "unknown character"
-    # - leaves all other bytes <= 255 unchaged
-    #
-    # Each specific encoding will change this default as required for their glyphs
-    #: () -> Hash[Integer, Integer]
-    def default_mapping
-      all_bytes = (0..255).to_a
-      tuples = all_bytes.map {|i|
-        CONTROL_CHARS.include?(i) ? [i, UNKNOWN_CHAR] : [i,i]
-      }
-      mapping = Hash[tuples]
-      mapping
-    end
-
     #: (Integer) -> String
     def internal_int_to_utf8_string(glyph_code)
       ret = [
@@ -229,14 +227,17 @@ class PDF::Reader
       @glyphlist ||= PDF::Reader::GlyphHash.new
     end
 
-    #: (String) -> void
-    def load_mapping(file)
+    #: (String) -> Hash[Integer, Integer]
+    def build_file_mapping(file)
+      mapping = DEFAULT_MAPPING.dup
       File.open(file, "r:BINARY") do |f|
         f.each do |l|
-          _m, single_byte, unicode = *l.match(/\A([0-9A-Za-z]+);([0-9A-F]{4})/)
-          @mapping["0x#{single_byte}".hex] = "0x#{unicode}".hex if single_byte
+          if l =~ /\A([0-9A-Za-z]+);([0-9A-F]{4})/
+            mapping[$1.to_i(16)] = $2.to_i(16)
+          end
         end
       end
+      mapping.freeze
     end
 
   end

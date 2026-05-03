@@ -10,7 +10,7 @@ class PDF::Reader
 
     #: (Array[PDF::Reader::TextRun], PDF::Reader::Rectangle) -> Array[PDF::Reader::TextRun]
     def self.runs_within_rect(runs, rect)
-      runs.select { |run| rect.contains?(run.origin) }
+      runs.select { |run| rect.contains_xy?(run.x, run.y) }
     end
   end
 end
