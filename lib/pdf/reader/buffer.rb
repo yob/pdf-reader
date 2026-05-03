@@ -258,10 +258,22 @@ class PDF::Reader
 
       token_one = @tokens[0]
       token_two = @tokens[1]
-      if token_one.is_a?(String) && token_two.is_a?(String) && token_one.match?(DIGITS_ONLY) && token_two.match?(DIGITS_ONLY)
+      if token_one.is_a?(String) && token_two.is_a?(String) && match?(token_one, DIGITS_ONLY) && match?(token_two, DIGITS_ONLY)
         @tokens[0] = PDF::Reader::Reference.new(token_one.to_i, token_two.to_i)
         @tokens.delete_at(2)
         @tokens.delete_at(1)
+      end
+    end
+
+    # Once min ruby version is >= 2.4, we can drop this method and just use String#match?
+    #
+    #: (String, Regexp) -> bool
+    def match?(str, regexp)
+      # We prefer match? because fewer objects are allocated, and this code path is hot
+      if str.respond_to?(:match?)
+        str.match?(regexp)
+      else
+        str.match(regexp) != nil
       end
     end
 
