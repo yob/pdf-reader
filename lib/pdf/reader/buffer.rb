@@ -392,54 +392,66 @@ class PDF::Reader
           end
         when *TOKEN_WHITESPACE
           # white space, token finished
-          @tokens << tok if tok.size > 0
-
-          #If the token was empty, chomp the rest of the whitespace too
-          while TOKEN_WHITESPACE.include?(peek_byte) && tok.size == 0
-            @io.getbyte
+          if tok.size > 0
+            @tokens << tok
+            tok = "".dup
+          else
+            #If the token was empty, chomp the rest of the whitespace too
+            while TOKEN_WHITESPACE.include?(peek_byte)
+              @io.getbyte
+            end
           end
-          tok = "".dup
           break
         when 0x3C
           # opening delimiter '<', start of new token
-          @tokens << tok if tok.size > 0
+          if tok.size > 0
+            @tokens << tok
+            tok = "".dup
+          end
           if peek_byte == 0x3C # check if token is actually '<<'
             @io.getbyte
             @tokens << "<<"
           else
             @tokens << "<"
           end
-          tok = "".dup
           break
         when 0x3E
           # closing delimiter '>', start of new token
-          @tokens << tok if tok.size > 0
+          if tok.size > 0
+            @tokens << tok
+            tok = "".dup
+          end
           if peek_byte == 0x3E # check if token is actually '>>'
             @io.getbyte
             @tokens << ">>"
           else
             @tokens << ">"
           end
-          tok = "".dup
           break
         when 0x28, 0x5B, 0x7B
           # opening delimiter, start of new token
-          @tokens << tok if tok.size > 0
+          if tok.size > 0
+            @tokens << tok
+            tok = "".dup
+          end
           @tokens << byte.chr
-          tok = "".dup
           break
         when 0x29, 0x5D, 0x7D
           # closing delimiter
-          @tokens << tok if tok.size > 0
+          if tok.size > 0
+            @tokens << tok
+            tok = "".dup
+          end
           @tokens << byte.chr
-          tok = "".dup
           break
         when 0x2F
           # PDF name, start of new token
-          @tokens << tok if tok.size > 0
+          if tok.size > 0
+            @tokens << tok
+            tok = "".dup
+          end
           @tokens << byte.chr
           @tokens << "" if byte == 0x2F && ([nil, 0x20, 0x0A] + TOKEN_DELIMITER).include?(peek_byte)
-          tok = "".dup
           break
         else
           tok << byte
