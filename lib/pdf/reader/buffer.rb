@@ -62,6 +62,9 @@ class PDF::Reader
     # must match whole tokens
     DIGITS_ONLY = %r{\A\d+\z} #: Regexp
 
+    # bytes that terminate a PDF name token (used in prepare_regular_token)
+    NAME_TERMINATOR_BYTES = ([nil, 0x20, 0x0A] + TOKEN_DELIMITER).freeze #: Array[Integer?]
+
     #: Integer
     attr_reader :pos
 
@@ -255,10 +258,22 @@ class PDF::Reader
 
       token_one = @tokens[0]
       token_two = @tokens[1]
-      if token_one.is_a?(String) && token_two.is_a?(String) && token_one.match(DIGITS_ONLY) && token_two.match(DIGITS_ONLY)
+      if token_one.is_a?(String) && token_two.is_a?(String) && match?(token_one, DIGITS_ONLY) && match?(token_two, DIGITS_ONLY)
         @tokens[0] = PDF::Reader::Reference.new(token_one.to_i, token_two.to_i)
         @tokens.delete_at(2)
         @tokens.delete_at(1)
+      end
+    end
+
+    # Once min ruby version is >= 2.4, we can drop this method and just use String#match?
+    #
+    #: (String, Regexp) -> bool
+    def match?(str, regexp)
+      # We prefer match? because fewer objects are allocated, and this code path is hot
+      if str.respond_to?(:match?)
+        str.match?(regexp)
+      else
+        str.match(regexp) != nil
       end
     end
 
@@ -327,8 +342,12 @@ class PDF::Reader
           # ignore it
         else
           @tokens << str if str.size > 0
-          @tokens << ">" if byte != 0x3E # '>'
-          @tokens << byte.chr
+          if byte == 0x3E
+            @tokens << ">"
+          else
+            @tokens << ">"
+            @tokens << byte.chr
+          end
           break
         end
       end
@@ -383,6 +402,7 @@ class PDF::Reader
 
         case byte
         when nil
+          @tokens << tok if tok.size > 0
           break
         when 0x25
           # comment, ignore everything until the next EOL char
@@ -390,63 +410,95 @@ class PDF::Reader
             commentbyte = @io.getbyte
             break if commentbyte.nil? || commentbyte == 0x0A || commentbyte == 0x0D
           end
-        when *TOKEN_WHITESPACE
+        when 0x00, 0x09, 0x0A, 0x0C, 0x0D, 0x20 # TOKEN_WHITESPACE
           # white space, token finished
-          @tokens << tok if tok.size > 0
-
-          #If the token was empty, chomp the rest of the whitespace too
-          while TOKEN_WHITESPACE.include?(peek_byte) && tok.size == 0
-            @io.getbyte
+          if tok.size > 0
+            @tokens << tok
+          else
+            #If the token was empty, chomp the rest of the whitespace too
+            while TOKEN_WHITESPACE.include?(peek_byte)
+              @io.getbyte
+            end
           end
-          tok = "".dup
           break
         when 0x3C
           # opening delimiter '<', start of new token
-          @tokens << tok if tok.size > 0
+          if tok.size > 0
+            @tokens << tok
+          end
           if peek_byte == 0x3C # check if token is actually '<<'
             @io.getbyte
             @tokens << "<<"
           else
             @tokens << "<"
           end
-          tok = "".dup
           break
         when 0x3E
           # closing delimiter '>', start of new token
-          @tokens << tok if tok.size > 0
+          if tok.size > 0
+            @tokens << tok
+          end
           if peek_byte == 0x3E # check if token is actually '>>'
             @io.getbyte
             @tokens << ">>"
           else
             @tokens << ">"
           end
-          tok = "".dup
           break
-        when 0x28, 0x5B, 0x7B
-          # opening delimiter, start of new token
-          @tokens << tok if tok.size > 0
-          @tokens << byte.chr
-          tok = "".dup
+        when 0x28
+          # opening delimiter '(', start of new token
+          if tok.size > 0
+            @tokens << tok
+          end
+          @tokens << "("
           break
-        when 0x29, 0x5D, 0x7D
-          # closing delimiter
-          @tokens << tok if tok.size > 0
-          @tokens << byte.chr
-          tok = "".dup
+        when 0x5B
+          # opening delimiter '[', start of new token
+          if tok.size > 0
+            @tokens << tok
+          end
+          @tokens << "["
+          break
+        when 0x7B
+          # opening delimiter '{', start of new token
+          if tok.size > 0
+            @tokens << tok
+          end
+          @tokens << "{"
+          break
+        when 0x29
+          # closing delimiter ')'
+          if tok.size > 0
+            @tokens << tok
+          end
+          @tokens << ")"
+          break
+        when 0x5D
+          # closing delimiter ']'
+          if tok.size > 0
+            @tokens << tok
+          end
+          @tokens << "]"
+          break
+        when 0x7D
+          # closing delimiter '}'
+          if tok.size > 0
+            @tokens << tok
+          end
+          @tokens << "}"
           break
         when 0x2F
           # PDF name, start of new token
-          @tokens << tok if tok.size > 0
-          @tokens << byte.chr
-          @tokens << "" if byte == 0x2F && ([nil, 0x20, 0x0A] + TOKEN_DELIMITER).include?(peek_byte)
-          tok = "".dup
+          if tok.size > 0
+            @tokens << tok
+          end
+          @tokens << "/"
+          @tokens << "" if NAME_TERMINATOR_BYTES.include?(peek_byte)
           break
         else
           tok << byte
         end
       end
-
-      @tokens << tok if tok.size > 0
     end
 
     # peek at the next character in the io stream, leaving the stream position
