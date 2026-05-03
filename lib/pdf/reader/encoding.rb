@@ -38,14 +38,15 @@ class PDF::Reader
       h[i] = CONTROL_CHARS.include?(i) ? UNKNOWN_CHAR : i
     }.freeze #: Hash[Integer, Integer]
 
+    # Cache mapping files to avoid re-reading and re-parsing the same file for
+    # every Encoding that uses it (e.g. many fonts sharing StandardEncoding).
+    FILE_MAPPINGS = {} #: Hash[String, Hash[Integer, Integer]]
+
     #: String
     attr_reader :unpack
 
     #: (Hash[Symbol, untyped] | Symbol | nil) -> void
     def initialize(enc)
-      # maps from character codes to Unicode codepoints
-      @mapping  = DEFAULT_MAPPING.dup #: Hash[Integer, Integer]
-
       # maps from character codes to UTF-8 strings.
       @string_cache  = {} #: Hash[Integer, String]
 
@@ -61,7 +62,15 @@ class PDF::Reader
       @differences = nil #: Hash[Integer, Integer] | nil
       @glyphlist = nil #: PDF::Reader::GlyphHash | nil
 
-      load_mapping(@map_file) if @map_file
+      # maps from character codes to Unicode codepoints
+      # If we have a mapping file, use the cached parsed version (loaded once per file)
+      if @map_file
+        @mapping = (
+          FILE_MAPPINGS[@map_file] ||= build_file_mapping(@map_file)
+        ).dup #: Hash[Integer, Integer]
+      else
+        @mapping = DEFAULT_MAPPING.dup
+      end #: Hash[Integer, Integer]
 
       if enc.is_a?(Hash) && enc[:Differences]
         self.differences = enc[:Differences]
@@ -218,15 +227,17 @@ class PDF::Reader
       @glyphlist ||= PDF::Reader::GlyphHash.new
     end
 
-    #: (String) -> void
-    def load_mapping(file)
+    #: (String) -> Hash[Integer, Integer]
+    def build_file_mapping(file)
+      mapping = DEFAULT_MAPPING.dup
       File.open(file, "r:BINARY") do |f|
         f.each do |l|
           if l =~ /\A([0-9A-Za-z]+);([0-9A-F]{4})/
-            @mapping[$1.to_i(16)] = $2.to_i(16)
+            mapping[$1.to_i(16)] = $2.to_i(16)
           end
         end
       end
+      mapping.freeze
     end
 
   end
