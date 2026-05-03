@@ -106,7 +106,7 @@ class PDF::Reader
         Token.new(token)
       elsif token.frozen?
         token
-      elsif token =~ /\d*\.\d/
+      elsif match?(token, /\d*\.\d/)
         token.to_f
       else
         token.to_i
@@ -152,6 +152,18 @@ class PDF::Reader
     end
 
     private
+
+    # Once min ruby version is >= 2.4, we can drop this method and just use String#match?
+    #
+    #: (String, Regexp) -> bool
+    def match?(str, regexp)
+      # We prefer match? because fewer objects are allocated, and this code path is hot
+      if str.respond_to?(:match?)
+        str.match?(regexp)
+      else
+        str.match(regexp) != nil
+      end
+    end
 
     ################################################################################
     # reads a PDF dict from the buffer and converts it to a Ruby Hash.
