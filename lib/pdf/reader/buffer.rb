@@ -330,8 +330,12 @@ class PDF::Reader
           # ignore it
         else
           @tokens << str if str.size > 0
-          @tokens << ">" if byte != 0x3E # '>'
-          @tokens << byte.chr
+          if byte == 0x3E
+            @tokens << ">"
+          else
+            @tokens << ">"
+            @tokens << byte.chr
+          end
           break
         end
       end
