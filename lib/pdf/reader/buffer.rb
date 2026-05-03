@@ -62,6 +62,9 @@ class PDF::Reader
     # must match whole tokens
     DIGITS_ONLY = %r{\A\d+\z} #: Regexp
 
+    # bytes that terminate a PDF name token (used in prepare_regular_token)
+    NAME_TERMINATOR_BYTES = ([nil, 0x20, 0x0A] + TOKEN_DELIMITER).freeze #: Array[Integer?]
+
     #: Integer
     attr_reader :pos
 
@@ -474,7 +477,7 @@ class PDF::Reader
             @tokens << tok
           end
           @tokens << "/"
-          @tokens << "" if ([nil, 0x20, 0x0A] + TOKEN_DELIMITER).include?(peek_byte)
+          @tokens << "" if NAME_TERMINATOR_BYTES.include?(peek_byte)
           break
         else
           tok << byte
