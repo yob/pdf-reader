@@ -77,6 +77,7 @@ class PDF::Reader
       @operators = operators
       @objects  = objects
       @relaxed_dictionaries = relaxed_dictionaries
+      @hex_pack_buffer = [""] #: Array[String]
     end
     ################################################################################
     # Reads the next token from the underlying buffer and convets it to an appropriate
@@ -228,18 +229,21 @@ class PDF::Reader
     # Reads a PDF hex string from the buffer and converts it to a Ruby String
     #: () -> String
     def hex_string
-      str = "".dup
+      str = @buffer.token
 
-      loop do
-        token = @buffer.token
-        break if token == ">"
-        raise MalformedPDFError, "unterminated hex string" if @buffer.empty?
-        str << token
+      if str == ">"
+        # empty hex string
+        return "".dup.force_encoding("binary")
       end
+
+      raise MalformedPDFError, "unterminated hex string" if str.nil? || @buffer.empty?
+      raise MalformedPDFError, "invalid hex string" unless str.is_a?(String)
+      @buffer.token # consume the closing ">"
 
       # add a missing digit if required, as required by the spec
       str << "0" unless str.size % 2 == 0
-      [str].pack('H*')
+      @hex_pack_buffer[0] = str
+      @hex_pack_buffer.pack('H*')
     end
     ################################################################################
     # Reads a PDF String from the buffer and converts it to a Ruby String
