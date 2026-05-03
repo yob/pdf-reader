@@ -405,7 +405,10 @@ class PDF::Reader
           @text_matrix.c, @text_matrix.d,
           @text_matrix.e, @text_matrix.f
         )
-        @font_size = @text_rendering_matrix = nil # invalidate cached value
+        @text_rendering_matrix = nil # invalidate cached value
+        # we used to invalidate @font_size here too, but it's not required
+        # font_size depends only on trm.b/trm.d (scale/rotation), not trm.e/f (translation),
+        # so it remains valid after a glyph displacement and does not need invalidation
       end
 
       private

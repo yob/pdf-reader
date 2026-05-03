@@ -294,13 +294,11 @@ class PDF::Reader
     def to_utf8_via_cmap(params, cmap)
       case params
       when Integer
-        [
-          cmap.decode(params)
-        ].flatten.pack("U*")
+        cmap.decode(params).pack("U*")
       when String
-        unpack_string_to_array_of_ints(params, encoding.unpack).map { |code_point|
+        unpack_string_to_array_of_ints(params, encoding.unpack).flat_map { |code_point|
           cmap.decode(code_point)
-        }.flatten.pack("U*")
+        }.pack("U*")
       when Array
         params.collect { |param| to_utf8_via_cmap(param, cmap) }.join("")
       end
