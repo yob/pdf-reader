@@ -383,6 +383,7 @@ class PDF::Reader
 
         case byte
         when nil
+          @tokens << tok if tok.size > 0
           break
         when 0x25
           # comment, ignore everything until the next EOL char
@@ -394,7 +395,6 @@ class PDF::Reader
           # white space, token finished
           if tok.size > 0
             @tokens << tok
-            tok = "".dup
           else
             #If the token was empty, chomp the rest of the whitespace too
             while TOKEN_WHITESPACE.include?(peek_byte)
@@ -406,7 +406,6 @@ class PDF::Reader
           # opening delimiter '<', start of new token
           if tok.size > 0
             @tokens << tok
-            tok = "".dup
           end
           if peek_byte == 0x3C # check if token is actually '<<'
             @io.getbyte
@@ -419,7 +418,6 @@ class PDF::Reader
           # closing delimiter '>', start of new token
           if tok.size > 0
             @tokens << tok
-            tok = "".dup
           end
           if peek_byte == 0x3E # check if token is actually '>>'
             @io.getbyte
@@ -432,7 +430,6 @@ class PDF::Reader
           # opening delimiter '(', start of new token
           if tok.size > 0
             @tokens << tok
-            tok = "".dup
           end
           @tokens << "("
           break
@@ -440,7 +437,6 @@ class PDF::Reader
           # opening delimiter '[', start of new token
           if tok.size > 0
             @tokens << tok
-            tok = "".dup
           end
           @tokens << "["
           break
@@ -448,7 +444,6 @@ class PDF::Reader
           # opening delimiter '{', start of new token
           if tok.size > 0
             @tokens << tok
-            tok = "".dup
           end
           @tokens << "{"
           break
@@ -456,7 +451,6 @@ class PDF::Reader
           # closing delimiter ')'
           if tok.size > 0
             @tokens << tok
-            tok = "".dup
           end
           @tokens << ")"
           break
@@ -464,7 +458,6 @@ class PDF::Reader
           # closing delimiter ']'
           if tok.size > 0
             @tokens << tok
-            tok = "".dup
           end
           @tokens << "]"
           break
@@ -472,7 +465,6 @@ class PDF::Reader
           # closing delimiter '}'
           if tok.size > 0
             @tokens << tok
-            tok = "".dup
           end
           @tokens << "}"
           break
@@ -480,7 +472,6 @@ class PDF::Reader
           # PDF name, start of new token
           if tok.size > 0
             @tokens << tok
-            tok = "".dup
           end
           @tokens << "/"
           @tokens << "" if ([nil, 0x20, 0x0A] + TOKEN_DELIMITER).include?(peek_byte)
@@ -489,8 +480,6 @@ class PDF::Reader
           tok << byte
         end
       end
-
-      @tokens << tok if tok.size > 0
     end
 
     # peek at the next character in the io stream, leaving the stream position
