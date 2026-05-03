@@ -34,6 +34,7 @@ class PDF::Reader
   class Parser
 
     TOKEN_STRATEGY = proc { |parser, token| Token.new(token) } #: Proc
+    INTERNED_TOKENS = {} #: Hash[String, PDF::Reader::Token]
 
     STRATEGIES = {
       "/"  => proc { |parser, token| parser.send(:pdf_name) },
@@ -104,7 +105,7 @@ class PDF::Reader
       elsif token.is_a? PDF::Reader::Reference
         token
       elsif @operators.has_key? token
-        Token.new(token)
+        INTERNED_TOKENS[token] ||= Token.new(token)
       elsif token.frozen?
         token
       elsif match?(token, /\d*\.\d/)
