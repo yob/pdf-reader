@@ -70,10 +70,21 @@ module PDF
         bottom_right.x - bottom_left.x
       end
 
+      # Is the point inside this rectangle? Nicer to read and use than contains_xy?(), but
+      # allocates more objects so be careful using on hot code paths.
+      #
       #: (PDF::Reader::Point) -> bool
       def contains?(point)
-        point.x >= bottom_left.x && point.x <= top_right.x &&
-          point.y >= bottom_left.y && point.y <= top_right.y
+        contains_xy?(point.x, point.y)
+      end
+
+      # Is the point inside this rectangle? Worse to read and use than contains?(), but
+      # allocates fewer objects so may be preferrable on hot code paths.
+      #
+      #: (Numeric, Numeric) -> bool
+      def contains_xy?(x, y)
+        x >= bottom_left.x && x <= top_right.x &&
+          y >= bottom_left.y && y <= top_right.y
       end
 
       # A pdf-style 4-number array
