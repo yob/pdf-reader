@@ -398,7 +398,7 @@ class PDF::Reader
             commentbyte = @io.getbyte
             break if commentbyte.nil? || commentbyte == 0x0A || commentbyte == 0x0D
           end
-        when *TOKEN_WHITESPACE
+        when 0x00, 0x09, 0x0A, 0x0C, 0x0D, 0x20 # TOKEN_WHITESPACE
           # white space, token finished
           if tok.size > 0
             @tokens << tok
