@@ -54,6 +54,17 @@ class PDF::Reader
        @e,@f,1]
     end
 
+    # Apply a left-multiplication by a translation matrix [1, 0, 0, 1, tx, ty]
+    # without allocating a new TransformationMatrix.
+    #
+    #: (Numeric, Numeric) -> void
+    def prepend_translation!(tx, ty)
+      new_e = (tx * @a) + (ty * @c) + @e
+      new_f = (tx * @b) + (ty * @d) + @f
+      @e = new_e
+      @f = new_f
+    end
+
     # multiply this matrix with another.
     #
     # the second matrix is represented by the 6 scalar values that are changeable

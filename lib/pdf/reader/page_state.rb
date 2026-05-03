@@ -146,14 +146,7 @@ class PDF::Reader
       #####################################################
 
       def move_text_position(x, y) # Td
-        temp = TransformationMatrix.new(1, 0,
-                                        0, 1,
-                                        x, y)
-        @text_line_matrix = temp.multiply!(
-          @text_line_matrix.a, @text_line_matrix.b,
-          @text_line_matrix.c, @text_line_matrix.d,
-          @text_line_matrix.e, @text_line_matrix.f
-        )
+        @text_line_matrix.prepend_translation!(x, y)
         @text_matrix = @text_line_matrix.dup
         @font_size = @text_rendering_matrix = nil # invalidate cached value
       end
@@ -397,14 +390,7 @@ class PDF::Reader
         end
         # TODO: support ty > 0
         ty = 0
-        temp = TransformationMatrix.new(1, 0,
-                                        0, 1,
-                                        tx, ty)
-        @text_matrix = temp.multiply!(
-          @text_matrix.a, @text_matrix.b,
-          @text_matrix.c, @text_matrix.d,
-          @text_matrix.e, @text_matrix.f
-        )
+        @text_matrix.prepend_translation!(tx, ty)
         @text_rendering_matrix = nil # invalidate cached value
         # we used to invalidate @font_size here too, but it's not required
         # font_size depends only on trm.b/trm.d (scale/rotation), not trm.e/f (translation),
