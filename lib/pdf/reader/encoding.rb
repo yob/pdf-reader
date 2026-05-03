@@ -34,6 +34,9 @@ class PDF::Reader
     CONTROL_CHARS = [0,1,2,3,4,5,6,7,8,11,12,14,15,16,17,18,19,20,21,22,23,
                      24,25,26,27,28,29,30,31] #: Array[Integer]
     UNKNOWN_CHAR = 0x25AF #: Integer # ▯
+    DEFAULT_MAPPING = (0..255).each_with_object({}) { |i, h|
+      h[i] = CONTROL_CHARS.include?(i) ? UNKNOWN_CHAR : i
+    }.freeze #: Hash[Integer, Integer]
 
     #: String
     attr_reader :unpack
@@ -41,7 +44,7 @@ class PDF::Reader
     #: (Hash[Symbol, untyped] | Symbol | nil) -> void
     def initialize(enc)
       # maps from character codes to Unicode codepoints
-      @mapping  = default_mapping #: Hash[Integer, Integer]
+      @mapping  = DEFAULT_MAPPING.dup #: Hash[Integer, Integer]
 
       # maps from character codes to UTF-8 strings.
       @string_cache  = {} #: Hash[Integer, String]
@@ -149,20 +152,6 @@ class PDF::Reader
     private
 
     # returns a hash that:
-    # - maps control chars and nil to the unicode "unknown character"
-    # - leaves all other bytes <= 255 unchaged
-    #
-    # Each specific encoding will change this default as required for their glyphs
-    #: () -> Hash[Integer, Integer]
-    def default_mapping
-      all_bytes = (0..255).to_a
-      tuples = all_bytes.map {|i|
-        CONTROL_CHARS.include?(i) ? [i, UNKNOWN_CHAR] : [i,i]
-      }
-      mapping = Hash[tuples]
-      mapping
-    end
-
     #: (Integer) -> String
     def internal_int_to_utf8_string(glyph_code)
       ret = [
