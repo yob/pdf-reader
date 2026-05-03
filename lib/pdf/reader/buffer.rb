@@ -428,21 +428,53 @@ class PDF::Reader
             @tokens << ">"
           end
           break
-        when 0x28, 0x5B, 0x7B
-          # opening delimiter, start of new token
+        when 0x28
+          # opening delimiter '(', start of new token
           if tok.size > 0
             @tokens << tok
             tok = "".dup
           end
-          @tokens << byte.chr
+          @tokens << "("
           break
-        when 0x29, 0x5D, 0x7D
-          # closing delimiter
+        when 0x5B
+          # opening delimiter '[', start of new token
           if tok.size > 0
             @tokens << tok
             tok = "".dup
           end
-          @tokens << byte.chr
+          @tokens << "["
+          break
+        when 0x7B
+          # opening delimiter '{', start of new token
+          if tok.size > 0
+            @tokens << tok
+            tok = "".dup
+          end
+          @tokens << "{"
+          break
+        when 0x29
+          # closing delimiter ')'
+          if tok.size > 0
+            @tokens << tok
+            tok = "".dup
+          end
+          @tokens << ")"
+          break
+        when 0x5D
+          # closing delimiter ']'
+          if tok.size > 0
+            @tokens << tok
+            tok = "".dup
+          end
+          @tokens << "]"
+          break
+        when 0x7D
+          # closing delimiter '}'
+          if tok.size > 0
+            @tokens << tok
+            tok = "".dup
+          end
+          @tokens << "}"
           break
         when 0x2F
           # PDF name, start of new token
@@ -450,8 +482,8 @@ class PDF::Reader
             @tokens << tok
             tok = "".dup
           end
-          @tokens << byte.chr
-          @tokens << "" if byte == 0x2F && ([nil, 0x20, 0x0A] + TOKEN_DELIMITER).include?(peek_byte)
+          @tokens << "/"
+          @tokens << "" if ([nil, 0x20, 0x0A] + TOKEN_DELIMITER).include?(peek_byte)
           break
         else
           tok << byte
