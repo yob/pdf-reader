@@ -196,9 +196,11 @@ class PDF::Reader
       tok = @buffer.token
 
       if tok.is_a?(String)
-        tok = tok.dup.gsub(/#([A-Fa-f0-9]{2})/) do |match|
-          res = match[1, 2]
-          res ? res.hex.chr : ""
+        if tok.include?('#')
+          tok = tok.gsub(/#([A-Fa-f0-9]{2})/) do |match|
+            res = match[1, 2]
+            res ? res.hex.chr : ""
+          end
         end
         tok.to_sym
       elsif tok.is_a?(PDF::Reader::Reference)
