@@ -11,6 +11,19 @@ describe PDF::Reader::Reference do
       expect(one.hash).to eq(two.hash)
     end
 
+    it "returns a different hash for two objects with different IDs" do
+      one = PDF::Reader::Reference.new(1,0)
+      two = PDF::Reader::Reference.new(2,0)
+
+      expect(one.hash).to_not eq(two.hash)
+    end
+
+    it "returns a different hash for two objects with different generations" do
+      one = PDF::Reader::Reference.new(1,0)
+      two = PDF::Reader::Reference.new(1,1)
+
+      expect(one.hash).to_not eq(two.hash)
+    end
   end
 
   describe "#==" do

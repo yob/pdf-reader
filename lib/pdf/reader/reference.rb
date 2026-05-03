@@ -71,7 +71,7 @@ class PDF::Reader
     # return an identical hash
     #: () -> Integer
     def hash
-      "#{self.id}:#{self.gen}".hash
+      (id << 16) ^ gen
     end
     ################################################################################
   end
