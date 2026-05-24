@@ -152,10 +152,30 @@ class PDF::Reader
     #: () -> Integer
     def find_first_xref_offset
       check_size_is_non_zero
-      @io.seek(-TRAILING_BYTECOUNT, IO::SEEK_END) rescue @io.seek(0)
-      data = @io.read(TRAILING_BYTECOUNT)
 
-      raise MalformedPDFError, "PDF does not contain EOF marker" if data.nil?
+      # Skip trailing null bytes to find the effective end of the PDF.
+      # Some generators (e.g. Atos/Fonet) append thousands of null bytes
+      # after %%EOF. Scan backwards in chunks so a file padded with a huge
+      # run of nulls doesn't turn into a per-byte seek+read loop.
+      @io.seek(0, IO::SEEK_END)
+      end_pos = @io.pos
+
+      while end_pos > 0
+        chunk_size = [TRAILING_BYTECOUNT, end_pos].min
+        @io.seek(end_pos - chunk_size)
+        chunk = @io.read(chunk_size)
+        if chunk && (idx = chunk.rindex(/[^\x00]/))
+          end_pos = end_pos - chunk_size + idx + 1
+          break
+        end
+        end_pos -= chunk_size
+      end
+
+      start_pos = [end_pos - TRAILING_BYTECOUNT, 0].max
+      @io.seek(start_pos)
+      data = @io.read(end_pos - start_pos)
+
+      raise MalformedPDFError, "PDF does not contain EOF marker" if data.nil? || data.empty?
 
       # the PDF 1.7 spec (section #3.4) says that EOL markers can be either \r, \n, or both.
       lines = data.split(/[\n\r]+/).reverse

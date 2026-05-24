@@ -449,6 +449,9 @@ data/tounicode-wrong-type-indirect.pdf:
 data/tounicode-wrong-type.pdf:
   :bytes: 12219
   :md5: 0be721e975bc8ec21eae829e0cddc1af
+data/trailing_null_bytes.pdf:
+  :bytes: 67721
+  :md5: 6b9b6375ca194fdf8687a44130c54df2
 data/truetype-arial.pdf:
   :bytes: 1387
   :md5: 2b3e4ff85b618d1f4c6b3b5df2631ab0
