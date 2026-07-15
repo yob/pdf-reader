@@ -74,6 +74,9 @@ data/difference_table2.pdf:
 data/difference_table_encrypted.pdf:
   :bytes: 1442
   :md5: 142596eae43ecd6bad12ccfd3d0921d1
+data/difference_table_with_unmatched_utf16_surrogate.pdf:
+  :bytes: 1333
+  :md5: d5923a8eda5f1e97b57f0603782a28d9
 data/distiller_unicode.pdf:
   :bytes: 273800
   :md5: a3c22cb58416c789dcc6dc60a1270209

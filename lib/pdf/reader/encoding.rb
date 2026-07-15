@@ -163,9 +163,13 @@ class PDF::Reader
     # returns a hash that:
     #: (Integer) -> String
     def internal_int_to_utf8_string(glyph_code)
-      ret = [
-        @mapping[glyph_code.to_i] || glyph_code.to_i
-      ].pack("U*")
+      codepoint = @mapping[glyph_code.to_i] || glyph_code.to_i
+      if valid_unicode_scalar?(codepoint.to_i)
+        codepoints = [codepoint]
+      else
+        codepoints = [UNKNOWN_CHAR]
+      end
+      ret = codepoints.pack("U*")
       ret.force_encoding("UTF-8")
       ret
     end
