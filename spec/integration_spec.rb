@@ -1879,4 +1879,16 @@ describe PDF::Reader, "integration specs" do
       end
     end
   end
+
+  context "PDF with a difference table that maps to an unmatched utf16 surrogate" do
+    let(:filename) { pdf_spec_file("difference_table_with_unmatched_utf16_surrogate") }
+
+    it "extracts text correctly, replacing the invalid glyph with a placeholder" do
+      PDF::Reader.open(filename) do |reader|
+        text = reader.pages.first.text
+        expect(text).to include("This file has")
+        expect(text).to include("▯")
+      end
+    end
+  end
 end
