@@ -68,6 +68,21 @@ describe PDF::Reader::Encoding do
       end
     end
 
+    context "when a differences table maps to a code point that isn't valid UTF-8" do
+      let!(:enc) do
+        # a glyph name like /L55473 resolves to code point 0xD8B1, a UTF-16
+        # surrogate that can't be encoded as UTF-8 on its own
+        PDF::Reader::Encoding.new(:Encoding    => :MacRomanEncoding,
+                                  :Differences => [2, :L55473]
+                                )
+      end
+      it "returns valid UTF-8 with the unknown char box" do
+        result = enc.to_utf8("\002")
+        expect(result.valid_encoding?).to eql(true)
+        expect(result).to eql("▯")
+      end
+    end
+
     context "when the encoding is Identity-H" do
       it "returns utf-8 squares" do
         e = PDF::Reader::Encoding.new("Identity-H")

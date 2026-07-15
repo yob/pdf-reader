@@ -185,9 +185,20 @@ class PDF::Reader
 
     #: (String) -> String
     def convert_to_utf8(str)
-      ret = str.unpack(unpack).map! { |c| @mapping[c.to_i] || c }.pack("U*")
+      ret = str.unpack(unpack).map! { |c|
+        codepoint = @mapping[c.to_i] || c
+        valid_unicode_scalar?(codepoint.to_i) ? codepoint : UNKNOWN_CHAR
+      }.pack("U*")
       ret.force_encoding("UTF-8")
       ret
+    end
+
+    # true if the integer is a Unicode scalar value that can be encoded as
+    # UTF-8. Surrogates (U+D800..U+DFFF) and code points above U+10FFFF are
+    # excluded, as packing them produces invalid UTF-8 byte sequences.
+    #: (Integer) -> bool
+    def valid_unicode_scalar?(codepoint)
+      codepoint.between?(0, 0xD7FF) || codepoint.between?(0xE000, 0x10FFFF)
     end
 
     #: (Symbol) -> String
