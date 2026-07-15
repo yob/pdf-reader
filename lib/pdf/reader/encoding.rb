@@ -187,7 +187,7 @@ class PDF::Reader
     def convert_to_utf8(str)
       ret = str.unpack(unpack).map! { |c|
         codepoint = @mapping[c.to_i] || c
-        valid_unicode_scalar?(codepoint) ? codepoint : UNKNOWN_CHAR
+        valid_unicode_scalar?(codepoint.to_i) ? codepoint : UNKNOWN_CHAR
       }.pack("U*")
       ret.force_encoding("UTF-8")
       ret
