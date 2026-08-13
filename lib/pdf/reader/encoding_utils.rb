@@ -58,7 +58,7 @@ module PDF
         0xA0 => 0x20AC, # EURO SIGN
       }.freeze #: Hash[Integer, Integer]
 
-     #: (untyped) -> untyped
+      #: (untyped) -> untyped
       def self.obj_to_utf8(obj)
         new.obj_to_utf8(obj)
       end

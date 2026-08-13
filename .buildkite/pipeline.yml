@@ -81,7 +81,7 @@ steps:
       - "10.1"
 
   - command: "auto/run-specs"
-    label: "rpsec (truffleruby-{{matrix}})"
+    label: "rspec (truffleruby-{{matrix}})"
     key: specs-truffleruby
     depends_on:
       - quality
