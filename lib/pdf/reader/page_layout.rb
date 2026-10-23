@@ -26,7 +26,7 @@ class PDF::Reader
       @runs = runs #: Array[PDF::Reader::TextRun]
       @mean_font_size   = mean(@runs.map(&:font_size)) || DEFAULT_FONT_SIZE #: Numeric
       @mean_font_size = DEFAULT_FONT_SIZE if @mean_font_size == 0
-      @median_glyph_width = median(@runs.map(&:mean_character_width)) || 0 #: Numeric
+      @median_glyph_width = median(@runs.map { |r| r.mean_character_width.abs }) || 0 #: Numeric
       @x_offset = @runs.map(&:x).sort.first || 0 #: Numeric
       lowest_y = @runs.map(&:y).sort.first || 0 #: Numeric
       @y_offset = lowest_y > 0 ? 0 : lowest_y #: Numeric
