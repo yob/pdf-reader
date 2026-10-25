@@ -57,7 +57,7 @@ class PDF::Reader
     # Quite a few PDFs have trailing junk.
     # This can be several k of nuls in some cases
     # Allow for this here
-    TRAILING_BYTECOUNT = 5000 #: Integer
+    TRAILING_BYTECOUNT = 16384 #: Integer
 
     # must match whole tokens
     DIGITS_ONLY = %r{\A\d+\z} #: Regexp
