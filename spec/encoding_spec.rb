@@ -50,6 +50,17 @@ describe PDF::Reader::Encoding do
       end
     end
 
+    context "when the differences table lists .notdef before a recognised glyph" do
+      let!(:enc) do
+        PDF::Reader::Encoding.new(:Encoding    => :WinAnsiEncoding,
+                                  :Differences => [30, :".notdef", :".notdef", :Eacute]
+                                )
+      end
+      it "records the recognised glyph at the code after the .notdef entries" do
+        expect(enc.differences[32]).to eql(:Eacute)
+      end
+    end
+
   end
 
   describe "#to_utf8" do
@@ -80,6 +91,28 @@ describe PDF::Reader::Encoding do
         result = enc.to_utf8("\002")
         expect(result.valid_encoding?).to eql(true)
         expect(result).to eql("▯")
+      end
+    end
+
+    context "when a differences table lists .notdef before a recognised glyph" do
+      let!(:enc) do
+        PDF::Reader::Encoding.new(:Encoding    => :WinAnsiEncoding,
+                                  :Differences => [30, :".notdef", :".notdef", :Eacute]
+                                )
+      end
+      it "converts the code after the .notdef entries to the recognised glyph" do
+        expect(enc.to_utf8(" ")).to eql("É")
+      end
+    end
+
+    context "when a differences table lists a glyph name that can't be mapped to unicode" do
+      let!(:enc) do
+        PDF::Reader::Encoding.new(:Encoding    => :WinAnsiEncoding,
+                                  :Differences => [65, :unknownglyph, :Eacute]
+                                )
+      end
+      it "converts the code after the unmapped name to the next glyph" do
+        expect(enc.to_utf8("B")).to eql("É")
       end
     end
 
