@@ -95,9 +95,12 @@ class PDF::Reader
       diff.each do |val|
         if val.kind_of?(Numeric)
           byte = val.to_i
-        elsif codepoint = glyphlist.name_to_unicode(val)
-          @differences[byte] = val
-          @mapping[byte] = codepoint
+        else
+          codepoint = glyphlist.name_to_unicode(val)
+          if codepoint
+            @differences[byte] = val
+            @mapping[byte] = codepoint
+          end
           byte += 1
         end
       end
