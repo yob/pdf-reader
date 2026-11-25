@@ -39,7 +39,7 @@ class PDF::Reader
       #: (untyped) -> String
       def tiff_depredict(data)
         data        = data.unpack("C*")
-        unfiltered  = ''
+        unfiltered  = String.new
         bpc         = @options[:BitsPerComponent] || 8
         pixel_bits  = bpc * @options[:Colors]
         pixel_bytes = pixel_bits / 8
@@ -56,7 +56,7 @@ class PDF::Reader
             left = index < pixel_bytes ? 0 : row_data[index - pixel_bytes]
             row_data[index] = (byte + left) % 256
           end
-          unfiltered += row_data.pack("C*")
+          unfiltered << row_data.pack("C*")
           pos += line_len
         end
 
@@ -72,10 +72,13 @@ class PDF::Reader
         pixel_bytes     = @options[:Colors] || 1
         scanline_length = (pixel_bytes * @options[:Columns]) + 1
         row = 0
-        pixels = []
+        prev_row = data
         paeth, pa, pb, pc = 0, 0, 0, 0
-        until data.empty? do
-          row_data = data.slice! 0, scanline_length
+        unfiltered = []
+        pos = 0
+        until pos >= data.size do
+          row_data = data[pos, scanline_length]
+          pos += scanline_length
           filter = row_data.shift
           case filter
           when 0 # None
@@ -87,14 +90,12 @@ class PDF::Reader
             end
           when 2 # Up
             row_data.each_with_index do |byte, index|
-              col = index / pixel_bytes
-              upper = row == 0 ? 0 : pixels[row-1][col][index % pixel_bytes]
+              upper = row == 0 ? 0 : prev_row[index]
               row_data[index] = (upper + byte) % 256
             end
           when 3  # Average
             row_data.each_with_index do |byte, index|
-              col = index / pixel_bytes
-              upper = row == 0 ? 0 : pixels[row-1][col][index % pixel_bytes]
+              upper = row == 0 ? 0 : prev_row[index]
               left = index < pixel_bytes ? 0 : row_data[index - pixel_bytes]
 
               row_data[index] = (byte + ((left + upper)/2).floor) % 256
@@ -108,9 +109,9 @@ class PDF::Reader
               if row.zero?
                 upper = upper_left = 0
               else
-                upper = Integer(pixels[row-1][col][index % pixel_bytes])
+                upper = Integer(prev_row[index])
                 upper_left = col.zero? ? 0 :
-                  Integer(pixels[row-1][col-1][index % pixel_bytes])
+                  Integer(prev_row[index - pixel_bytes])
               end
 
               p = left + upper - upper_left
@@ -132,15 +133,12 @@ class PDF::Reader
             raise MalformedPDFError, "Invalid filter algorithm #{filter}"
           end
 
-          s = []
-          row_data.each_slice pixel_bytes do |slice|
-            s << slice
-          end
-          pixels << s
+          prev_row = row_data
+          unfiltered << row_data.pack("C*")
           row += 1
         end
 
-        pixels.map { |bytes| bytes.flatten.pack("C*") }.join("")
+        unfiltered.join("")
       end
     end
   end
